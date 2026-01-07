@@ -21,819 +21,665 @@ export interface Problem {
 
 export const problems: Problem[] = [
   {
-    id: 'destructuring-defaults',
-    title: 'Destructuring with Defaults',
-    difficulty: 'easy',
-    category: 'JavaScript Basics',
-    description: `Extract values from objects/arrays while providing fallbacks for missing data.
-
-**Challenge:** Complete the function to safely extract user information with defaults.
-
-**Key Concepts:**
-- Basic object destructuring with default values
-- Nested destructuring with defaults
-- Array destructuring with defaults
-- Renaming + default combined`,
-    examples: [
-      {
-        input: `const user = { name: 'John' };
-const response = { data: [1, 2, 3] };`,
-        output: `name: 'John', email: 'anonymous@example.com', firstItem: 1`,
-        explanation: 'Extract name, provide default email, and get first array item'
-      }
-    ],
-    starterCode: `function extractUserInfo(user, response) {
-  // TODO: Extract name with default 'Anonymous'
-  // TODO: Extract email with default 'anonymous@example.com'
-  // TODO: Extract data array with default []
-  // TODO: Extract first item from data array with default 0
-  
-  return {
-    name: user.name, // Fix this
-    email: user.email, // Fix this
-    firstItem: response.data[0] // Fix this
-  };
-}
-
-// Test your solution
-const user1 = { name: 'John' };
-const response1 = { data: [1, 2, 3] };
-console.log(extractUserInfo(user1, response1));
-
-const user2 = {};
-const response2 = {};
-console.log(extractUserInfo(user2, response2));`,
-    solution: `function extractUserInfo(user, response) {
-  const { name = 'Anonymous' } = user ?? {};
-  const { email = 'anonymous@example.com' } = user ?? {};
-  const { data: users = [] } = response ?? {};
-  const [firstItem = 0] = users;
-  
-  return {
-    name,
-    email,
-    firstItem
-  };
-}`,
-    testCases: [
-      {
-        input: [{ name: 'John' }, { data: [1, 2, 3] }],
-        expectedOutput: { name: 'John', email: 'anonymous@example.com', firstItem: 1 }
-      },
-      {
-        input: [{}, {}],
-        expectedOutput: { name: 'Anonymous', email: 'anonymous@example.com', firstItem: 0 }
-      },
-      {
-        input: [{ name: 'Jane', email: 'jane@example.com' }, { data: [10, 20] }],
-        expectedOutput: { name: 'Jane', email: 'jane@example.com', firstItem: 10 }
-      }
-    ],
-    hints: [
-      'Use destructuring with default values: const { prop = defaultValue } = obj',
-      'Handle null/undefined with nullish coalescing: obj ?? {}',
-      'For arrays: const [first = defaultValue] = array'
-    ]
-  },
-  {
-    id: 'nullish-coalescing',
-    title: 'Nullish Coalescing (??) vs Logical OR (||)',
-    difficulty: 'easy',
-    category: 'JavaScript Basics',
-    description: `Understand the difference between ?? and ||. The ?? operator only falls back for null or undefined, while || falls back for any falsy value.
-
-**Challenge:** Fix the function to correctly handle 0 and empty strings.`,
-    examples: [
-      {
-        input: `const user = { count: 0, name: '' };`,
-        output: `count: 0, name: ''`,
-        explanation: '0 and empty string should be preserved, not replaced with defaults'
-      }
-    ],
-    starterCode: `function getUserValues(user) {
-  // TODO: Use ?? instead of || to preserve 0 and empty strings
-  const count = user.count || 10; // Fix: 0 becomes 10 (wrong!)
-  const name = user.name || 'Anonymous'; // Fix: '' becomes 'Anonymous' (wrong!)
-  const email = user.email || 'no-email@placeholder.com';
-  
-  return { count, name, email };
-}
-
-// Test cases
-console.log(getUserValues({ count: 0, name: '', email: null }));
-console.log(getUserValues({ count: 5, name: 'John', email: 'john@example.com' }));`,
-    solution: `function getUserValues(user) {
-  const count = user.count ?? 10;
-  const name = user.name ?? 'Anonymous';
-  const email = user.email ?? 'no-email@placeholder.com';
-  
-  return { count, name, email };
-}`,
-    testCases: [
-      {
-        input: [{ count: 0, name: '', email: null }],
-        expectedOutput: { count: 0, name: '', email: 'no-email@placeholder.com' }
-      },
-      {
-        input: [{ count: 5, name: 'John', email: 'john@example.com' }],
-        expectedOutput: { count: 5, name: 'John', email: 'john@example.com' }
-      },
-      {
-        input: [{ count: undefined, name: undefined, email: undefined }],
-        expectedOutput: { count: 10, name: 'Anonymous', email: 'no-email@placeholder.com' }
-      }
-    ],
-    hints: [
-      'Use ?? for nullish coalescing - only falls back for null/undefined',
-      '|| falls back for any falsy value (0, "", false, null, undefined)',
-      'Use ??= for nullish assignment: obj.prop ??= defaultValue'
-    ]
-  },
-  {
-    id: 'optional-chaining',
-    title: 'Optional Chaining (?.)',
-    difficulty: 'easy',
-    category: 'JavaScript Basics',
-    description: `Safely access deeply nested properties without explicit null checks.
-
-**Challenge:** Extract nested values safely using optional chaining.`,
-    examples: [
-      {
-        input: `const user = { profile: { displayName: 'John' } };
-const user2 = null;`,
-        output: `'John' and 'Anonymous'`,
-        explanation: 'Safely access nested properties even when parent is null'
-      }
-    ],
-    starterCode: `function getDisplayName(user) {
-  // TODO: Use optional chaining to safely access nested properties
-  // If user?.profile?.displayName exists, use it
-  // Otherwise, fall back to user?.name
-  // Otherwise, fall back to 'Anonymous'
-  
-  let displayName = 'Anonymous';
-  if (user && user.profile && user.profile.displayName) {
-    displayName = user.profile.displayName;
-  } else if (user && user.name) {
-    displayName = user.name;
-  }
-  
-  return displayName;
-}
-
-console.log(getDisplayName({ profile: { displayName: 'John' } }));
-console.log(getDisplayName(null));
-console.log(getDisplayName({ name: 'Jane' }));`,
-    solution: `function getDisplayName(user) {
-  return user?.profile?.displayName ?? user?.name ?? 'Anonymous';
-}`,
-    testCases: [
-      {
-        input: [{ profile: { displayName: 'John' } }],
-        expectedOutput: 'John'
-      },
-      {
-        input: [null],
-        expectedOutput: 'Anonymous'
-      },
-      {
-        input: [{ name: 'Jane' }],
-        expectedOutput: 'Jane'
-      },
-      {
-        input: [{ profile: {} }],
-        expectedOutput: 'Anonymous'
-      }
-    ],
-    hints: [
-      'Use ?. for optional chaining: obj?.prop?.nested',
-      'Combine with ?? for fallbacks: obj?.prop ?? defaultValue',
-      'Works with arrays: arr?.[0]?.name'
-    ]
-  },
-  {
-    id: 'flatmap-filter-map',
-    title: 'flatMap as Filter + Map',
+    id: 'promise-all-vs-allsettled',
+    title: 'Promise.all vs Promise.allSettled',
     difficulty: 'medium',
-    category: 'Array Methods',
-    description: `Use flatMap to simultaneously filter and transform in a single pass, which is more efficient than separate filter and map operations.
+    category: 'Async/Promises',
+    description: `Promise.all fails fast on first rejection; Promise.allSettled waits for all.
 
-**Challenge:** Transform the filter+map pattern to use flatMap.`,
+**Challenge:** Use the right method for different scenarios.`,
     examples: [
       {
-        input: `const users = [
-  { active: true, email: 'a@example.com' },
-  { active: false, email: 'b@example.com' },
-  { active: true, email: 'c@example.com' }
-];`,
-        output: `['a@example.com', 'c@example.com']`,
-        explanation: 'Get emails of only active users in a single pass'
+        input: `const promises = [fetch('/api/1'), fetch('/api/2'), fetch('/api/3')];`,
+        output: `all: fails if any fail, allSettled: always resolves`,
+        explanation: 'Choose based on whether you need all or can tolerate failures'
       }
     ],
-    starterCode: `function getActiveUserEmails(users) {
-  // TODO: Convert filter+map to flatMap
-  // Traditional approach (two iterations)
-  const results = users
-    .filter(u => u.active)
-    .map(u => u.email);
+    starterCode: `async function fetchAllOrFail(urls) {
+  // TODO: Use Promise.all - should fail if ANY request fails
+  // Return array of responses
   
-  return results;
-}
-
-// Convert to flatMap for better performance
-function getActiveUserEmailsOptimized(users) {
-  // Your code here using flatMap
   return [];
 }
 
-const users = [
-  { active: true, email: 'a@example.com' },
-  { active: false, email: 'b@example.com' },
-  { active: true, email: 'c@example.com' }
-];
-
-console.log(getActiveUserEmails(users));
-console.log(getActiveUserEmailsOptimized(users));`,
-    solution: `function getActiveUserEmailsOptimized(users) {
-  return users.flatMap(u => u.active ? [u.email] : []);
-}`,
-    testCases: [
-      {
-        input: [[
-          { active: true, email: 'a@example.com' },
-          { active: false, email: 'b@example.com' },
-          { active: true, email: 'c@example.com' }
-        ]],
-        expectedOutput: ['a@example.com', 'c@example.com']
-      },
-      {
-        input: [[
-          { active: false, email: 'a@example.com' }
-        ]],
-        expectedOutput: []
-      },
-      {
-        input: [[]],
-        expectedOutput: []
-      }
-    ],
-    hints: [
-      'flatMap returns an array - return [item] to include, [] to exclude',
-      'Single iteration is more efficient than filter + map',
-      'Can produce 0, 1, or multiple items per input element'
-    ]
-  },
-  {
-    id: 'map-deduplication',
-    title: 'Map for Deduplication',
-    difficulty: 'medium',
-    category: 'Array Methods',
-    description: `Use Map to deduplicate by a key, where the last occurrence wins.
-
-**Challenge:** Remove duplicate users by ID, keeping the last occurrence.`,
-    examples: [
-      {
-        input: `const users = [
-  { id: 1, name: 'John' },
-  { id: 2, name: 'Jane' },
-  { id: 1, name: 'John Updated' }
-];`,
-        output: `[{ id: 2, name: 'Jane' }, { id: 1, name: 'John Updated' }]`,
-        explanation: 'Last occurrence of id:1 wins'
-      }
-    ],
-    starterCode: `function deduplicateUsers(users) {
-  // TODO: Use Map to deduplicate by id (last wins)
-  // Hint: new Map(users.map(u => [u.id, u]))
-  // Then convert back to array with [...map.values()]
+async function fetchAllWithFailures(urls) {
+  // TODO: Use Promise.allSettled - should return all results even if some fail
+  // Return array with { status, value/error }
   
-  return users;
-}
-
-const users = [
-  { id: 1, name: 'John' },
-  { id: 2, name: 'Jane' },
-  { id: 1, name: 'John Updated' },
-  { id: 3, name: 'Bob' },
-  { id: 2, name: 'Jane Updated' }
-];
-
-console.log(deduplicateUsers(users));`,
-    solution: `function deduplicateUsers(users) {
-  return [...new Map(users.map(u => [u.id, u])).values()];
-}`,
-    testCases: [
-      {
-        input: [[
-          { id: 1, name: 'John' },
-          { id: 2, name: 'Jane' },
-          { id: 1, name: 'John Updated' }
-        ]],
-        expectedOutput: [
-          { id: 2, name: 'Jane' },
-          { id: 1, name: 'John Updated' }
-        ]
-      },
-      {
-        input: [[
-          { id: 1, name: 'A' },
-          { id: 1, name: 'B' },
-          { id: 1, name: 'C' }
-        ]],
-        expectedOutput: [{ id: 1, name: 'C' }]
-      }
-    ],
-    hints: [
-      'Map constructor accepts [key, value] pairs',
-      'Map overwrites duplicate keys (last wins)',
-      'Use [...map.values()] to convert back to array'
-    ]
-  },
-  {
-    id: 'object-entries',
-    title: 'Object.fromEntries / Object.entries',
-    difficulty: 'medium',
-    category: 'Object Methods',
-    description: `Convert between objects and [key, value] arrays for transformation.
-
-**Challenge:** Transform object values and filter properties.`,
-    examples: [
-      {
-        input: `const prices = { apple: 1, banana: 2, cherry: 3 };`,
-        output: `{ apple: 2, banana: 4, cherry: 6 }`,
-        explanation: 'Double all prices'
-      }
-    ],
-    starterCode: `function doublePrices(prices) {
-  // TODO: Use Object.entries and Object.fromEntries
-  // to double all values
-  
-  return prices;
-}
-
-function filterPrivateProperties(obj) {
-  // TODO: Filter out properties starting with '_'
-  // Use Object.entries, filter, then Object.fromEntries
-  
-  return obj;
-}
-
-const prices = { apple: 1, banana: 2, cherry: 3 };
-console.log(doublePrices(prices));
-
-const user = { name: 'John', _internal: 'secret', age: 30, _temp: 'data' };
-console.log(filterPrivateProperties(user));`,
-    solution: `function doublePrices(prices) {
-  return Object.fromEntries(
-    Object.entries(prices).map(([key, val]) => [key, val * 2])
-  );
-}
-
-function filterPrivateProperties(obj) {
-  return Object.fromEntries(
-    Object.entries(obj).filter(([key]) => !key.startsWith('_'))
-  );
-}`,
-    testCases: [
-      {
-        input: [{ apple: 1, banana: 2, cherry: 3 }],
-        expectedOutput: { apple: 2, banana: 4, cherry: 6 },
-        description: 'doublePrices'
-      },
-      {
-        input: [{ name: 'John', _internal: 'secret', age: 30, _temp: 'data' }],
-        expectedOutput: { name: 'John', age: 30 },
-        description: 'filterPrivateProperties'
-      }
-    ],
-    hints: [
-      'Object.entries(obj) → [[key, value], ...]',
-      'Object.fromEntries([[key, value], ...]) → object',
-      'Use map/filter between entries and fromEntries'
-    ]
-  },
-  {
-    id: 'promise-race-timeout',
-    title: 'Promise.race for Timeouts',
-    difficulty: 'medium',
-    category: 'Async/Promises',
-    description: `Race a promise against a timer to implement timeouts.
-
-**Challenge:** Create a withTimeout function that rejects if the promise takes too long.`,
-    examples: [
-      {
-        input: `await withTimeout(fetch('/api/data'), 5000)`,
-        output: `Resolves with data or rejects with timeout error`,
-        explanation: 'Promise resolves if fetch completes in time, otherwise times out'
-      }
-    ],
-    starterCode: `function withTimeout(promise, ms) {
-  // TODO: Use Promise.race to race the promise against a timeout
-  // Create a timeout promise that rejects after ms milliseconds
-  // Return Promise.race([promise, timeoutPromise])
-  
-  return promise;
+  return [];
 }
 
 // Test
-const fastPromise = new Promise(resolve => setTimeout(() => resolve('Success'), 100));
-const slowPromise = new Promise(resolve => setTimeout(() => resolve('Success'), 2000));
+const urls = ['/api/1', '/api/2', '/api/3'];
+fetchAllOrFail(urls).then(console.log).catch(console.error);
+fetchAllWithFailures(urls).then(console.log);`,
+    solution: `async function fetchAllOrFail(urls) {
+  return Promise.all(urls.map(url => fetch(url).then(r => r.json())));
+}
 
-withTimeout(fastPromise, 500)
-  .then(console.log)
-  .catch(console.error);
+async function fetchAllWithFailures(urls) {
+  return Promise.allSettled(urls.map(url => fetch(url).then(r => r.json())));
+}`,
+    testCases: [
+      {
+        input: [[Promise.resolve('success1'), Promise.resolve('success2')]],
+        expectedOutput: ['success1', 'success2'],
+        description: 'Promise.all with all successful'
+      }
+    ],
+    hints: [
+      'Promise.all rejects if any promise rejects',
+      'Promise.allSettled always resolves with status for each',
+      'Use all when you need all; allSettled when some can fail'
+    ]
+  },
+  {
+    id: 'async-generators',
+    title: 'Async Generators',
+    difficulty: 'hard',
+    category: 'Async/Promises',
+    description: `Async generators yield promises and can be consumed with for await...of.
 
-withTimeout(slowPromise, 500)
+**Challenge:** Create an async generator that fetches pages of data.`,
+    examples: [
+      {
+        input: `async function* fetchPages() { ... }`,
+        output: `Yields pages one at a time`,
+        explanation: 'Process data as it arrives'
+      }
+    ],
+    starterCode: `async function* fetchPages(pageSize = 10) {
+  // TODO: Create async generator that yields pages
+  // Start at page 0, increment until no more data
+  // Yield each page as it's fetched
+  // Assume fetchPage(page) returns { data: [...], hasMore: boolean }
+  
+  let page = 0;
+  // Your code here
+}
+
+// Helper function (assume this exists)
+async function fetchPage(page) {
+  // Simulated API call
+  return {
+    data: Array.from({ length: pageSize }, (_, i) => page * pageSize + i),
+    hasMore: page < 2
+  };
+}
+
+// Test
+(async () => {
+  for await (const page of fetchPages()) {
+    console.log(page);
+  }
+})();`,
+    solution: `async function* fetchPages(pageSize = 10) {
+  let page = 0;
+  let hasMore = true;
+  
+  while (hasMore) {
+    const result = await fetchPage(page);
+    yield result.data;
+    hasMore = result.hasMore;
+    page++;
+  }
+}`,
+    testCases: [
+      {
+        input: [],
+        expectedOutput: true,
+        description: 'Type checking - async generator should work'
+      }
+    ],
+    hints: [
+      'Use async function* to create async generator',
+      'yield promises or values',
+      'Consume with for await...of'
+    ]
+  },
+  {
+    id: 'abort-controller',
+    title: 'AbortController for Cancellation',
+    difficulty: 'hard',
+    category: 'Async/Promises',
+    description: `Use AbortController to cancel fetch requests and other async operations.
+
+**Challenge:** Create a cancellable fetch function.`,
+    examples: [
+      {
+        input: `const controller = new AbortController();
+fetchWithCancel('/api/data', controller.signal);`,
+        output: `Request can be cancelled with controller.abort()`,
+        explanation: 'Cancel long-running requests'
+      }
+    ],
+    starterCode: `async function fetchWithCancel(url, signal) {
+  // TODO: Pass signal to fetch options
+  // Handle AbortError when cancelled
+  
+  const response = await fetch(url);
+  return response.json();
+}
+
+function createCancellableFetch(url, timeout = 5000) {
+  // TODO: Create AbortController
+  // Set timeout to auto-cancel
+  // Return { promise, cancel }
+  
+  return {
+    promise: fetch(url).then(r => r.json()),
+    cancel: () => {}
+  };
+}
+
+// Test
+const { promise, cancel } = createCancellableFetch('/api/data', 1000);
+setTimeout(() => cancel(), 500); // Cancel after 500ms`,
+    solution: `async function fetchWithCancel(url, signal) {
+  try {
+    const response = await fetch(url, { signal });
+    return response.json();
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      throw new Error('Request cancelled');
+    }
+    throw error;
+  }
+}
+
+function createCancellableFetch(url, timeout = 5000) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
+  
+  const promise = fetchWithCancel(url, controller.signal)
+    .finally(() => clearTimeout(timeoutId));
+  
+  return {
+    promise,
+    cancel: () => {
+      clearTimeout(timeoutId);
+      controller.abort();
+    }
+  };
+}`,
+    testCases: [
+      {
+        input: [],
+        expectedOutput: true,
+        description: 'Type checking - should work with AbortController'
+      }
+    ],
+    hints: [
+      'Pass signal to fetch options: { signal }',
+      'AbortError is thrown when aborted',
+      'Clear timeouts in finally block'
+    ]
+  },
+  {
+    id: 'retry-pattern',
+    title: 'Retry Pattern with Exponential Backoff',
+    difficulty: 'hard',
+    category: 'Async/Promises',
+    description: `Implement retry logic with exponential backoff for failed requests.
+
+**Challenge:** Retry a function with increasing delays.`,
+    examples: [
+      {
+        input: `retryWithBackoff(fetchData, { maxRetries: 3 })`,
+        output: `Retries with delays: 100ms, 200ms, 400ms`,
+        explanation: 'Exponential backoff reduces server load'
+      }
+    ],
+    starterCode: `async function retryWithBackoff(fn, options = {}) {
+  const { maxRetries = 3, initialDelay = 100 } = options;
+  
+  // TODO: Implement retry with exponential backoff
+  // Try fn(), if it fails, wait and retry
+  // Delay doubles each time: initialDelay, initialDelay*2, initialDelay*4, ...
+  // Throw error if all retries fail
+  
+  return fn();
+}
+
+// Test
+async function fetchData() {
+  // Simulated API that might fail
+  if (Math.random() > 0.5) throw new Error('Failed');
+  return 'Success';
+}
+
+retryWithBackoff(fetchData, { maxRetries: 3, initialDelay: 100 })
   .then(console.log)
   .catch(console.error);`,
-    solution: `function withTimeout(promise, ms) {
-  return Promise.race([
-    promise,
-    new Promise((_, reject) =>
-      setTimeout(() => reject(new Error(\`Timeout after \${ms}ms\`)), ms)
-    )
-  ]);
+    solution: `async function retryWithBackoff(fn, options = {}) {
+  const { maxRetries = 3, initialDelay = 100 } = options;
+  
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (attempt === maxRetries) {
+        throw error;
+      }
+      const delay = initialDelay * Math.pow(2, attempt);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
 }`,
     testCases: [
       {
-        input: [Promise.resolve('success'), 1000],
-        expectedOutput: 'success',
-        description: 'Promise resolves before timeout'
+        input: [],
+        expectedOutput: true,
+        description: 'Should retry on failure'
       }
     ],
     hints: [
-      'Promise.race returns the first settled promise',
-      'Create a timeout promise that rejects after ms',
-      'Use setTimeout in the timeout promise'
+      'Loop up to maxRetries times',
+      'Calculate delay: initialDelay * 2^attempt',
+      'Use setTimeout wrapped in Promise for delay'
     ]
   },
   {
-    id: 'promise-allsettled',
-    title: 'Promise.allSettled for Mixed Results',
+    id: 'promise-chaining',
+    title: 'Promise Chaining Patterns',
     difficulty: 'medium',
     category: 'Async/Promises',
-    description: `Handle multiple promises where some may fail, without stopping on the first rejection.
+    description: `Chain promises to transform data through multiple async steps.
 
-**Challenge:** Process multiple API calls and separate successes from failures.`,
+**Challenge:** Process data through a pipeline of async transformations.`,
     examples: [
       {
-        input: `[fetch('/api/1'), fetch('/api/2'), fetch('/api/3')]`,
-        output: `{ successes: [...], failures: [...] }`,
-        explanation: 'Get all results even if some fail'
+        input: `fetchUser(id).then(validate).then(enrich).then(save)`,
+        output: `Data flows through each step`,
+        explanation: 'Each then returns a promise for the next step'
       }
     ],
-    starterCode: `async function processMultipleRequests(requests) {
-  // TODO: Use Promise.allSettled to handle all promises
-  // Separate fulfilled and rejected results
-  // Return { successes: [...], failures: [...] }
+    starterCode: `async function processUser(userId) {
+  // TODO: Chain promises to:
+  // 1. Fetch user data
+  // 2. Validate user (throw if invalid)
+  // 3. Enrich with additional data
+  // 4. Save to database
+  // Return final result
   
-  return { successes: [], failures: [] };
+  return {};
 }
 
-// Helper function to check if result is fulfilled
-function isFulfilled(result) {
-  // TODO: Check if result.status === 'fulfilled'
-  return false;
+// Helper functions (assume these exist)
+async function fetchUser(id) {
+  return { id, name: 'John', email: 'john@example.com' };
 }
 
-// Test
-const requests = [
-  Promise.resolve('Success 1'),
-  Promise.reject('Error 1'),
-  Promise.resolve('Success 2')
-];
-
-processMultipleRequests(requests).then(console.log);`,
-    solution: `async function processMultipleRequests(requests) {
-  const results = await Promise.allSettled(requests);
-  
-  const successes = results
-    .filter((r): r is PromiseFulfilledResult<string> => r.status === 'fulfilled')
-    .map(r => r.value);
-  
-  const failures = results
-    .filter((r): r is PromiseRejectedResult => r.status === 'rejected')
-    .map(r => r.reason);
-  
-  return { successes, failures };
+async function validateUser(user) {
+  if (!user.email) throw new Error('Invalid user');
+  return user;
 }
 
-function isFulfilled(result) {
-  return result.status === 'fulfilled';
+async function enrichUser(user) {
+  return { ...user, role: 'admin', permissions: ['read', 'write'] };
+}
+
+async function saveUser(user) {
+  return { ...user, saved: true };
+}
+
+processUser(1).then(console.log).catch(console.error);`,
+    solution: `async function processUser(userId) {
+  return fetchUser(userId)
+    .then(validateUser)
+    .then(enrichUser)
+    .then(saveUser);
 }`,
     testCases: [
       {
-        input: [[
-          Promise.resolve('Success 1'),
-          Promise.reject('Error 1'),
-          Promise.resolve('Success 2')
-        ]],
-        expectedOutput: {
-          successes: ['Success 1', 'Success 2'],
-          failures: ['Error 1']
+        input: [1],
+        expectedOutput: expect => {
+          return expect && expect.id === 1 && expect.saved === true;
         }
       }
     ],
     hints: [
-      'Promise.allSettled never rejects - all promises settle',
-      'Results have status: "fulfilled" or "rejected"',
-      'Use type guards for TypeScript: (r): r is Type => ...'
+      'Chain .then() calls for sequential async operations',
+      'Return value from one becomes input to next',
+      'Use .catch() at end to handle errors'
     ]
   },
   {
-    id: 'template-literal-types',
-    title: 'Template Literal Types',
-    difficulty: 'hard',
-    category: 'TypeScript Advanced',
-    description: `Create string types from combinations of other types using template literals.
-
-**Challenge:** Create type-safe event handler names and button classes.`,
-    examples: [
-      {
-        input: `type EventName = EventName<'click'>`,
-        output: `'onClick'`,
-        explanation: 'Transform event names to handler names'
-      }
-    ],
-    starterCode: `// TODO: Create a template literal type for event names
-// EventName<'click'> should be 'onClick'
-// EventName<'hover'> should be 'onHover'
-type EventName<T extends string> = string; // Fix this
-
-// TODO: Create button class type
-// ButtonClass<'sm', 'red'> should be 'btn-sm-red'
-type Size = 'sm' | 'md' | 'lg';
-type Color = 'red' | 'blue';
-type ButtonClass = string; // Fix this
-
-// Test
-const clickHandler: EventName<'click'> = 'onClick';
-const btnClass: ButtonClass = 'btn-sm-red';`,
-    solution: `type EventName<T extends string> = \`on\${Capitalize<T>}\`;
-
-type Size = 'sm' | 'md' | 'lg';
-type Color = 'red' | 'blue';
-type ButtonClass = \`btn-\${Size}-\${Color}\`;`,
-    testCases: [
-      {
-        input: ['click'],
-        expectedOutput: 'onClick',
-        description: 'EventName type'
-      }
-    ],
-    hints: [
-      'Use template literal syntax: `on${Capitalize<T>}`',
-      'Capitalize is a built-in string manipulation type',
-      'Combine multiple types: `btn-${Size}-${Color}`'
-    ]
-  },
-  {
-    id: 'const-assertions',
-    title: 'Const Assertions (as const)',
+    id: 'error-boundaries',
+    title: 'Error Handling Patterns',
     difficulty: 'medium',
-    category: 'TypeScript Advanced',
-    description: `Create narrow literal types instead of widened types using 'as const'.
+    category: 'Async/Promises',
+    description: `Handle errors gracefully with try/catch, .catch(), and error boundaries.
 
-**Challenge:** Extract union types from const arrays and create enum-like patterns.`,
+**Challenge:** Implement comprehensive error handling.`,
     examples: [
       {
-        input: `const routes = ['home', 'profile'] as const;`,
-        output: `type Route = 'home' | 'profile'`,
-        explanation: 'Extract union type from const array'
+        input: `try { await riskyOperation(); } catch (error) { handle(error); }`,
+        output: `Errors are caught and handled`,
+        explanation: 'Prevent unhandled promise rejections'
       }
     ],
-    starterCode: `// TODO: Use 'as const' to create narrow types
-const routes = ['home', 'profile', 'settings'];
-// Currently: string[]
-// Should be: readonly ['home', 'profile', 'settings']
+    starterCode: `async function safeOperation(operation, fallback) {
+  // TODO: Try operation, catch errors, return fallback on error
+  
+  return operation();
+}
 
-// TODO: Extract union type from routes
-type Route = string; // Fix: should be 'home' | 'profile' | 'settings'
-
-// TODO: Create enum-like pattern with as const
-const Status = {
-  Pending: 'pending',
-  Active: 'active',
-  Done: 'done'
-};
-// Fix: Add 'as const' and create Status type
-
-type StatusType = string; // Fix: should be 'pending' | 'active' | 'done'
+async function handleMultipleOperations(operations) {
+  // TODO: Run all operations, collect errors
+  // Return { successes: [...], errors: [...] }
+  
+  return { successes: [], errors: [] };
+}
 
 // Test
-const route: Route = 'home';
-const status: StatusType = 'pending';`,
-    solution: `const routes = ['home', 'profile', 'settings'] as const;
-type Route = typeof routes[number];
+const riskyOp = () => Promise.reject(new Error('Failed'));
+const safeOp = () => Promise.resolve('Success');
 
-const Status = {
-  Pending: 'pending',
-  Active: 'active',
-  Done: 'done'
-} as const;
-type StatusType = typeof Status[keyof typeof Status];`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Type checking only'
-      }
-    ],
-    hints: [
-      "'as const' makes values readonly and narrows types",
-      "Use typeof array[number] to extract union from array",
-      "Use typeof obj[keyof typeof obj] to extract union from object"
-    ]
-  },
-  {
-    id: 'satisfies-operator',
-    title: 'Satisfies Operator',
-    difficulty: 'hard',
-    category: 'TypeScript Advanced',
-    description: `Type-check without widening the inferred type. Preserves narrow literal types while ensuring type safety.
+safeOperation(riskyOp, 'fallback').then(console.log);
 
-**Challenge:** Use satisfies to preserve narrow types while type-checking.`,
-    examples: [
-      {
-        input: `const config = { port: 3000 } satisfies Record<string, number>;`,
-        output: `config.port is number (not string | number)`,
-        explanation: 'Type is checked but narrow type is preserved'
-      }
-    ],
-    starterCode: `// Problem: type annotation widens the type
-const config: Record<string, string | number> = {
-  port: 3000,
-  host: 'localhost'
-};
-// config.port is string | number (lost narrow type!)
-
-// TODO: Use 'satisfies' to preserve narrow type
-const config2 = {
-  port: 3000,
-  host: 'localhost'
-}; // Add satisfies here
-// config2.port should be number (preserved!)
-
-// Test
-const port: number = config2.port;`,
-    solution: `const config2 = {
-  port: 3000,
-  host: 'localhost'
-} satisfies Record<string, string | number>;`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Type checking only'
-      }
-    ],
-    hints: [
-      "'satisfies' checks type without widening",
-      "Preserves literal types like 3000 instead of number",
-      "Use when you need both type checking and narrow inference"
-    ]
-  },
-  {
-    id: 'exhaustive-switch',
-    title: 'Exhaustive Switch with Never',
-    difficulty: 'hard',
-    category: 'TypeScript Advanced',
-    description: `Ensure all cases are handled at compile time using the never type.
-
-**Challenge:** Add exhaustive checking to switch statements.`,
-    examples: [
-      {
-        input: `type Status = 'loading' | 'success' | 'error';`,
-        output: `Compiler error if case is missing`,
-        explanation: 'Never type catches missing cases'
-      }
-    ],
-    starterCode: `type Status = 'loading' | 'success' | 'error';
-
-function handleStatus(status: Status): string {
-  switch (status) {
-    case 'loading':
-      return 'Loading...';
-    case 'success':
-      return 'Done!';
-    // TODO: Add 'error' case and exhaustive check
-    // In default, assign status to never type
-    default:
-      // Add exhaustive check here
-      return 'Unknown';
+handleMultipleOperations([riskyOp, safeOp, riskyOp])
+  .then(console.log);`,
+    solution: `async function safeOperation(operation, fallback) {
+  try {
+    return await operation();
+  } catch (error) {
+    return fallback;
   }
 }
 
-// Test - if you add 'timeout' to Status type, you should get a compiler error`,
-    solution: `type Status = 'loading' | 'success' | 'error';
+async function handleMultipleOperations(operations) {
+  const results = await Promise.allSettled(
+    operations.map(op => op())
+  );
+  
+  const successes = results
+    .filter(r => r.status === 'fulfilled')
+    .map(r => r.value);
+  
+  const errors = results
+    .filter(r => r.status === 'rejected')
+    .map(r => r.reason);
+  
+  return { successes, errors };
+}`,
+    testCases: [
+      {
+        input: [() => Promise.reject('error'), 'fallback'],
+        expectedOutput: 'fallback',
+        description: 'safeOperation'
+      }
+    ],
+    hints: [
+      'Use try/catch for async/await',
+      'Use .catch() for promise chains',
+      'Promise.allSettled never rejects'
+    ]
+  },
+  {
+    id: 'promise-constructor',
+    title: 'Promise Constructor Pattern',
+    difficulty: 'medium',
+    category: 'Async/Promises',
+    description: `Use new Promise() to wrap callback-based APIs or create custom async operations.
 
-function handleStatus(status: Status): string {
-  switch (status) {
-    case 'loading':
-      return 'Loading...';
-    case 'success':
-      return 'Done!';
-    case 'error':
-      return 'Failed';
-    default:
-      const _exhaustive: never = status;
-      return _exhaustive;
+**Challenge:** Convert setTimeout and event listeners to promises.`,
+    examples: [
+      {
+        input: `delay(1000).then(() => console.log('Done'))`,
+        output: `Logs after 1 second`,
+        explanation: 'Promise-based delay'
+      }
+    ],
+    starterCode: `function delay(ms) {
+  // TODO: Return a Promise that resolves after ms milliseconds
+  
+  return Promise.resolve();
+}
+
+function waitForEvent(element, eventName) {
+  // TODO: Return a Promise that resolves when event fires
+  // Use addEventListener, resolve on first event, then remove listener
+  
+  return Promise.resolve();
+}
+
+// Test
+delay(1000).then(() => console.log('1 second passed'));
+
+const button = document.createElement('button');
+waitForEvent(button, 'click').then(() => console.log('Button clicked'));`,
+    solution: `function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function waitForEvent(element, eventName) {
+  return new Promise(resolve => {
+    const handler = () => {
+      element.removeEventListener(eventName, handler);
+      resolve();
+    };
+    element.addEventListener(eventName, handler);
+  });
+}`,
+    testCases: [
+      {
+        input: [100],
+        expectedOutput: expect => {
+          return expect instanceof Promise;
+        }
+      }
+    ],
+    hints: [
+      'new Promise((resolve, reject) => { ... })',
+      'Call resolve() when operation succeeds',
+      'Call reject() when operation fails'
+    ]
+  },
+  {
+    id: 'async-await-error',
+    title: 'Async/Await Error Handling',
+    difficulty: 'easy',
+    category: 'Async/Promises',
+    description: `Handle errors in async/await with try/catch blocks.
+
+**Challenge:** Properly catch and handle async errors.`,
+    examples: [
+      {
+        input: `try { const data = await fetchData(); } catch (error) { ... }`,
+        output: `Errors are caught`,
+        explanation: 'Use try/catch with async/await'
+      }
+    ],
+    starterCode: `async function fetchUserData(userId) {
+  // TODO: Fetch user, handle errors
+  // If fetch fails, return null
+  // If user not found (404), return null
+  // Otherwise return user data
+  
+  const response = await fetch(\`/api/users/\${userId}\`);
+  return response.json();
+}
+
+async function fetchMultipleUsers(userIds) {
+  // TODO: Fetch all users, return array
+  // If any fetch fails, skip that user (don't fail entire operation)
+  
+  return [];
+}
+
+// Test
+fetchUserData(1).then(console.log).catch(console.error);
+fetchMultipleUsers([1, 2, 3]).then(console.log);`,
+    solution: `async function fetchUserData(userId) {
+  try {
+    const response = await fetch(\`/api/users/\${userId}\`);
+    if (!response.ok) {
+      return null;
+    }
+    return response.json();
+  } catch (error) {
+    return null;
+  }
+}
+
+async function fetchMultipleUsers(userIds) {
+  const results = await Promise.allSettled(
+    userIds.map(id => fetchUserData(id))
+  );
+  
+  return results
+    .filter(r => r.status === 'fulfilled' && r.value !== null)
+    .map(r => r.value);
+}`,
+    testCases: [
+      {
+        input: [1],
+        expectedOutput: expect => {
+          return expect === null || typeof expect === 'object';
+        }
+      }
+    ],
+    hints: [
+      'Wrap await in try/catch',
+      'Check response.ok for HTTP errors',
+      'Use Promise.allSettled for multiple operations'
+    ]
+  },
+  {
+    id: 'promise-race-first',
+    title: 'Promise.race for First Result',
+    difficulty: 'medium',
+    category: 'Async/Promises',
+    description: `Use Promise.race to get the first resolved promise from multiple sources.
+
+**Challenge:** Fetch from multiple sources and use the fastest response.`,
+    examples: [
+      {
+        input: `Promise.race([fetch('/api1'), fetch('/api2'), fetch('/api3')])`,
+        output: `Returns result from fastest API`,
+        explanation: 'Use fastest available source'
+      }
+    ],
+    starterCode: `async function fetchFromFastest(urls) {
+  // TODO: Use Promise.race to get result from fastest URL
+  // Return the first successful response
+  
+  return null;
+}
+
+async function fetchWithFallback(primaryUrl, fallbackUrls) {
+  // TODO: Try primary first, if it fails, race the fallbacks
+  // Return first successful result
+  
+  return null;
+}
+
+// Test
+fetchFromFastest(['/api/slow', '/api/fast', '/api/medium'])
+  .then(console.log);
+
+fetchWithFallback('/api/primary', ['/api/backup1', '/api/backup2'])
+  .then(console.log);`,
+    solution: `async function fetchFromFastest(urls) {
+  const promises = urls.map(url => 
+    fetch(url).then(r => r.json())
+  );
+  return Promise.race(promises);
+}
+
+async function fetchWithFallback(primaryUrl, fallbackUrls) {
+  try {
+    const response = await fetch(primaryUrl);
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error('Primary failed');
+  } catch (error) {
+    return fetchFromFastest(fallbackUrls);
   }
 }`,
     testCases: [
       {
-        input: ['loading'],
-        expectedOutput: 'Loading...'
-      },
-      {
-        input: ['success'],
-        expectedOutput: 'Done!'
-      },
-      {
-        input: ['error'],
-        expectedOutput: 'Failed'
+        input: [[Promise.resolve('fast'), Promise.resolve('slow')]],
+        expectedOutput: 'fast'
       }
     ],
     hints: [
-      "If all cases handled, status in default has type 'never'",
-      "If case missing, status still has that type → compiler error",
-      "Use: const _exhaustive: never = status; in default"
+      'Promise.race resolves/rejects with first settled promise',
+      'Useful for timeouts and fastest response',
+      'Be careful - other promises continue running'
     ]
   },
   {
-    id: 'discriminated-unions',
-    title: 'Discriminated Unions',
-    difficulty: 'hard',
-    category: 'TypeScript Advanced',
-    description: `Union types with a common "tag" property for type narrowing.
+    id: 'promise-finally',
+    title: 'Promise.finally for Cleanup',
+    difficulty: 'easy',
+    category: 'Async/Promises',
+    description: `Use .finally() to run cleanup code regardless of success or failure.
 
-**Challenge:** Create and use discriminated unions for type-safe API responses.`,
+**Challenge:** Always clean up resources.`,
     examples: [
       {
-        input: `type ApiResponse = { status: 'success', data: string } | { status: 'error', error: string };`,
-        output: `TypeScript narrows based on status property`,
-        explanation: 'Access data or error based on status'
+        input: `fetch('/api').finally(() => cleanup())`,
+        output: `cleanup() always runs`,
+        explanation: 'Finally runs whether promise resolves or rejects'
       }
     ],
-    starterCode: `// TODO: Create discriminated union type
-type ApiResponse<T> = 
-  | { status: 'loading' }
-  | { status: 'success'; data: T }
-  | { status: 'error'; error: string };
+    starterCode: `async function fetchWithCleanup(url) {
+  let loading = true;
+  
+  // TODO: Fetch data, set loading = false in finally
+  // Return the data
+  
+  const response = await fetch(url);
+  return response.json();
+}
 
-function handle<T>(response: ApiResponse<T>) {
-  // TODO: Use type narrowing based on status
-  // If status === 'success', access response.data
-  // If status === 'error', access response.error
+async function processWithLock(resource, operation) {
+  let locked = false;
   
-  if (response.status === 'success') {
-    // TypeScript should know response.data exists here
-    return response.data; // Fix: response.data might not exist
-  }
+  // TODO: Lock resource, run operation, unlock in finally
+  // Return operation result
   
-  if (response.status === 'error') {
-    // TypeScript should know response.error exists here
-    return response.error; // Fix: response.error might not exist
-  }
-  
-  return 'Loading...';
+  return operation();
 }
 
 // Test
-const success: ApiResponse<string> = { status: 'success', data: 'Hello' };
-const error: ApiResponse<string> = { status: 'error', error: 'Failed' };
-console.log(handle(success));
-console.log(handle(error));`,
-    solution: `type ApiResponse<T> = 
-  | { status: 'loading' }
-  | { status: 'success'; data: T }
-  | { status: 'error'; error: string };
+fetchWithCleanup('/api/data').then(console.log);
+processWithLock('resource', () => Promise.resolve('done'))
+  .then(console.log);`,
+    solution: `async function fetchWithCleanup(url) {
+  let loading = true;
+  try {
+    const response = await fetch(url);
+    return response.json();
+  } finally {
+    loading = false;
+  }
+}
 
-function handle<T>(response: ApiResponse<T>) {
-  if (response.status === 'success') {
-    return response.data;
+async function processWithLock(resource, operation) {
+  let locked = false;
+  try {
+    locked = true;
+    return await operation();
+  } finally {
+    locked = false;
   }
-  
-  if (response.status === 'error') {
-    return response.error;
-  }
-  
-  return 'Loading...';
 }`,
     testCases: [
       {
-        input: [{ status: 'success', data: 'Hello' }],
-        expectedOutput: 'Hello'
-      },
-      {
-        input: [{ status: 'error', error: 'Failed' }],
-        expectedOutput: 'Failed'
+        input: ['/api/data'],
+        expectedOutput: expect => {
+          return expect !== undefined;
+        }
       }
     ],
     hints: [
-      "Common 'tag' property (like 'status') enables type narrowing",
-      "TypeScript narrows union based on tag value",
-      "Each variant can have different properties"
+      '.finally() always runs after promise settles',
+      'Useful for cleanup, logging, state updates',
+      'Runs even if promise rejects'
     ]
   }
 ];
