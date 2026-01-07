@@ -29,6 +29,18 @@ export default function CodeEditor({ code, onChange, language = 'typescript', re
       reactNamespace: 'React',
       allowJs: true,
       typeRoots: ['node_modules/@types'],
+      // Enable enum support
+      preserveConstEnums: false,
+      // Allow all TypeScript features
+      strict: false,
+    });
+    
+    // Also configure JavaScript defaults to allow TypeScript syntax
+    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+      target: monaco.languages.typescript.ScriptTarget.ES2020,
+      allowNonTsExtensions: true,
+      allowJs: true,
+      checkJs: false,
     });
 
     // Enable auto-formatting

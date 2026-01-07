@@ -31,13 +31,26 @@ function transpileTypeScript(code: string): { code: string; error?: string } {
       skipLibCheck: true,
       strict: false,
       allowJs: true,
+      // Don't preserve const enums - convert them to regular enums that transpile to JS
+      preserveConstEnums: false,
     } as any);
 
     return { code: result };
   } catch (error: any) {
+    // If transpilation fails, try to provide a more helpful error
+    const errorMessage = error?.message || String(error) || 'Unknown TypeScript error';
+    
+    // Check if it's an enum-specific error
+    if (errorMessage.includes('enum') || code.includes('enum ')) {
+      return {
+        code: '',
+        error: `TypeScript compilation error: ${errorMessage}. Note: Enums are supported and will be transpiled to JavaScript objects.`
+      };
+    }
+    
     return {
       code: '',
-      error: `TypeScript compilation error: ${error?.message || String(error)}`
+      error: `TypeScript compilation error: ${errorMessage}`
     };
   }
 }
