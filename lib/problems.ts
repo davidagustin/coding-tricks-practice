@@ -21,819 +21,476 @@ export interface Problem {
 
 export const problems: Problem[] = [
   {
-    id: 'destructuring-defaults',
-    title: 'Destructuring with Defaults',
-    difficulty: 'easy',
-    category: 'JavaScript Basics',
-    description: `Extract values from objects/arrays while providing fallbacks for missing data.
-
-**Challenge:** Complete the function to safely extract user information with defaults.
-
-**Key Concepts:**
-- Basic object destructuring with default values
-- Nested destructuring with defaults
-- Array destructuring with defaults
-- Renaming + default combined`,
-    examples: [
-      {
-        input: `const user = { name: 'John' };
-const response = { data: [1, 2, 3] };`,
-        output: `name: 'John', email: 'anonymous@example.com', firstItem: 1`,
-        explanation: 'Extract name, provide default email, and get first array item'
-      }
-    ],
-    starterCode: `function extractUserInfo(user, response) {
-  // TODO: Extract name with default 'Anonymous'
-  // TODO: Extract email with default 'anonymous@example.com'
-  // TODO: Extract data array with default []
-  // TODO: Extract first item from data array with default 0
-  
-  return {
-    name: user.name, // Fix this
-    email: user.email, // Fix this
-    firstItem: response.data[0] // Fix this
-  };
-}
-
-// Test your solution
-const user1 = { name: 'John' };
-const response1 = { data: [1, 2, 3] };
-console.log(extractUserInfo(user1, response1));
-
-const user2 = {};
-const response2 = {};
-console.log(extractUserInfo(user2, response2));`,
-    solution: `function extractUserInfo(user, response) {
-  const { name = 'Anonymous' } = user ?? {};
-  const { email = 'anonymous@example.com' } = user ?? {};
-  const { data: users = [] } = response ?? {};
-  const [firstItem = 0] = users;
-  
-  return {
-    name,
-    email,
-    firstItem
-  };
-}`,
-    testCases: [
-      {
-        input: [{ name: 'John' }, { data: [1, 2, 3] }],
-        expectedOutput: { name: 'John', email: 'anonymous@example.com', firstItem: 1 }
-      },
-      {
-        input: [{}, {}],
-        expectedOutput: { name: 'Anonymous', email: 'anonymous@example.com', firstItem: 0 }
-      },
-      {
-        input: [{ name: 'Jane', email: 'jane@example.com' }, { data: [10, 20] }],
-        expectedOutput: { name: 'Jane', email: 'jane@example.com', firstItem: 10 }
-      }
-    ],
-    hints: [
-      'Use destructuring with default values: const { prop = defaultValue } = obj',
-      'Handle null/undefined with nullish coalescing: obj ?? {}',
-      'For arrays: const [first = defaultValue] = array'
-    ]
-  },
-  {
-    id: 'nullish-coalescing',
-    title: 'Nullish Coalescing (??) vs Logical OR (||)',
-    difficulty: 'easy',
-    category: 'JavaScript Basics',
-    description: `Understand the difference between ?? and ||. The ?? operator only falls back for null or undefined, while || falls back for any falsy value.
-
-**Challenge:** Fix the function to correctly handle 0 and empty strings.`,
-    examples: [
-      {
-        input: `const user = { count: 0, name: '' };`,
-        output: `count: 0, name: ''`,
-        explanation: '0 and empty string should be preserved, not replaced with defaults'
-      }
-    ],
-    starterCode: `function getUserValues(user) {
-  // TODO: Use ?? instead of || to preserve 0 and empty strings
-  const count = user.count || 10; // Fix: 0 becomes 10 (wrong!)
-  const name = user.name || 'Anonymous'; // Fix: '' becomes 'Anonymous' (wrong!)
-  const email = user.email || 'no-email@placeholder.com';
-  
-  return { count, name, email };
-}
-
-// Test cases
-console.log(getUserValues({ count: 0, name: '', email: null }));
-console.log(getUserValues({ count: 5, name: 'John', email: 'john@example.com' }));`,
-    solution: `function getUserValues(user) {
-  const count = user.count ?? 10;
-  const name = user.name ?? 'Anonymous';
-  const email = user.email ?? 'no-email@placeholder.com';
-  
-  return { count, name, email };
-}`,
-    testCases: [
-      {
-        input: [{ count: 0, name: '', email: null }],
-        expectedOutput: { count: 0, name: '', email: 'no-email@placeholder.com' }
-      },
-      {
-        input: [{ count: 5, name: 'John', email: 'john@example.com' }],
-        expectedOutput: { count: 5, name: 'John', email: 'john@example.com' }
-      },
-      {
-        input: [{ count: undefined, name: undefined, email: undefined }],
-        expectedOutput: { count: 10, name: 'Anonymous', email: 'no-email@placeholder.com' }
-      }
-    ],
-    hints: [
-      'Use ?? for nullish coalescing - only falls back for null/undefined',
-      '|| falls back for any falsy value (0, "", false, null, undefined)',
-      'Use ??= for nullish assignment: obj.prop ??= defaultValue'
-    ]
-  },
-  {
-    id: 'optional-chaining',
-    title: 'Optional Chaining (?.)',
-    difficulty: 'easy',
-    category: 'JavaScript Basics',
-    description: `Safely access deeply nested properties without explicit null checks.
-
-**Challenge:** Extract nested values safely using optional chaining.`,
-    examples: [
-      {
-        input: `const user = { profile: { displayName: 'John' } };
-const user2 = null;`,
-        output: `'John' and 'Anonymous'`,
-        explanation: 'Safely access nested properties even when parent is null'
-      }
-    ],
-    starterCode: `function getDisplayName(user) {
-  // TODO: Use optional chaining to safely access nested properties
-  // If user?.profile?.displayName exists, use it
-  // Otherwise, fall back to user?.name
-  // Otherwise, fall back to 'Anonymous'
-  
-  let displayName = 'Anonymous';
-  if (user && user.profile && user.profile.displayName) {
-    displayName = user.profile.displayName;
-  } else if (user && user.name) {
-    displayName = user.name;
-  }
-  
-  return displayName;
-}
-
-console.log(getDisplayName({ profile: { displayName: 'John' } }));
-console.log(getDisplayName(null));
-console.log(getDisplayName({ name: 'Jane' }));`,
-    solution: `function getDisplayName(user) {
-  return user?.profile?.displayName ?? user?.name ?? 'Anonymous';
-}`,
-    testCases: [
-      {
-        input: [{ profile: { displayName: 'John' } }],
-        expectedOutput: 'John'
-      },
-      {
-        input: [null],
-        expectedOutput: 'Anonymous'
-      },
-      {
-        input: [{ name: 'Jane' }],
-        expectedOutput: 'Jane'
-      },
-      {
-        input: [{ profile: {} }],
-        expectedOutput: 'Anonymous'
-      }
-    ],
-    hints: [
-      'Use ?. for optional chaining: obj?.prop?.nested',
-      'Combine with ?? for fallbacks: obj?.prop ?? defaultValue',
-      'Works with arrays: arr?.[0]?.name'
-    ]
-  },
-  {
-    id: 'flatmap-filter-map',
-    title: 'flatMap as Filter + Map',
+    id: 'reduce-grouping',
+    title: 'Reduce for Grouping',
     difficulty: 'medium',
     category: 'Array Methods',
-    description: `Use flatMap to simultaneously filter and transform in a single pass, which is more efficient than separate filter and map operations.
+    description: `Use reduce to group array items by a key, creating an object or Map.
 
-**Challenge:** Transform the filter+map pattern to use flatMap.`,
+**Challenge:** Group users by their role using reduce.`,
     examples: [
       {
         input: `const users = [
-  { active: true, email: 'a@example.com' },
-  { active: false, email: 'b@example.com' },
-  { active: true, email: 'c@example.com' }
+  { id: 1, name: 'John', role: 'admin' },
+  { id: 2, name: 'Jane', role: 'user' },
+  { id: 3, name: 'Bob', role: 'admin' }
 ];`,
-        output: `['a@example.com', 'c@example.com']`,
-        explanation: 'Get emails of only active users in a single pass'
+        output: `{ admin: [...], user: [...] }`,
+        explanation: 'Group users by role property'
       }
     ],
-    starterCode: `function getActiveUserEmails(users) {
-  // TODO: Convert filter+map to flatMap
-  // Traditional approach (two iterations)
-  const results = users
-    .filter(u => u.active)
-    .map(u => u.email);
+    starterCode: `function groupByRole(users) {
+  // TODO: Use reduce to group users by role
+  // Return an object where keys are roles and values are arrays of users
   
-  return results;
-}
-
-// Convert to flatMap for better performance
-function getActiveUserEmailsOptimized(users) {
-  // Your code here using flatMap
-  return [];
+  return {};
 }
 
 const users = [
-  { active: true, email: 'a@example.com' },
-  { active: false, email: 'b@example.com' },
-  { active: true, email: 'c@example.com' }
+  { id: 1, name: 'John', role: 'admin' },
+  { id: 2, name: 'Jane', role: 'user' },
+  { id: 3, name: 'Bob', role: 'admin' },
+  { id: 4, name: 'Alice', role: 'user' }
 ];
 
-console.log(getActiveUserEmails(users));
-console.log(getActiveUserEmailsOptimized(users));`,
-    solution: `function getActiveUserEmailsOptimized(users) {
-  return users.flatMap(u => u.active ? [u.email] : []);
+console.log(groupByRole(users));`,
+    solution: `function groupByRole(users) {
+  return users.reduce((acc, user) => {
+    const role = user.role;
+    if (!acc[role]) {
+      acc[role] = [];
+    }
+    acc[role].push(user);
+    return acc;
+  }, {});
 }`,
     testCases: [
       {
         input: [[
-          { active: true, email: 'a@example.com' },
-          { active: false, email: 'b@example.com' },
-          { active: true, email: 'c@example.com' }
-        ]],
-        expectedOutput: ['a@example.com', 'c@example.com']
-      },
-      {
-        input: [[
-          { active: false, email: 'a@example.com' }
-        ]],
-        expectedOutput: []
-      },
-      {
-        input: [[]],
-        expectedOutput: []
-      }
-    ],
-    hints: [
-      'flatMap returns an array - return [item] to include, [] to exclude',
-      'Single iteration is more efficient than filter + map',
-      'Can produce 0, 1, or multiple items per input element'
-    ]
-  },
-  {
-    id: 'map-deduplication',
-    title: 'Map for Deduplication',
-    difficulty: 'medium',
-    category: 'Array Methods',
-    description: `Use Map to deduplicate by a key, where the last occurrence wins.
-
-**Challenge:** Remove duplicate users by ID, keeping the last occurrence.`,
-    examples: [
-      {
-        input: `const users = [
-  { id: 1, name: 'John' },
-  { id: 2, name: 'Jane' },
-  { id: 1, name: 'John Updated' }
-];`,
-        output: `[{ id: 2, name: 'Jane' }, { id: 1, name: 'John Updated' }]`,
-        explanation: 'Last occurrence of id:1 wins'
-      }
-    ],
-    starterCode: `function deduplicateUsers(users) {
-  // TODO: Use Map to deduplicate by id (last wins)
-  // Hint: new Map(users.map(u => [u.id, u]))
-  // Then convert back to array with [...map.values()]
-  
-  return users;
-}
-
-const users = [
-  { id: 1, name: 'John' },
-  { id: 2, name: 'Jane' },
-  { id: 1, name: 'John Updated' },
-  { id: 3, name: 'Bob' },
-  { id: 2, name: 'Jane Updated' }
-];
-
-console.log(deduplicateUsers(users));`,
-    solution: `function deduplicateUsers(users) {
-  return [...new Map(users.map(u => [u.id, u])).values()];
-}`,
-    testCases: [
-      {
-        input: [[
-          { id: 1, name: 'John' },
-          { id: 2, name: 'Jane' },
-          { id: 1, name: 'John Updated' }
-        ]],
-        expectedOutput: [
-          { id: 2, name: 'Jane' },
-          { id: 1, name: 'John Updated' }
-        ]
-      },
-      {
-        input: [[
-          { id: 1, name: 'A' },
-          { id: 1, name: 'B' },
-          { id: 1, name: 'C' }
-        ]],
-        expectedOutput: [{ id: 1, name: 'C' }]
-      }
-    ],
-    hints: [
-      'Map constructor accepts [key, value] pairs',
-      'Map overwrites duplicate keys (last wins)',
-      'Use [...map.values()] to convert back to array'
-    ]
-  },
-  {
-    id: 'object-entries',
-    title: 'Object.fromEntries / Object.entries',
-    difficulty: 'medium',
-    category: 'Object Methods',
-    description: `Convert between objects and [key, value] arrays for transformation.
-
-**Challenge:** Transform object values and filter properties.`,
-    examples: [
-      {
-        input: `const prices = { apple: 1, banana: 2, cherry: 3 };`,
-        output: `{ apple: 2, banana: 4, cherry: 6 }`,
-        explanation: 'Double all prices'
-      }
-    ],
-    starterCode: `function doublePrices(prices) {
-  // TODO: Use Object.entries and Object.fromEntries
-  // to double all values
-  
-  return prices;
-}
-
-function filterPrivateProperties(obj) {
-  // TODO: Filter out properties starting with '_'
-  // Use Object.entries, filter, then Object.fromEntries
-  
-  return obj;
-}
-
-const prices = { apple: 1, banana: 2, cherry: 3 };
-console.log(doublePrices(prices));
-
-const user = { name: 'John', _internal: 'secret', age: 30, _temp: 'data' };
-console.log(filterPrivateProperties(user));`,
-    solution: `function doublePrices(prices) {
-  return Object.fromEntries(
-    Object.entries(prices).map(([key, val]) => [key, val * 2])
-  );
-}
-
-function filterPrivateProperties(obj) {
-  return Object.fromEntries(
-    Object.entries(obj).filter(([key]) => !key.startsWith('_'))
-  );
-}`,
-    testCases: [
-      {
-        input: [{ apple: 1, banana: 2, cherry: 3 }],
-        expectedOutput: { apple: 2, banana: 4, cherry: 6 },
-        description: 'doublePrices'
-      },
-      {
-        input: [{ name: 'John', _internal: 'secret', age: 30, _temp: 'data' }],
-        expectedOutput: { name: 'John', age: 30 },
-        description: 'filterPrivateProperties'
-      }
-    ],
-    hints: [
-      'Object.entries(obj) → [[key, value], ...]',
-      'Object.fromEntries([[key, value], ...]) → object',
-      'Use map/filter between entries and fromEntries'
-    ]
-  },
-  {
-    id: 'promise-race-timeout',
-    title: 'Promise.race for Timeouts',
-    difficulty: 'medium',
-    category: 'Async/Promises',
-    description: `Race a promise against a timer to implement timeouts.
-
-**Challenge:** Create a withTimeout function that rejects if the promise takes too long.`,
-    examples: [
-      {
-        input: `await withTimeout(fetch('/api/data'), 5000)`,
-        output: `Resolves with data or rejects with timeout error`,
-        explanation: 'Promise resolves if fetch completes in time, otherwise times out'
-      }
-    ],
-    starterCode: `function withTimeout(promise, ms) {
-  // TODO: Use Promise.race to race the promise against a timeout
-  // Create a timeout promise that rejects after ms milliseconds
-  // Return Promise.race([promise, timeoutPromise])
-  
-  return promise;
-}
-
-// Test
-const fastPromise = new Promise(resolve => setTimeout(() => resolve('Success'), 100));
-const slowPromise = new Promise(resolve => setTimeout(() => resolve('Success'), 2000));
-
-withTimeout(fastPromise, 500)
-  .then(console.log)
-  .catch(console.error);
-
-withTimeout(slowPromise, 500)
-  .then(console.log)
-  .catch(console.error);`,
-    solution: `function withTimeout(promise, ms) {
-  return Promise.race([
-    promise,
-    new Promise((_, reject) =>
-      setTimeout(() => reject(new Error(\`Timeout after \${ms}ms\`)), ms)
-    )
-  ]);
-}`,
-    testCases: [
-      {
-        input: [Promise.resolve('success'), 1000],
-        expectedOutput: 'success',
-        description: 'Promise resolves before timeout'
-      }
-    ],
-    hints: [
-      'Promise.race returns the first settled promise',
-      'Create a timeout promise that rejects after ms',
-      'Use setTimeout in the timeout promise'
-    ]
-  },
-  {
-    id: 'promise-allsettled',
-    title: 'Promise.allSettled for Mixed Results',
-    difficulty: 'medium',
-    category: 'Async/Promises',
-    description: `Handle multiple promises where some may fail, without stopping on the first rejection.
-
-**Challenge:** Process multiple API calls and separate successes from failures.`,
-    examples: [
-      {
-        input: `[fetch('/api/1'), fetch('/api/2'), fetch('/api/3')]`,
-        output: `{ successes: [...], failures: [...] }`,
-        explanation: 'Get all results even if some fail'
-      }
-    ],
-    starterCode: `async function processMultipleRequests(requests) {
-  // TODO: Use Promise.allSettled to handle all promises
-  // Separate fulfilled and rejected results
-  // Return { successes: [...], failures: [...] }
-  
-  return { successes: [], failures: [] };
-}
-
-// Helper function to check if result is fulfilled
-function isFulfilled(result) {
-  // TODO: Check if result.status === 'fulfilled'
-  return false;
-}
-
-// Test
-const requests = [
-  Promise.resolve('Success 1'),
-  Promise.reject('Error 1'),
-  Promise.resolve('Success 2')
-];
-
-processMultipleRequests(requests).then(console.log);`,
-    solution: `async function processMultipleRequests(requests) {
-  const results = await Promise.allSettled(requests);
-  
-  const successes = results
-    .filter((r): r is PromiseFulfilledResult<string> => r.status === 'fulfilled')
-    .map(r => r.value);
-  
-  const failures = results
-    .filter((r): r is PromiseRejectedResult => r.status === 'rejected')
-    .map(r => r.reason);
-  
-  return { successes, failures };
-}
-
-function isFulfilled(result) {
-  return result.status === 'fulfilled';
-}`,
-    testCases: [
-      {
-        input: [[
-          Promise.resolve('Success 1'),
-          Promise.reject('Error 1'),
-          Promise.resolve('Success 2')
+          { id: 1, name: 'John', role: 'admin' },
+          { id: 2, name: 'Jane', role: 'user' },
+          { id: 3, name: 'Bob', role: 'admin' }
         ]],
         expectedOutput: {
-          successes: ['Success 1', 'Success 2'],
-          failures: ['Error 1']
+          admin: [
+            { id: 1, name: 'John', role: 'admin' },
+            { id: 3, name: 'Bob', role: 'admin' }
+          ],
+          user: [
+            { id: 2, name: 'Jane', role: 'user' }
+          ]
         }
       }
     ],
     hints: [
-      'Promise.allSettled never rejects - all promises settle',
-      'Results have status: "fulfilled" or "rejected"',
-      'Use type guards for TypeScript: (r): r is Type => ...'
+      'Initialize accumulator as empty object: reduce((acc, item) => ..., {})',
+      'Check if key exists, create array if not: if (!acc[key]) acc[key] = []',
+      'Push item to appropriate group: acc[key].push(item)'
     ]
   },
   {
-    id: 'template-literal-types',
-    title: 'Template Literal Types',
-    difficulty: 'hard',
-    category: 'TypeScript Advanced',
-    description: `Create string types from combinations of other types using template literals.
+    id: 'find-vs-filter',
+    title: 'Find vs Filter - When to Use Each',
+    difficulty: 'easy',
+    category: 'Array Methods',
+    description: `Understand when to use find() (returns first match) vs filter() (returns all matches).
 
-**Challenge:** Create type-safe event handler names and button classes.`,
+**Challenge:** Use find to get the first matching item, and filter to get all matches.`,
     examples: [
       {
-        input: `type EventName = EventName<'click'>`,
-        output: `'onClick'`,
-        explanation: 'Transform event names to handler names'
+        input: `const users = [
+  { id: 1, active: true },
+  { id: 2, active: false },
+  { id: 3, active: true }
+];`,
+        output: `find: first active user, filter: all active users`,
+        explanation: 'find returns one item, filter returns array'
       }
     ],
-    starterCode: `// TODO: Create a template literal type for event names
-// EventName<'click'> should be 'onClick'
-// EventName<'hover'> should be 'onHover'
-type EventName<T extends string> = string; // Fix this
+    starterCode: `function getFirstActiveUser(users) {
+  // TODO: Use find() to get the first user where active === true
+  return null;
+}
 
-// TODO: Create button class type
-// ButtonClass<'sm', 'red'> should be 'btn-sm-red'
-type Size = 'sm' | 'md' | 'lg';
-type Color = 'red' | 'blue';
-type ButtonClass = string; // Fix this
+function getAllActiveUsers(users) {
+  // TODO: Use filter() to get all users where active === true
+  return [];
+}
 
-// Test
-const clickHandler: EventName<'click'> = 'onClick';
-const btnClass: ButtonClass = 'btn-sm-red';`,
-    solution: `type EventName<T extends string> = \`on\${Capitalize<T>}\`;
+const users = [
+  { id: 1, name: 'John', active: true },
+  { id: 2, name: 'Jane', active: false },
+  { id: 3, name: 'Bob', active: true },
+  { id: 4, name: 'Alice', active: true }
+];
 
-type Size = 'sm' | 'md' | 'lg';
-type Color = 'red' | 'blue';
-type ButtonClass = \`btn-\${Size}-\${Color}\`;`,
+console.log('First active:', getFirstActiveUser(users));
+console.log('All active:', getAllActiveUsers(users));`,
+    solution: `function getFirstActiveUser(users) {
+  return users.find(user => user.active === true);
+}
+
+function getAllActiveUsers(users) {
+  return users.filter(user => user.active === true);
+}`,
     testCases: [
       {
-        input: ['click'],
-        expectedOutput: 'onClick',
-        description: 'EventName type'
+        input: [[
+          { id: 1, name: 'John', active: true },
+          { id: 2, name: 'Jane', active: false },
+          { id: 3, name: 'Bob', active: true }
+        ]],
+        expectedOutput: { id: 1, name: 'John', active: true },
+        description: 'getFirstActiveUser'
+      },
+      {
+        input: [[
+          { id: 1, name: 'John', active: true },
+          { id: 2, name: 'Jane', active: false },
+          { id: 3, name: 'Bob', active: true }
+        ]],
+        expectedOutput: [
+          { id: 1, name: 'John', active: true },
+          { id: 3, name: 'Bob', active: true }
+        ],
+        description: 'getAllActiveUsers'
       }
     ],
     hints: [
-      'Use template literal syntax: `on${Capitalize<T>}`',
-      'Capitalize is a built-in string manipulation type',
-      'Combine multiple types: `btn-${Size}-${Color}`'
+      'find() returns the first element that matches, or undefined',
+      'filter() returns an array of all matching elements',
+      'Use find when you need one item, filter when you need multiple'
     ]
   },
   {
-    id: 'const-assertions',
-    title: 'Const Assertions (as const)',
+    id: 'array-chaining',
+    title: 'Method Chaining with Arrays',
     difficulty: 'medium',
-    category: 'TypeScript Advanced',
-    description: `Create narrow literal types instead of widened types using 'as const'.
+    category: 'Array Methods',
+    description: `Chain multiple array methods together for powerful data transformations.
 
-**Challenge:** Extract union types from const arrays and create enum-like patterns.`,
+**Challenge:** Transform data through a chain of operations.`,
     examples: [
       {
-        input: `const routes = ['home', 'profile'] as const;`,
-        output: `type Route = 'home' | 'profile'`,
-        explanation: 'Extract union type from const array'
+        input: `const products = [
+  { name: 'Laptop', price: 1000, category: 'electronics' },
+  { name: 'Book', price: 20, category: 'books' }
+];`,
+        output: `['LAPTOP', 'BOOK']`,
+        explanation: 'Filter expensive items, get names, uppercase them'
       }
     ],
-    starterCode: `// TODO: Use 'as const' to create narrow types
-const routes = ['home', 'profile', 'settings'];
-// Currently: string[]
-// Should be: readonly ['home', 'profile', 'settings']
-
-// TODO: Extract union type from routes
-type Route = string; // Fix: should be 'home' | 'profile' | 'settings'
-
-// TODO: Create enum-like pattern with as const
-const Status = {
-  Pending: 'pending',
-  Active: 'active',
-  Done: 'done'
-};
-// Fix: Add 'as const' and create Status type
-
-type StatusType = string; // Fix: should be 'pending' | 'active' | 'done'
-
-// Test
-const route: Route = 'home';
-const status: StatusType = 'pending';`,
-    solution: `const routes = ['home', 'profile', 'settings'] as const;
-type Route = typeof routes[number];
-
-const Status = {
-  Pending: 'pending',
-  Active: 'active',
-  Done: 'done'
-} as const;
-type StatusType = typeof Status[keyof typeof Status];`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Type checking only'
-      }
-    ],
-    hints: [
-      "'as const' makes values readonly and narrows types",
-      "Use typeof array[number] to extract union from array",
-      "Use typeof obj[keyof typeof obj] to extract union from object"
-    ]
-  },
-  {
-    id: 'satisfies-operator',
-    title: 'Satisfies Operator',
-    difficulty: 'hard',
-    category: 'TypeScript Advanced',
-    description: `Type-check without widening the inferred type. Preserves narrow literal types while ensuring type safety.
-
-**Challenge:** Use satisfies to preserve narrow types while type-checking.`,
-    examples: [
-      {
-        input: `const config = { port: 3000 } satisfies Record<string, number>;`,
-        output: `config.port is number (not string | number)`,
-        explanation: 'Type is checked but narrow type is preserved'
-      }
-    ],
-    starterCode: `// Problem: type annotation widens the type
-const config: Record<string, string | number> = {
-  port: 3000,
-  host: 'localhost'
-};
-// config.port is string | number (lost narrow type!)
-
-// TODO: Use 'satisfies' to preserve narrow type
-const config2 = {
-  port: 3000,
-  host: 'localhost'
-}; // Add satisfies here
-// config2.port should be number (preserved!)
-
-// Test
-const port: number = config2.port;`,
-    solution: `const config2 = {
-  port: 3000,
-  host: 'localhost'
-} satisfies Record<string, string | number>;`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Type checking only'
-      }
-    ],
-    hints: [
-      "'satisfies' checks type without widening",
-      "Preserves literal types like 3000 instead of number",
-      "Use when you need both type checking and narrow inference"
-    ]
-  },
-  {
-    id: 'exhaustive-switch',
-    title: 'Exhaustive Switch with Never',
-    difficulty: 'hard',
-    category: 'TypeScript Advanced',
-    description: `Ensure all cases are handled at compile time using the never type.
-
-**Challenge:** Add exhaustive checking to switch statements.`,
-    examples: [
-      {
-        input: `type Status = 'loading' | 'success' | 'error';`,
-        output: `Compiler error if case is missing`,
-        explanation: 'Never type catches missing cases'
-      }
-    ],
-    starterCode: `type Status = 'loading' | 'success' | 'error';
-
-function handleStatus(status: Status): string {
-  switch (status) {
-    case 'loading':
-      return 'Loading...';
-    case 'success':
-      return 'Done!';
-    // TODO: Add 'error' case and exhaustive check
-    // In default, assign status to never type
-    default:
-      // Add exhaustive check here
-      return 'Unknown';
-  }
+    starterCode: `function getExpensiveProductNames(products) {
+  // TODO: Chain methods to:
+  // 1. Filter products where price > 100
+  // 2. Map to get just the name
+  // 3. Map to uppercase each name
+  
+  return products;
 }
 
-// Test - if you add 'timeout' to Status type, you should get a compiler error`,
-    solution: `type Status = 'loading' | 'success' | 'error';
+const products = [
+  { name: 'Laptop', price: 1000, category: 'electronics' },
+  { name: 'Book', price: 20, category: 'books' },
+  { name: 'Phone', price: 800, category: 'electronics' },
+  { name: 'Pen', price: 2, category: 'office' }
+];
 
-function handleStatus(status: Status): string {
-  switch (status) {
-    case 'loading':
-      return 'Loading...';
-    case 'success':
-      return 'Done!';
-    case 'error':
-      return 'Failed';
-    default:
-      const _exhaustive: never = status;
-      return _exhaustive;
-  }
+console.log(getExpensiveProductNames(products));`,
+    solution: `function getExpensiveProductNames(products) {
+  return products
+    .filter(p => p.price > 100)
+    .map(p => p.name)
+    .map(name => name.toUpperCase());
 }`,
     testCases: [
       {
-        input: ['loading'],
-        expectedOutput: 'Loading...'
-      },
-      {
-        input: ['success'],
-        expectedOutput: 'Done!'
-      },
-      {
-        input: ['error'],
-        expectedOutput: 'Failed'
+        input: [[
+          { name: 'Laptop', price: 1000, category: 'electronics' },
+          { name: 'Book', price: 20, category: 'books' },
+          { name: 'Phone', price: 800, category: 'electronics' }
+        ]],
+        expectedOutput: ['LAPTOP', 'PHONE']
       }
     ],
     hints: [
-      "If all cases handled, status in default has type 'never'",
-      "If case missing, status still has that type → compiler error",
-      "Use: const _exhaustive: never = status; in default"
+      'Each method returns an array, so you can chain them',
+      'Order matters: filter first to reduce items, then transform',
+      'You can combine map operations: .map(p => p.name.toUpperCase())'
     ]
   },
   {
-    id: 'discriminated-unions',
-    title: 'Discriminated Unions',
-    difficulty: 'hard',
-    category: 'TypeScript Advanced',
-    description: `Union types with a common "tag" property for type narrowing.
+    id: 'reduce-right',
+    title: 'ReduceRight for Right-to-Left Operations',
+    difficulty: 'medium',
+    category: 'Array Methods',
+    description: `Use reduceRight when you need to process array from right to left.
 
-**Challenge:** Create and use discriminated unions for type-safe API responses.`,
+**Challenge:** Build a function composition pipeline using reduceRight.`,
     examples: [
       {
-        input: `type ApiResponse = { status: 'success', data: string } | { status: 'error', error: string };`,
-        output: `TypeScript narrows based on status property`,
-        explanation: 'Access data or error based on status'
+        input: `const functions = [x => x * 2, x => x + 1, x => x - 5];`,
+        output: `Composed function: (x - 5) + 1) * 2`,
+        explanation: 'Apply functions from right to left'
       }
     ],
-    starterCode: `// TODO: Create discriminated union type
-type ApiResponse<T> = 
-  | { status: 'loading' }
-  | { status: 'success'; data: T }
-  | { status: 'error'; error: string };
-
-function handle<T>(response: ApiResponse<T>) {
-  // TODO: Use type narrowing based on status
-  // If status === 'success', access response.data
-  // If status === 'error', access response.error
+    starterCode: `function compose(...functions) {
+  // TODO: Use reduceRight to compose functions
+  // compose(f, g, h)(x) should be f(g(h(x)))
+  // Process from right to left
   
-  if (response.status === 'success') {
-    // TypeScript should know response.data exists here
-    return response.data; // Fix: response.data might not exist
-  }
-  
-  if (response.status === 'error') {
-    // TypeScript should know response.error exists here
-    return response.error; // Fix: response.error might not exist
-  }
-  
-  return 'Loading...';
+  return (x) => x;
 }
 
 // Test
-const success: ApiResponse<string> = { status: 'success', data: 'Hello' };
-const error: ApiResponse<string> = { status: 'error', error: 'Failed' };
-console.log(handle(success));
-console.log(handle(error));`,
-    solution: `type ApiResponse<T> = 
-  | { status: 'loading' }
-  | { status: 'success'; data: T }
-  | { status: 'error'; error: string };
+const addOne = x => x + 1;
+const multiplyByTwo = x => x * 2;
+const subtractFive = x => x - 5;
 
-function handle<T>(response: ApiResponse<T>) {
-  if (response.status === 'success') {
-    return response.data;
-  }
-  
-  if (response.status === 'error') {
-    return response.error;
-  }
-  
-  return 'Loading...';
+const composed = compose(multiplyByTwo, addOne, subtractFive);
+console.log(composed(10)); // Should be: ((10 - 5) + 1) * 2 = 12`,
+    solution: `function compose(...functions) {
+  return (x) => functions.reduceRight((acc, fn) => fn(acc), x);
 }`,
     testCases: [
       {
-        input: [{ status: 'success', data: 'Hello' }],
-        expectedOutput: 'Hello'
-      },
-      {
-        input: [{ status: 'error', error: 'Failed' }],
-        expectedOutput: 'Failed'
+        input: [10],
+        expectedOutput: 12,
+        description: 'compose(multiplyByTwo, addOne, subtractFive)(10)'
       }
     ],
     hints: [
-      "Common 'tag' property (like 'status') enables type narrowing",
-      "TypeScript narrows union based on tag value",
-      "Each variant can have different properties"
+      'reduceRight processes array from last to first element',
+      'Useful for function composition: f(g(h(x)))',
+      'Accumulator starts with initial value, then each function is applied'
+    ]
+  },
+  {
+    id: 'some-every',
+    title: 'Some and Every for Validation',
+    difficulty: 'easy',
+    category: 'Array Methods',
+    description: `Use some() to check if at least one item matches, and every() to check if all items match.
+
+**Challenge:** Validate arrays using some and every.`,
+    examples: [
+      {
+        input: `const scores = [85, 90, 78, 92];`,
+        output: `some > 90: true, every > 70: true`,
+        explanation: 'Check if any score is high, or all scores pass threshold'
+      }
+    ],
+    starterCode: `function hasHighScore(scores) {
+  // TODO: Use some() to check if any score >= 90
+  return false;
+}
+
+function allPassing(scores) {
+  // TODO: Use every() to check if all scores >= 70
+  return false;
+}
+
+const scores1 = [85, 90, 78, 92];
+const scores2 = [65, 70, 68, 72];
+
+console.log('Has high score:', hasHighScore(scores1));
+console.log('All passing:', allPassing(scores1));
+console.log('All passing (scores2):', allPassing(scores2));`,
+    solution: `function hasHighScore(scores) {
+  return scores.some(score => score >= 90);
+}
+
+function allPassing(scores) {
+  return scores.every(score => score >= 70);
+}`,
+    testCases: [
+      {
+        input: [[85, 90, 78, 92]],
+        expectedOutput: true,
+        description: 'hasHighScore'
+      },
+      {
+        input: [[85, 90, 78, 92]],
+        expectedOutput: true,
+        description: 'allPassing'
+      },
+      {
+        input: [[65, 70, 68, 72]],
+        expectedOutput: false,
+        description: 'allPassing with low scores'
+      }
+    ],
+    hints: [
+      'some() returns true if at least one element matches',
+      'every() returns true only if ALL elements match',
+      'Both short-circuit: some stops at first match, every stops at first non-match'
+    ]
+  },
+  {
+    id: 'array-from',
+    title: 'Array.from with Mapping',
+    difficulty: 'medium',
+    category: 'Array Methods',
+    description: `Use Array.from() to create arrays from iterables, with optional mapping function.
+
+**Challenge:** Create arrays from various sources using Array.from.`,
+    examples: [
+      {
+        input: `Array.from({ length: 5 }, (_, i) => i * 2)`,
+        output: `[0, 2, 4, 6, 8]`,
+        explanation: 'Create array of even numbers'
+      }
+    ],
+    starterCode: `function createNumberSequence(length, start = 0, step = 1) {
+  // TODO: Use Array.from to create sequence
+  // Array.from({ length: n }, (_, i) => ...)
+  return [];
+}
+
+function createAlphabet() {
+  // TODO: Use Array.from to create ['a', 'b', 'c', ..., 'z']
+  // Hint: String.fromCharCode(97) is 'a', 98 is 'b', etc.
+  return [];
+}
+
+console.log('Sequence:', createNumberSequence(5, 0, 2));
+console.log('Alphabet:', createAlphabet());`,
+    solution: `function createNumberSequence(length, start = 0, step = 1) {
+  return Array.from({ length }, (_, i) => start + i * step);
+}
+
+function createAlphabet() {
+  return Array.from({ length: 26 }, (_, i) => String.fromCharCode(97 + i));
+}`,
+    testCases: [
+      {
+        input: [5, 0, 2],
+        expectedOutput: [0, 2, 4, 6, 8],
+        description: 'createNumberSequence'
+      },
+      {
+        input: [],
+        expectedOutput: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
+        description: 'createAlphabet'
+      }
+    ],
+    hints: [
+      'Array.from({ length: n }, mapFn) creates array with n elements',
+      'Second parameter is mapping function: (_, index) => value',
+      'Useful for creating sequences, ranges, or transforming iterables'
+    ]
+  },
+  {
+    id: 'partition-pattern',
+    title: 'Partition Pattern with Reduce',
+    difficulty: 'medium',
+    category: 'Array Methods',
+    description: `Split an array into two groups based on a condition using reduce.
+
+**Challenge:** Partition users into active and inactive groups.`,
+    examples: [
+      {
+        input: `const users = [
+  { name: 'John', active: true },
+  { name: 'Jane', active: false }
+];`,
+        output: `{ active: [...], inactive: [...] }`,
+        explanation: 'Split array into two groups'
+      }
+    ],
+    starterCode: `function partitionUsers(users) {
+  // TODO: Use reduce to partition users into active and inactive
+  // Return { active: [...], inactive: [...] }
+  
+  return { active: [], inactive: [] };
+}
+
+const users = [
+  { id: 1, name: 'John', active: true },
+  { id: 2, name: 'Jane', active: false },
+  { id: 3, name: 'Bob', active: true },
+  { id: 4, name: 'Alice', active: false }
+];
+
+console.log(partitionUsers(users));`,
+    solution: `function partitionUsers(users) {
+  return users.reduce((acc, user) => {
+    if (user.active) {
+      acc.active.push(user);
+    } else {
+      acc.inactive.push(user);
+    }
+    return acc;
+  }, { active: [], inactive: [] });
+}`,
+    testCases: [
+      {
+        input: [[
+          { id: 1, name: 'John', active: true },
+          { id: 2, name: 'Jane', active: false },
+          { id: 3, name: 'Bob', active: true }
+        ]],
+        expectedOutput: {
+          active: [
+            { id: 1, name: 'John', active: true },
+            { id: 3, name: 'Bob', active: true }
+          ],
+          inactive: [
+            { id: 2, name: 'Jane', active: false }
+          ]
+        }
+      }
+    ],
+    hints: [
+      'Initialize accumulator with both groups: { active: [], inactive: [] }',
+      'Push to appropriate group based on condition',
+      'More efficient than two separate filter() calls'
+    ]
+  },
+  {
+    id: 'chunk-arrays',
+    title: 'Chunking Arrays into Groups',
+    difficulty: 'medium',
+    category: 'Array Methods',
+    description: `Split an array into chunks of a specific size.
+
+**Challenge:** Create a function to chunk arrays into smaller arrays.`,
+    examples: [
+      {
+        input: `chunk([1, 2, 3, 4, 5], 2)`,
+        output: `[[1, 2], [3, 4], [5]]`,
+        explanation: 'Split array into chunks of size 2'
+      }
+    ],
+    starterCode: `function chunk(array, size) {
+  // TODO: Split array into chunks of given size
+  // Use Array.from or reduce
+  // chunk([1, 2, 3, 4, 5], 2) => [[1, 2], [3, 4], [5]]
+  
+  return [];
+}
+
+console.log(chunk([1, 2, 3, 4, 5, 6, 7], 3));
+console.log(chunk(['a', 'b', 'c', 'd'], 2));`,
+    solution: `function chunk(array, size) {
+  return Array.from({ length: Math.ceil(array.length / size) }, (_, i) =>
+    array.slice(i * size, i * size + size)
+  );
+}`,
+    testCases: [
+      {
+        input: [[1, 2, 3, 4, 5], 2],
+        expectedOutput: [[1, 2], [3, 4], [5]]
+      },
+      {
+        input: [[1, 2, 3, 4, 5, 6, 7], 3],
+        expectedOutput: [[1, 2, 3], [4, 5, 6], [7]]
+      }
+    ],
+    hints: [
+      'Calculate number of chunks: Math.ceil(array.length / size)',
+      'Use slice() to extract chunks: array.slice(start, start + size)',
+      'Array.from can create the chunks array with mapping'
     ]
   }
 ];
