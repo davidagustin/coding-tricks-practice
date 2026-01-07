@@ -117,34 +117,52 @@ export async function runTests(
         return;
       }
 
-      const safeEval = new Function(
-        'console',
-        `
-        try {
-          ${executableCode}
-        } catch (e) {
-          throw new Error('Code execution failed: ' + (e.message || String(e)));
-        }
-        
-        // Try to find the main function
-        const functions = {};
-        ${functionNames.map(name => 
-          `try { 
-            if (typeof ${name} !== 'undefined') {
-              functions['${name}'] = ${name};
-            } else {
-              functions['${name}'] = null;
-            }
-          } catch(e) { 
-            functions['${name}'] = null; 
-          }`
-        ).join('\n')}
-        
-        return functions;
-        `
-      );
+      try {
+        const safeEval = new Function(
+          'console',
+          `
+          try {
+            ${executableCode}
+          } catch (e) {
+            // Don't throw during code definition - let it fail during execution
+            // This allows code with browser APIs to be defined (but not executed)
+          }
+          
+          // Try to find the main function
+          const functions = {};
+          ${functionNames.map(name => 
+            `try { 
+              if (typeof ${name} !== 'undefined') {
+                functions['${name}'] = ${name};
+              } else {
+                functions['${name}'] = null;
+              }
+            } catch(e) { 
+              functions['${name}'] = null; 
+            }`
+          ).join('\n')}
+          
+          return functions;
+          `
+        );
 
-      functions = safeEval(mockConsole);
+        functions = safeEval(mockConsole);
+      } catch (evalError: any) {
+        // If code definition fails (e.g., ReferenceError for fetch), 
+        // check if it's a browser API issue
+        const errorMessage = evalError?.message || String(evalError);
+        if (errorMessage.includes('fetch') || 
+            errorMessage.includes('window') || 
+            errorMessage.includes('document') ||
+            errorMessage.includes('AbortController')) {
+          // Browser API not available - this is expected in test environment
+          // Return empty functions object
+          functions = {};
+        } else {
+          // Re-throw other errors
+          throw evalError;
+        }
+      }
     } catch (evalError: any) {
       const errorMsg = evalError?.message || evalError?.toString() || String(evalError) || 'Unknown syntax error';
       resolve({
