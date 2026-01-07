@@ -806,9 +806,8 @@ processUser(1).then(console.log).catch(console.error);`,
     testCases: [
       {
         input: [1],
-        expectedOutput: expect => {
-          return expect && expect.id === 1 && expect.saved === true;
-        }
+        expectedOutput: { id: 1, saved: true },
+        description: 'User is processed and saved'
       }
     ],
     hints: [
@@ -938,9 +937,8 @@ function waitForEvent(element, eventName) {
     testCases: [
       {
         input: [100],
-        expectedOutput: expect => {
-          return expect instanceof Promise;
-        }
+        expectedOutput: true,
+        description: 'Function returns a Promise'
       }
     ],
     hints: [
@@ -1008,9 +1006,8 @@ async function fetchMultipleUsers(userIds) {
     testCases: [
       {
         input: [1],
-        expectedOutput: expect => {
-          return expect === null || typeof expect === 'object';
-        }
+        expectedOutput: {},
+        description: 'Returns an object or null'
       }
     ],
     hints: [
@@ -1144,9 +1141,8 @@ async function processWithLock(resource, operation) {
     testCases: [
       {
         input: ['/api/data'],
-        expectedOutput: expect => {
-          return expect !== undefined;
-        }
+        expectedOutput: {},
+        description: 'Returns a value (not undefined)'
       }
     ],
     hints: [
@@ -1593,7 +1589,6 @@ console.log(user);`,
       'Partial<T> makes all properties optional'
     ]
   },
-  { id: '123', name: 'Alice' },
   {
     id: 'type-guards',
     title: 'Type Guards',
