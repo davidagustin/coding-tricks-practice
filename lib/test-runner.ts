@@ -22,22 +22,17 @@ export async function runTests(
   }>,
   solutionFunctionName?: string
 ): Promise<TestRunnerResult> {
-  try {
-    // Create a safe execution context
-    const safeEval = new Function(
-      'console',
-      `
-      ${userCode}
-      
-      // Try to find the main function
-      const functions = {};
-      ${extractFunctionNames(userCode).map(name => 
-        `try { functions['${name}'] = ${name}; } catch(e) {}`
-      ).join('\n')}
-      
-      return functions;
-      `
-    );
+  // Wrap everything in a promise to catch all errors
+  return new Promise(async (resolve) => {
+    try {
+      if (!userCode || !userCode.trim()) {
+        resolve({
+          allPassed: false,
+          results: [],
+          error: 'No code provided. Please write your solution first.'
+        });
+        return;
+      }
 
     const consoleOutput: string[] = [];
     const mockConsole = {
@@ -48,22 +43,89 @@ export async function runTests(
       },
       error: (...args: any[]) => {
         consoleOutput.push('ERROR: ' + args.map(String).join(' '));
+      },
+      warn: (...args: any[]) => {
+        consoleOutput.push('WARN: ' + args.map(String).join(' '));
       }
     };
 
-    const functions = safeEval(mockConsole);
-    
-    // Find the function to test (usually the first exported function or main function)
-    const functionName = solutionFunctionName || 
-      Object.keys(functions)[0] || 
-      extractFunctionNames(userCode)[0];
+    // Create a safe execution context
+    let functions: Record<string, any> = {};
+    try {
+      const functionNames = extractFunctionNames(userCode);
+      if (functionNames.length === 0) {
+        resolve({
+          allPassed: false,
+          results: [],
+          error: 'No functions found in your code. Please define at least one function.'
+        });
+        return;
+      }
 
-    if (!functionName || !functions[functionName]) {
-      return {
+      const safeEval = new Function(
+        'console',
+        `
+        try {
+          ${userCode}
+        } catch (e) {
+          throw new Error('Code execution failed: ' + (e.message || String(e)));
+        }
+        
+        // Try to find the main function
+        const functions = {};
+        ${functionNames.map(name => 
+          `try { 
+            if (typeof ${name} !== 'undefined') {
+              functions['${name}'] = ${name};
+            } else {
+              functions['${name}'] = null;
+            }
+          } catch(e) { 
+            functions['${name}'] = null; 
+          }`
+        ).join('\n')}
+        
+        return functions;
+        `
+      );
+
+      functions = safeEval(mockConsole);
+    } catch (evalError: any) {
+      const errorMsg = evalError?.message || evalError?.toString() || String(evalError) || 'Unknown syntax error';
+      resolve({
         allPassed: false,
         results: [],
-        error: `Could not find function to test. Make sure your function is defined and named correctly.`
-      };
+        error: `Code execution error: ${errorMsg}. Please check your syntax.`
+      });
+      return;
+    }
+    
+    // Find the function to test (usually the first exported function or main function)
+    const functionNames = extractFunctionNames(userCode);
+    const availableFunctions = Object.keys(functions).filter(name => 
+      functions[name] !== null && typeof functions[name] === 'function'
+    );
+
+    const functionName = solutionFunctionName || 
+      availableFunctions[0] || 
+      functionNames[0];
+
+    if (!functionName) {
+      resolve({
+        allPassed: false,
+        results: [],
+        error: `Could not find any function in your code. Make sure you define a function (e.g., function myFunction() {...} or const myFunction = () => {...}).`
+      });
+      return;
+    }
+
+    if (!functions[functionName] || typeof functions[functionName] !== 'function') {
+      resolve({
+        allPassed: false,
+        results: [],
+        error: `Function "${functionName}" was found but is not callable. Make sure it's properly defined.`
+      });
+      return;
     }
 
     const userFunction = functions[functionName];
@@ -74,22 +136,30 @@ export async function runTests(
         let actualOutput: any;
         
         // Handle different input types
-        if (Array.isArray(testCase.input)) {
-          const result = userFunction(...testCase.input);
-          // Handle promises
-          if (result instanceof Promise) {
-            actualOutput = await result;
+        try {
+          if (Array.isArray(testCase.input)) {
+            const result = userFunction(...testCase.input);
+            // Handle promises
+            if (result instanceof Promise) {
+              actualOutput = await Promise.resolve(result).catch(err => {
+                throw new Error(`Promise rejected: ${err?.message || String(err)}`);
+              });
+            } else {
+              actualOutput = result;
+            }
           } else {
-            actualOutput = result;
+            const result = userFunction(testCase.input);
+            // Handle promises
+            if (result instanceof Promise) {
+              actualOutput = await Promise.resolve(result).catch(err => {
+                throw new Error(`Promise rejected: ${err?.message || String(err)}`);
+              });
+            } else {
+              actualOutput = result;
+            }
           }
-        } else {
-          const result = userFunction(testCase.input);
-          // Handle promises
-          if (result instanceof Promise) {
-            actualOutput = await result;
-          } else {
-            actualOutput = result;
-          }
+        } catch (execError: any) {
+          throw new Error(`Function execution error: ${execError?.message || String(execError) || 'Unknown execution error'}`);
         }
 
         // Deep equality check
@@ -103,29 +173,32 @@ export async function runTests(
           description: testCase.description
         });
       } catch (error: any) {
+        const errorMessage = error?.message || error?.toString() || String(error) || 'Unknown error';
         results.push({
           passed: false,
           input: testCase.input,
           expectedOutput: testCase.expectedOutput,
           actualOutput: undefined,
-          error: error.message || String(error),
+          error: errorMessage,
           description: testCase.description
         });
       }
     }
 
-    return {
-      allPassed: results.every(r => r.passed),
-      results,
-      error: consoleOutput.length > 0 ? consoleOutput.join('\n') : undefined
-    };
-  } catch (error: any) {
-    return {
-      allPassed: false,
-      results: [],
-      error: error.message || String(error) || 'Unknown error occurred'
-    };
-  }
+      resolve({
+        allPassed: results.every(r => r.passed),
+        results,
+        error: consoleOutput.length > 0 ? consoleOutput.join('\n') : undefined
+      });
+    } catch (error: any) {
+      const errorMessage = error?.message || error?.toString() || String(error) || 'Unknown error occurred';
+      resolve({
+        allPassed: false,
+        results: [],
+        error: `Test runner error: ${errorMessage}. Please check your code and try again.`
+      });
+    }
+  });
 }
 
 function extractFunctionNames(code: string): string[] {

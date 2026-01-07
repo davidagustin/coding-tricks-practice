@@ -16,13 +16,16 @@ export default function ProblemPage() {
   
   const problem = getProblemById(problemId);
   const [code, setCode] = useState('');
+  const [userCode, setUserCode] = useState(''); // Store user's code separately
   const [testResults, setTestResults] = useState<TestRunnerResult | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
 
   useEffect(() => {
     if (problem) {
-      setCode(problem.starterCode);
+      const starterCode = problem.starterCode;
+      setCode(starterCode);
+      setUserCode(starterCode);
       setTestResults(null);
       setShowSolution(false);
     }
@@ -50,14 +53,37 @@ export default function ProblemPage() {
     setIsRunning(true);
     setTestResults(null);
     
+    // Use userCode for tests, not the displayed code (which might be solution)
+    const codeToTest = showSolution ? userCode : code;
+    
     try {
-      const results = await runTests(code, problem.testCases);
+      if (!codeToTest || !codeToTest.trim()) {
+        setTestResults({
+          allPassed: false,
+          results: [],
+          error: 'No code to test. Please write your solution first.'
+        });
+        setIsRunning(false);
+        return;
+      }
+
+      // Wrap in Promise.resolve to ensure we catch all errors
+      const results = await Promise.resolve(runTests(codeToTest, problem.testCases)).catch((err) => {
+        console.error('Test execution error:', err);
+        return {
+          allPassed: false,
+          results: [],
+          error: `Error running tests: ${err?.message || err?.toString() || 'Unknown error'}. Please check your code.`
+        };
+      });
+      
       setTestResults(results);
     } catch (error: any) {
+      console.error('Unexpected test execution error:', error);
       setTestResults({
         allPassed: false,
         results: [],
-        error: error.message || 'An error occurred'
+        error: `Unexpected error: ${error?.message || error?.toString() || 'An unexpected error occurred while running tests. Please check your code syntax.'}`
       });
     } finally {
       setIsRunning(false);
@@ -65,9 +91,31 @@ export default function ProblemPage() {
   };
 
   const handleReset = () => {
-    setCode(problem.starterCode);
+    const starterCode = problem.starterCode;
+    setCode(starterCode);
+    setUserCode(starterCode);
     setTestResults(null);
     setShowSolution(false);
+  };
+
+  const handleToggleSolution = () => {
+    if (showSolution) {
+      // Hiding solution - restore user's code
+      setCode(userCode);
+      setShowSolution(false);
+    } else {
+      // Showing solution - save current user code first
+      setUserCode(code);
+      setShowSolution(true);
+    }
+  };
+
+  const handleCodeChange = (newCode: string) => {
+    setCode(newCode);
+    // Only update userCode if we're not showing the solution
+    if (!showSolution) {
+      setUserCode(newCode);
+    }
   };
 
   const currentIndex = problems.findIndex(p => p.id === problemId);
@@ -135,7 +183,7 @@ export default function ProblemPage() {
                     Reset
                   </button>
                   <button
-                    onClick={() => setShowSolution(!showSolution)}
+                    onClick={handleToggleSolution}
                     className="px-3 py-1.5 text-sm bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
                   >
                     {showSolution ? 'Hide' : 'Show'} Solution
@@ -152,7 +200,7 @@ export default function ProblemPage() {
               <div className="h-96">
                 <CodeEditor
                   code={showSolution ? problem.solution : code}
-                  onChange={setCode}
+                  onChange={handleCodeChange}
                   language="typescript"
                   readOnly={showSolution}
                 />
