@@ -1,3 +1,5 @@
+import ts from 'typescript';
+
 export interface TestResult {
   passed: boolean;
   input: any;
@@ -11,6 +13,33 @@ export interface TestRunnerResult {
   allPassed: boolean;
   results: TestResult[];
   error?: string;
+}
+
+/**
+ * Transpile TypeScript code to JavaScript
+ * Uses numeric enum values to avoid isolatedModules issues
+ */
+function transpileTypeScript(code: string): { code: string; error?: string } {
+  try {
+    // Use numeric values for enums to avoid isolatedModules issues
+    // ScriptTarget.ES2020 = 5, ModuleKind.ESNext = 99, JsxEmit.React = 2
+    const result = ts.transpile(code, {
+      target: 5, // ES2020
+      module: 99, // ESNext  
+      jsx: 2, // React
+      esModuleInterop: true,
+      skipLibCheck: true,
+      strict: false,
+      allowJs: true,
+    } as any);
+
+    return { code: result };
+  } catch (error: any) {
+    return {
+      code: '',
+      error: `TypeScript compilation error: ${error?.message || String(error)}`
+    };
+  }
 }
 
 export async function runTests(
@@ -49,10 +78,23 @@ export async function runTests(
       }
     };
 
+    // Transpile TypeScript to JavaScript if needed
+    const transpiled = transpileTypeScript(userCode);
+    if (transpiled.error) {
+      resolve({
+        allPassed: false,
+        results: [],
+        error: transpiled.error
+      });
+      return;
+    }
+
+    const executableCode = transpiled.code;
+
     // Create a safe execution context
     let functions: Record<string, any> = {};
     try {
-      const functionNames = extractFunctionNames(userCode);
+      const functionNames = extractFunctionNames(executableCode);
       if (functionNames.length === 0) {
         resolve({
           allPassed: false,
@@ -66,7 +108,7 @@ export async function runTests(
         'console',
         `
         try {
-          ${userCode}
+          ${executableCode}
         } catch (e) {
           throw new Error('Code execution failed: ' + (e.message || String(e)));
         }
@@ -101,7 +143,7 @@ export async function runTests(
     }
     
     // Find the function to test (usually the first exported function or main function)
-    const functionNames = extractFunctionNames(userCode);
+    const functionNames = extractFunctionNames(executableCode);
     const availableFunctions = Object.keys(functions).filter(name => 
       functions[name] !== null && typeof functions[name] === 'function'
     );
