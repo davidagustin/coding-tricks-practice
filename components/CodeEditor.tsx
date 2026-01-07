@@ -18,6 +18,9 @@ export default function CodeEditor({ code, onChange, language = 'typescript', re
     editorRef.current = editor;
 
     // Configure TypeScript/JavaScript settings
+    // IMPORTANT: Set allowJs to false when language is 'typescript' to prevent enum errors
+    const isTypeScript = language === 'typescript';
+    
     monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
       target: monaco.languages.typescript.ScriptTarget.ES2020,
       allowNonTsExtensions: true,
@@ -27,21 +30,34 @@ export default function CodeEditor({ code, onChange, language = 'typescript', re
       esModuleInterop: true,
       jsx: monaco.languages.typescript.JsxEmit.React,
       reactNamespace: 'React',
-      allowJs: true,
+      allowJs: isTypeScript ? false : true, // Don't allow JS when TS is expected
       typeRoots: ['node_modules/@types'],
       // Enable enum support
       preserveConstEnums: false,
       // Allow all TypeScript features
       strict: false,
+      // Ensure TypeScript syntax is allowed
+      skipLibCheck: true,
     });
     
-    // Also configure JavaScript defaults to allow TypeScript syntax
+    // Configure JavaScript defaults separately
     monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
       target: monaco.languages.typescript.ScriptTarget.ES2020,
       allowNonTsExtensions: true,
       allowJs: true,
       checkJs: false,
     });
+    
+    // Set diagnostics options to suppress enum errors when in TypeScript mode
+    if (isTypeScript) {
+      monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+        noSemanticValidation: false,
+        noSyntaxValidation: false,
+        noSuggestionDiagnostics: false,
+        // Don't report errors for TypeScript-only features when in TS mode
+        diagnosticCodesToIgnore: [8006], // Ignore "enum declarations can only be used in TypeScript files"
+      });
+    }
 
     // Enable auto-formatting
     editor.addAction({
