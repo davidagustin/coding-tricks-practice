@@ -21,819 +21,533 @@ export interface Problem {
 
 export const problems: Problem[] = [
   {
-    id: 'destructuring-defaults',
-    title: 'Destructuring with Defaults',
-    difficulty: 'easy',
-    category: 'JavaScript Basics',
-    description: `Extract values from objects/arrays while providing fallbacks for missing data.
+    id: 'conditional-types-basic',
+    title: 'Basic Conditional Types',
+    difficulty: 'medium',
+    category: 'Conditional Types',
+    description: `Use conditional types to create type transformations based on conditions.
 
-**Challenge:** Complete the function to safely extract user information with defaults.
+**Challenge:** Create a type that extracts the return type of a function, or returns never if not a function.
 
 **Key Concepts:**
-- Basic object destructuring with default values
-- Nested destructuring with defaults
-- Array destructuring with defaults
-- Renaming + default combined`,
+- Conditional types: T extends U ? X : Y
+- Type inference with infer keyword
+- Useful for type transformations`,
     examples: [
       {
-        input: `const user = { name: 'John' };
-const response = { data: [1, 2, 3] };`,
-        output: `name: 'John', email: 'anonymous@example.com', firstItem: 1`,
-        explanation: 'Extract name, provide default email, and get first array item'
+        input: `type ReturnType<T> = T extends (...args: any[]) => infer R ? R : never;
+type A = ReturnType<() => string>; // string
+type B = ReturnType<number>; // never`,
+        output: `Conditional type extracts return type`,
+        explanation: 'Conditional types check if T extends a pattern'
       }
     ],
-    starterCode: `function extractUserInfo(user, response) {
-  // TODO: Extract name with default 'Anonymous'
-  // TODO: Extract email with default 'anonymous@example.com'
-  // TODO: Extract data array with default []
-  // TODO: Extract first item from data array with default 0
-  
-  return {
-    name: user.name, // Fix this
-    email: user.email, // Fix this
-    firstItem: response.data[0] // Fix this
-  };
-}
+    starterCode: `// TODO: Create a conditional type that extracts return type
+// If T is a function, extract its return type
+// Otherwise, return never
 
-// Test your solution
-const user1 = { name: 'John' };
-const response1 = { data: [1, 2, 3] };
-console.log(extractUserInfo(user1, response1));
+type MyReturnType<T> = any; // Fix this
 
-const user2 = {};
-const response2 = {};
-console.log(extractUserInfo(user2, response2));`,
-    solution: `function extractUserInfo(user, response) {
-  const { name = 'Anonymous' } = user ?? {};
-  const { email = 'anonymous@example.com' } = user ?? {};
-  const { data: users = [] } = response ?? {};
-  const [firstItem = 0] = users;
-  
-  return {
-    name,
-    email,
-    firstItem
-  };
-}`,
-    testCases: [
-      {
-        input: [{ name: 'John' }, { data: [1, 2, 3] }],
-        expectedOutput: { name: 'John', email: 'anonymous@example.com', firstItem: 1 }
-      },
-      {
-        input: [{}, {}],
-        expectedOutput: { name: 'Anonymous', email: 'anonymous@example.com', firstItem: 0 }
-      },
-      {
-        input: [{ name: 'Jane', email: 'jane@example.com' }, { data: [10, 20] }],
-        expectedOutput: { name: 'Jane', email: 'jane@example.com', firstItem: 10 }
-      }
-    ],
-    hints: [
-      'Use destructuring with default values: const { prop = defaultValue } = obj',
-      'Handle null/undefined with nullish coalescing: obj ?? {}',
-      'For arrays: const [first = defaultValue] = array'
-    ]
-  },
-  {
-    id: 'nullish-coalescing',
-    title: 'Nullish Coalescing (??) vs Logical OR (||)',
-    difficulty: 'easy',
-    category: 'JavaScript Basics',
-    description: `Understand the difference between ?? and ||. The ?? operator only falls back for null or undefined, while || falls back for any falsy value.
-
-**Challenge:** Fix the function to correctly handle 0 and empty strings.`,
-    examples: [
-      {
-        input: `const user = { count: 0, name: '' };`,
-        output: `count: 0, name: ''`,
-        explanation: '0 and empty string should be preserved, not replaced with defaults'
-      }
-    ],
-    starterCode: `function getUserValues(user) {
-  // TODO: Use ?? instead of || to preserve 0 and empty strings
-  const count = user.count || 10; // Fix: 0 becomes 10 (wrong!)
-  const name = user.name || 'Anonymous'; // Fix: '' becomes 'Anonymous' (wrong!)
-  const email = user.email || 'no-email@placeholder.com';
-  
-  return { count, name, email };
-}
-
-// Test cases
-console.log(getUserValues({ count: 0, name: '', email: null }));
-console.log(getUserValues({ count: 5, name: 'John', email: 'john@example.com' }));`,
-    solution: `function getUserValues(user) {
-  const count = user.count ?? 10;
-  const name = user.name ?? 'Anonymous';
-  const email = user.email ?? 'no-email@placeholder.com';
-  
-  return { count, name, email };
-}`,
-    testCases: [
-      {
-        input: [{ count: 0, name: '', email: null }],
-        expectedOutput: { count: 0, name: '', email: 'no-email@placeholder.com' }
-      },
-      {
-        input: [{ count: 5, name: 'John', email: 'john@example.com' }],
-        expectedOutput: { count: 5, name: 'John', email: 'john@example.com' }
-      },
-      {
-        input: [{ count: undefined, name: undefined, email: undefined }],
-        expectedOutput: { count: 10, name: 'Anonymous', email: 'no-email@placeholder.com' }
-      }
-    ],
-    hints: [
-      'Use ?? for nullish coalescing - only falls back for null/undefined',
-      '|| falls back for any falsy value (0, "", false, null, undefined)',
-      'Use ??= for nullish assignment: obj.prop ??= defaultValue'
-    ]
-  },
-  {
-    id: 'optional-chaining',
-    title: 'Optional Chaining (?.)',
-    difficulty: 'easy',
-    category: 'JavaScript Basics',
-    description: `Safely access deeply nested properties without explicit null checks.
-
-**Challenge:** Extract nested values safely using optional chaining.`,
-    examples: [
-      {
-        input: `const user = { profile: { displayName: 'John' } };
-const user2 = null;`,
-        output: `'John' and 'Anonymous'`,
-        explanation: 'Safely access nested properties even when parent is null'
-      }
-    ],
-    starterCode: `function getDisplayName(user) {
-  // TODO: Use optional chaining to safely access nested properties
-  // If user?.profile?.displayName exists, use it
-  // Otherwise, fall back to user?.name
-  // Otherwise, fall back to 'Anonymous'
-  
-  let displayName = 'Anonymous';
-  if (user && user.profile && user.profile.displayName) {
-    displayName = user.profile.displayName;
-  } else if (user && user.name) {
-    displayName = user.name;
-  }
-  
-  return displayName;
-}
-
-console.log(getDisplayName({ profile: { displayName: 'John' } }));
-console.log(getDisplayName(null));
-console.log(getDisplayName({ name: 'Jane' }));`,
-    solution: `function getDisplayName(user) {
-  return user?.profile?.displayName ?? user?.name ?? 'Anonymous';
-}`,
-    testCases: [
-      {
-        input: [{ profile: { displayName: 'John' } }],
-        expectedOutput: 'John'
-      },
-      {
-        input: [null],
-        expectedOutput: 'Anonymous'
-      },
-      {
-        input: [{ name: 'Jane' }],
-        expectedOutput: 'Jane'
-      },
-      {
-        input: [{ profile: {} }],
-        expectedOutput: 'Anonymous'
-      }
-    ],
-    hints: [
-      'Use ?. for optional chaining: obj?.prop?.nested',
-      'Combine with ?? for fallbacks: obj?.prop ?? defaultValue',
-      'Works with arrays: arr?.[0]?.name'
-    ]
-  },
-  {
-    id: 'flatmap-filter-map',
-    title: 'flatMap as Filter + Map',
-    difficulty: 'medium',
-    category: 'Array Methods',
-    description: `Use flatMap to simultaneously filter and transform in a single pass, which is more efficient than separate filter and map operations.
-
-**Challenge:** Transform the filter+map pattern to use flatMap.`,
-    examples: [
-      {
-        input: `const users = [
-  { active: true, email: 'a@example.com' },
-  { active: false, email: 'b@example.com' },
-  { active: true, email: 'c@example.com' }
-];`,
-        output: `['a@example.com', 'c@example.com']`,
-        explanation: 'Get emails of only active users in a single pass'
-      }
-    ],
-    starterCode: `function getActiveUserEmails(users) {
-  // TODO: Convert filter+map to flatMap
-  // Traditional approach (two iterations)
-  const results = users
-    .filter(u => u.active)
-    .map(u => u.email);
-  
-  return results;
-}
-
-// Convert to flatMap for better performance
-function getActiveUserEmailsOptimized(users) {
-  // Your code here using flatMap
-  return [];
-}
-
-const users = [
-  { active: true, email: 'a@example.com' },
-  { active: false, email: 'b@example.com' },
-  { active: true, email: 'c@example.com' }
-];
-
-console.log(getActiveUserEmails(users));
-console.log(getActiveUserEmailsOptimized(users));`,
-    solution: `function getActiveUserEmailsOptimized(users) {
-  return users.flatMap(u => u.active ? [u.email] : []);
-}`,
-    testCases: [
-      {
-        input: [[
-          { active: true, email: 'a@example.com' },
-          { active: false, email: 'b@example.com' },
-          { active: true, email: 'c@example.com' }
-        ]],
-        expectedOutput: ['a@example.com', 'c@example.com']
-      },
-      {
-        input: [[
-          { active: false, email: 'a@example.com' }
-        ]],
-        expectedOutput: []
-      },
-      {
-        input: [[]],
-        expectedOutput: []
-      }
-    ],
-    hints: [
-      'flatMap returns an array - return [item] to include, [] to exclude',
-      'Single iteration is more efficient than filter + map',
-      'Can produce 0, 1, or multiple items per input element'
-    ]
-  },
-  {
-    id: 'map-deduplication',
-    title: 'Map for Deduplication',
-    difficulty: 'medium',
-    category: 'Array Methods',
-    description: `Use Map to deduplicate by a key, where the last occurrence wins.
-
-**Challenge:** Remove duplicate users by ID, keeping the last occurrence.`,
-    examples: [
-      {
-        input: `const users = [
-  { id: 1, name: 'John' },
-  { id: 2, name: 'Jane' },
-  { id: 1, name: 'John Updated' }
-];`,
-        output: `[{ id: 2, name: 'Jane' }, { id: 1, name: 'John Updated' }]`,
-        explanation: 'Last occurrence of id:1 wins'
-      }
-    ],
-    starterCode: `function deduplicateUsers(users) {
-  // TODO: Use Map to deduplicate by id (last wins)
-  // Hint: new Map(users.map(u => [u.id, u]))
-  // Then convert back to array with [...map.values()]
-  
-  return users;
-}
-
-const users = [
-  { id: 1, name: 'John' },
-  { id: 2, name: 'Jane' },
-  { id: 1, name: 'John Updated' },
-  { id: 3, name: 'Bob' },
-  { id: 2, name: 'Jane Updated' }
-];
-
-console.log(deduplicateUsers(users));`,
-    solution: `function deduplicateUsers(users) {
-  return [...new Map(users.map(u => [u.id, u])).values()];
-}`,
-    testCases: [
-      {
-        input: [[
-          { id: 1, name: 'John' },
-          { id: 2, name: 'Jane' },
-          { id: 1, name: 'John Updated' }
-        ]],
-        expectedOutput: [
-          { id: 2, name: 'Jane' },
-          { id: 1, name: 'John Updated' }
-        ]
-      },
-      {
-        input: [[
-          { id: 1, name: 'A' },
-          { id: 1, name: 'B' },
-          { id: 1, name: 'C' }
-        ]],
-        expectedOutput: [{ id: 1, name: 'C' }]
-      }
-    ],
-    hints: [
-      'Map constructor accepts [key, value] pairs',
-      'Map overwrites duplicate keys (last wins)',
-      'Use [...map.values()] to convert back to array'
-    ]
-  },
-  {
-    id: 'object-entries',
-    title: 'Object.fromEntries / Object.entries',
-    difficulty: 'medium',
-    category: 'Object Methods',
-    description: `Convert between objects and [key, value] arrays for transformation.
-
-**Challenge:** Transform object values and filter properties.`,
-    examples: [
-      {
-        input: `const prices = { apple: 1, banana: 2, cherry: 3 };`,
-        output: `{ apple: 2, banana: 4, cherry: 6 }`,
-        explanation: 'Double all prices'
-      }
-    ],
-    starterCode: `function doublePrices(prices) {
-  // TODO: Use Object.entries and Object.fromEntries
-  // to double all values
-  
-  return prices;
-}
-
-function filterPrivateProperties(obj) {
-  // TODO: Filter out properties starting with '_'
-  // Use Object.entries, filter, then Object.fromEntries
-  
-  return obj;
-}
-
-const prices = { apple: 1, banana: 2, cherry: 3 };
-console.log(doublePrices(prices));
-
-const user = { name: 'John', _internal: 'secret', age: 30, _temp: 'data' };
-console.log(filterPrivateProperties(user));`,
-    solution: `function doublePrices(prices) {
-  return Object.fromEntries(
-    Object.entries(prices).map(([key, val]) => [key, val * 2])
-  );
-}
-
-function filterPrivateProperties(obj) {
-  return Object.fromEntries(
-    Object.entries(obj).filter(([key]) => !key.startsWith('_'))
-  );
-}`,
-    testCases: [
-      {
-        input: [{ apple: 1, banana: 2, cherry: 3 }],
-        expectedOutput: { apple: 2, banana: 4, cherry: 6 },
-        description: 'doublePrices'
-      },
-      {
-        input: [{ name: 'John', _internal: 'secret', age: 30, _temp: 'data' }],
-        expectedOutput: { name: 'John', age: 30 },
-        description: 'filterPrivateProperties'
-      }
-    ],
-    hints: [
-      'Object.entries(obj) → [[key, value], ...]',
-      'Object.fromEntries([[key, value], ...]) → object',
-      'Use map/filter between entries and fromEntries'
-    ]
-  },
-  {
-    id: 'promise-race-timeout',
-    title: 'Promise.race for Timeouts',
-    difficulty: 'medium',
-    category: 'Async/Promises',
-    description: `Race a promise against a timer to implement timeouts.
-
-**Challenge:** Create a withTimeout function that rejects if the promise takes too long.`,
-    examples: [
-      {
-        input: `await withTimeout(fetch('/api/data'), 5000)`,
-        output: `Resolves with data or rejects with timeout error`,
-        explanation: 'Promise resolves if fetch completes in time, otherwise times out'
-      }
-    ],
-    starterCode: `function withTimeout(promise, ms) {
-  // TODO: Use Promise.race to race the promise against a timeout
-  // Create a timeout promise that rejects after ms milliseconds
-  // Return Promise.race([promise, timeoutPromise])
-  
-  return promise;
-}
+// TODO: Create a type that checks if T is a function
+type IsFunction<T> = any; // Fix this
 
 // Test
-const fastPromise = new Promise(resolve => setTimeout(() => resolve('Success'), 100));
-const slowPromise = new Promise(resolve => setTimeout(() => resolve('Success'), 2000));
+type A = MyReturnType<() => string>; // Should be: string
+type B = MyReturnType<(x: number) => boolean>; // Should be: boolean
+type C = MyReturnType<string>; // Should be: never
 
-withTimeout(fastPromise, 500)
-  .then(console.log)
-  .catch(console.error);
+type D = IsFunction<() => void>; // Should be: true
+type E = IsFunction<string>; // Should be: false`,
+    solution: `type MyReturnType<T> = T extends (...args: any[]) => infer R ? R : never;
 
-withTimeout(slowPromise, 500)
-  .then(console.log)
-  .catch(console.error);`,
-    solution: `function withTimeout(promise, ms) {
-  return Promise.race([
-    promise,
-    new Promise((_, reject) =>
-      setTimeout(() => reject(new Error(\`Timeout after \${ms}ms\`)), ms)
-    )
-  ]);
-}`,
+type IsFunction<T> = T extends (...args: any[]) => any ? true : false;`,
     testCases: [
       {
-        input: [Promise.resolve('success'), 1000],
-        expectedOutput: 'success',
-        description: 'Promise resolves before timeout'
+        input: [],
+        expectedOutput: true,
+        description: 'Conditional types work correctly'
       }
     ],
     hints: [
-      'Promise.race returns the first settled promise',
-      'Create a timeout promise that rejects after ms',
-      'Use setTimeout in the timeout promise'
+      'Use T extends U ? X : Y syntax',
+      'Use infer keyword to capture return type: infer R',
+      'Check if T extends function signature pattern'
     ]
   },
   {
-    id: 'promise-allsettled',
-    title: 'Promise.allSettled for Mixed Results',
-    difficulty: 'medium',
-    category: 'Async/Promises',
-    description: `Handle multiple promises where some may fail, without stopping on the first rejection.
+    id: 'conditional-types-infer',
+    title: 'Conditional Types with Multiple Inference',
+    difficulty: 'hard',
+    category: 'Conditional Types',
+    description: `Use infer to extract multiple type parameters from complex types.
 
-**Challenge:** Process multiple API calls and separate successes from failures.`,
+**Challenge:** Extract parameter types and return type from function types.`,
     examples: [
       {
-        input: `[fetch('/api/1'), fetch('/api/2'), fetch('/api/3')]`,
-        output: `{ successes: [...], failures: [...] }`,
-        explanation: 'Get all results even if some fail'
+        input: `type Parameters<T> = T extends (...args: infer P) => any ? P : never;
+type FirstParam<T> = T extends (first: infer F, ...args: any[]) => any ? F : never;`,
+        output: `Extracts function parameters`,
+        explanation: 'infer can capture parameter types'
       }
     ],
-    starterCode: `async function processMultipleRequests(requests) {
-  // TODO: Use Promise.allSettled to handle all promises
-  // Separate fulfilled and rejected results
-  // Return { successes: [...], failures: [...] }
-  
-  return { successes: [], failures: [] };
+    starterCode: `// TODO: Extract all parameters from function type
+type MyParameters<T> = any; // Fix this
+
+// TODO: Extract first parameter type
+type FirstParameter<T> = any; // Fix this
+
+// TODO: Extract last parameter type
+type LastParameter<T> = any; // Fix this
+
+// Test
+type Fn1 = (a: string, b: number) => void;
+type Params1 = MyParameters<Fn1>; // Should be: [string, number]
+type First1 = FirstParameter<Fn1>; // Should be: string
+type Last1 = LastParameter<Fn1>; // Should be: number`,
+    solution: `type MyParameters<T> = T extends (...args: infer P) => any ? P : never;
+
+type FirstParameter<T> = T extends (first: infer F, ...args: any[]) => any ? F : never;
+
+type LastParameter<T> = T extends (...args: infer P) => any 
+  ? P extends [...any[], infer L] 
+    ? L 
+    : never 
+  : never;`,
+    testCases: [
+      {
+        input: [],
+        expectedOutput: true,
+        description: 'Parameter extraction works correctly'
+      }
+    ],
+    hints: [
+      'Use infer P to capture all parameters as tuple',
+      'Use rest parameters: ...args: infer P',
+      'For last parameter, use tuple destructuring: [...any[], infer L]'
+    ]
+  },
+  {
+    id: 'mapped-types-basic',
+    title: 'Basic Mapped Types',
+    difficulty: 'medium',
+    category: 'Mapped Types',
+    description: `Create new types by transforming properties of existing types.
+
+**Challenge:** Create mapped types that make all properties optional, readonly, or nullable.`,
+    examples: [
+      {
+        input: `type Partial<T> = { [P in keyof T]?: T[P] };
+type Readonly<T> = { readonly [P in keyof T]: T[P] };`,
+        output: `Transforms all properties of type T`,
+        explanation: 'Mapped types iterate over keys and transform values'
+      }
+    ],
+    starterCode: `// TODO: Create a mapped type that makes all properties optional
+type MyPartial<T> = any; // Fix this
+
+// TODO: Create a mapped type that makes all properties readonly
+type MyReadonly<T> = any; // Fix this
+
+// TODO: Create a mapped type that makes all properties nullable
+type Nullable<T> = any; // Fix this
+
+// Test
+interface User {
+  name: string;
+  age: number;
 }
 
-// Helper function to check if result is fulfilled
-function isFulfilled(result) {
-  // TODO: Check if result.status === 'fulfilled'
+type PartialUser = MyPartial<User>; // { name?: string; age?: number; }
+type ReadonlyUser = MyReadonly<User>; // { readonly name: string; readonly age: number; }
+type NullableUser = Nullable<User>; // { name: string | null; age: number | null; }`,
+    solution: `type MyPartial<T> = { [P in keyof T]?: T[P] };
+
+type MyReadonly<T> = { readonly [P in keyof T]: T[P] };
+
+type Nullable<T> = { [P in keyof T]: T[P] | null };`,
+    testCases: [
+      {
+        input: [],
+        expectedOutput: true,
+        description: 'Mapped types work correctly'
+      }
+    ],
+    hints: [
+      'Use [P in keyof T] to iterate over keys',
+      'Add ? for optional: [P in keyof T]?: T[P]',
+      'Add readonly modifier: readonly [P in keyof T]: T[P]'
+    ]
+  },
+  {
+    id: 'mapped-types-filter',
+    title: 'Mapped Types with Key Filtering',
+    difficulty: 'hard',
+    category: 'Mapped Types',
+    description: `Filter keys in mapped types using conditional types.
+
+**Challenge:** Create Pick, Omit, and ExtractKeys utilities.`,
+    examples: [
+      {
+        input: `type Pick<T, K extends keyof T> = { [P in K]: T[P] };
+type Omit<T, K extends keyof T> = { [P in Exclude<keyof T, K>]: T[P] };`,
+        output: `Selects or excludes specific keys`,
+        explanation: 'Combine mapped types with conditional types'
+      }
+    ],
+    starterCode: `// TODO: Create Pick type that selects specific keys
+type MyPick<T, K extends keyof T> = any; // Fix this
+
+// TODO: Create Omit type that excludes specific keys
+type MyOmit<T, K extends keyof T> = any; // Fix this
+
+// TODO: Create type that extracts keys of a specific type
+type KeysOfType<T, U> = any; // Fix this
+
+// Test
+interface User {
+  name: string;
+  age: number;
+  email: string;
+}
+
+type NameAndAge = MyPick<User, 'name' | 'age'>; // { name: string; age: number; }
+type WithoutAge = MyOmit<User, 'age'>; // { name: string; email: string; }
+type StringKeys = KeysOfType<User, string>; // 'name' | 'email'`,
+    solution: `type MyPick<T, K extends keyof T> = { [P in K]: T[P] };
+
+type MyOmit<T, K extends keyof T> = { [P in Exclude<keyof T, K>]: T[P] };
+
+type KeysOfType<T, U> = { [K in keyof T]: T[K] extends U ? K : never }[keyof T];`,
+    testCases: [
+      {
+        input: [],
+        expectedOutput: true,
+        description: 'Key filtering works correctly'
+      }
+    ],
+    hints: [
+      'Pick: iterate over K keys: [P in K]',
+      'Omit: use Exclude to remove keys: Exclude<keyof T, K>',
+      'KeysOfType: map to K or never, then index with [keyof T]'
+    ]
+  },
+  {
+    id: 'utility-types-record',
+    title: 'Record and Utility Types',
+    difficulty: 'medium',
+    category: 'Utility Types',
+    description: `Understand and create utility types like Record, Required, NonNullable.
+
+**Challenge:** Implement common utility types from scratch.`,
+    examples: [
+      {
+        input: `type Record<K extends keyof any, T> = { [P in K]: T };
+type Required<T> = { [P in keyof T]-?: T[P] };`,
+        output: `Utility types for common transformations`,
+        explanation: 'Utility types solve common type problems'
+      }
+    ],
+    starterCode: `// TODO: Create Record type
+// Record<K, T> creates object with keys K and values T
+type MyRecord<K extends keyof any, T> = any; // Fix this
+
+// TODO: Create Required type (opposite of Partial)
+// Removes optional modifier from all properties
+type MyRequired<T> = any; // Fix this
+
+// TODO: Create NonNullable type
+// Removes null and undefined from union
+type MyNonNullable<T> = any; // Fix this
+
+// Test
+type UserRecord = MyRecord<'name' | 'email', string>; // { name: string; email: string; }
+
+interface PartialUser {
+  name?: string;
+  age?: number;
+}
+type RequiredUser = MyRequired<PartialUser>; // { name: string; age: number; }
+
+type MaybeString = string | null | undefined;
+type DefiniteString = MyNonNullable<MaybeString>; // string`,
+    solution: `type MyRecord<K extends keyof any, T> = { [P in K]: T };
+
+type MyRequired<T> = { [P in keyof T]-?: T[P] };
+
+type MyNonNullable<T> = T extends null | undefined ? never : T;`,
+    testCases: [
+      {
+        input: [],
+        expectedOutput: true,
+        description: 'Utility types work correctly'
+      }
+    ],
+    hints: [
+      'Record: map over K keys with value type T',
+      'Required: use -? to remove optional modifier',
+      'NonNullable: use conditional type to exclude null | undefined'
+    ]
+  },
+  {
+    id: 'conditional-distributive',
+    title: 'Distributive Conditional Types',
+    difficulty: 'hard',
+    category: 'Conditional Types',
+    description: `Understand how conditional types distribute over union types.
+
+**Challenge:** Create types that work with union types correctly.`,
+    examples: [
+      {
+        input: `type ToArray<T> = T extends any ? T[] : never;
+type A = ToArray<string | number>; // string[] | number[] (distributed)`,
+        output: `Conditional types distribute over unions`,
+        explanation: 'Each union member is processed separately'
+      }
+    ],
+    starterCode: `// TODO: Create type that converts union to array of each type
+type ToArray<T> = any; // Fix this
+
+// TODO: Create type that extracts string from union
+type ExtractString<T> = any; // Fix this
+
+// TODO: Create type that excludes function types
+type ExcludeFunctions<T> = any; // Fix this
+
+// Test
+type A = ToArray<string | number>; // Should be: string[] | number[]
+type B = ExtractString<string | number | boolean>; // Should be: string
+type C = ExcludeFunctions<string | number | (() => void)>; // Should be: string | number`,
+    solution: `type ToArray<T> = T extends any ? T[] : never;
+
+type ExtractString<T> = T extends string ? T : never;
+
+type ExcludeFunctions<T> = T extends Function ? never : T;`,
+    testCases: [
+      {
+        input: [],
+        expectedOutput: true,
+        description: 'Distributive conditional types work correctly'
+      }
+    ],
+    hints: [
+      'Conditional types automatically distribute over unions',
+      'T extends any ? X : Y distributes over union members',
+      'To prevent distribution, wrap in tuple: [T] extends [any] ? ...'
+    ]
+  },
+  {
+    id: 'template-literal-mapped',
+    title: 'Template Literal Types with Mapped Types',
+    difficulty: 'hard',
+    category: 'Template Literal Types',
+    description: `Combine template literal types with mapped types for powerful transformations.
+
+**Challenge:** Create type-safe event system and CSS class builders.`,
+    examples: [
+      {
+        input: `type EventMap = {
+  click: MouseEvent;
+  keydown: KeyboardEvent;
+};
+
+type EventHandlers = {
+  [K in keyof EventMap as \`on\${Capitalize<K>}\`]: (e: EventMap[K]) => void;
+};`,
+        output: `Transforms keys using template literals`,
+        explanation: 'Mapped types can transform keys with template literals'
+      }
+    ],
+    starterCode: `// TODO: Create event handler types from event map
+type EventMap = {
+  click: MouseEvent;
+  keydown: KeyboardEvent;
+  focus: FocusEvent;
+};
+
+type EventHandlers<T> = any; // Fix this
+// Should be: { onClick: (e: MouseEvent) => void; onKeydown: (e: KeyboardEvent) => void; ... }
+
+// TODO: Create CSS class builder type
+type Size = 'sm' | 'md' | 'lg';
+type Color = 'red' | 'blue' | 'green';
+
+type ButtonClass = any; // Fix this
+// Should be: 'btn-sm-red' | 'btn-sm-blue' | 'btn-sm-green' | 'btn-md-red' | ...
+
+// Test
+type Handlers = EventHandlers<EventMap>;
+// Should have: onClick, onKeydown, onFocus
+
+type Btn = ButtonClass; // All combinations of size and color`,
+    solution: `type EventHandlers<T extends Record<string, any>> = {
+  [K in keyof T as \`on\${Capitalize<string & K>}\`]: (e: T[K]) => void;
+};
+
+type ButtonClass = \`btn-\${Size}-\${Color}\`;`,
+    testCases: [
+      {
+        input: [],
+        expectedOutput: true,
+        description: 'Template literal mapped types work correctly'
+      }
+    ],
+    hints: [
+      'Use "as" clause to transform keys: [K in keyof T as NewKey]',
+      'Template literal in "as": as `on${Capitalize<K>}`',
+      'Use Capitalize utility type for string transformation'
+    ]
+  },
+  {
+    id: 'recursive-types',
+    title: 'Recursive and Deep Utility Types',
+    difficulty: 'hard',
+    category: 'Utility Types',
+    description: `Create utility types that work recursively on nested structures.
+
+**Challenge:** Implement DeepPartial, DeepReadonly, and DeepRequired.`,
+    examples: [
+      {
+        input: `type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};`,
+        output: `Recursively transforms nested properties`,
+        explanation: 'Recursive types handle nested structures'
+      }
+    ],
+    starterCode: `// TODO: Create DeepPartial that makes all nested properties optional
+type DeepPartial<T> = any; // Fix this
+
+// TODO: Create DeepReadonly that makes all nested properties readonly
+type DeepReadonly<T> = any; // Fix this
+
+// TODO: Create DeepRequired that makes all nested properties required
+type DeepRequired<T> = any; // Fix this
+
+// Test
+interface Nested {
+  user: {
+    name: string;
+    profile: {
+      age: number;
+    };
+  };
+}
+
+type PartialNested = DeepPartial<Nested>;
+// Should be: { user?: { name?: string; profile?: { age?: number; }; }; }
+
+type ReadonlyNested = DeepReadonly<Nested>;
+// Should be: { readonly user: { readonly name: string; readonly profile: { readonly age: number; }; }; }`,
+    solution: `type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
+type DeepReadonly<T> = {
+  readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P];
+};
+
+type DeepRequired<T> = {
+  [P in keyof T]-?: T[P] extends object ? DeepRequired<T[P]> : T[P];
+};`,
+    testCases: [
+      {
+        input: [],
+        expectedOutput: true,
+        description: 'Recursive utility types work correctly'
+      }
+    ],
+    hints: [
+      'Check if property is object: T[P] extends object',
+      'Recursively apply transformation: DeepPartial<T[P]>',
+      'Use -? to remove optional modifier in DeepRequired'
+    ]
+  },
+  {
+    id: 'type-guards-advanced',
+    title: 'Advanced Type Guards and Assertions',
+    difficulty: 'hard',
+    category: 'Type Guards',
+    description: `Create custom type guards and type assertion functions.
+
+**Challenge:** Implement type-safe validation and narrowing functions.`,
+    examples: [
+      {
+        input: `function isString(value: unknown): value is string {
+  return typeof value === 'string';
+}
+
+function assertIsNumber(value: unknown): asserts value is number {
+  if (typeof value !== 'number') throw new Error();
+}`,
+        output: `Type guards narrow types, assertions throw on failure`,
+        explanation: 'Type guards and assertions provide runtime type safety'
+      }
+    ],
+    starterCode: `// TODO: Create type guard for User object
+interface User {
+  name: string;
+  age: number;
+}
+
+function isUser(value: unknown): value is User {
+  // Your code here
+  return false;
+}
+
+// TODO: Create assertion function
+function assertIsUser(value: unknown): asserts value is User {
+  // Your code here
+  // Should throw if value is not User
+}
+
+// TODO: Create type guard for array of strings
+function isStringArray(value: unknown): value is string[] {
+  // Your code here
   return false;
 }
 
 // Test
-const requests = [
-  Promise.resolve('Success 1'),
-  Promise.reject('Error 1'),
-  Promise.resolve('Success 2')
-];
-
-processMultipleRequests(requests).then(console.log);`,
-    solution: `async function processMultipleRequests(requests) {
-  const results = await Promise.allSettled(requests);
+function processUser(data: unknown) {
+  if (isUser(data)) {
+    // data is now User type
+    console.log(data.name);
+  }
   
-  const successes = results
-    .filter((r): r is PromiseFulfilledResult<string> => r.status === 'fulfilled')
-    .map(r => r.value);
-  
-  const failures = results
-    .filter((r): r is PromiseRejectedResult => r.status === 'rejected')
-    .map(r => r.reason);
-  
-  return { successes, failures };
+  assertIsUser(data);
+  // data is now User type (or exception thrown)
+  console.log(data.age);
+}`,
+    solution: `function isUser(value: unknown): value is User {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'name' in value &&
+    'age' in value &&
+    typeof (value as any).name === 'string' &&
+    typeof (value as any).age === 'number'
+  );
 }
 
-function isFulfilled(result) {
-  return result.status === 'fulfilled';
+function assertIsUser(value: unknown): asserts value is User {
+  if (!isUser(value)) {
+    throw new Error('Value is not a User');
+  }
+}
+
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every(item => typeof item === 'string');
 }`,
-    testCases: [
-      {
-        input: [[
-          Promise.resolve('Success 1'),
-          Promise.reject('Error 1'),
-          Promise.resolve('Success 2')
-        ]],
-        expectedOutput: {
-          successes: ['Success 1', 'Success 2'],
-          failures: ['Error 1']
-        }
-      }
-    ],
-    hints: [
-      'Promise.allSettled never rejects - all promises settle',
-      'Results have status: "fulfilled" or "rejected"',
-      'Use type guards for TypeScript: (r): r is Type => ...'
-    ]
-  },
-  {
-    id: 'template-literal-types',
-    title: 'Template Literal Types',
-    difficulty: 'hard',
-    category: 'TypeScript Advanced',
-    description: `Create string types from combinations of other types using template literals.
-
-**Challenge:** Create type-safe event handler names and button classes.`,
-    examples: [
-      {
-        input: `type EventName = EventName<'click'>`,
-        output: `'onClick'`,
-        explanation: 'Transform event names to handler names'
-      }
-    ],
-    starterCode: `// TODO: Create a template literal type for event names
-// EventName<'click'> should be 'onClick'
-// EventName<'hover'> should be 'onHover'
-type EventName<T extends string> = string; // Fix this
-
-// TODO: Create button class type
-// ButtonClass<'sm', 'red'> should be 'btn-sm-red'
-type Size = 'sm' | 'md' | 'lg';
-type Color = 'red' | 'blue';
-type ButtonClass = string; // Fix this
-
-// Test
-const clickHandler: EventName<'click'> = 'onClick';
-const btnClass: ButtonClass = 'btn-sm-red';`,
-    solution: `type EventName<T extends string> = \`on\${Capitalize<T>}\`;
-
-type Size = 'sm' | 'md' | 'lg';
-type Color = 'red' | 'blue';
-type ButtonClass = \`btn-\${Size}-\${Color}\`;`,
-    testCases: [
-      {
-        input: ['click'],
-        expectedOutput: 'onClick',
-        description: 'EventName type'
-      }
-    ],
-    hints: [
-      'Use template literal syntax: `on${Capitalize<T>}`',
-      'Capitalize is a built-in string manipulation type',
-      'Combine multiple types: `btn-${Size}-${Color}`'
-    ]
-  },
-  {
-    id: 'const-assertions',
-    title: 'Const Assertions (as const)',
-    difficulty: 'medium',
-    category: 'TypeScript Advanced',
-    description: `Create narrow literal types instead of widened types using 'as const'.
-
-**Challenge:** Extract union types from const arrays and create enum-like patterns.`,
-    examples: [
-      {
-        input: `const routes = ['home', 'profile'] as const;`,
-        output: `type Route = 'home' | 'profile'`,
-        explanation: 'Extract union type from const array'
-      }
-    ],
-    starterCode: `// TODO: Use 'as const' to create narrow types
-const routes = ['home', 'profile', 'settings'];
-// Currently: string[]
-// Should be: readonly ['home', 'profile', 'settings']
-
-// TODO: Extract union type from routes
-type Route = string; // Fix: should be 'home' | 'profile' | 'settings'
-
-// TODO: Create enum-like pattern with as const
-const Status = {
-  Pending: 'pending',
-  Active: 'active',
-  Done: 'done'
-};
-// Fix: Add 'as const' and create Status type
-
-type StatusType = string; // Fix: should be 'pending' | 'active' | 'done'
-
-// Test
-const route: Route = 'home';
-const status: StatusType = 'pending';`,
-    solution: `const routes = ['home', 'profile', 'settings'] as const;
-type Route = typeof routes[number];
-
-const Status = {
-  Pending: 'pending',
-  Active: 'active',
-  Done: 'done'
-} as const;
-type StatusType = typeof Status[keyof typeof Status];`,
     testCases: [
       {
         input: [],
         expectedOutput: true,
-        description: 'Type checking only'
+        description: 'Type guards and assertions work correctly'
       }
     ],
     hints: [
-      "'as const' makes values readonly and narrows types",
-      "Use typeof array[number] to extract union from array",
-      "Use typeof obj[keyof typeof obj] to extract union from object"
-    ]
-  },
-  {
-    id: 'satisfies-operator',
-    title: 'Satisfies Operator',
-    difficulty: 'hard',
-    category: 'TypeScript Advanced',
-    description: `Type-check without widening the inferred type. Preserves narrow literal types while ensuring type safety.
-
-**Challenge:** Use satisfies to preserve narrow types while type-checking.`,
-    examples: [
-      {
-        input: `const config = { port: 3000 } satisfies Record<string, number>;`,
-        output: `config.port is number (not string | number)`,
-        explanation: 'Type is checked but narrow type is preserved'
-      }
-    ],
-    starterCode: `// Problem: type annotation widens the type
-const config: Record<string, string | number> = {
-  port: 3000,
-  host: 'localhost'
-};
-// config.port is string | number (lost narrow type!)
-
-// TODO: Use 'satisfies' to preserve narrow type
-const config2 = {
-  port: 3000,
-  host: 'localhost'
-}; // Add satisfies here
-// config2.port should be number (preserved!)
-
-// Test
-const port: number = config2.port;`,
-    solution: `const config2 = {
-  port: 3000,
-  host: 'localhost'
-} satisfies Record<string, string | number>;`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Type checking only'
-      }
-    ],
-    hints: [
-      "'satisfies' checks type without widening",
-      "Preserves literal types like 3000 instead of number",
-      "Use when you need both type checking and narrow inference"
-    ]
-  },
-  {
-    id: 'exhaustive-switch',
-    title: 'Exhaustive Switch with Never',
-    difficulty: 'hard',
-    category: 'TypeScript Advanced',
-    description: `Ensure all cases are handled at compile time using the never type.
-
-**Challenge:** Add exhaustive checking to switch statements.`,
-    examples: [
-      {
-        input: `type Status = 'loading' | 'success' | 'error';`,
-        output: `Compiler error if case is missing`,
-        explanation: 'Never type catches missing cases'
-      }
-    ],
-    starterCode: `type Status = 'loading' | 'success' | 'error';
-
-function handleStatus(status: Status): string {
-  switch (status) {
-    case 'loading':
-      return 'Loading...';
-    case 'success':
-      return 'Done!';
-    // TODO: Add 'error' case and exhaustive check
-    // In default, assign status to never type
-    default:
-      // Add exhaustive check here
-      return 'Unknown';
-  }
-}
-
-// Test - if you add 'timeout' to Status type, you should get a compiler error`,
-    solution: `type Status = 'loading' | 'success' | 'error';
-
-function handleStatus(status: Status): string {
-  switch (status) {
-    case 'loading':
-      return 'Loading...';
-    case 'success':
-      return 'Done!';
-    case 'error':
-      return 'Failed';
-    default:
-      const _exhaustive: never = status;
-      return _exhaustive;
-  }
-}`,
-    testCases: [
-      {
-        input: ['loading'],
-        expectedOutput: 'Loading...'
-      },
-      {
-        input: ['success'],
-        expectedOutput: 'Done!'
-      },
-      {
-        input: ['error'],
-        expectedOutput: 'Failed'
-      }
-    ],
-    hints: [
-      "If all cases handled, status in default has type 'never'",
-      "If case missing, status still has that type → compiler error",
-      "Use: const _exhaustive: never = status; in default"
-    ]
-  },
-  {
-    id: 'discriminated-unions',
-    title: 'Discriminated Unions',
-    difficulty: 'hard',
-    category: 'TypeScript Advanced',
-    description: `Union types with a common "tag" property for type narrowing.
-
-**Challenge:** Create and use discriminated unions for type-safe API responses.`,
-    examples: [
-      {
-        input: `type ApiResponse = { status: 'success', data: string } | { status: 'error', error: string };`,
-        output: `TypeScript narrows based on status property`,
-        explanation: 'Access data or error based on status'
-      }
-    ],
-    starterCode: `// TODO: Create discriminated union type
-type ApiResponse<T> = 
-  | { status: 'loading' }
-  | { status: 'success'; data: T }
-  | { status: 'error'; error: string };
-
-function handle<T>(response: ApiResponse<T>) {
-  // TODO: Use type narrowing based on status
-  // If status === 'success', access response.data
-  // If status === 'error', access response.error
-  
-  if (response.status === 'success') {
-    // TypeScript should know response.data exists here
-    return response.data; // Fix: response.data might not exist
-  }
-  
-  if (response.status === 'error') {
-    // TypeScript should know response.error exists here
-    return response.error; // Fix: response.error might not exist
-  }
-  
-  return 'Loading...';
-}
-
-// Test
-const success: ApiResponse<string> = { status: 'success', data: 'Hello' };
-const error: ApiResponse<string> = { status: 'error', error: 'Failed' };
-console.log(handle(success));
-console.log(handle(error));`,
-    solution: `type ApiResponse<T> = 
-  | { status: 'loading' }
-  | { status: 'success'; data: T }
-  | { status: 'error'; error: string };
-
-function handle<T>(response: ApiResponse<T>) {
-  if (response.status === 'success') {
-    return response.data;
-  }
-  
-  if (response.status === 'error') {
-    return response.error;
-  }
-  
-  return 'Loading...';
-}`,
-    testCases: [
-      {
-        input: [{ status: 'success', data: 'Hello' }],
-        expectedOutput: 'Hello'
-      },
-      {
-        input: [{ status: 'error', error: 'Failed' }],
-        expectedOutput: 'Failed'
-      }
-    ],
-    hints: [
-      "Common 'tag' property (like 'status') enables type narrowing",
-      "TypeScript narrows union based on tag value",
-      "Each variant can have different properties"
+      'Type guard returns: value is Type',
+      'Assertion function: asserts value is Type',
+      'Check all required properties and their types'
     ]
   }
 ];
