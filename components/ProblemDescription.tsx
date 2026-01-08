@@ -78,7 +78,7 @@ const ProblemDescription = memo(function ProblemDescription({ problem }: Problem
       <div className="flex-1 overflow-y-auto pt-4">
         {/* Description Tab */}
         {activeTab === 'description' && (
-          <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-gray-100 prose-p:text-gray-800 dark:prose-p:text-gray-200 prose-p:leading-relaxed prose-li:text-gray-800 dark:prose-li:text-gray-200 prose-code:text-sm prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded">
+          <div className="prose">
             {parsedDescription}
           </div>
         )}

@@ -40,10 +40,10 @@
   }
 }
 
-/* Prose styles using Tailwind Typography with custom overrides */
+/* Prose styles using Tailwind utilities */
 @layer components {
   .prose {
-    @apply prose-sm max-w-none;
+    @apply max-w-none text-sm;
   }
 
   .prose h2 {
