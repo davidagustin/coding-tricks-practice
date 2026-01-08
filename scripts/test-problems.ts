@@ -41,7 +41,7 @@ const AGENT_ASSIGNMENTS = {
     'async-await-error',
     'promise-race-first',
     'promise-finally',
-    'conditional-types',
+    'basic-typescript-types',
     'interfaces',
     'type-aliases',
     'generics-basic',

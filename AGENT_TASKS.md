@@ -75,7 +75,7 @@ For each assigned problem, you must:
 20. `async-await-error` - Async/Await Error Handling
 21. `promise-race-first` - Promise.race First
 22. `promise-finally` - Promise.finally
-23. `conditional-types` - Conditional Types (first occurrence)
+23. `basic-typescript-types` - Basic TypeScript Types
 24. `interfaces` - Interfaces
 25. `type-aliases` - Type Aliases
 26. `generics-basic` - Generics Basic
@@ -187,6 +187,5 @@ For each problem, use this template:
 
 - Each agent should work independently on their assigned problems
 - Document all findings, even if no issues are found
-- If a problem has duplicate IDs (like `conditional-types` appearing twice), note this as an issue
 - Focus on correctness, runtime safety, and best practices
 - Research online for JavaScript/TypeScript best practices related to each problem

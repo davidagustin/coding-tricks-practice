@@ -176,7 +176,7 @@
 
 ---
 
-### 51. conditional-types - Conditional Types (second occurrence)
+### 51. conditional-types - Conditional Types
 
 **Status:** ⏳ Not Reviewed
 
@@ -194,8 +194,6 @@
 
 **Recommendations:**
 - [To be filled]
-
-**Note:** This is a duplicate ID. The first occurrence is in Agent 2's problems. This should be investigated.
 
 ---
 

@@ -176,7 +176,7 @@
 
 ---
 
-### 23. conditional-types - Conditional Types (first occurrence)
+### 23. basic-typescript-types - Basic TypeScript Types
 
 **Status:** ⏳ Not Reviewed
 
