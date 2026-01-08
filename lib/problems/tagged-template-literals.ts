@@ -28,7 +28,7 @@ export const problem: Problem = {
 
 Tagged template literals allow you to process template strings with a custom function (the "tag"). When you write \`tag\`string\`, JavaScript calls the tag function with:
 1. An array of string literals (the static parts)
-2. The interpolated values (the \`${expression}\` parts)
+2. The interpolated values (the \`\${expression}\` parts)
 
 The tag function receives: \`tag(strings, ...values)\` where:
 - \`strings\` is an array of string literals
