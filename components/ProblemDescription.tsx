@@ -30,8 +30,8 @@ export default function ProblemDescription({ problem }: ProblemDescriptionProps)
         <p className="text-base text-gray-700 dark:text-gray-300 font-semibold">{problem.category}</p>
       </div>
 
-      <div className="prose prose-base dark:prose-invert max-w-none prose-headings:font-semibold prose-headings:text-gray-900 dark:prose-headings:text-gray-100 prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-p:mb-4">
-        <div className="text-base leading-relaxed">
+      <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-gray-100 prose-p:text-gray-900 dark:prose-p:text-gray-100 prose-p:leading-relaxed prose-p:mb-4 prose-li:text-gray-900 dark:prose-li:text-gray-100">
+        <div className="text-lg leading-relaxed">
           {parse(problem.description)}
         </div>
       </div>
