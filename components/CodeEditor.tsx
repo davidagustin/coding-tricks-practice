@@ -13,6 +13,7 @@ interface CodeEditorProps {
 
 export default function CodeEditor({ code, onChange, language = 'typescript', readOnly = false }: CodeEditorProps) {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+  const isSettingValueRef = useRef(false); // Track when we're programmatically setting value
 
   const handleEditorDidMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
@@ -83,7 +84,8 @@ export default function CodeEditor({ code, onChange, language = 'typescript', re
   };
 
   const handleEditorChange = (value: string | undefined) => {
-    if (value !== undefined) {
+    // Don't trigger onChange if we're programmatically setting the value
+    if (value !== undefined && !isSettingValueRef.current) {
       onChange(value);
     }
   };
@@ -91,11 +93,14 @@ export default function CodeEditor({ code, onChange, language = 'typescript', re
   // Format code when it changes externally (e.g., when showing solution)
   useEffect(() => {
     if (editorRef.current && code !== editorRef.current.getValue()) {
+      isSettingValueRef.current = true; // Mark that we're setting value programmatically
       editorRef.current.setValue(code);
-      // Auto-format after setting value
-      setTimeout(async () => {
-        await editorRef.current?.getAction('editor.action.formatDocument')?.run();
-      }, 100);
+      // Reset flag after a brief delay to allow Monaco to process the change
+      setTimeout(() => {
+        isSettingValueRef.current = false;
+        // Auto-format after setting value
+        editorRef.current?.getAction('editor.action.formatDocument')?.run();
+      }, 50);
     }
   }, [code]);
 

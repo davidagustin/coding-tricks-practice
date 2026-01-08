@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { getProblemById, problems } from '@/lib/problems';
 import { runTests, TestRunnerResult } from '@/lib/test-runner';
@@ -20,6 +20,7 @@ export default function ProblemPage() {
   const [testResults, setTestResults] = useState<TestRunnerResult | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
+  const codeRef = useRef(code); // Keep ref in sync with code state
 
   useEffect(() => {
     if (problem) {
@@ -101,22 +102,31 @@ export default function ProblemPage() {
   const handleToggleSolution = () => {
     if (showSolution) {
       // Hiding solution - restore user's code
-      setCode(userCode);
+      setCode(userCode || problem.starterCode);
       setShowSolution(false);
     } else {
       // Showing solution - save current user code first
-      setUserCode(code);
+      // Use ref to get the latest code value to avoid stale closures
+      const currentUserCode = codeRef.current || code;
+      setUserCode(currentUserCode);
       setShowSolution(true);
+      // The code prop will update to problem.solution via the conditional in render
     }
   };
 
   const handleCodeChange = (newCode: string) => {
     setCode(newCode);
+    codeRef.current = newCode; // Keep ref in sync
     // Only update userCode if we're not showing the solution
     if (!showSolution) {
       setUserCode(newCode);
     }
   };
+
+  // Keep ref in sync with code state
+  useEffect(() => {
+    codeRef.current = code;
+  }, [code]);
 
   const currentIndex = problems.findIndex(p => p.id === problemId);
   const prevProblem = currentIndex > 0 ? problems[currentIndex - 1] : null;
