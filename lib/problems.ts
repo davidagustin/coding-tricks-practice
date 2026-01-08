@@ -3404,9 +3404,14 @@ function isVisited(obj, visited) {
 }`,
     testCases: [
       {
-        input: ['John'],
-        expectedOutput: 'secret-123',
-        description: 'User with private data',
+        input: [],
+        expectedOutput: true,
+        description: 'WeakMap stores private data correctly',
+      },
+      {
+        input: [],
+        expectedOutput: true,
+        description: 'WeakSet tracks visited objects correctly',
       },
     ],
     hints: [
@@ -4890,12 +4895,22 @@ function compose(...fns) {
       {
         input: [2],
         expectedOutput: 36,
-        description: 'pipe(addOne, double, square)(2)',
+        description: 'pipe(addOne, double, square)(2) → 36',
       },
       {
         input: [2],
         expectedOutput: 36,
-        description: 'compose(square, double, addOne)(2)',
+        description: 'compose(square, double, addOne)(2) → 36',
+      },
+      {
+        input: [0],
+        expectedOutput: 4,
+        description: 'pipe(addOne, double, square)(0) → 4',
+      },
+      {
+        input: [5],
+        expectedOutput: 144,
+        description: 'pipe(addOne, double, square)(5) → 144',
       },
       {
         input: [0],
