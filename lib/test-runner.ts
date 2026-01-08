@@ -33,7 +33,7 @@ function transpileTypeScript(code: string): { code: string; error?: string } {
       allowJs: true,
       // Don't preserve const enums - convert them to regular enums that transpile to JS
       preserveConstEnums: false,
-    } as ts.TranspileOptions);
+    } as ts.CompilerOptions);
 
     return { code: result };
   } catch (error: unknown) {
@@ -213,13 +213,14 @@ export async function runTests(
             );
           }
 
-          if (!functions[functionName] || typeof functions[functionName] !== 'function') {
+          const functionValue = functions[functionName];
+          if (!functionValue || typeof functionValue !== 'function') {
             throw new Error(
               `Function "${functionName}" was found but is not callable. Make sure it's properly defined.`
             );
           }
 
-          const userFunction = functions[functionName];
+          const userFunction = functionValue as (...args: unknown[]) => unknown;
           let actualOutput: unknown;
 
           // Handle different input types
@@ -332,7 +333,7 @@ function deepEqual(a: unknown, b: unknown): boolean {
 
   if (Array.isArray(a) !== Array.isArray(b)) return false;
 
-  if (Array.isArray(a)) {
+  if (Array.isArray(a) && Array.isArray(b)) {
     if (a.length !== b.length) return false;
     for (let i = 0; i < a.length; i++) {
       if (!deepEqual(a[i], b[i])) return false;
@@ -340,14 +341,16 @@ function deepEqual(a: unknown, b: unknown): boolean {
     return true;
   }
 
-  const keysA = Object.keys(a);
-  const keysB = Object.keys(b);
+  const keysA = Object.keys(a as Record<string, unknown>);
+  const keysB = Object.keys(b as Record<string, unknown>);
 
   if (keysA.length !== keysB.length) return false;
 
   for (const key of keysA) {
     if (!keysB.includes(key)) return false;
-    if (!deepEqual(a[key], b[key])) return false;
+    const aObj = a as Record<string, unknown>;
+    const bObj = b as Record<string, unknown>;
+    if (!deepEqual(aObj[key], bObj[key])) return false;
   }
 
   return true;
