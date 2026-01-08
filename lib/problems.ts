@@ -459,6 +459,11 @@ withTimeout(slowPromise, 500)
         input: [Promise.resolve('success'), 1000],
         expectedOutput: 'success',
         description: 'Promise resolves before timeout'
+      },
+      {
+        input: [Promise.resolve('fast'), 5000],
+        expectedOutput: 'fast',
+        description: 'Fast promise resolves quickly'
       }
     ],
     hints: [
@@ -532,6 +537,27 @@ function isFulfilled(result) {
           successes: ['Success 1', 'Success 2'],
           failures: ['Error 1']
         }
+      },
+      {
+        input: [[
+          Promise.resolve('A'),
+          Promise.resolve('B'),
+          Promise.resolve('C')
+        ]],
+        expectedOutput: {
+          successes: ['A', 'B', 'C'],
+          failures: []
+        }
+      },
+      {
+        input: [[
+          Promise.reject('Error 1'),
+          Promise.reject('Error 2')
+        ]],
+        expectedOutput: {
+          successes: [],
+          failures: ['Error 1', 'Error 2']
+        }
       }
     ],
     hints: [
@@ -578,7 +604,17 @@ type ButtonClass = \`btn-\${Size}-\${Color}\`;`,
       {
         input: ['click'],
         expectedOutput: 'onClick',
-        description: 'EventName type'
+        description: 'EventName type - click'
+      },
+      {
+        input: ['hover'],
+        expectedOutput: 'onHover',
+        description: 'EventName type - hover'
+      },
+      {
+        input: ['submit'],
+        expectedOutput: 'onSubmit',
+        description: 'EventName type - submit'
       }
     ],
     hints: [
