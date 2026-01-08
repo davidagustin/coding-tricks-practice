@@ -67,26 +67,19 @@ console.log(groupByRole(users));`,
     testCases: [
       {
         input: [[
-<<<<<<< HEAD
           { id: 1, name: 'John', role: 'admin' },
           { id: 2, name: 'Jane', role: 'user' },
           { id: 3, name: 'Bob', role: 'admin' }
-=======
-          { active: true, email: 'a@example.com' },
-          { active: false, email: 'b@example.com' },
-          { active: true, email: 'c@example.com' }
         ]],
-        expectedOutput: ['a@example.com', 'c@example.com']
-      },
-      {
-        input: [[
-          { active: false, email: 'a@example.com' }
-        ]],
-        expectedOutput: []
-      },
-      {
-        input: [[]],
-        expectedOutput: []
+        expectedOutput: {
+          admin: [
+            { id: 1, name: 'John', role: 'admin' },
+            { id: 3, name: 'Bob', role: 'admin' }
+          ],
+          user: [
+            { id: 2, name: 'Jane', role: 'user' }
+          ]
+        }
       }
     ],
     hints: [
