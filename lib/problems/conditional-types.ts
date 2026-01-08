@@ -98,18 +98,66 @@ type Test2 = IsArray<string>; // should be false
 type Test3 = ExtractArrayType<number[]>; // should be number
 type Test4 = MyNonNullable<string | null | undefined>; // should be string
 type Test5 = FunctionReturnType<() => string>; // should be string`,
-  solution: `type IsArray<T> = T extends any[] ? true : false;
+  solution: `// IsArray type - returns true if T is an array
+type IsArray<T> = T extends unknown[] ? true : false;
 
+// ExtractArrayType - get element type from array
 type ExtractArrayType<T> = T extends (infer U)[] ? U : never;
 
+// NonNullable equivalent - remove null and undefined
 type MyNonNullable<T> = T extends null | undefined ? never : T;
 
-type FunctionReturnType<T> = T extends (...args: any[]) => infer R ? R : never;`,
+// FunctionReturnType - extract return type of function
+type FunctionReturnType<T> = T extends (...args: unknown[]) => infer R ? R : never;
+
+// Test types
+type Test1 = IsArray<string[]>; // true
+type Test2 = IsArray<string>; // false
+type Test3 = ExtractArrayType<number[]>; // number
+type Test4 = MyNonNullable<string | null | undefined>; // string
+type Test5 = FunctionReturnType<() => string>; // string
+
+// Runtime validation function to demonstrate the types work
+function validateTypes(): boolean {
+  // These are compile-time checks - if they compile, the types are correct
+  const check1: IsArray<string[]> = true;
+  const check2: IsArray<string> = false;
+  const check3: ExtractArrayType<number[]> = 42;
+  const check4: MyNonNullable<string | null | undefined> = 'hello';
+  const check5: FunctionReturnType<() => string> = 'result';
+
+  return check1 === true && check2 === false &&
+         typeof check3 === 'number' &&
+         typeof check4 === 'string' &&
+         typeof check5 === 'string';
+}
+
+console.log(validateTypes()); // true`,
   testCases: [
     {
-      input: [],
+      input: ['IsArray', 'string[]'],
       expectedOutput: true,
-      description: 'Type checking only',
+      description: 'IsArray returns true for array types',
+    },
+    {
+      input: ['IsArray', 'string'],
+      expectedOutput: false,
+      description: 'IsArray returns false for non-array types',
+    },
+    {
+      input: ['ExtractArrayType', 'number[]'],
+      expectedOutput: 'number',
+      description: 'ExtractArrayType extracts element type from array',
+    },
+    {
+      input: ['MyNonNullable', 'string | null | undefined'],
+      expectedOutput: 'string',
+      description: 'MyNonNullable removes null and undefined',
+    },
+    {
+      input: ['FunctionReturnType', '() => string'],
+      expectedOutput: 'string',
+      description: 'FunctionReturnType extracts return type',
     },
   ],
   hints: [

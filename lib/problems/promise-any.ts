@@ -128,21 +128,14 @@ async function findAvailableService(serviceChecks) {
 // fetchFromFirstAvailable(urls).then(console.log).catch(console.error);`,
   solution: `// Fetch data from the first available source
 async function fetchFromFirstAvailable(urls) {
-  if (!urls || urls.length === 0) {
-    throw new Error('No URLs provided');
-  }
-
   try {
-    // Create fetch promises for all URLs
-    const fetchPromises = urls.map(async (url) => {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(\`HTTP error \${response.status}\`);
-      }
-      return response.json();
-    });
+    const fetchPromises = urls.map(url =>
+      fetch(url).then(res => {
+        if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
+        return res.json();
+      })
+    );
 
-    // Return first successful response
     return await Promise.any(fetchPromises);
   } catch (error) {
     if (error instanceof AggregateError) {
@@ -154,83 +147,82 @@ async function fetchFromFirstAvailable(urls) {
 
 // Load a resource with fallback sources
 async function loadWithFallback(primaryUrl, fallbackUrls) {
-  // Try primary first
   try {
-    const response = await fetch(primaryUrl);
-    if (response.ok) {
-      return { source: 'primary', data: await response.json() };
-    }
+    // Try primary first
+    const primaryData = await fetch(primaryUrl).then(res => {
+      if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
+      return res.json();
+    });
+    return { source: 'primary', data: primaryData };
   } catch {
-    // Primary failed, continue to fallbacks
-  }
-
-  // Try fallbacks with Promise.any
-  if (fallbackUrls && fallbackUrls.length > 0) {
+    // Primary failed, try fallbacks with Promise.any
     try {
-      const fallbackPromises = fallbackUrls.map(async (url) => {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Failed');
-        return response.json();
-      });
+      const fallbackPromises = fallbackUrls.map(url =>
+        fetch(url).then(res => {
+          if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
+          return res.json();
+        })
+      );
 
       const data = await Promise.any(fallbackPromises);
       return { source: 'fallback', data };
-    } catch {
-      throw new Error('All sources failed including fallbacks');
+    } catch (error) {
+      throw new Error('All sources (primary and fallbacks) failed');
     }
   }
-
-  throw new Error('Primary source failed and no fallbacks provided');
 }
 
 // Find first available service
 async function findAvailableService(serviceChecks) {
-  if (!serviceChecks || serviceChecks.length === 0) {
-    return null;
-  }
-
   try {
-    // Transform checks into promises that resolve with service name on success
     const checkPromises = serviceChecks.map(async ({ name, check }) => {
       const isAvailable = await check();
-      if (isAvailable) {
-        return name;
-      }
+      if (isAvailable) return name;
       throw new Error(\`\${name} not available\`);
     });
 
     return await Promise.any(checkPromises);
   } catch (error) {
-    // All services unavailable
-    return null;
+    if (error instanceof AggregateError) {
+      return null; // No services available
+    }
+    throw error;
   }
-}`,
+}
+
+// Test
+// const urls = ['https://api1.com/data', 'https://api2.com/data'];
+// fetchFromFirstAvailable(urls).then(console.log).catch(console.error);`,
   testCases: [
     {
-      input: [
-        [Promise.reject('Error 1'), Promise.resolve('Success from source 2'), Promise.reject('Error 3')],
-      ],
-      expectedOutput: 'Success from source 2',
-      description: 'Returns first successful promise result',
+      input: { fn: 'fetchFromFirstAvailable', promises: [{ reject: 'Error 1' }, { resolve: 'Success!' }, { reject: 'Error 2' }] },
+      expectedOutput: 'Success!',
+      description: 'Returns first successful result, ignoring rejections',
     },
     {
-      input: [
-        [Promise.resolve('Fast'), Promise.resolve('Slow')],
-      ],
-      expectedOutput: 'Fast',
-      description: 'Returns first fulfilled promise even if others would also succeed',
+      input: { fn: 'fetchFromFirstAvailable', promises: [{ reject: 'Error 1' }, { reject: 'Error 2' }] },
+      expectedOutput: { throws: true, messageContains: 'All' },
+      description: 'Throws meaningful error when all sources fail',
     },
     {
-      input: [
-        [Promise.reject('All'), Promise.reject('Failed')],
-      ],
-      expectedOutput: 'AggregateError',
-      description: 'Throws AggregateError when all promises reject',
+      input: { fn: 'loadWithFallback', primary: { resolve: 'primary data' }, fallbacks: [] },
+      expectedOutput: { source: 'primary', data: 'primary data' },
+      description: 'Returns primary source when it succeeds',
     },
     {
-      input: [[]],
-      expectedOutput: 'AggregateError',
-      description: 'Throws AggregateError for empty array',
+      input: { fn: 'loadWithFallback', primary: { reject: 'fail' }, fallbacks: [{ resolve: 'fallback data' }] },
+      expectedOutput: { source: 'fallback', data: 'fallback data' },
+      description: 'Falls back to secondary sources when primary fails',
+    },
+    {
+      input: { fn: 'findAvailableService', services: [{ name: 'svc1', available: false }, { name: 'svc2', available: true }] },
+      expectedOutput: 'svc2',
+      description: 'Returns name of first available service',
+    },
+    {
+      input: { fn: 'findAvailableService', services: [{ name: 'svc1', available: false }, { name: 'svc2', available: false }] },
+      expectedOutput: null,
+      description: 'Returns null when no services available',
     },
   ],
   hints: [

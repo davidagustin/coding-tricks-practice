@@ -100,12 +100,15 @@ function processStatus(status: Status) {
 // Test
 console.log(processStatus(Status.Pending));
 console.log(Direction.Up);`,
-  solution: `enum Status {
-  Pending,
-  Approved,
-  Rejected
+  solution: `// 1. Numeric enum for Status (auto-increments from 0)
+enum Status {
+  Pending,    // 0
+  Approved,   // 1
+  Rejected,   // 2
+  InReview    // 3
 }
 
+// 2. String enum for Direction (explicit string values)
 enum Direction {
   Up = 'UP',
   Down = 'DOWN',
@@ -113,26 +116,54 @@ enum Direction {
   Right = 'RIGHT'
 }
 
-function processStatus(status: Status) {
+// 3. Use enums in functions
+function processStatus(status: Status): string {
   switch (status) {
     case Status.Pending:
-      return 'Processing...';
+      return 'Processing is pending';
     case Status.Approved:
-      return 'Approved!';
+      return 'Request has been approved';
     case Status.Rejected:
-      return 'Rejected.';
+      return 'Request was rejected';
+    case Status.InReview:
+      return 'Request is under review';
     default:
-      return 'Unknown';
+      return 'Unknown status';
   }
 }
 
-console.log(processStatus(Status.Pending));
-console.log(Direction.Up);`,
+// Test
+console.log(processStatus(Status.Pending)); // 'Processing is pending'
+console.log(Direction.Up); // 'UP'
+
+// Numeric enum reverse mapping
+console.log(Status[0]); // 'Pending'
+console.log(Status.Pending); // 0`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Enums work correctly',
+      input: { status: 'Status.Pending' },
+      expectedOutput: 'Processing is pending',
+      description: 'processStatus should return correct message for Pending status',
+    },
+    {
+      input: { status: 'Status.Approved' },
+      expectedOutput: 'Request has been approved',
+      description: 'processStatus should return correct message for Approved status',
+    },
+    {
+      input: { direction: 'Direction.Up' },
+      expectedOutput: 'UP',
+      description: 'String enum Direction.Up should equal "UP"',
+    },
+    {
+      input: { numericEnumValue: 'Status.Pending' },
+      expectedOutput: 0,
+      description: 'Numeric enum Status.Pending should equal 0',
+    },
+    {
+      input: { reverseMapping: 'Status[0]' },
+      expectedOutput: 'Pending',
+      description: 'Numeric enum should support reverse mapping',
     },
   ],
   hints: [

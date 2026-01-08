@@ -179,8 +179,10 @@ const tree: TreeNode = {
 
 console.log(dfsTreePreOrder(tree));
 // Expected: [1, 2, 4, 5, 3]`,
-  solution: `type Graph = { [key: string]: string[] };
+  solution: `// Graph represented as adjacency list
+type Graph = { [key: string]: string[] };
 
+// Binary tree node
 interface TreeNode {
   val: number;
   left: TreeNode | null;
@@ -196,15 +198,12 @@ function dfsGraphRecursive(
   const result: string[] = [];
 
   function dfs(node: string): void {
-    // Mark as visited
+    if (visited.has(node)) return;
     visited.add(node);
     result.push(node);
 
-    // Visit all unvisited neighbors
     for (const neighbor of graph[node] || []) {
-      if (!visited.has(neighbor)) {
-        dfs(neighbor);
-      }
+      dfs(neighbor);
     }
   }
 
@@ -212,25 +211,24 @@ function dfsGraphRecursive(
   return result;
 }
 
-// Iterative DFS for graphs using stack
+// Iterative DFS for graphs using a stack
 function dfsGraphIterative(graph: Graph, start: string): string[] {
-  const result: string[] = [];
   const visited = new Set<string>();
   const stack: string[] = [start];
+  const result: string[] = [];
 
   while (stack.length > 0) {
     const node = stack.pop()!;
 
-    if (!visited.has(node)) {
-      visited.add(node);
-      result.push(node);
+    if (visited.has(node)) continue;
+    visited.add(node);
+    result.push(node);
 
-      // Add neighbors to stack (reverse order to maintain left-to-right visiting)
-      const neighbors = graph[node] || [];
-      for (let i = neighbors.length - 1; i >= 0; i--) {
-        if (!visited.has(neighbors[i])) {
-          stack.push(neighbors[i]);
-        }
+    // Push neighbors in reverse order to maintain left-to-right order
+    const neighbors = graph[node] || [];
+    for (let i = neighbors.length - 1; i >= 0; i--) {
+      if (!visited.has(neighbors[i])) {
+        stack.push(neighbors[i]);
       }
     }
   }
@@ -238,55 +236,37 @@ function dfsGraphIterative(graph: Graph, start: string): string[] {
   return result;
 }
 
-// DFS Pre-order: Node -> Left -> Right
+// DFS for binary tree (pre-order traversal)
 function dfsTreePreOrder(root: TreeNode | null): number[] {
   const result: number[] = [];
 
-  function dfs(node: TreeNode | null): void {
-    if (node === null) return;
-
+  function traverse(node: TreeNode | null): void {
+    if (!node) return;
     result.push(node.val);      // Visit node
-    dfs(node.left);             // Visit left subtree
-    dfs(node.right);            // Visit right subtree
+    traverse(node.left);         // Visit left
+    traverse(node.right);        // Visit right
   }
 
-  dfs(root);
+  traverse(root);
   return result;
 }
 
-// DFS In-order: Left -> Node -> Right
+// DFS for binary tree (in-order traversal)
 function dfsTreeInOrder(root: TreeNode | null): number[] {
   const result: number[] = [];
 
-  function dfs(node: TreeNode | null): void {
-    if (node === null) return;
-
-    dfs(node.left);             // Visit left subtree
-    result.push(node.val);      // Visit node
-    dfs(node.right);            // Visit right subtree
+  function traverse(node: TreeNode | null): void {
+    if (!node) return;
+    traverse(node.left);         // Visit left
+    result.push(node.val);       // Visit node
+    traverse(node.right);        // Visit right
   }
 
-  dfs(root);
+  traverse(root);
   return result;
 }
 
-// DFS Post-order: Left -> Right -> Node
-function dfsTreePostOrder(root: TreeNode | null): number[] {
-  const result: number[] = [];
-
-  function dfs(node: TreeNode | null): void {
-    if (node === null) return;
-
-    dfs(node.left);             // Visit left subtree
-    dfs(node.right);            // Visit right subtree
-    result.push(node.val);      // Visit node
-  }
-
-  dfs(root);
-  return result;
-}
-
-// Test
+// Test cases
 const graph: Graph = {
   'A': ['B', 'C'],
   'B': ['D', 'E'],
@@ -296,33 +276,42 @@ const graph: Graph = {
   'F': []
 };
 
-console.log(dfsGraphRecursive(graph, 'A')); // ['A', 'B', 'D', 'E', 'C', 'F']
-console.log(dfsGraphIterative(graph, 'A')); // ['A', 'B', 'D', 'E', 'C', 'F']`,
+console.log(dfsGraphRecursive(graph, 'A'));
+// Expected: ['A', 'B', 'D', 'E', 'C', 'F']
+
+const tree: TreeNode = {
+  val: 1,
+  left: { val: 2, left: { val: 4, left: null, right: null }, right: { val: 5, left: null, right: null } },
+  right: { val: 3, left: null, right: null }
+};
+
+console.log(dfsTreePreOrder(tree));
+// Expected: [1, 2, 4, 5, 3]`,
   testCases: [
     {
-      input: [{ A: ['B', 'C'], B: ['D'], C: [], D: [] }, 'A'],
-      expectedOutput: ['A', 'B', 'D', 'C'],
-      description: 'DFS on simple graph starting from A',
-    },
-    {
-      input: [{ A: ['B', 'C'], B: ['D', 'E'], C: ['F'], D: [], E: [], F: [] }, 'A'],
+      input: { graph: { 'A': ['B', 'C'], 'B': ['D', 'E'], 'C': ['F'], 'D': [], 'E': [], 'F': [] }, start: 'A' },
       expectedOutput: ['A', 'B', 'D', 'E', 'C', 'F'],
-      description: 'DFS on larger graph',
+      description: 'Recursive DFS explores depth-first',
     },
     {
-      input: [{ A: [] }, 'A'],
-      expectedOutput: ['A'],
-      description: 'Single node graph',
-    },
-    {
-      input: 'tree-preorder',
+      input: { tree: { val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: { val: 5, left: null, right: null } }, right: { val: 3, left: null, right: null } } },
       expectedOutput: [1, 2, 4, 5, 3],
-      description: 'Pre-order DFS on binary tree',
+      description: 'Pre-order traversal: node, left, right',
     },
     {
-      input: 'tree-inorder',
+      input: { tree: { val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: { val: 5, left: null, right: null } }, right: { val: 3, left: null, right: null } }, traversal: 'inorder' },
       expectedOutput: [4, 2, 5, 1, 3],
-      description: 'In-order DFS on binary tree',
+      description: 'In-order traversal: left, node, right',
+    },
+    {
+      input: { graph: { 'A': ['B'], 'B': ['C'], 'C': [] }, start: 'A' },
+      expectedOutput: ['A', 'B', 'C'],
+      description: 'DFS on linear graph',
+    },
+    {
+      input: { tree: null },
+      expectedOutput: [],
+      description: 'Empty tree returns empty array',
     },
   ],
   hints: [

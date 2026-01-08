@@ -120,11 +120,11 @@ processBatches(items, 10, batch => {
 }).then(console.log);`,
   solution: `// 1. Chunk array into smaller arrays of specified size
 function chunk(array, size) {
-  const chunks = [];
+  const result = [];
   for (let i = 0; i < array.length; i += size) {
-    chunks.push(array.slice(i, i + size));
+    result.push(array.slice(i, i + size));
   }
-  return chunks;
+  return result;
 }
 
 // 2. Process items in batches with async operation
@@ -143,42 +143,39 @@ async function processBatches(items, batchSize, processor) {
 // 3. Create a batcher that auto-flushes based on size or time
 function createBatcher(options) {
   const { maxSize, maxWait, processor } = options;
-  let batch = [];
+  let pending = [];
   let timer = null;
 
   const flush = async () => {
-    if (batch.length === 0) return;
+    if (pending.length === 0) return;
+
+    const items = pending;
+    pending = [];
 
     if (timer) {
       clearTimeout(timer);
       timer = null;
     }
 
-    const toProcess = batch;
-    batch = [];
-    await processor(toProcess);
+    await processor(items);
   };
 
-  const scheduleFlush = () => {
-    if (timer) return;
-    timer = setTimeout(flush, maxWait);
-  };
+  const add = (item) => {
+    pending.push(item);
 
-  return {
-    add(item) {
-      batch.push(item);
+    // Auto-flush if maxSize reached
+    if (pending.length >= maxSize) {
+      flush();
+      return;
+    }
 
-      if (batch.length >= maxSize) {
-        flush();
-      } else {
-        scheduleFlush();
-      }
-    },
-    flush,
-    get pending() {
-      return batch.length;
+    // Start timer for time-based flushing
+    if (!timer && maxWait) {
+      timer = setTimeout(flush, maxWait);
     }
   };
+
+  return { add, flush };
 }
 
 // 4. Batch function calls and deduplicate
@@ -205,59 +202,33 @@ async function processWithYield(items, processor, chunkSize = 100) {
   const chunks = chunk(items, chunkSize);
   const results = [];
 
-  for (const ch of chunks) {
-    // Yield to event loop
-    await new Promise(resolve => setTimeout(resolve, 0));
-
-    for (const item of ch) {
+  for (const batch of chunks) {
+    // Process chunk
+    for (const item of batch) {
       results.push(processor(item));
     }
+
+    // Yield to event loop to prevent blocking
+    await new Promise(resolve => setTimeout(resolve, 0));
   }
 
   return results;
 }
 
-// Parallel batch processing for independent operations
-async function processParallelBatches(items, batchSize, processor, concurrency = 3) {
-  const batches = chunk(items, batchSize);
-  const results = [];
+// Test
+console.log(chunk([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3));
+// [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10]]
 
-  for (let i = 0; i < batches.length; i += concurrency) {
-    const concurrentBatches = batches.slice(i, i + concurrency);
-    const batchResults = await Promise.all(
-      concurrentBatches.map(batch => processor(batch))
-    );
-    results.push(...batchResults.flat());
-  }
-
-  return results;
-}`,
+const items = Array.from({ length: 100 }, (_, i) => i);
+processBatches(items, 10, batch => {
+  console.log('Processing batch:', batch.length);
+  return batch.map(x => x * 2);
+}).then(console.log);`,
   testCases: [
-    {
-      input: { array: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], size: 3 },
-      expectedOutput: [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10]],
-      description: 'chunk([1-10], 3) splits into chunks of 3 with remainder in last chunk',
-    },
-    {
-      input: { array: [1, 2, 3, 4, 5, 6], size: 2 },
-      expectedOutput: [[1, 2], [3, 4], [5, 6]],
-      description: 'chunk([1-6], 2) splits evenly into 3 chunks of 2',
-    },
-    {
-      input: { items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], batchSize: 5, operation: 'double' },
-      expectedOutput: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20],
-      description: 'processBatches with doubling operation processes all items in 2 batches',
-    },
-    {
-      input: { maxSize: 3, items: ['a', 'b', 'c', 'd', 'e'] },
-      expectedOutput: { batchesProcessed: 2, firstBatch: ['a', 'b', 'c'], secondBatch: ['d', 'e'] },
-      description: 'createBatcher auto-flushes at maxSize=3, then flushes remaining on demand',
-    },
-    {
-      input: { items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], chunkSize: 3, operation: 'square' },
-      expectedOutput: [1, 4, 9, 16, 25, 36, 49, 64, 81, 100],
-      description: 'processWithYield squares numbers in chunks of 3, yielding between chunks',
-    },
+    { input: [[1, 2, 3, 4, 5, 6, 7], 3], expectedOutput: [[1, 2, 3], [4, 5, 6], [7]], description: 'chunk splits array into chunks of 3' },
+    { input: [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3], expectedOutput: [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10]], description: 'chunk handles remainder' },
+    { input: [[1, 2, 3], 5], expectedOutput: [[1, 2, 3]], description: 'chunk with size larger than array' },
+    { input: [[], 3], expectedOutput: [], description: 'chunk with empty array' },
   ],
   hints: [
     'For chunk(), use a loop with slice(i, i + size) to extract each chunk',

@@ -191,16 +191,7 @@ class Collection {
   }
 
   [Symbol.iterator]() {
-    let index = 0;
-    const items = this.items;
-    return {
-      next() {
-        if (index < items.length) {
-          return { value: items[index++], done: false };
-        }
-        return { value: undefined, done: true };
-      }
-    };
+    return this.items[Symbol.iterator]();
   }
 }
 
@@ -235,33 +226,40 @@ function fibonacci(max) {
       };
     }
   };
-}`,
+}
+
+// Test your implementations
+console.log([...range(1, 5)]);  // [1, 2, 3, 4, 5]
+
+const coll = new Collection(['a', 'b']);
+coll.add('c');
+console.log([...coll]);  // ['a', 'b', 'c']
+
+const revIter = reverseIterator([1, 2, 3]);
+console.log(revIter.next());  // { value: 3, done: false }
+
+console.log([...fibonacci(21)]);  // [1, 1, 2, 3, 5, 8, 13, 21]`,
   testCases: [
     {
-      input: [1, 5],
+      input: { fn: 'range', args: [1, 5] },
       expectedOutput: [1, 2, 3, 4, 5],
-      description: 'range(1, 5) returns iterable producing [1, 2, 3, 4, 5]',
+      description: 'range creates an iterable from start to end (inclusive)'
     },
     {
-      input: [0, 3],
-      expectedOutput: [0, 1, 2, 3],
-      description: 'range(0, 3) returns iterable producing [0, 1, 2, 3]',
-    },
-    {
-      input: [['a', 'b', 'c']],
+      input: { fn: 'Collection', args: [['a', 'b', 'c']] },
       expectedOutput: ['a', 'b', 'c'],
-      description: 'Collection with items is iterable and returns all items',
+      description: 'Collection class is iterable and spreads to array'
     },
     {
-      input: [[1, 2, 3]],
+      input: { fn: 'reverseIterator', args: [[1, 2, 3]] },
       expectedOutput: { value: 3, done: false },
-      description: 'reverseIterator returns iterator starting from last element',
+      description: 'reverseIterator returns elements in reverse order'
     },
     {
-      input: [21],
+      input: { fn: 'fibonacci', args: [21] },
       expectedOutput: [1, 1, 2, 3, 5, 8, 13, 21],
-      description: 'fibonacci(21) returns iterable producing Fibonacci up to 21',
-    },
+      description: 'fibonacci generates Fibonacci numbers up to max'
+    }
   ],
   hints: [
     'The [Symbol.iterator] method must return an object with a next() method',

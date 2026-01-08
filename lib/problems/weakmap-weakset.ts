@@ -114,39 +114,73 @@ const obj2 = {};
 markVisited(obj1, visited);
 console.log(isVisited(obj1, visited)); // true
 console.log(isVisited(obj2, visited)); // false`,
-  solution: `const privateData = new WeakMap();
+  solution: `// WeakMap for private data storage
+const privateData = new WeakMap<object, { id: string | null }>();
 
 class User {
-  constructor(name) {
+  name: string;
+
+  constructor(name: string) {
     this.name = name;
+    // Initialize private data in WeakMap
+    privateData.set(this, { id: null });
   }
-  
-  getPrivateId() {
-    return privateData.get(this);
+
+  getPrivateId(): string | null {
+    // Retrieve private data from WeakMap
+    const data = privateData.get(this);
+    return data ? data.id : null;
   }
-  
-  setPrivateId(id) {
-    privateData.set(this, id);
+
+  setPrivateId(id: string): void {
+    // Store private data in WeakMap
+    const data = privateData.get(this);
+    if (data) {
+      data.id = id;
+    } else {
+      privateData.set(this, { id });
+    }
   }
 }
 
-function markVisited(obj, visited) {
+// WeakSet functions for tracking visited objects
+function markVisited(obj: object, visited: WeakSet<object>): void {
+  // Add object to WeakSet
   visited.add(obj);
 }
 
-function isVisited(obj, visited) {
+function isVisited(obj: object, visited: WeakSet<object>): boolean {
+  // Check if object is in WeakSet
   return visited.has(obj);
-}`,
+}
+
+// Test
+const user = new User('John');
+user.setPrivateId('secret-123');
+console.log(user.getPrivateId()); // 'secret-123'
+
+const visited = new WeakSet();
+const obj1 = {};
+const obj2 = {};
+
+markVisited(obj1, visited);
+console.log(isVisited(obj1, visited)); // true
+console.log(isVisited(obj2, visited)); // false`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'WeakMap stores private data correctly',
+      input: ['John', 'secret-123'],
+      expectedOutput: 'secret-123',
+      description: 'getPrivateId returns the stored private id',
     },
     {
-      input: [],
+      input: [{}, true],
       expectedOutput: true,
-      description: 'WeakSet tracks visited objects correctly',
+      description: 'isVisited returns true for marked objects',
+    },
+    {
+      input: [{}, false],
+      expectedOutput: false,
+      description: 'isVisited returns false for unmarked objects',
     },
   ],
   hints: [

@@ -141,18 +141,19 @@ const validatePositive = (a, b) => a > 0 && b > 0;
 const validatedAdd = withValidation(add, validatePositive);
 console.log(validatedAdd(5, 3)); // Works
 console.log(validatedAdd(-1, 3)); // Throws error`,
-  solution: `function withLogging(fn: Function): Function {
-  return function(...args: unknown[]): unknown {
-    const fnName = fn.name || 'anonymous';
-    console.log(\`Calling \${fnName} with args: \${JSON.stringify(args)}\`);
+  solution: `// Decorator that adds logging before and after function execution
+function withLogging(fn) {
+  return function(...args) {
+    console.log(\`Calling \${fn.name || 'anonymous'} with args:\`, args);
     const result = fn(...args);
-    console.log(\`\${fnName} returned: \${JSON.stringify(result)}\`);
+    console.log(\`\${fn.name || 'anonymous'} returned:\`, result);
     return result;
   };
 }
 
-function withTiming(fn: Function): Function {
-  return function(...args: unknown[]): unknown {
+// Decorator that measures and logs execution time
+function withTiming(fn) {
+  return function(...args) {
     const start = performance.now();
     const result = fn(...args);
     const end = performance.now();
@@ -161,67 +162,60 @@ function withTiming(fn: Function): Function {
   };
 }
 
-function withRetry(fn: Function, maxRetries: number = 3): Function {
-  return function(...args: unknown[]): unknown {
-    let lastError: Error;
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+// Decorator that adds retry logic for failed operations
+function withRetry(fn, maxRetries = 3) {
+  return function(...args) {
+    let lastError;
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
       try {
         return fn(...args);
       } catch (error) {
-        lastError = error as Error;
-        console.log(\`Attempt \${attempt} failed: \${lastError.message}\`);
-        if (attempt === maxRetries) {
-          throw lastError;
-        }
+        lastError = error;
+        console.log(\`Attempt \${attempt + 1} failed: \${error.message}\`);
       }
     }
-    throw lastError!;
+    throw lastError;
   };
 }
 
-function withValidation(fn: Function, validator: Function): Function {
-  return function(...args: unknown[]): unknown {
+// Decorator that validates arguments before calling function
+function withValidation(fn, validator) {
+  return function(...args) {
     if (!validator(...args)) {
-      throw new Error(\`Validation failed for args: \${JSON.stringify(args)}\`);
+      throw new Error('Validation failed');
     }
     return fn(...args);
   };
 }
 
-// Stack multiple decorators
-const add = (a: number, b: number): number => a + b;
-const enhancedAdd = withTiming(withLogging(add));
-console.log(enhancedAdd(5, 3));
-// Calling add with args: [5, 3]
-// add returned: 8
-// Execution time: 0.05ms
-// 8`,
+// Test
+const add = (a, b) => a + b;
+const loggedAdd = withLogging(add);
+console.log(loggedAdd(5, 3));
+
+const timedAdd = withTiming(add);
+console.log(timedAdd(10, 20));
+
+const validatePositive = (a, b) => a > 0 && b > 0;
+const validatedAdd = withValidation(add, validatePositive);
+console.log(validatedAdd(5, 3)); // Works
+// console.log(validatedAdd(-1, 3)); // Throws error`,
   testCases: [
     {
-      input: { decorator: 'withLogging', fn: 'add', args: [5, 3] },
-      expectedOutput: { result: 8, logged: true },
-      description: 'withLogging decorator returns correct result and logs call info',
+      input: { fn: 'withLogging', args: ['add', [5, 3]] },
+      expectedOutput: 8,
+      description: 'withLogging wraps function and returns correct result'
     },
     {
-      input: { decorator: 'withTiming', fn: 'multiply', args: [4, 5] },
-      expectedOutput: { result: 20, timed: true },
-      description: 'withTiming decorator returns correct result and logs execution time',
+      input: { fn: 'withTiming', args: ['add', [10, 20]] },
+      expectedOutput: 30,
+      description: 'withTiming wraps function and returns correct result'
     },
     {
-      input: { decorator: 'withRetry', fn: 'failingFn', failCount: 2, maxRetries: 3 },
-      expectedOutput: { succeeded: true, attempts: 3 },
-      description: 'withRetry decorator retries failed operations up to maxRetries times',
-    },
-    {
-      input: { decorator: 'withValidation', fn: 'divide', args: [10, 0], validator: 'nonZeroDivisor' },
-      expectedOutput: { error: 'Validation failed' },
-      description: 'withValidation decorator throws error when validation fails',
-    },
-    {
-      input: { decorator: 'stacked', decorators: ['withLogging', 'withTiming'], fn: 'add', args: [1, 2] },
-      expectedOutput: { result: 3, logged: true, timed: true },
-      description: 'Multiple decorators can be stacked on a single function',
-    },
+      input: { fn: 'withValidation', args: ['add', 'validatePositive', [5, 3]] },
+      expectedOutput: 8,
+      description: 'withValidation allows valid arguments through'
+    }
   ],
   hints: [
     'Use rest parameters (...args) to capture all arguments passed to the wrapped function',

@@ -92,45 +92,61 @@ const requests = [
 // Test (commented out to prevent immediate execution)
 // processMultipleRequests(requests).then(console.log).catch(console.error);`,
   solution: `async function processMultipleRequests(requests) {
+  // Use Promise.allSettled to handle all promises
   const results = await Promise.allSettled(requests);
-  
+
+  // Separate fulfilled and rejected results
   const successes = results
-    .filter((r): r is PromiseFulfilledResult<string> => r.status === 'fulfilled')
-    .map(r => r.value);
-  
+    .filter(isFulfilled)
+    .map(result => result.value);
+
   const failures = results
-    .filter((r): r is PromiseRejectedResult => r.status === 'rejected')
-    .map(r => r.reason);
-  
+    .filter(result => result.status === 'rejected')
+    .map(result => result.reason);
+
   return { successes, failures };
 }
 
+// Helper function to check if result is fulfilled
 function isFulfilled(result) {
   return result.status === 'fulfilled';
-}`,
+}
+
+// Test
+const requests = [
+  Promise.resolve('Success 1'),
+  Promise.reject('Error 1'),
+  Promise.resolve('Success 2')
+];
+
+processMultipleRequests(requests).then(console.log);
+// { successes: ['Success 1', 'Success 2'], failures: ['Error 1'] }`,
   testCases: [
     {
       input: [
-        [Promise.resolve('Success 1'), Promise.reject('Error 1'), Promise.resolve('Success 2')],
+        { type: 'resolve', value: 'Success 1' },
+        { type: 'reject', value: 'Error 1' },
+        { type: 'resolve', value: 'Success 2' }
       ],
-      expectedOutput: {
-        successes: ['Success 1', 'Success 2'],
-        failures: ['Error 1'],
-      },
+      expectedOutput: { successes: ['Success 1', 'Success 2'], failures: ['Error 1'] },
+      description: 'Separates fulfilled and rejected promises',
     },
     {
-      input: [[Promise.resolve('A'), Promise.resolve('B'), Promise.resolve('C')]],
-      expectedOutput: {
-        successes: ['A', 'B', 'C'],
-        failures: [],
-      },
+      input: [
+        { type: 'resolve', value: 1 },
+        { type: 'resolve', value: 2 },
+        { type: 'resolve', value: 3 }
+      ],
+      expectedOutput: { successes: [1, 2, 3], failures: [] },
+      description: 'All successes returns empty failures array',
     },
     {
-      input: [[Promise.reject('Error 1'), Promise.reject('Error 2')]],
-      expectedOutput: {
-        successes: [],
-        failures: ['Error 1', 'Error 2'],
-      },
+      input: [
+        { type: 'reject', value: 'Error 1' },
+        { type: 'reject', value: 'Error 2' }
+      ],
+      expectedOutput: { successes: [], failures: ['Error 1', 'Error 2'] },
+      description: 'All failures returns empty successes array',
     },
   ],
   hints: [

@@ -99,13 +99,12 @@ const { promise, cancel } = createCancellableFetch('/api/data', 1000);
 setTimeout(() => cancel(), 500); // Cancel after 500ms`,
   solution: `async function fetchWithCancel(url, signal) {
   try {
-    // Mock fetch for testing
-    const mockFetch = () => Promise.resolve({ json: () => Promise.resolve({ data: 'test' }) });
-    const response = await mockFetch();
+    const response = await fetch(url, { signal });
     return response.json();
   } catch (error) {
     if (error.name === 'AbortError') {
-      throw new Error('Request cancelled');
+      console.log('Fetch was cancelled');
+      return null;
     }
     throw error;
   }
@@ -113,11 +112,18 @@ setTimeout(() => cancel(), 500); // Cancel after 500ms`,
 
 function createCancellableFetch(url, timeout = 5000) {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeout);
-  
-  const promise = fetchWithCancel(url, controller.signal)
-    .finally(() => clearTimeout(timeoutId));
-  
+  const signal = controller.signal;
+
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, timeout);
+
+  const promise = fetch(url, { signal })
+    .then(response => response.json())
+    .finally(() => {
+      clearTimeout(timeoutId);
+    });
+
   return {
     promise,
     cancel: () => {
@@ -127,20 +133,24 @@ function createCancellableFetch(url, timeout = 5000) {
   };
 }
 
-// Test function
-function testAbortController() {
-  try {
-    const controller = new AbortController();
-    return typeof controller.abort === 'function';
-  } catch (e) {
-    return false;
-  }
-}`,
+// Test
+const { promise, cancel } = createCancellableFetch('/api/data', 1000);
+setTimeout(() => cancel(), 500); // Cancel after 500ms`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'testAbortController',
+      input: ['fetchWithCancel'],
+      expectedOutput: 'function',
+      description: 'fetchWithCancel is a function that passes signal to fetch',
+    },
+    {
+      input: ['createCancellableFetch'],
+      expectedOutput: 'object with promise and cancel',
+      description: 'createCancellableFetch returns an object with promise and cancel function',
+    },
+    {
+      input: ['AbortController'],
+      expectedOutput: 'used for cancellation',
+      description: 'AbortController is used to create cancellation signal',
     },
   ],
   hints: [

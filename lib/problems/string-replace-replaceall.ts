@@ -153,40 +153,51 @@ function censorWords(text, words) {
   let result = text;
   for (const word of words) {
     const regex = new RegExp(word, 'gi');
-    result = result.replace(regex, match => '*'.repeat(match.length));
+    result = result.replace(regex, '*'.repeat(word.length));
   }
   return result;
-}`,
+}
+
+// Test
+console.log(toSlug('Hello World!'));
+console.log(formatPhoneNumber('1234567890'));
+console.log(camelToSnake('helloWorld'));
+console.log(censorWords('hello world', ['world']));`,
   testCases: [
     {
       input: ['Hello World!'],
       expectedOutput: 'hello-world',
-      description: 'toSlug basic',
+      description: 'toSlug converts title to URL-friendly slug',
     },
     {
       input: ['My   Blog Post!!!'],
       expectedOutput: 'my-blog-post',
-      description: 'toSlug with multiple spaces and special chars',
+      description: 'toSlug handles multiple spaces and special characters',
     },
     {
       input: ['1234567890'],
       expectedOutput: '(123) 456-7890',
-      description: 'formatPhoneNumber',
+      description: 'formatPhoneNumber formats digits correctly',
+    },
+    {
+      input: ['123-456-7890'],
+      expectedOutput: '(123) 456-7890',
+      description: 'formatPhoneNumber removes existing formatting',
     },
     {
       input: ['helloWorld'],
       expectedOutput: 'hello_world',
-      description: 'camelToSnake basic',
+      description: 'camelToSnake converts camelCase to snake_case',
     },
     {
       input: ['myVariableName'],
       expectedOutput: 'my_variable_name',
-      description: 'camelToSnake multiple words',
+      description: 'camelToSnake handles multiple uppercase letters',
     },
     {
       input: ['hello world', ['world']],
       expectedOutput: 'hello *****',
-      description: 'censorWords',
+      description: 'censorWords replaces word with asterisks',
     },
   ],
   hints: [

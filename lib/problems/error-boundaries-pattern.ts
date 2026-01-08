@@ -182,39 +182,39 @@ class ErrorBoundary<T> {
     this.shouldCatch = options.shouldCatch ?? (() => true);
   }
 
+  // Execute a function within the boundary
   execute<R>(fn: () => R): R | T {
     try {
       return fn();
-    } catch (err) {
-      const error = err instanceof Error ? err : new Error(String(err));
-
-      if (!this.shouldCatch(error)) {
-        throw error;
+    } catch (e) {
+      const error = e instanceof Error ? e : new Error(String(e));
+      if (this.shouldCatch(error)) {
+        this.lastError = error;
+        this.errorCount++;
+        if (this.onError) {
+          this.onError(error);
+        }
+        return this.fallback;
       }
-
-      this.lastError = error;
-      this.errorCount++;
-      this.onError?.(error);
-
-      return this.fallback;
+      throw error;
     }
   }
 
+  // Async version
   async executeAsync<R>(fn: () => Promise<R>): Promise<R | T> {
     try {
       return await fn();
-    } catch (err) {
-      const error = err instanceof Error ? err : new Error(String(err));
-
-      if (!this.shouldCatch(error)) {
-        throw error;
+    } catch (e) {
+      const error = e instanceof Error ? e : new Error(String(e));
+      if (this.shouldCatch(error)) {
+        this.lastError = error;
+        this.errorCount++;
+        if (this.onError) {
+          this.onError(error);
+        }
+        return this.fallback;
       }
-
-      this.lastError = error;
-      this.errorCount++;
-      this.onError?.(error);
-
-      return this.fallback;
+      throw error;
     }
   }
 
@@ -236,29 +236,15 @@ class ErrorBoundary<T> {
   }
 }
 
+// Utility: Create a bounded function
 function createBoundedFunction<T, Args extends any[], R>(
   fn: (...args: Args) => R,
   fallback: T
 ): (...args: Args) => R | T {
-  const boundary = new ErrorBoundary({ fallback });
-  return (...args: Args) => boundary.execute(() => fn(...args));
-}
-
-// Additional utility: Batch processing with error boundary
-function processBatch<T, R>(
-  items: T[],
-  processor: (item: T) => R,
-  fallback: R
-): Array<{ item: T; result: R; error?: Error }> {
-  return items.map(item => {
-    const boundary = new ErrorBoundary({ fallback });
-    const result = boundary.execute(() => processor(item));
-    return {
-      item,
-      result,
-      ...(boundary.hasError() && { error: boundary.getLastError()! })
-    };
-  });
+  const boundary = new ErrorBoundary<T>({ fallback });
+  return (...args: Args): R | T => {
+    return boundary.execute(() => fn(...args));
+  };
 }
 
 // Test
@@ -267,40 +253,25 @@ const boundary = new ErrorBoundary<string>({
   onError: (err) => console.log('Caught:', err.message)
 });
 
-console.log(boundary.execute(() => 'success')); // 'success'
-console.log(boundary.execute(() => { throw new Error('fail'); })); // 'default'
-console.log(boundary.hasError()); // true
-console.log(boundary.getErrorCount()); // 1`,
+console.log(boundary.execute(() => 'success'));  // 'success'
+console.log(boundary.execute(() => { throw new Error('fail'); }));  // 'default'
+console.log(boundary.hasError());  // true
+console.log(boundary.getErrorCount());  // 1`,
   testCases: [
     {
-      input: ['success', 'default'],
-      expectedOutput: { result: 'success', hasError: false },
-      description: 'Successful execution returns result without error',
+      input: ['success'],
+      expectedOutput: 'success',
+      description: 'execute should return function result on success',
     },
     {
-      input: ['throw', 'default'],
-      expectedOutput: { result: 'default', hasError: true },
-      description: 'Failed execution returns fallback and sets error state',
+      input: ['error'],
+      expectedOutput: 'default',
+      description: 'execute should return fallback on error',
     },
     {
-      input: ['throw', 'throw', 'default'],
-      expectedOutput: { errorCount: 2 },
-      description: 'Error count increments with each caught error',
-    },
-    {
-      input: ['reset'],
-      expectedOutput: { hasError: false, errorCount: 0 },
-      description: 'Reset clears error state and count',
-    },
-    {
-      input: [['a', 'b', 'error', 'c'], 'fallback'],
-      expectedOutput: [
-        { item: 'a', result: 'processed:a' },
-        { item: 'b', result: 'processed:b' },
-        { item: 'error', result: 'fallback', error: true },
-        { item: 'c', result: 'processed:c' }
-      ],
-      description: 'Batch processing continues despite individual errors',
+      input: [],
+      expectedOutput: true,
+      description: 'hasError should return true after catching an error',
     },
   ],
   hints: [

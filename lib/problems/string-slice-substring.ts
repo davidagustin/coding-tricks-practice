@@ -139,39 +139,54 @@ function removeFirstAndLast(str) {
 }
 
 function extractMiddle(str, start, end) {
-  // Use substring's swapping behavior
   return str.substring(start, end);
 }
 
 function truncateWithEllipsis(str, maxLength) {
   if (str.length <= maxLength) return str;
   return str.slice(0, maxLength - 3) + '...';
-}`,
+}
+
+// Test
+console.log(getFileExtension('document.pdf'));
+console.log(removeFirstAndLast('[hello]'));
+console.log(extractMiddle('abcdef', 4, 1));
+console.log(truncateWithEllipsis('Hello World', 8));`,
   testCases: [
     {
       input: ['document.pdf'],
       expectedOutput: '.pdf',
-      description: 'getFileExtension',
+      description: 'getFileExtension returns .pdf',
+    },
+    {
+      input: ['image.png'],
+      expectedOutput: '.png',
+      description: 'getFileExtension returns .png',
     },
     {
       input: ['[hello]'],
       expectedOutput: 'hello',
-      description: 'removeFirstAndLast',
+      description: 'removeFirstAndLast removes brackets',
+    },
+    {
+      input: ['"quoted"'],
+      expectedOutput: 'quoted',
+      description: 'removeFirstAndLast removes quotes',
     },
     {
       input: ['abcdef', 4, 1],
       expectedOutput: 'bcd',
-      description: 'extractMiddle with swapped indices',
+      description: 'extractMiddle swaps arguments when start > end',
     },
     {
       input: ['Hello World', 8],
       expectedOutput: 'Hello...',
-      description: 'truncateWithEllipsis',
+      description: 'truncateWithEllipsis truncates with ellipsis',
     },
     {
       input: ['Short', 10],
       expectedOutput: 'Short',
-      description: 'truncateWithEllipsis no truncation needed',
+      description: 'truncateWithEllipsis returns original if shorter than maxLength',
     },
   ],
   hints: [

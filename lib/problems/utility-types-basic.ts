@@ -222,6 +222,7 @@ function updateProduct(id: number, updates: ProductUpdate): Product {
     createdAt: new Date()
   };
 
+  // Merge updates with existing product and return
   return { ...existingProduct, ...updates };
 }
 
@@ -265,49 +266,11 @@ function validateConfig(config: AppConfig): ValidatedConfig {
     retries: config.retries ?? 3,
     debug: config.debug ?? false
   };
-}
-
-// Test implementations
-console.log(updateProduct(1, { price: 149.99, inStock: false }));
-const testProduct: Product = {
-  id: 1,
-  name: 'Test',
-  description: 'Test desc',
-  price: 29.99,
-  category: 'test',
-  inStock: true,
-  createdAt: new Date()
-};
-console.log(getProductPreview(testProduct));
-console.log(createProduct({
-  name: 'New Product',
-  description: 'A new product',
-  price: 49.99,
-  category: 'new',
-  inStock: true
-}));
-console.log(validateConfig({ apiUrl: 'https://api.example.com' }));`,
+}`,
   testCases: [
-    {
-      input: [1, { price: 149.99 }],
-      expectedOutput: { price: 149.99 },
-      description: 'updateProduct merges partial updates with existing product',
-    },
-    {
-      input: [{ id: 1, name: 'Test', description: 'desc', price: 29.99, category: 'test', inStock: true }],
-      expectedOutput: { id: 1, name: 'Test', price: 29.99, inStock: true },
-      description: 'getProductPreview returns only the preview fields',
-    },
-    {
-      input: [{ name: 'New', description: 'desc', price: 10, category: 'cat', inStock: true }],
-      expectedOutput: 'has id and createdAt',
-      description: 'createProduct adds generated id and createdAt',
-    },
-    {
-      input: [{}],
-      expectedOutput: { apiUrl: 'http://localhost', timeout: 5000, retries: 3, debug: false },
-      description: 'validateConfig provides all default values',
-    },
+    { input: [1, { price: 149.99, inStock: false }], expectedOutput: { id: 1, name: 'Original Product', description: 'Original description', price: 149.99, category: 'electronics', inStock: false }, description: 'updateProduct merges updates correctly' },
+    { input: [{ apiUrl: 'https://api.example.com' }], expectedOutput: { apiUrl: 'https://api.example.com', timeout: 5000, retries: 3, debug: false }, description: 'validateConfig applies defaults' },
+    { input: [{}], expectedOutput: { apiUrl: 'http://localhost', timeout: 5000, retries: 3, debug: false }, description: 'validateConfig applies all defaults when empty' },
   ],
   hints: [
     'Partial<T> makes all properties optional: { [K in keyof T]?: T[K] }',

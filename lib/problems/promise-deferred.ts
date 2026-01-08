@@ -173,8 +173,7 @@ class RequestMatcher {
 // console.log(result); // 'done'`,
   solution: `// Create a deferred promise
 function createDeferred() {
-  let resolve;
-  let reject;
+  let resolve, reject;
   let status = 'pending';
 
   const promise = new Promise((res, rej) => {
@@ -202,31 +201,27 @@ function createDeferred() {
 
 // Wait for a one-time event
 function waitForEvent(target, eventName, options = {}) {
-  const deferred = createDeferred();
   const { timeout, filter } = options;
-
-  let timeoutId = null;
+  const deferred = createDeferred();
 
   const handler = (event) => {
-    // If filter provided, check it
-    if (filter && !filter(event)) {
-      return; // Don't resolve, keep listening
-    }
-
-    // Clean up
-    if (timeoutId) clearTimeout(timeoutId);
-    target.removeEventListener(eventName, handler);
-
+    if (filter && !filter(event)) return;
+    cleanup();
     deferred.resolve(event);
+  };
+
+  const cleanup = () => {
+    target.removeEventListener(eventName, handler);
+    if (timeoutId) clearTimeout(timeoutId);
   };
 
   target.addEventListener(eventName, handler);
 
-  // Set up timeout if specified
+  let timeoutId;
   if (timeout) {
     timeoutId = setTimeout(() => {
-      target.removeEventListener(eventName, handler);
-      deferred.reject(new Error(\`Timeout waiting for event: \${eventName}\`));
+      cleanup();
+      deferred.reject(new Error(\`Timeout waiting for \${eventName}\`));
     }, timeout);
   }
 
@@ -240,124 +235,72 @@ class RequestMatcher {
   }
 
   createRequest(id, timeoutMs = 5000) {
-    // Check for duplicate
-    if (this._pending.has(id)) {
-      throw new Error(\`Request with ID \${id} already pending\`);
-    }
-
     const deferred = createDeferred();
 
-    // Set up timeout
-    let timeoutId = null;
-    if (timeoutMs > 0) {
-      timeoutId = setTimeout(() => {
-        this._pending.delete(id);
-        deferred.reject(new Error(\`Request \${id} timed out\`));
-      }, timeoutMs);
-    }
+    const timeoutId = setTimeout(() => {
+      this._pending.delete(id);
+      deferred.reject(new Error(\`Request \${id} timed out\`));
+    }, timeoutMs);
 
-    this._pending.set(id, {
-      deferred,
-      timeoutId
-    });
+    this._pending.set(id, { deferred, timeoutId });
 
     return deferred.promise;
   }
 
   handleResponse(id, response) {
     const pending = this._pending.get(id);
+    if (!pending) return false;
 
-    if (!pending) {
-      return false;
-    }
-
-    // Clean up
-    if (pending.timeoutId) {
-      clearTimeout(pending.timeoutId);
-    }
+    clearTimeout(pending.timeoutId);
     this._pending.delete(id);
-
-    // Resolve
     pending.deferred.resolve(response);
     return true;
   }
 
-  cancelRequest(id, reason = 'Cancelled') {
+  cancelRequest(id, reason) {
     const pending = this._pending.get(id);
+    if (!pending) return false;
 
-    if (!pending) {
-      return false;
-    }
-
-    // Clean up
-    if (pending.timeoutId) {
-      clearTimeout(pending.timeoutId);
-    }
+    clearTimeout(pending.timeoutId);
     this._pending.delete(id);
-
-    // Reject
-    pending.deferred.reject(new Error(reason));
+    pending.deferred.reject(new Error(reason || 'Request cancelled'));
     return true;
-  }
-
-  get pendingCount() {
-    return this._pending.size;
-  }
-
-  hasPending(id) {
-    return this._pending.has(id);
   }
 }
 
-// Barrier: Wait for multiple conditions
-class Barrier {
-  constructor(count) {
-    this._count = count;
-    this._arrived = 0;
-    this._deferred = createDeferred();
-  }
-
-  arrive() {
-    this._arrived++;
-    if (this._arrived >= this._count) {
-      this._deferred.resolve();
-    }
-  }
-
-  wait() {
-    return this._deferred.promise;
-  }
-
-  reset() {
-    this._arrived = 0;
-    this._deferred = createDeferred();
-  }
-}`,
+// Test
+const deferred = createDeferred();
+console.log(deferred.status); // 'pending'
+setTimeout(() => deferred.resolve('done'), 100);
+deferred.promise.then(result => {
+  console.log(result); // 'done'
+  console.log(deferred.status); // 'fulfilled'
+});`,
   testCases: [
     {
-      input: ['basic'],
-      expectedOutput: 'resolved',
-      description: 'Basic deferred resolves correctly',
+      input: { fn: 'createDeferred', action: 'resolve', value: 42 },
+      expectedOutput: { value: 42, status: 'fulfilled' },
+      description: 'Deferred resolves with value and updates status',
     },
     {
-      input: ['status', 'resolve'],
-      expectedOutput: 'fulfilled',
-      description: 'Status updates to fulfilled after resolve',
+      input: { fn: 'createDeferred', action: 'reject', value: 'error' },
+      expectedOutput: { error: 'error', status: 'rejected' },
+      description: 'Deferred rejects with reason and updates status',
     },
     {
-      input: ['status', 'reject'],
-      expectedOutput: 'rejected',
-      description: 'Status updates to rejected after reject',
+      input: { fn: 'createDeferred', action: 'checkStatus' },
+      expectedOutput: { status: 'pending' },
+      description: 'Deferred starts in pending status',
     },
     {
-      input: ['matcher', 'success'],
-      expectedOutput: 'response-data',
-      description: 'RequestMatcher matches responses to requests',
+      input: { fn: 'RequestMatcher', action: 'handleResponse', id: 'req1', response: 'data' },
+      expectedOutput: { success: true, value: 'data' },
+      description: 'RequestMatcher resolves pending request with response',
     },
     {
-      input: ['matcher', 'timeout'],
-      expectedOutput: 'timeout-error',
-      description: 'RequestMatcher times out unmatched requests',
+      input: { fn: 'RequestMatcher', action: 'handleResponse', id: 'unknown' },
+      expectedOutput: { success: false },
+      description: 'RequestMatcher returns false for unknown request id',
     },
   ],
   hints: [

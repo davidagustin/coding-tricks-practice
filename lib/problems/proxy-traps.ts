@@ -116,50 +116,70 @@ user.name = 'Jane'; // OK
 // user.age = -5; // Should throw error`,
   solution: `function createLoggingProxy(obj) {
   return new Proxy(obj, {
-    get(target, prop) {
-      console.log('Getting ' + String(prop));
-      return target[prop];
+    get(target, prop, receiver) {
+      console.log(\`Getting \${String(prop)}\`);
+      return Reflect.get(target, prop, receiver);
     },
-    set(target, prop, value) {
-      console.log('Setting ' + String(prop) + ' to ' + value);
-      target[prop] = value;
-      return true;
+    set(target, prop, value, receiver) {
+      console.log(\`Setting \${String(prop)} to \${value}\`);
+      return Reflect.set(target, prop, value, receiver);
     }
   });
 }
 
 function createDefaultProxy(obj, defaultValue) {
   return new Proxy(obj, {
-    get(target, prop) {
-      return prop in target ? target[prop] : defaultValue;
+    get(target, prop, receiver) {
+      if (prop in target) {
+        return Reflect.get(target, prop, receiver);
+      }
+      return defaultValue;
     }
   });
 }
 
 function createValidatingProxy(obj) {
   return new Proxy(obj, {
-    set(target, prop, value) {
-      if (prop === 'name' && typeof value !== 'string') {
-        throw new Error('name must be a string');
+    set(target, prop, value, receiver) {
+      if (prop === 'name') {
+        if (typeof value !== 'string') {
+          throw new Error('name must be a string');
+        }
       }
-      if (prop === 'age' && (typeof value !== 'number' || value < 0)) {
-        throw new Error('age must be a positive number');
+      if (prop === 'age') {
+        if (typeof value !== 'number' || value < 0) {
+          throw new Error('age must be a positive number');
+        }
       }
-      target[prop] = value;
-      return true;
+      return Reflect.set(target, prop, value, receiver);
     }
   });
 }`,
   testCases: [
     {
-      input: [{ x: 1 }],
+      input: { type: 'logging', obj: { x: 1, y: 2 }, access: 'x' },
       expectedOutput: 1,
-      description: 'logging proxy get',
+      description: 'createLoggingProxy returns correct value'
     },
     {
-      input: [{}, 'N/A'],
+      input: { type: 'default', obj: { a: 1 }, access: 'missing', defaultValue: 'N/A' },
       expectedOutput: 'N/A',
-      description: 'default proxy missing prop',
+      description: 'createDefaultProxy returns default for missing props'
+    },
+    {
+      input: { type: 'default', obj: { a: 1 }, access: 'a', defaultValue: 'N/A' },
+      expectedOutput: 1,
+      description: 'createDefaultProxy returns actual value for existing props'
+    },
+    {
+      input: { type: 'validating', prop: 'name', value: 'Jane' },
+      expectedOutput: true,
+      description: 'createValidatingProxy allows valid name'
+    },
+    {
+      input: { type: 'validating', prop: 'age', value: -5 },
+      expectedOutput: 'error',
+      description: 'createValidatingProxy throws on negative age'
     },
   ],
   hints: [

@@ -109,24 +109,38 @@ console.log(user);`,
   readonly id: string;
   name: string;
   email?: string;
+  age?: number;
 }
 
 function createUser(data: Partial<User>): User {
   return {
-    id: data.id || '',
-    name: data.name || '',
-    email: data.email
+    id: data.id || crypto.randomUUID(),
+    name: data.name || 'Anonymous',
+    email: data.email,
+    age: data.age
   };
 }
 
+// Test
 const user = createUser({ id: '123', name: 'Alice' });
-// user.id = '456'; // Error: Cannot assign to 'id' because it is a read-only property
-console.log(user);`,
+// user.id = '456'; // TypeScript Error: Cannot assign to 'id' because it is a read-only property
+console.log(user);
+// { id: '123', name: 'Alice', email: undefined, age: undefined }`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Optional and readonly work correctly',
+      input: { id: '123', name: 'Alice' },
+      expectedOutput: { id: '123', name: 'Alice', email: undefined, age: undefined },
+      description: 'Creates user with provided id and name, optional fields undefined',
+    },
+    {
+      input: { name: 'Bob', email: 'bob@example.com' },
+      expectedOutput: { name: 'Bob', email: 'bob@example.com' },
+      description: 'Creates user with generated id when not provided',
+    },
+    {
+      input: {},
+      expectedOutput: { name: 'Anonymous' },
+      description: 'Creates user with defaults when no data provided',
     },
   ],
   hints: [

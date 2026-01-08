@@ -182,7 +182,6 @@ function getConfig() {
     timeout: 5000,
     retries: 3
   } as const;
-
   return config;
 }
 
@@ -194,8 +193,7 @@ interface User {
 }
 
 function parseApiResponse(jsonString: string): User {
-  const data = JSON.parse(jsonString) as User;
-  return data;
+  return JSON.parse(jsonString) as User;
 }
 
 // Task 4: Use non-null assertion appropriately
@@ -213,7 +211,7 @@ function convertToNumber(value: string): number {
   return value as unknown as number;
 }
 
-// Test implementations
+// Test your implementations
 console.log(setupCanvas());
 console.log(getConfig());
 console.log(parseApiResponse('{"id": 1, "name": "John", "email": "john@example.com"}'));
@@ -223,22 +221,27 @@ console.log(convertToNumber('42'));`,
     {
       input: [],
       expectedOutput: 'Canvas size: 800x600',
-      description: 'setupCanvas correctly asserts and accesses canvas properties',
+      description: 'setupCanvas returns correct canvas size string',
     },
     {
       input: [],
       expectedOutput: { apiUrl: 'https://api.example.com', timeout: 5000, retries: 3 },
-      description: 'getConfig returns a const-asserted configuration object',
+      description: 'getConfig returns config object with literal types',
     },
     {
       input: ['{"id": 1, "name": "John", "email": "john@example.com"}'],
       expectedOutput: { id: 1, name: 'John', email: 'john@example.com' },
-      description: 'parseApiResponse correctly parses and asserts JSON',
+      description: 'parseApiResponse parses JSON and asserts User type',
     },
     {
-      input: [{ username: 'alice' }],
+      input: [{ username: 'alice', email: 'alice@example.com' }],
       expectedOutput: 'Processing user: alice',
-      description: 'processForm uses non-null assertion correctly',
+      description: 'processForm uses non-null assertion to access username',
+    },
+    {
+      input: ['42'],
+      expectedOutput: '42',
+      description: 'convertToNumber demonstrates double assertion (note: returns string at runtime)',
     },
   ],
   hints: [

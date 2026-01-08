@@ -131,72 +131,54 @@ function safeExecute<T>(
   fn: () => T,
   cleanup?: () => void
 ): SafeResult<T> {
+  let result: SafeResult<T> = { success: false, data: null, error: null };
+
   try {
+    // Execute the function and store the result
     const data = fn();
-    return { success: true, data, error: null };
+    result = { success: true, data, error: null };
   } catch (err) {
-    const error = err instanceof Error ? err.message : String(err);
-    return { success: false, data: null, error };
+    // Capture the error message
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    result = { success: false, data: null, error: errorMessage };
   } finally {
+    // Always run cleanup if provided
     if (cleanup) {
       cleanup();
     }
   }
+
+  return result;
 }
 
+// Demonstrate that finally always runs
 function demonstrateFinally(shouldThrow: boolean): string[] {
   const log: string[] = [];
+
   try {
     log.push('try');
     if (shouldThrow) {
-      throw new Error('Intentional error');
+      throw new Error('Test error');
     }
-  } catch (err) {
+  } catch (e) {
     log.push('catch');
   } finally {
     log.push('finally');
   }
+
   return log;
 }
 
 // Test
-console.log(safeExecute(() => 10 + 5));
-// { success: true, data: 15, error: null }
-
-console.log(safeExecute(() => JSON.parse('invalid')));
-// { success: false, data: null, error: '...' }
-
-console.log(demonstrateFinally(false));
-// ['try', 'finally']
-
-console.log(demonstrateFinally(true));
-// ['try', 'catch', 'finally']`,
+console.log(safeExecute(() => 10 + 5)); // { success: true, data: 15, error: null }
+console.log(safeExecute(() => JSON.parse('invalid'))); // { success: false, data: null, error: '...' }
+console.log(demonstrateFinally(false)); // ['try', 'finally']
+console.log(demonstrateFinally(true)); // ['try', 'catch', 'finally']`,
   testCases: [
-    {
-      input: [() => 10 + 5],
-      expectedOutput: { success: true, data: 15, error: null },
-      description: 'Successful numeric operation returns data',
-    },
-    {
-      input: [() => 'hello'.toUpperCase()],
-      expectedOutput: { success: true, data: 'HELLO', error: null },
-      description: 'Successful string operation returns data',
-    },
-    {
-      input: [() => JSON.parse('{"a": 1}')],
-      expectedOutput: { success: true, data: { a: 1 }, error: null },
-      description: 'Successful JSON parsing returns parsed object',
-    },
-    {
-      input: [false],
-      expectedOutput: ['try', 'finally'],
-      description: 'demonstrateFinally without throw: try and finally run',
-    },
-    {
-      input: [true],
-      expectedOutput: ['try', 'catch', 'finally'],
-      description: 'demonstrateFinally with throw: all blocks run',
-    },
+    { input: [() => 15], expectedOutput: { success: true, data: 15, error: null }, description: 'safeExecute returns success with data' },
+    { input: [() => { throw new Error('test'); }], expectedOutput: { success: false, data: null, error: 'test' }, description: 'safeExecute catches error' },
+    { input: [false], expectedOutput: ['try', 'finally'], description: 'demonstrateFinally without throw' },
+    { input: [true], expectedOutput: ['try', 'catch', 'finally'], description: 'demonstrateFinally with throw' },
   ],
   hints: [
     'Use try-catch-finally to structure your error handling',

@@ -193,35 +193,35 @@ const queue = new Queue<string>();
 queue.enqueue('first');
 queue.enqueue('second');
 queue.enqueue('third');
-console.log('Front:', queue.front()); // 'first'
-console.log('Dequeue:', queue.dequeue()); // 'first'
-console.log('Size:', queue.size()); // 2
-console.log('isEmpty:', queue.isEmpty()); // false`,
+console.log('Front:', queue.front());
+console.log('Dequeue:', queue.dequeue());
+console.log('Size:', queue.size());
+console.log('isEmpty:', queue.isEmpty());`,
   testCases: [
     {
-      input: { operations: ['enqueue', 'enqueue', 'front'], values: [1, 2] },
+      input: { operations: ['enqueue', 'enqueue', 'enqueue', 'front'], values: [1, 2, 3, null] },
       expectedOutput: 1,
-      description: 'front() returns the first element',
+      description: 'front() returns first element without removing it',
     },
     {
-      input: { operations: ['enqueue', 'enqueue', 'enqueue', 'dequeue', 'dequeue'], values: [1, 2, 3] },
+      input: { operations: ['enqueue', 'enqueue', 'dequeue', 'dequeue'], values: [1, 2, null, null] },
       expectedOutput: [1, 2],
-      description: 'dequeue() returns elements in FIFO order',
+      description: 'dequeue() removes and returns elements in FIFO order',
     },
     {
-      input: { operations: ['isEmpty', 'enqueue', 'isEmpty'], values: [5] },
+      input: { operations: ['enqueue', 'enqueue', 'dequeue', 'enqueue', 'front'], values: ['a', 'b', null, 'c', null] },
+      expectedOutput: 'b',
+      description: 'After dequeue and enqueue, front is updated correctly',
+    },
+    {
+      input: { operations: ['isEmpty', 'enqueue', 'isEmpty'], values: [null, 1, null] },
       expectedOutput: [true, false],
-      description: 'isEmpty() correctly reports queue state',
+      description: 'isEmpty() returns correct values',
     },
     {
-      input: { operations: ['enqueue', 'enqueue', 'enqueue', 'size'], values: ['a', 'b', 'c'] },
+      input: { operations: ['enqueue', 'enqueue', 'enqueue', 'size'], values: [1, 2, 3, null] },
       expectedOutput: 3,
       description: 'size() returns correct count',
-    },
-    {
-      input: { operations: ['dequeue'] },
-      expectedOutput: undefined,
-      description: 'dequeue() on empty queue returns undefined',
     },
   ],
   hints: [

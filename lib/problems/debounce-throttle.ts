@@ -108,34 +108,68 @@ for (let i = 0; i < 5; i++) {
   debouncedIncrement();
   throttledIncrement();
 }`,
-  solution: `function debounce(fn, delay) {
+  solution: `// Debounce: Delays execution until no calls for 'delay' ms
+function debounce(fn, delay) {
   let timeoutId;
+
   return function(...args) {
+    // Clear previous timeout on each call
     clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => fn.apply(this, args), delay);
+
+    // Set new timeout
+    timeoutId = setTimeout(() => {
+      fn.apply(this, args);
+    }, delay);
   };
 }
 
+// Throttle: Executes at most once per 'interval' ms
 function throttle(fn, interval) {
   let lastTime = 0;
+
   return function(...args) {
     const now = Date.now();
+
+    // Only execute if enough time has passed
     if (now - lastTime >= interval) {
       lastTime = now;
-      return fn.apply(this, args);
+      fn.apply(this, args);
     }
   };
+}
+
+// Test
+let callCount = 0;
+const incrementCounter = () => ++callCount;
+
+const debouncedIncrement = debounce(incrementCounter, 100);
+const throttledIncrement = throttle(incrementCounter, 100);
+
+// Simulate rapid calls
+for (let i = 0; i < 5; i++) {
+  debouncedIncrement();
+  throttledIncrement();
 }`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'debounce delays execution',
+      input: { type: 'debounce', delay: 100, rapidCalls: 5 },
+      expectedOutput: { description: 'Debounce delays until calls stop - only 1 execution after delay' },
+      description: 'Debounce should only execute once after rapid calls stop',
     },
     {
-      input: [],
-      expectedOutput: true,
-      description: 'throttle limits execution rate',
+      input: { type: 'throttle', interval: 100, rapidCalls: 5, timeSpan: 50 },
+      expectedOutput: { description: 'Throttle executes at most once per interval - 1 execution for rapid calls within interval' },
+      description: 'Throttle should execute once immediately, then ignore calls within interval',
+    },
+    {
+      input: { type: 'debounce', fn: '() => "result"', delay: 50 },
+      expectedOutput: { description: 'Debounce preserves function context and arguments' },
+      description: 'Debounce should preserve this context and pass arguments correctly',
+    },
+    {
+      input: { type: 'throttle', fn: '(x) => x * 2', interval: 100 },
+      expectedOutput: { description: 'Throttle preserves function context and arguments' },
+      description: 'Throttle should preserve this context and pass arguments correctly',
     },
   ],
   hints: [

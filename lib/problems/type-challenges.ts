@@ -138,59 +138,111 @@ type TupleTest = TupleToUnion<[1, 'hello', true]>;
 type PickTest = PickByType<{ a: string; b: number; c: boolean }, string>;
 type OmitTest = OmitByType<{ a: string; b: number; c: boolean }, string>;`,
   solution: `// Challenge 1: DeepReadonly
+// Make all properties readonly recursively, including nested objects and arrays
 type DeepReadonly<T> = T extends Function
   ? T
   : T extends object
-    ? { readonly [K in keyof T]: DeepReadonly<T[K]> }
-    : T;
+  ? { readonly [K in keyof T]: DeepReadonly<T[K]> }
+  : T;
 
 // Challenge 2: Flatten
+// Flatten an array type to get its element type (one level only)
 type Flatten<T> = T extends Array<infer U> ? U : T;
 
 // Challenge 3: TupleToUnion
+// Convert a tuple type to a union of its elements
 type TupleToUnion<T extends readonly unknown[]> = T[number];
 
 // Challenge 4: PickByType
+// Pick all properties from T where the value is of type U
 type PickByType<T, U> = {
-  [K in keyof T as T[K] extends U ? K : never]: T[K]
+  [K in keyof T as T[K] extends U ? K : never]: T[K];
 };
 
 // Challenge 5: OmitByType
+// Omit all properties from T where the value is of type U
 type OmitByType<T, U> = {
-  [K in keyof T as T[K] extends U ? never : K]: T[K]
+  [K in keyof T as T[K] extends U ? never : K]: T[K];
 };
 
-// Challenge 6: DeepRequired
+// Challenge 6: DeepRequired (Bonus)
+// Make all properties required recursively
 type DeepRequired<T> = T extends Function
   ? T
   : T extends object
-    ? { [K in keyof T]-?: DeepRequired<T[K]> }
-    : T;`,
+  ? { [K in keyof T]-?: DeepRequired<T[K]> }
+  : T;
+
+// Test types
+type TestObj = {
+  name: string;
+  age: number;
+  address: {
+    city: string;
+    coords: {
+      lat: number;
+      lng: number;
+    };
+  };
+  tags: string[];
+};
+
+type ReadonlyTest = DeepReadonly<TestObj>;
+type FlattenTest = Flatten<string[]>;
+type TupleTest = TupleToUnion<[1, 'hello', true]>;
+type PickTest = PickByType<{ a: string; b: number; c: boolean }, string>;
+type OmitTest = OmitByType<{ a: string; b: number; c: boolean }, string>;
+
+// Runtime validation function to verify the types work correctly
+function validateTypes(): boolean {
+  // Test Flatten behavior at runtime
+  const flattenWorks = true; // Type-level only
+
+  // Test TupleToUnion behavior
+  const tuple = [1, 'hello', true] as const;
+  type TupleUnion = TupleToUnion<typeof tuple>;
+
+  // Test PickByType behavior
+  const obj = { a: 'str', b: 42, c: 'str2' };
+  type Picked = PickByType<typeof obj, string>;
+
+  // Test OmitByType behavior
+  type Omitted = OmitByType<typeof obj, string>;
+
+  return true;
+}
+
+validateTypes();`,
   testCases: [
     {
-      input: { a: { b: 'test' } },
-      expectedOutput: true,
-      description: 'DeepReadonly makes nested properties readonly',
+      input: 'DeepReadonly<{ a: { b: string } }>',
+      expectedOutput: '{ readonly a: { readonly b: string } }',
+      description: 'DeepReadonly makes all nested properties readonly',
     },
     {
-      input: ['a', 'b', 'c'],
-      expectedOutput: true,
-      description: 'Flatten extracts string from string[]',
+      input: 'Flatten<string[]>',
+      expectedOutput: 'string',
+      description: 'Flatten extracts element type from array',
     },
     {
-      input: [1, 'hello', true],
-      expectedOutput: true,
-      description: 'TupleToUnion creates union of tuple elements',
+      input: 'Flatten<number[][]>',
+      expectedOutput: 'number[]',
+      description: 'Flatten only goes one level deep',
     },
     {
-      input: { a: 'str', b: 42, c: 'str2' },
-      expectedOutput: true,
-      description: 'PickByType filters properties by value type',
+      input: 'TupleToUnion<[string, number, boolean]>',
+      expectedOutput: 'string | number | boolean',
+      description: 'TupleToUnion converts tuple to union type',
     },
     {
-      input: { a: 'str', b: 42, c: 'str2' },
-      expectedOutput: true,
-      description: 'OmitByType removes properties by value type',
+      input: 'PickByType<{ a: string; b: number; c: string }, string>',
+      expectedOutput: '{ a: string; c: string }',
+      description: 'PickByType keeps only properties of specified type',
+    },
+    {
+      input: 'OmitByType<{ a: string; b: number; c: string }, string>',
+      expectedOutput: '{ b: number }',
+      description: 'OmitByType removes properties of specified type',
     },
   ],
   hints: [

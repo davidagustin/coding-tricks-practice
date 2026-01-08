@@ -146,50 +146,34 @@ function fibonacciWorker() {
 console.log('Worker patterns ready for implementation');`,
   solution: `// 1. Create an inline worker from a function
 function createInlineWorker(workerFunction) {
-  const blob = new Blob(
-    [\`(\${workerFunction.toString()})()\`],
-    { type: 'application/javascript' }
-  );
+  // Convert function to string and wrap in self-invoking form
+  const functionBody = workerFunction.toString();
+  const blob = new Blob([\`(\${functionBody})()\`], { type: 'application/javascript' });
   const url = URL.createObjectURL(blob);
   const worker = new Worker(url);
 
   // Store URL for cleanup
   worker._blobUrl = url;
 
-  // Override terminate to also revoke blob URL
-  const originalTerminate = worker.terminate.bind(worker);
-  worker.terminate = () => {
-    URL.revokeObjectURL(worker._blobUrl);
-    originalTerminate();
-  };
-
   return worker;
 }
 
-// 2. Promise-based worker wrapper
+// 2. Promise-based worker wrapper for request/response pattern
 function createPromiseWorker(worker) {
   let messageId = 0;
   const pending = new Map();
 
   worker.onmessage = (e) => {
     const { id, result, error } = e.data;
-    const { resolve, reject } = pending.get(id) || {};
+    const handler = pending.get(id);
 
-    if (resolve) {
+    if (handler) {
       pending.delete(id);
       if (error) {
-        reject(new Error(error));
+        handler.reject(new Error(error));
       } else {
-        resolve(result);
+        handler.resolve(result);
       }
-    }
-  };
-
-  worker.onerror = (e) => {
-    // Reject all pending promises on worker error
-    for (const [id, { reject }] of pending) {
-      reject(new Error(e.message));
-      pending.delete(id);
     }
   };
 
@@ -203,83 +187,77 @@ function createPromiseWorker(worker) {
     },
     terminate() {
       worker.terminate();
+      if (worker._blobUrl) {
+        URL.revokeObjectURL(worker._blobUrl);
+      }
     }
   };
 }
 
 // 3. Worker Pool for parallel task execution
 class WorkerPool {
-  constructor(createWorker, poolSize = navigator.hardwareConcurrency || 4) {
+  constructor(workerScript, poolSize = navigator.hardwareConcurrency || 4) {
     this.workers = [];
     this.available = [];
-    this.waiting = [];
+    this.taskQueue = [];
 
     for (let i = 0; i < poolSize; i++) {
-      const worker = typeof createWorker === 'function'
-        ? createWorker()
-        : new Worker(createWorker);
+      const worker = typeof workerScript === 'function'
+        ? createInlineWorker(workerScript)
+        : new Worker(workerScript);
       this.workers.push(worker);
       this.available.push(worker);
     }
   }
 
   async execute(task) {
-    const worker = await this.getWorker();
-
     return new Promise((resolve, reject) => {
-      const handler = (e) => {
-        worker.removeEventListener('message', handler);
-        worker.removeEventListener('error', errorHandler);
-        this.releaseWorker(worker);
-        resolve(e.data);
+      const runTask = (worker) => {
+        const handler = (e) => {
+          worker.removeEventListener('message', handler);
+          worker.removeEventListener('error', errorHandler);
+          this.available.push(worker);
+          this._processQueue();
+          resolve(e.data);
+        };
+
+        const errorHandler = (e) => {
+          worker.removeEventListener('message', handler);
+          worker.removeEventListener('error', errorHandler);
+          this.available.push(worker);
+          this._processQueue();
+          reject(e);
+        };
+
+        worker.addEventListener('message', handler);
+        worker.addEventListener('error', errorHandler);
+        worker.postMessage(task);
       };
 
-      const errorHandler = (e) => {
-        worker.removeEventListener('message', handler);
-        worker.removeEventListener('error', errorHandler);
-        this.releaseWorker(worker);
-        reject(new Error(e.message));
-      };
-
-      worker.addEventListener('message', handler);
-      worker.addEventListener('error', errorHandler);
-      worker.postMessage(task);
-    });
-  }
-
-  getWorker() {
-    return new Promise((resolve) => {
       if (this.available.length > 0) {
-        resolve(this.available.pop());
+        runTask(this.available.pop());
       } else {
-        this.waiting.push(resolve);
+        this.taskQueue.push({ task, resolve, reject, runTask });
       }
     });
   }
 
-  releaseWorker(worker) {
-    if (this.waiting.length > 0) {
-      const resolve = this.waiting.shift();
-      resolve(worker);
-    } else {
-      this.available.push(worker);
+  _processQueue() {
+    if (this.taskQueue.length > 0 && this.available.length > 0) {
+      const { runTask } = this.taskQueue.shift();
+      runTask(this.available.pop());
     }
   }
 
   terminate() {
-    for (const worker of this.workers) {
+    this.workers.forEach(worker => {
       worker.terminate();
-    }
+      if (worker._blobUrl) {
+        URL.revokeObjectURL(worker._blobUrl);
+      }
+    });
     this.workers = [];
     this.available = [];
-  }
-
-  get size() {
-    return this.workers.length;
-  }
-
-  get activeCount() {
-    return this.workers.length - this.available.length;
   }
 }
 
@@ -290,82 +268,99 @@ class TaskQueue {
     this.queue = [];
     this.processing = false;
     this.currentResolve = null;
+    this.currentReject = null;
 
     this.worker.onmessage = (e) => {
       if (this.currentResolve) {
         this.currentResolve(e.data);
         this.currentResolve = null;
+        this.currentReject = null;
+        this._processNext();
       }
-      this.processNext();
+    };
+
+    this.worker.onerror = (e) => {
+      if (this.currentReject) {
+        this.currentReject(e);
+        this.currentResolve = null;
+        this.currentReject = null;
+        this._processNext();
+      }
     };
   }
 
   enqueue(task) {
-    return new Promise((resolve) => {
-      this.queue.push({ task, resolve });
+    return new Promise((resolve, reject) => {
+      this.queue.push({ task, resolve, reject });
       if (!this.processing) {
-        this.processNext();
+        this._processNext();
       }
     });
   }
 
-  processNext() {
+  _processNext() {
     if (this.queue.length === 0) {
       this.processing = false;
       return;
     }
 
     this.processing = true;
-    const { task, resolve } = this.queue.shift();
+    const { task, resolve, reject } = this.queue.shift();
     this.currentResolve = resolve;
+    this.currentReject = reject;
     this.worker.postMessage(task);
   }
 }
 
 // 5. Transferable objects for large data
 function postWithTransfer(worker, data, transferables = []) {
-  // ArrayBuffer, MessagePort, ImageBitmap, OffscreenCanvas are transferable
   worker.postMessage(data, transferables);
 }
 
-// Example: Processing large array buffer with zero-copy transfer
-function processLargeData(worker, arrayBuffer) {
-  return new Promise((resolve) => {
-    worker.onmessage = (e) => resolve(e.data);
-    // Transfer ownership - original arrayBuffer becomes detached
-    worker.postMessage({ buffer: arrayBuffer }, [arrayBuffer]);
-  });
+// Example worker function for testing
+function fibonacciWorker() {
+  self.onmessage = function(e) {
+    const { n } = e.data;
+    function fib(n) {
+      if (n <= 1) return n;
+      return fib(n - 1) + fib(n - 2);
+    }
+    self.postMessage({ result: fib(n) });
+  };
 }
 
-// Helper to create worker from inline function
-function workerFromFunction(fn) {
-  return createInlineWorker(fn);
-}`,
+// Test (conceptual - actual workers need browser environment)
+console.log('Worker patterns ready for implementation');`,
   testCases: [
     {
-      input: { workerFn: 'fibonacci', n: 10 },
-      expectedOutput: { result: 55 },
-      description: 'createInlineWorker creates worker from function, computes fib(10) = 55',
+      input: { function: 'createInlineWorker' },
+      expectedOutput: { createsWorker: true, hasBlobUrl: true },
+      description: 'createInlineWorker creates a Worker from a function',
     },
     {
-      input: { tasks: [{ n: 5 }, { n: 6 }, { n: 7 }], poolSize: 2 },
-      expectedOutput: [{ result: 5 }, { result: 8 }, { result: 13 }],
-      description: 'WorkerPool executes 3 fibonacci tasks with 2 workers in parallel',
+      input: { function: 'createPromiseWorker' },
+      expectedOutput: { hasPostMessage: true, hasTerminate: true },
+      description: 'createPromiseWorker returns object with postMessage and terminate',
     },
     {
-      input: { tasks: [1, 2, 3, 4, 5], sequential: true },
-      expectedOutput: { order: [1, 2, 3, 4, 5], resultsInOrder: true },
-      description: 'TaskQueue processes tasks sequentially, maintaining order',
+      input: { class: 'WorkerPool', poolSize: 4 },
+      expectedOutput: { hasExecute: true, hasTerminate: true, workerCount: 4 },
+      description: 'WorkerPool creates specified number of workers',
     },
     {
-      input: { bufferSize: 1024, transfer: true },
-      expectedOutput: { transferred: true, originalDetached: true },
-      description: 'postWithTransfer transfers ArrayBuffer ownership (zero-copy)',
+      input: { class: 'WorkerPool', action: 'execute' },
+      expectedOutput: { executesTask: true, returnsPromise: true },
+      description: 'WorkerPool.execute returns a promise that resolves with result',
     },
     {
-      input: { poolSize: 4, tasks: 8, taskDuration: 100 },
-      expectedOutput: { totalTime: 'approximately 200ms', parallelism: true },
-      description: 'WorkerPool with 4 workers completes 8 tasks in ~2 rounds (200ms vs 800ms sequential)',
+      input: { class: 'TaskQueue' },
+      expectedOutput: { hasEnqueue: true, processesSequentially: true },
+      description: 'TaskQueue processes tasks in order',
+    },
+    {
+      input: { function: 'postWithTransfer' },
+      expectedOutput: { transfersOwnership: true },
+      description: 'postWithTransfer sends data with transferable objects',
     },
   ],
   hints: [

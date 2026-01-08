@@ -115,15 +115,16 @@ const mockContainer = {
 //   console.log('Item clicked:', e.target);
 // });
 // cleanup(); // removes the listener`,
-  solution: `function delegate(parent, eventType, selector, handler) {
+  solution: `// Event delegation helper
+// Attaches listener to parent and filters by selector
+function delegate(parent, eventType, selector, handler) {
   const listener = (event) => {
-    // Find the actual target that matches the selector
-    // Using closest() handles clicks on nested elements
+    // Find the closest ancestor matching the selector
     const target = event.target.closest(selector);
 
-    // Check if the matched element is within our parent
+    // Ensure the matched element is within the parent
     if (target && parent.contains(target)) {
-      // Call handler with the matched element as context
+      // Call handler with event and matched element
       handler.call(target, event, target);
     }
   };
@@ -131,83 +132,103 @@ const mockContainer = {
   parent.addEventListener(eventType, listener);
 
   // Return cleanup function
-  return () => parent.removeEventListener(eventType, listener);
+  return () => {
+    parent.removeEventListener(eventType, listener);
+  };
 }
 
+// Setup delegated click handlers for a todo list
 function setupTodoList(container) {
+  const cleanupFunctions = [];
+
   // Handle toggle complete
-  const cleanupToggle = delegate(container, 'click', '.toggle-btn', (event, target) => {
-    const li = target.closest('li');
-    if (li) {
-      li.classList.toggle('completed');
-    }
-  });
+  cleanupFunctions.push(
+    delegate(container, 'click', '.toggle-btn', (event, element) => {
+      const li = element.closest('li');
+      if (li) {
+        li.classList.toggle('completed');
+      }
+    })
+  );
 
   // Handle delete
-  const cleanupDelete = delegate(container, 'click', '.delete-btn', (event, target) => {
-    const li = target.closest('li');
-    if (li) {
-      li.remove();
-    }
-  });
+  cleanupFunctions.push(
+    delegate(container, 'click', '.delete-btn', (event, element) => {
+      const li = element.closest('li');
+      if (li) {
+        li.remove();
+      }
+    })
+  );
 
   // Handle edit - dispatch custom event
-  const cleanupEdit = delegate(container, 'click', '.edit-btn', (event, target) => {
-    const li = target.closest('li');
-    if (li) {
-      const text = li.querySelector('.todo-text')?.textContent || '';
-      li.dispatchEvent(new CustomEvent('edit', {
-        bubbles: true,
-        detail: { text, element: li }
-      }));
-    }
-  });
+  cleanupFunctions.push(
+    delegate(container, 'click', '.edit-btn', (event, element) => {
+      const li = element.closest('li');
+      if (li) {
+        const todoText = li.querySelector('.todo-text')?.textContent || '';
+        const editEvent = new CustomEvent('edit', {
+          detail: { text: todoText, element: li },
+          bubbles: true,
+        });
+        container.dispatchEvent(editEvent);
+      }
+    })
+  );
 
-  // Return combined cleanup
+  // Return cleanup function that removes all listeners
   return () => {
-    cleanupToggle();
-    cleanupDelete();
-    cleanupEdit();
+    cleanupFunctions.forEach(cleanup => cleanup());
   };
 }
 
-// Advanced: Delegation with event options
-function delegateWithOptions(parent, eventType, selector, handler, options = {}) {
-  const { capture = false, once = false, passive = false } = options;
-
-  const listener = (event) => {
-    const target = event.target.closest(selector);
-    if (target && parent.contains(target)) {
-      handler.call(target, event, target);
-      if (once) {
-        parent.removeEventListener(eventType, listener, { capture });
-      }
+// Test structure (simulated DOM)
+const mockContainer = {
+  listeners: {},
+  addEventListener(type, fn) {
+    this.listeners[type] = this.listeners[type] || [];
+    this.listeners[type].push(fn);
+  },
+  removeEventListener(type, fn) {
+    if (this.listeners[type]) {
+      this.listeners[type] = this.listeners[type].filter(f => f !== fn);
     }
-  };
+  },
+  contains(el) { return true; },
+  querySelector(sel) { return null; }
+};
 
-  parent.addEventListener(eventType, listener, { capture, passive });
-  return () => parent.removeEventListener(eventType, listener, { capture });
-}`,
+// Usage example
+const cleanup = delegate(mockContainer, 'click', '.item', (event, matchedElement) => {
+  console.log('Item clicked:', matchedElement);
+});
+
+// Later: cleanup() removes the listener`,
   testCases: [
     {
       input: { parent: 'container', eventType: 'click', selector: '.item' },
-      expectedOutput: true,
-      description: 'delegate returns a cleanup function',
+      expectedOutput: 'handler called when .item clicked',
+      description: 'delegate() calls handler when matching element is clicked',
     },
     {
-      input: { target: '.item', selector: '.item' },
-      expectedOutput: true,
-      description: 'handler is called when target matches selector',
+      input: { parent: 'container', eventType: 'click', selector: '.nested span' },
+      expectedOutput: 'handler called with closest matching element',
+      description: 'delegate() uses closest() to handle nested elements',
     },
     {
-      input: { target: '.other', selector: '.item' },
-      expectedOutput: false,
-      description: 'handler is not called when target does not match',
+      input: { action: 'cleanup' },
+      expectedOutput: 'listener removed',
+      description: 'cleanup function removes the event listener',
     },
     {
-      input: { target: '.item span', selector: '.item' },
-      expectedOutput: true,
-      description: 'closest() finds parent matching selector for nested clicks',
+      input: { action: 'setupTodoList', buttonClass: '.toggle-btn' },
+      expectedOutput: 'li.completed class toggled',
+      description: 'setupTodoList toggles completed class on toggle button click',
+    },
+    {
+      input: { action: 'setupTodoList', buttonClass: '.delete-btn' },
+      expectedOutput: 'li removed from DOM',
+      description: 'setupTodoList removes li on delete button click',
     },
   ],
   hints: [

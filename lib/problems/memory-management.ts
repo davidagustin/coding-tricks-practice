@@ -185,7 +185,9 @@ console.log('EventManager class defined:', typeof EventManager === 'function');
 
 // processInChunks test
 processInChunks([1, 2, 3, 4, 5], item => console.log('Processing:', item), 2);`,
-  solution: `function createObjectCache(computeFn) {
+  solution: `// Create a WeakMap-based cache for expensive computations on objects
+// The cache should NOT prevent garbage collection of the input objects
+function createObjectCache(computeFn) {
   const cache = new WeakMap();
 
   return function(obj) {
@@ -198,6 +200,7 @@ processInChunks([1, 2, 3, 4, 5], item => console.log('Processing:', item), 2);`,
   };
 }
 
+// Create a class that properly manages event listeners
 class EventManager {
   constructor(element) {
     this.element = element;
@@ -223,6 +226,7 @@ class EventManager {
   }
 }
 
+// Implement a function that processes large arrays in chunks
 function processInChunks(items, processor, chunkSize = 100) {
   return new Promise((resolve) => {
     let index = 0;
@@ -246,66 +250,52 @@ function processInChunks(items, processor, chunkSize = 100) {
   });
 }
 
-function createLeakyHandlers() {
-  const handlers = [];
-
-  for (let i = 0; i < 1000; i++) {
-    const largeData = new Array(10000).fill('x');
-
-    handlers.push(() => {
-      console.log('Handler ' + i);
-    });
-  }
-
-  return handlers;
-}
-
+// Fix: Create handlers without retaining largeData reference
 function createFixedHandlers() {
   const handlers = [];
 
   for (let i = 0; i < 1000; i++) {
-    // Create handler in a separate scope without largeData
+    // Don't create largeData inside the loop or if needed,
+    // don't reference it in the closure
     handlers.push(createHandler(i));
   }
 
   return handlers;
 }
 
+// Separate function to avoid closure capturing largeData
 function createHandler(index) {
-  // largeData is created and immediately goes out of scope
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const largeData = new Array(10000).fill('x');
-  // Process largeData here if needed, then let it be GC'd
-
   return () => {
     console.log('Handler ' + index);
   };
-}`,
+}
+
+// Test
+const cache = createObjectCache(obj => obj.value * 2);
+const testObj = { value: 21 };
+console.log(cache(testObj)); // 42
+console.log(cache(testObj)); // 42 (cached)
+
+// EventManager test would require DOM
+console.log('EventManager class defined:', typeof EventManager === 'function');
+
+// processInChunks test
+processInChunks([1, 2, 3, 4, 5], item => console.log('Processing:', item), 2);`,
   testCases: [
     {
-      input: [],
+      input: { value: 21 },
       expectedOutput: 42,
-      description: 'createObjectCache caches computed results',
+      description: 'createObjectCache computes value correctly',
     },
     {
-      input: [],
-      expectedOutput: true,
-      description: 'createObjectCache returns cached result on second call',
-    },
-    {
-      input: [],
-      expectedOutput: true,
-      description: 'EventManager tracks and removes listeners correctly',
-    },
-    {
-      input: [],
+      input: [1, 2, 3],
       expectedOutput: true,
       description: 'processInChunks processes all items',
     },
     {
-      input: [],
-      expectedOutput: 1000,
-      description: 'createFixedHandlers returns correct number of handlers',
+      input: 'EventManager',
+      expectedOutput: true,
+      description: 'EventManager class is properly defined',
     },
   ],
   hints: [

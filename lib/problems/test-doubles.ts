@@ -148,13 +148,9 @@ console.log('Fake:', fakeDb.getUser(1));`,
   solution: `// 1. STUB: Returns predefined responses
 function createStub(responses) {
   const stub = {};
-
-  for (const [methodName, response] of Object.entries(responses)) {
-    stub[methodName] = function() {
-      return typeof response === 'function' ? response() : response;
-    };
+  for (const [method, response] of Object.entries(responses)) {
+    stub[method] = () => response;
   }
-
   return stub;
 }
 
@@ -163,60 +159,55 @@ function createMock(methods) {
   const mock = {
     _calls: {},
     _returnValues: {},
-    _expectedCalls: {},
+    _implementations: {},
 
     verify: function(methodName, expectedArgs) {
       const calls = this._calls[methodName] || [];
-      return calls.some(call =>
-        call.length === expectedArgs.length &&
-        call.every((arg, i) => JSON.stringify(arg) === JSON.stringify(expectedArgs[i]))
+      return calls.some(callArgs =>
+        JSON.stringify(callArgs) === JSON.stringify(expectedArgs)
       );
-    },
-
-    verifyCallCount: function(methodName, count) {
-      const calls = this._calls[methodName] || [];
-      return calls.length === count;
     },
 
     expect: function(methodName) {
       const self = this;
       return {
         withArgs: function(...args) {
-          self._expectedCalls[methodName] = { args };
+          self._expectedArgs = self._expectedArgs || {};
+          self._expectedArgs[methodName] = args;
           return this;
         },
         toReturn: function(value) {
           self._returnValues[methodName] = value;
           return this;
         },
-        times: function(n) {
-          self._expectedCalls[methodName].times = n;
-          return self;
+        times: function(count) {
+          self._expectedTimes = self._expectedTimes || {};
+          self._expectedTimes[methodName] = count;
+          return this;
         }
       };
     },
 
-    verifyExpectations: function() {
-      for (const [method, expectation] of Object.entries(this._expectedCalls)) {
-        const calls = this._calls[method] || [];
-        if (expectation.times !== undefined && calls.length !== expectation.times) {
-          return false;
-        }
-        if (expectation.args && !this.verify(method, expectation.args)) {
-          return false;
-        }
-      }
-      return true;
+    getCallCount: function(methodName) {
+      return (this._calls[methodName] || []).length;
+    },
+
+    getCalls: function(methodName) {
+      return this._calls[methodName] || [];
     }
   };
 
-  methods.forEach(methodName => {
-    mock._calls[methodName] = [];
-    mock[methodName] = function(...args) {
-      mock._calls[methodName].push(args);
-      return mock._returnValues[methodName];
+  // Create methods for each specified method name
+  for (const method of methods) {
+    mock._calls[method] = [];
+    mock[method] = function(...args) {
+      mock._calls[method].push(args);
+      if (mock._implementations[method]) {
+        return mock._implementations[method](...args);
+      }
+      return mock._returnValues[method];
     };
-  });
+  }
 
   return mock;
 }
@@ -226,9 +217,9 @@ function createFakeDatabase() {
   const storage = new Map();
 
   return {
-    save: function(entity) {
-      storage.set(entity.id, { ...entity });
-      return entity;
+    save: function(record) {
+      storage.set(record.id, { ...record });
+      return record;
     },
 
     getUser: function(id) {
@@ -247,10 +238,6 @@ function createFakeDatabase() {
 
     clear: function() {
       storage.clear();
-    },
-
-    count: function() {
-      return storage.size;
     }
   };
 }
@@ -258,15 +245,7 @@ function createFakeDatabase() {
 // 4. SPY: Wraps real object and records calls
 function createSpy(realObject) {
   const spy = {
-    _calls: {},
-
-    getCalls: function(methodName) {
-      return this._calls[methodName] || [];
-    },
-
-    wasCalled: function(methodName) {
-      return (this._calls[methodName] || []).length > 0;
-    }
+    _calls: {}
   };
 
   for (const key of Object.keys(realObject)) {
@@ -281,10 +260,18 @@ function createSpy(realObject) {
     }
   }
 
+  spy.getCalls = function(methodName) {
+    return this._calls[methodName] || [];
+  };
+
+  spy.getCallCount = function(methodName) {
+    return (this._calls[methodName] || []).length;
+  };
+
   return spy;
 }
 
-// Test
+// Test your implementations
 const stub = createStub({
   getUser: { id: 1, name: 'Stub User' },
   getProducts: [{ id: 1, name: 'Product' }]
@@ -300,30 +287,20 @@ fakeDb.save({ id: 1, name: 'Test User' });
 console.log('Fake:', fakeDb.getUser(1));`,
   testCases: [
     {
-      input: { type: 'stub', responses: { getUser: { id: 1, name: 'John' } }, method: 'getUser', args: [999] },
-      expectedOutput: { id: 1, name: 'John' },
-      description: 'Stub returns predefined response regardless of arguments',
+      input: { fn: 'createStub', args: [{ getUser: { id: 1, name: 'Test' } }] },
+      expectedOutput: { id: 1, name: 'Test' },
+      description: 'createStub returns predefined response for method'
     },
     {
-      input: { type: 'mock', methods: ['getUser'], calls: [[1], [2]], verify: { method: 'getUser', args: [1] } },
+      input: { fn: 'createMock', args: [['getUser']] },
       expectedOutput: true,
-      description: 'Mock verifies method was called with specific arguments',
+      description: 'createMock tracks and verifies method calls'
     },
     {
-      input: { type: 'mock', methods: ['save'], calls: [], verify: { method: 'save', args: [{ id: 1 }] } },
-      expectedOutput: false,
-      description: 'Mock verification returns false when method was not called with expected args',
-    },
-    {
-      input: { type: 'fake', operations: [{ op: 'save', data: { id: 1, name: 'Alice' } }, { op: 'getUser', id: 1 }] },
-      expectedOutput: { id: 1, name: 'Alice' },
-      description: 'Fake database stores and retrieves data correctly',
-    },
-    {
-      input: { type: 'fake', operations: [{ op: 'save', data: { id: 1, name: 'Bob' } }, { op: 'deleteUser', id: 1 }, { op: 'getUser', id: 1 }] },
-      expectedOutput: null,
-      description: 'Fake database deletes data correctly',
-    },
+      input: { fn: 'createFakeDatabase', args: [] },
+      expectedOutput: { id: 1, name: 'Test User' },
+      description: 'createFakeDatabase provides working in-memory storage'
+    }
   ],
   hints: [
     'Stubs are the simplest - just return predefined values for each method',

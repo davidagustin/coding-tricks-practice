@@ -139,54 +139,46 @@ const testElement = {
 
 // Usage:
 // emitCustomEvent(button, 'cart:add', { productId: 123, quantity: 1 });`,
-  solution: `function emitCustomEvent(element, eventName, data) {
+  solution: `// Emit a custom event on an element
+function emitCustomEvent(element, eventName, data) {
   const event = new CustomEvent(eventName, {
     detail: data,
     bubbles: true,
-    cancelable: true
+    cancelable: true,
   });
-
   element.dispatchEvent(event);
   return event;
 }
 
+// Create a simple event bus using custom events
 function createEventBus() {
-  // Use a DOM element as the event target
-  // document works well for app-wide events
   const target = document.createElement('div');
+  const handlers = new Map();
 
   return {
     on(eventName, callback) {
-      const handler = (event) => callback(event.detail, event);
-      // Store reference for removal
-      callback._handler = handler;
+      const handler = (e) => callback(e.detail);
+      handlers.set(callback, handler);
       target.addEventListener(eventName, handler);
     },
-
     off(eventName, callback) {
-      if (callback._handler) {
-        target.removeEventListener(eventName, callback._handler);
+      const handler = handlers.get(callback);
+      if (handler) {
+        target.removeEventListener(eventName, handler);
+        handlers.delete(callback);
       }
     },
-
     emit(eventName, data) {
       const event = new CustomEvent(eventName, {
-        detail: data
+        detail: data,
+        bubbles: false,
       });
       target.dispatchEvent(event);
-      return event;
     },
-
-    once(eventName, callback) {
-      const handler = (event) => {
-        callback(event.detail, event);
-        target.removeEventListener(eventName, handler);
-      };
-      target.addEventListener(eventName, handler);
-    }
   };
 }
 
+// Typed event emitter class
 class TypedEventEmitter {
   constructor() {
     this._target = document.createElement('div');
@@ -194,25 +186,22 @@ class TypedEventEmitter {
   }
 
   on(eventName, callback) {
-    const handler = (event) => callback(event.detail);
-
-    // Store handler reference for removal
-    if (!this._handlers.has(callback)) {
-      this._handlers.set(callback, new Map());
+    const handler = (e) => callback(e.detail);
+    if (!this._handlers.has(eventName)) {
+      this._handlers.set(eventName, new Map());
     }
-    this._handlers.get(callback).set(eventName, handler);
-
+    this._handlers.get(eventName).set(callback, handler);
     this._target.addEventListener(eventName, handler);
-    return this; // Allow chaining
+    return this;
   }
 
   off(eventName, callback) {
-    const handlerMap = this._handlers.get(callback);
-    if (handlerMap) {
-      const handler = handlerMap.get(eventName);
+    const eventHandlers = this._handlers.get(eventName);
+    if (eventHandlers) {
+      const handler = eventHandlers.get(callback);
       if (handler) {
         this._target.removeEventListener(eventName, handler);
-        handlerMap.delete(eventName);
+        eventHandlers.delete(callback);
       }
     }
     return this;
@@ -220,70 +209,69 @@ class TypedEventEmitter {
 
   emit(eventName, data) {
     const event = new CustomEvent(eventName, {
-      detail: data
+      detail: data,
+      bubbles: false,
     });
     this._target.dispatchEvent(event);
     return this;
   }
 
   once(eventName, callback) {
-    const handler = (event) => {
-      callback(event.detail);
-      this.off(eventName, callback);
+    const onceHandler = (data) => {
+      this.off(eventName, onceHandler);
+      callback(data);
     };
-
-    // Store with original callback as key
-    if (!this._handlers.has(callback)) {
-      this._handlers.set(callback, new Map());
-    }
-    this._handlers.get(callback).set(eventName, handler);
-
-    this._target.addEventListener(eventName, handler);
-    return this;
-  }
-
-  // Utility: Remove all listeners for an event
-  removeAllListeners(eventName) {
-    // Clone the target to remove all listeners
-    const newTarget = this._target.cloneNode(false);
-    this._target = newTarget;
-    this._handlers.clear();
+    this.on(eventName, onceHandler);
     return this;
   }
 }
 
-// Example usage with TypeScript-style type safety (using JSDoc)
-/**
- * @typedef {Object} AppEvents
- * @property {{ userId: number, username: string }} userLogin
- * @property {{ productId: number, quantity: number }} cartAdd
- * @property {void} appReady
- */
+// Test with mock element
+const testElement = {
+  listeners: {},
+  addEventListener(type, fn) {
+    this.listeners[type] = this.listeners[type] || [];
+    this.listeners[type].push(fn);
+  },
+  removeEventListener(type, fn) {
+    if (this.listeners[type]) {
+      this.listeners[type] = this.listeners[type].filter(f => f !== fn);
+    }
+  },
+  dispatchEvent(event) {
+    const fns = this.listeners[event.type] || [];
+    fns.forEach(fn => fn(event));
+    return true;
+  }
+};
 
-// Usage:
-// const bus = createEventBus();
-// bus.on('userLogin', (data) => console.log('User logged in:', data.userId));
-// bus.emit('userLogin', { userId: 123, username: 'john' });`,
+// Test emitCustomEvent
+let receivedData = null;
+testElement.addEventListener('cart:add', (e) => {
+  receivedData = e.detail;
+});
+emitCustomEvent(testElement, 'cart:add', { productId: 123, quantity: 1 });
+console.log('Received:', receivedData);`,
   testCases: [
     {
-      input: { eventName: 'test', data: { value: 42 } },
-      expectedOutput: { type: 'test', detail: { value: 42 } },
-      description: 'Custom event has correct type and detail',
+      input: { element: 'testElement', eventName: 'cart:add', data: { productId: 123 } },
+      expectedOutput: { productId: 123 },
+      description: 'emitCustomEvent dispatches event with data in detail property',
     },
     {
-      input: { bubbles: true },
-      expectedOutput: true,
-      description: 'Event bubbles when bubbles option is true',
+      input: { eventBus: 'createEventBus()', action: 'emit', eventName: 'test', data: { value: 42 } },
+      expectedOutput: { value: 42 },
+      description: 'Event bus emits and receives events correctly',
     },
     {
-      input: { action: 'emit', eventName: 'test', data: { x: 1 } },
-      expectedOutput: true,
-      description: 'Event bus emit triggers listeners',
+      input: { emitter: 'new TypedEventEmitter()', action: 'once', eventName: 'load' },
+      expectedOutput: 'callback called only once',
+      description: 'TypedEventEmitter once() only fires callback one time',
     },
     {
-      input: { action: 'once', calls: 2 },
-      expectedOutput: 1,
-      description: 'once() listener only fires once',
+      input: { emitter: 'new TypedEventEmitter()', action: 'off' },
+      expectedOutput: 'listener removed',
+      description: 'TypedEventEmitter off() removes the event listener',
     },
   ],
   hints: [

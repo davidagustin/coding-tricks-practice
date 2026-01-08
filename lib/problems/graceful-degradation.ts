@@ -208,22 +208,11 @@ async function runTests() {
 }
 
 runTests();`,
-  solution: `class CircuitOpenError extends Error {
-  constructor() {
-    super('Circuit breaker is open');
+  solution: `// Custom error for circuit breaker
+class CircuitOpenError extends Error {
+  constructor(message = 'Circuit breaker is open') {
+    super(message);
     this.name = 'CircuitOpenError';
-    Object.setPrototypeOf(this, new.target.prototype);
-  }
-}
-
-class AllSourcesFailedError extends Error {
-  public errors: Array<{ source: string; error: Error }>;
-
-  constructor(errors: Array<{ source: string; error: Error }>) {
-    super('All fallback sources failed');
-    this.name = 'AllSourcesFailedError';
-    this.errors = errors;
-    Object.setPrototypeOf(this, new.target.prototype);
   }
 }
 
@@ -245,22 +234,19 @@ class FallbackChain<T> {
   }
 
   async execute(): Promise<{ data: T; source: string }> {
-    const errors: Array<{ source: string; error: Error }> = [];
+    const errors: Error[] = [];
 
     for (const source of this.sources) {
       try {
         const data = await source.fetch();
         this.lastSuccessfulSource = source.name;
         return { data, source: source.name };
-      } catch (err) {
-        errors.push({
-          source: source.name,
-          error: err instanceof Error ? err : new Error(String(err))
-        });
+      } catch (error) {
+        errors.push(error instanceof Error ? error : new Error(String(error)));
       }
     }
 
-    throw new AllSourcesFailedError(errors);
+    throw new Error(\`All sources failed: \${errors.map(e => e.message).join(', ')}\`);
   }
 
   getLastSuccessfulSource(): string | null {
@@ -290,7 +276,8 @@ class CircuitBreaker {
 
   async call<T>(fn: () => Promise<T>): Promise<T> {
     if (this.state === 'open') {
-      if (Date.now() - this.lastFailureTime >= this.options.resetTimeout) {
+      const now = Date.now();
+      if (now - this.lastFailureTime >= this.options.resetTimeout) {
         this.state = 'half-open';
         this.halfOpenSuccesses = 0;
       } else {
@@ -300,34 +287,27 @@ class CircuitBreaker {
 
     try {
       const result = await fn();
-      this.onSuccess();
-      return result;
-    } catch (error) {
-      this.onFailure();
-      throw error;
-    }
-  }
 
-  private onSuccess(): void {
-    if (this.state === 'half-open') {
-      this.halfOpenSuccesses++;
-      if (this.halfOpenSuccesses >= this.options.halfOpenRequests) {
-        this.state = 'closed';
+      if (this.state === 'half-open') {
+        this.halfOpenSuccesses++;
+        if (this.halfOpenSuccesses >= this.options.halfOpenRequests) {
+          this.state = 'closed';
+          this.failures = 0;
+        }
+      } else {
         this.failures = 0;
       }
-    } else {
-      this.failures = 0;
-    }
-  }
 
-  private onFailure(): void {
-    this.failures++;
-    this.lastFailureTime = Date.now();
+      return result;
+    } catch (error) {
+      this.failures++;
+      this.lastFailureTime = Date.now();
 
-    if (this.state === 'half-open') {
-      this.state = 'open';
-    } else if (this.failures >= this.options.failureThreshold) {
-      this.state = 'open';
+      if (this.failures >= this.options.failureThreshold) {
+        this.state = 'open';
+      }
+
+      throw error;
     }
   }
 
@@ -377,32 +357,18 @@ class CachedFetcher<T> {
 
       if (this.options.staleWhileRevalidate) {
         // Return stale data immediately, refresh in background
-        this.refreshInBackground(key, fetcher);
+        fetcher().then(data => {
+          this.cache.set(key, { data, timestamp: Date.now() });
+        }).catch(() => {});
+
         return { data: cached.data, stale: true, fromCache: true };
       }
     }
 
     // Fetch fresh data
-    try {
-      const data = await fetcher();
-      this.cache.set(key, { data, timestamp: now });
-      return { data, stale: false, fromCache: false };
-    } catch (error) {
-      // If fetch fails and we have stale data, return it
-      if (cached) {
-        return { data: cached.data, stale: true, fromCache: true };
-      }
-      throw error;
-    }
-  }
-
-  private async refreshInBackground(key: string, fetcher: () => Promise<T>): Promise<void> {
-    try {
-      const data = await fetcher();
-      this.cache.set(key, { data, timestamp: Date.now() });
-    } catch {
-      // Silently fail background refresh
-    }
+    const data = await fetcher();
+    this.cache.set(key, { data, timestamp: now });
+    return { data, stale: false, fromCache: false };
   }
 
   invalidate(key: string): void {
@@ -411,39 +377,6 @@ class CachedFetcher<T> {
 
   clear(): void {
     this.cache.clear();
-  }
-}
-
-// Combined: Resilient Data Fetcher
-class ResilientFetcher<T> {
-  private fallbackChain: FallbackChain<T>;
-  private circuitBreaker: CircuitBreaker;
-  private cachedFetcher: CachedFetcher<T>;
-
-  constructor(
-    sources: FallbackSource<T>[],
-    circuitOptions: CircuitBreakerOptions,
-    cacheOptions: CacheOptions
-  ) {
-    this.fallbackChain = new FallbackChain();
-    sources.forEach(s => this.fallbackChain.addSource(s));
-    this.circuitBreaker = new CircuitBreaker(circuitOptions);
-    this.cachedFetcher = new CachedFetcher(cacheOptions);
-  }
-
-  async fetch(key: string): Promise<{ data: T; source: string; stale: boolean }> {
-    const result = await this.cachedFetcher.fetch(key, async () => {
-      return this.circuitBreaker.call(async () => {
-        const { data, source } = await this.fallbackChain.execute();
-        return { data, source };
-      });
-    });
-
-    return {
-      data: (result.data as any).data || result.data,
-      source: (result.data as any).source || 'cache',
-      stale: result.stale
-    };
   }
 }
 
@@ -461,27 +394,32 @@ async function runTests() {
 runTests();`,
   testCases: [
     {
-      input: [['primary', 'secondary'], 'primary-succeeds'],
+      input: { pattern: 'fallback_chain', primarySuccess: true },
       expectedOutput: { data: 'primary data', source: 'primary' },
-      description: 'FallbackChain returns first successful source',
+      description: 'FallbackChain returns from first successful source',
     },
     {
-      input: [['primary-fails', 'secondary'], 'primary-fails'],
+      input: { pattern: 'fallback_chain', primarySuccess: false },
       expectedOutput: { data: 'secondary data', source: 'secondary' },
-      description: 'FallbackChain falls through to secondary when primary fails',
+      description: 'FallbackChain falls back to secondary when primary fails',
     },
     {
-      input: ['circuit-breaker', { failures: 3, threshold: 3 }],
-      expectedOutput: { state: 'open', error: 'CircuitOpenError' },
-      description: 'CircuitBreaker opens after reaching failure threshold',
+      input: { pattern: 'circuit_breaker', state: 'closed', failures: 0 },
+      expectedOutput: { canCall: true },
+      description: 'CircuitBreaker allows calls when closed',
     },
     {
-      input: ['cache', { key: 'test', ttl: 1000, age: 500 }],
+      input: { pattern: 'circuit_breaker', state: 'open' },
+      expectedOutput: { error: 'CircuitOpenError' },
+      description: 'CircuitBreaker throws CircuitOpenError when open',
+    },
+    {
+      input: { pattern: 'cached_fetcher', cacheHit: true, fresh: true },
       expectedOutput: { fromCache: true, stale: false },
       description: 'CachedFetcher returns fresh cached data',
     },
     {
-      input: ['cache', { key: 'test', ttl: 1000, age: 1500, staleWhileRevalidate: true }],
+      input: { pattern: 'cached_fetcher', cacheHit: true, fresh: false, staleWhileRevalidate: true },
       expectedOutput: { fromCache: true, stale: true },
       description: 'CachedFetcher returns stale data while revalidating',
     },

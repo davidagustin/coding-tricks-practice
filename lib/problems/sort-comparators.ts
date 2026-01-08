@@ -114,17 +114,37 @@ console.log(sortByMultiple([...users], [
 console.log(sortWithNulls([3, null, 1, null, 2], true));`,
   solution: `function sortByProperty(arr, property, order = 'asc') {
   return [...arr].sort((a, b) => {
-    if (a[property] < b[property]) return order === 'asc' ? -1 : 1;
-    if (a[property] > b[property]) return order === 'asc' ? 1 : -1;
-    return 0;
+    const aVal = a[property];
+    const bVal = b[property];
+
+    // Handle string comparison
+    if (typeof aVal === 'string' && typeof bVal === 'string') {
+      const comparison = aVal.localeCompare(bVal);
+      return order === 'asc' ? comparison : -comparison;
+    }
+
+    // Handle numeric comparison
+    const comparison = aVal - bVal;
+    return order === 'asc' ? comparison : -comparison;
   });
 }
 
 function sortByMultiple(arr, criteria) {
   return [...arr].sort((a, b) => {
     for (const { key, order } of criteria) {
-      if (a[key] < b[key]) return order === 'asc' ? -1 : 1;
-      if (a[key] > b[key]) return order === 'asc' ? 1 : -1;
+      const aVal = a[key];
+      const bVal = b[key];
+
+      let comparison;
+      if (typeof aVal === 'string' && typeof bVal === 'string') {
+        comparison = aVal.localeCompare(bVal);
+      } else {
+        comparison = aVal - bVal;
+      }
+
+      if (comparison !== 0) {
+        return order === 'asc' ? comparison : -comparison;
+      }
     }
     return 0;
   });
@@ -132,37 +152,54 @@ function sortByMultiple(arr, criteria) {
 
 function sortWithNulls(arr, nullsFirst = true) {
   return [...arr].sort((a, b) => {
+    // Handle nulls
     if (a === null && b === null) return 0;
     if (a === null) return nullsFirst ? -1 : 1;
     if (b === null) return nullsFirst ? 1 : -1;
+
+    // Normal numeric comparison
     return a - b;
   });
 }`,
   testCases: [
     {
-      input: [
-        [
-          { name: 'John', age: 30 },
-          { name: 'Jane', age: 25 },
-        ],
-        'age',
-        'asc',
-      ],
-      expectedOutput: [
-        { name: 'Jane', age: 25 },
-        { name: 'John', age: 30 },
-      ],
-      description: 'sortByProperty age asc',
+      input: {
+        type: 'byProperty',
+        arr: [{ name: 'John', age: 30 }, { name: 'Jane', age: 25 }],
+        property: 'age',
+        order: 'asc'
+      },
+      expectedOutput: [{ name: 'Jane', age: 25 }, { name: 'John', age: 30 }],
+      description: 'sortByProperty sorts by age ascending'
     },
     {
-      input: [[3, null, 1, null, 2], true],
+      input: {
+        type: 'byProperty',
+        arr: [{ name: 'John', age: 30 }, { name: 'Jane', age: 25 }],
+        property: 'age',
+        order: 'desc'
+      },
+      expectedOutput: [{ name: 'John', age: 30 }, { name: 'Jane', age: 25 }],
+      description: 'sortByProperty sorts by age descending'
+    },
+    {
+      input: {
+        type: 'byMultiple',
+        arr: [{ name: 'John', age: 30 }, { name: 'Jane', age: 25 }, { name: 'Bob', age: 30 }],
+        criteria: [{ key: 'age', order: 'asc' }, { key: 'name', order: 'asc' }]
+      },
+      expectedOutput: [{ name: 'Jane', age: 25 }, { name: 'Bob', age: 30 }, { name: 'John', age: 30 }],
+      description: 'sortByMultiple sorts by age then name'
+    },
+    {
+      input: { type: 'withNulls', arr: [3, null, 1, null, 2], nullsFirst: true },
       expectedOutput: [null, null, 1, 2, 3],
-      description: 'sortWithNulls nullsFirst',
+      description: 'sortWithNulls puts nulls first'
     },
     {
-      input: [[3, null, 1, null, 2], false],
+      input: { type: 'withNulls', arr: [3, null, 1, null, 2], nullsFirst: false },
       expectedOutput: [1, 2, 3, null, null],
-      description: 'sortWithNulls nullsLast',
+      description: 'sortWithNulls puts nulls last'
     },
   ],
   hints: [

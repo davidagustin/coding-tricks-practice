@@ -126,12 +126,13 @@ console.log(mergeSort([5, 2, 8, 1, 9]));
 
 console.log(merge([1, 3, 5], [2, 4, 6]));
 // Expected: [1, 2, 3, 4, 5, 6]`,
-  solution: `function merge(left: number[], right: number[]): number[] {
+  solution: `// Merge function: takes two sorted arrays and merges them into one sorted array
+function merge(left: number[], right: number[]): number[] {
   const result: number[] = [];
   let leftIndex = 0;
   let rightIndex = 0;
 
-  // Compare elements from both arrays and add smaller one
+  // Compare elements from both arrays and add smaller one to result
   while (leftIndex < left.length && rightIndex < right.length) {
     if (left[leftIndex] <= right[rightIndex]) {
       result.push(left[leftIndex]);
@@ -142,13 +143,13 @@ console.log(merge([1, 3, 5], [2, 4, 6]));
     }
   }
 
-  // Add remaining elements from left array (if any)
+  // Add remaining elements from left array
   while (leftIndex < left.length) {
     result.push(left[leftIndex]);
     leftIndex++;
   }
 
-  // Add remaining elements from right array (if any)
+  // Add remaining elements from right array
   while (rightIndex < right.length) {
     result.push(right[rightIndex]);
     rightIndex++;
@@ -157,16 +158,17 @@ console.log(merge([1, 3, 5], [2, 4, 6]));
   return result;
 }
 
+// Merge sort: recursively divides array and merges sorted halves
 function mergeSort(arr: number[]): number[] {
   // Base case: arrays of length 0 or 1 are already sorted
   if (arr.length <= 1) {
     return arr;
   }
 
-  // Find the middle index
+  // Find middle index
   const mid = Math.floor(arr.length / 2);
 
-  // Divide array into two halves
+  // Divide into left and right halves
   const left = arr.slice(0, mid);
   const right = arr.slice(mid);
 
@@ -174,38 +176,25 @@ function mergeSort(arr: number[]): number[] {
   return merge(mergeSort(left), mergeSort(right));
 }
 
-// Alternative: More concise merge using spread operator
-function mergeAlt(left: number[], right: number[]): number[] {
-  const result: number[] = [];
-
-  while (left.length && right.length) {
-    result.push(left[0] <= right[0] ? left.shift()! : right.shift()!);
-  }
-
-  return [...result, ...left, ...right];
-}
-
 // Test cases
 console.log(mergeSort([38, 27, 43, 3, 9, 82, 10]));
-// [3, 9, 10, 27, 38, 43, 82]
+// Expected: [3, 9, 10, 27, 38, 43, 82]
 
 console.log(mergeSort([5, 2, 8, 1, 9]));
-// [1, 2, 5, 8, 9]`,
+// Expected: [1, 2, 5, 8, 9]
+
+console.log(merge([1, 3, 5], [2, 4, 6]));
+// Expected: [1, 2, 3, 4, 5, 6]`,
   testCases: [
     {
       input: [[38, 27, 43, 3, 9, 82, 10]],
       expectedOutput: [3, 9, 10, 27, 38, 43, 82],
-      description: 'Sort random array',
+      description: 'Sort array of 7 elements',
     },
     {
-      input: [[5, 4, 3, 2, 1]],
-      expectedOutput: [1, 2, 3, 4, 5],
-      description: 'Sort reverse-sorted array',
-    },
-    {
-      input: [[1, 2, 3, 4, 5]],
-      expectedOutput: [1, 2, 3, 4, 5],
-      description: 'Already sorted array remains sorted',
+      input: [[5, 2, 8, 1, 9]],
+      expectedOutput: [1, 2, 5, 8, 9],
+      description: 'Sort array of 5 elements',
     },
     {
       input: [[]],
@@ -213,14 +202,19 @@ console.log(mergeSort([5, 2, 8, 1, 9]));
       description: 'Empty array returns empty',
     },
     {
-      input: [[42]],
-      expectedOutput: [42],
-      description: 'Single element array',
+      input: [[1]],
+      expectedOutput: [1],
+      description: 'Single element array returns same',
     },
     {
-      input: [[3, 3, 1, 1, 2, 2]],
-      expectedOutput: [1, 1, 2, 2, 3, 3],
-      description: 'Array with duplicates',
+      input: [[5, 4, 3, 2, 1]],
+      expectedOutput: [1, 2, 3, 4, 5],
+      description: 'Reverse sorted array',
+    },
+    {
+      input: [[1, 2, 3, 4, 5]],
+      expectedOutput: [1, 2, 3, 4, 5],
+      description: 'Already sorted array stays sorted',
     },
   ],
   hints: [

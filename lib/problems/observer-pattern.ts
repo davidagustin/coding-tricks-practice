@@ -139,94 +139,84 @@ emitter.emit('message', 'Hello World');
 emitter.off('message', handler1);
 emitter.emit('message', 'Second message');`,
   solution: `class EventEmitter {
-  private events: Map<string, Set<Function>>;
-
   constructor() {
     this.events = new Map();
   }
 
-  on(eventName: string, callback: Function): this {
+  on(eventName, callback) {
     if (!this.events.has(eventName)) {
       this.events.set(eventName, new Set());
     }
-    this.events.get(eventName)!.add(callback);
+    this.events.get(eventName).add(callback);
     return this;
   }
 
-  off(eventName: string, callback: Function): this {
-    const callbacks = this.events.get(eventName);
-    if (callbacks) {
-      callbacks.delete(callback);
-      if (callbacks.size === 0) {
+  off(eventName, callback) {
+    if (this.events.has(eventName)) {
+      this.events.get(eventName).delete(callback);
+      if (this.events.get(eventName).size === 0) {
         this.events.delete(eventName);
       }
     }
     return this;
   }
 
-  emit(eventName: string, data?: unknown): boolean {
-    const callbacks = this.events.get(eventName);
-    if (!callbacks || callbacks.size === 0) {
+  emit(eventName, data) {
+    if (!this.events.has(eventName)) {
       return false;
     }
-    callbacks.forEach(callback => callback(data));
+    this.events.get(eventName).forEach(callback => callback(data));
     return true;
   }
 
-  listenerCount(eventName: string): number {
-    const callbacks = this.events.get(eventName);
-    return callbacks ? callbacks.size : 0;
-  }
-
-  // Bonus: once method for one-time listeners
-  once(eventName: string, callback: Function): this {
-    const wrapper = (data: unknown) => {
-      callback(data);
-      this.off(eventName, wrapper);
-    };
-    return this.on(eventName, wrapper);
+  listenerCount(eventName) {
+    return this.events.has(eventName) ? this.events.get(eventName).size : 0;
   }
 }
 
-// Usage
+// Test
 const emitter = new EventEmitter();
 
-const handler1 = (data: unknown) => console.log('Handler 1:', data);
-const handler2 = (data: unknown) => console.log('Handler 2:', data);
+const handler1 = (data) => console.log('Handler 1:', data);
+const handler2 = (data) => console.log('Handler 2:', data);
 
-emitter.on('message', handler1).on('message', handler2);
+emitter.on('message', handler1);
+emitter.on('message', handler2);
+
 emitter.emit('message', 'Hello World');
-// Handler 1: Hello World
-// Handler 2: Hello World
 
 emitter.off('message', handler1);
-emitter.emit('message', 'Second message');
-// Handler 2: Second message`,
+emitter.emit('message', 'Second message');`,
   testCases: [
     {
-      input: { action: 'subscribe_and_emit', eventName: 'test', data: 'Hello' },
-      expectedOutput: { emitted: true, receivedData: 'Hello' },
-      description: 'Subscriber receives data when event is emitted',
+      input: { action: 'create' },
+      expectedOutput: { hasOn: true, hasOff: true, hasEmit: true, hasListenerCount: true },
+      description: 'EventEmitter has all required methods',
     },
     {
-      input: { action: 'multiple_subscribers', eventName: 'update', data: 42 },
-      expectedOutput: { subscriberCount: 3, allReceived: true },
-      description: 'Multiple subscribers all receive the emitted event',
+      input: { action: 'subscribe_and_emit' },
+      expectedOutput: { received: true, data: 'test-data' },
+      description: 'Subscriber receives emitted data',
     },
     {
-      input: { action: 'unsubscribe', eventName: 'click', initialCount: 2, afterUnsubscribe: 1 },
-      expectedOutput: { listenerCount: 1 },
-      description: 'off() removes specific subscriber from event',
+      input: { action: 'multiple_subscribers' },
+      expectedOutput: { count: 2 },
+      description: 'Multiple subscribers receive the same event',
     },
     {
-      input: { action: 'emit_no_listeners', eventName: 'nonexistent' },
+      input: { action: 'unsubscribe' },
+      expectedOutput: { beforeCount: 2, afterCount: 1 },
+      description: 'Unsubscribing removes the specific callback',
+    },
+    {
+      input: { action: 'emit_no_listeners' },
       expectedOutput: false,
-      description: 'emit() returns false when no listeners exist for event',
+      description: 'emit returns false when no listeners',
     },
     {
-      input: { action: 'listener_count', eventName: 'data', addCount: 5 },
-      expectedOutput: 5,
-      description: 'listenerCount() returns correct number of subscribers',
+      input: { action: 'chaining' },
+      expectedOutput: true,
+      description: 'on() and off() return this for chaining',
     },
   ],
   hints: [

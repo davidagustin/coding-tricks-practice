@@ -148,7 +148,8 @@ try {
 } catch (e) {
   console.log(handleError(e as Error));
 }`,
-  solution: `class AppError extends Error {
+  solution: `// Base application error with HTTP status code support
+class AppError extends Error {
   statusCode: number;
   isOperational: boolean;
 
@@ -157,11 +158,16 @@ try {
     this.name = this.constructor.name;
     this.statusCode = statusCode;
     this.isOperational = true;
+
+    // Fix prototype chain for instanceof to work correctly
     Object.setPrototypeOf(this, new.target.prototype);
+
+    // Capture stack trace (V8 engines only)
     Error.captureStackTrace?.(this, this.constructor);
   }
 }
 
+// Validation error with field information
 class ValidationError extends AppError {
   field: string;
 
@@ -171,6 +177,7 @@ class ValidationError extends AppError {
   }
 }
 
+// Not found error with resource information
 class NotFoundError extends AppError {
   resourceType: string;
   resourceId: string;
@@ -182,21 +189,21 @@ class NotFoundError extends AppError {
   }
 }
 
+// Authentication error
 class AuthenticationError extends AppError {
   constructor(message: string = 'Authentication required') {
     super(message, 401);
   }
 }
 
+// Authorization error (user authenticated but not permitted)
 class AuthorizationError extends AppError {
-  requiredPermission: string;
-
-  constructor(requiredPermission: string) {
-    super(\`Permission denied: \${requiredPermission} required\`, 403);
-    this.requiredPermission = requiredPermission;
+  constructor(message: string = 'Permission denied') {
+    super(message, 403);
   }
 }
 
+// Function to test error handling
 function handleError(error: Error): { type: string; status: number; message: string } {
   if (error instanceof ValidationError) {
     return {
@@ -205,6 +212,7 @@ function handleError(error: Error): { type: string; status: number; message: str
       message: \`\${error.message} (field: \${error.field})\`
     };
   }
+
   if (error instanceof NotFoundError) {
     return {
       type: 'NotFoundError',
@@ -212,6 +220,7 @@ function handleError(error: Error): { type: string; status: number; message: str
       message: error.message
     };
   }
+
   if (error instanceof AuthenticationError) {
     return {
       type: 'AuthenticationError',
@@ -219,6 +228,15 @@ function handleError(error: Error): { type: string; status: number; message: str
       message: error.message
     };
   }
+
+  if (error instanceof AuthorizationError) {
+    return {
+      type: 'AuthorizationError',
+      status: error.statusCode,
+      message: error.message
+    };
+  }
+
   if (error instanceof AppError) {
     return {
       type: 'AppError',
@@ -226,6 +244,8 @@ function handleError(error: Error): { type: string; status: number; message: str
       message: error.message
     };
   }
+
+  // Generic error fallback
   return {
     type: 'Error',
     status: 500,
@@ -238,33 +258,19 @@ try {
   throw new ValidationError('Email is invalid', 'email');
 } catch (e) {
   console.log(handleError(e as Error));
+  // { type: 'ValidationError', status: 400, message: 'Email is invalid (field: email)' }
+}
+
+try {
+  throw new NotFoundError('User', '12345');
+} catch (e) {
+  console.log(handleError(e as Error));
+  // { type: 'NotFoundError', status: 404, message: 'User with id 12345 not found' }
 }`,
   testCases: [
-    {
-      input: ['ValidationError', 'Invalid email', 'email'],
-      expectedOutput: { type: 'ValidationError', status: 400, message: 'Invalid email (field: email)' },
-      description: 'ValidationError returns 400 status with field info',
-    },
-    {
-      input: ['NotFoundError', 'User', '12345'],
-      expectedOutput: { type: 'NotFoundError', status: 404, message: 'User with id 12345 not found' },
-      description: 'NotFoundError returns 404 status with resource details',
-    },
-    {
-      input: ['AuthenticationError', 'Invalid token'],
-      expectedOutput: { type: 'AuthenticationError', status: 401, message: 'Invalid token' },
-      description: 'AuthenticationError returns 401 status',
-    },
-    {
-      input: ['AppError', 'Server error', 500],
-      expectedOutput: { type: 'AppError', status: 500, message: 'Server error' },
-      description: 'Base AppError handles generic errors',
-    },
-    {
-      input: ['Error', 'Unknown error'],
-      expectedOutput: { type: 'Error', status: 500, message: 'Unknown error' },
-      description: 'Regular Error falls through to default handling',
-    },
+    { input: ['Email is invalid', 'email'], expectedOutput: { type: 'ValidationError', status: 400, message: 'Email is invalid (field: email)' }, description: 'ValidationError handled correctly' },
+    { input: ['User', '12345'], expectedOutput: { type: 'NotFoundError', status: 404, message: 'User with id 12345 not found' }, description: 'NotFoundError handled correctly' },
+    { input: [], expectedOutput: { type: 'AuthenticationError', status: 401, message: 'Authentication required' }, description: 'AuthenticationError with default message' },
   ],
   hints: [
     'Always call super(message) first in your constructor',

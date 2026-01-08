@@ -189,7 +189,7 @@ console.log(token.isValid());  // true
 new Counter();
 new Counter();
 console.log(Counter.getInstanceCount());  // 2`,
-  solution: `// Task 1: Create a BankAccount class with private balance
+  solution: `// Task 1: BankAccount class with private balance
 class BankAccount {
   #balance = 0;
 
@@ -220,14 +220,13 @@ class BankAccount {
   }
 }
 
-// Task 2: Create a SecureToken class with private token and expiry
+// Task 2: SecureToken class with private token and expiry
 class SecureToken {
   #token;
   #expiresAt;
 
   constructor(expiresInMs = 3600000) {
-    this.#token = Math.random().toString(36).substring(2) +
-                  Math.random().toString(36).substring(2);
+    this.#token = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
     this.#expiresAt = Date.now() + expiresInMs;
   }
 
@@ -240,7 +239,7 @@ class SecureToken {
   }
 }
 
-// Task 3: Create a Counter class with private static count
+// Task 3: Counter class with private static count
 class Counter {
   static #totalInstances = 0;
   #id;
@@ -257,32 +256,62 @@ class Counter {
   getId() {
     return this.#id;
   }
-}`,
+}
+
+// Test
+const account = new BankAccount(100);
+account.deposit(50);
+console.log(account.getBalance());  // 150
+console.log(account.withdraw(200)); // false
+console.log(account.withdraw(50));  // true
+console.log(account.getBalance());  // 100
+
+const token = new SecureToken(10000);
+console.log(token.isValid());  // true
+
+new Counter();
+new Counter();
+console.log(Counter.getInstanceCount());  // 2`,
   testCases: [
     {
-      input: [100, 50],
-      expectedOutput: 150,
-      description: 'BankAccount: deposit 50 to initial 100 balance returns 150',
-    },
-    {
-      input: [100, -50],
+      input: { class: 'BankAccount', initialBalance: 100 },
       expectedOutput: 100,
-      description: 'BankAccount: negative deposit is rejected, balance unchanged',
+      description: 'BankAccount initializes with correct balance',
     },
     {
-      input: [100, 150],
-      expectedOutput: false,
-      description: 'BankAccount: withdraw more than balance returns false',
+      input: { class: 'BankAccount', action: 'deposit', amount: 50, initialBalance: 100 },
+      expectedOutput: 150,
+      description: 'BankAccount.deposit adds to balance',
     },
     {
-      input: [100, 50, 30],
-      expectedOutput: 70,
-      description: 'BankAccount: withdraw 30 from 150 (100+50) leaves 120, withdraw succeeds',
+      input: { class: 'BankAccount', action: 'withdraw', amount: 50, initialBalance: 100 },
+      expectedOutput: { success: true, balance: 50 },
+      description: 'BankAccount.withdraw succeeds with sufficient funds',
     },
     {
-      input: [3],
-      expectedOutput: 3,
-      description: 'Counter: creating 3 instances results in getInstanceCount() = 3',
+      input: { class: 'BankAccount', action: 'withdraw', amount: 200, initialBalance: 100 },
+      expectedOutput: { success: false, balance: 100 },
+      description: 'BankAccount.withdraw fails with insufficient funds',
+    },
+    {
+      input: { class: 'SecureToken', expiresInMs: 10000 },
+      expectedOutput: { isValid: true, hasToken: true },
+      description: 'SecureToken is valid and returns token before expiry',
+    },
+    {
+      input: { class: 'SecureToken', expired: true },
+      expectedOutput: { isValid: false, token: null },
+      description: 'SecureToken returns null after expiry',
+    },
+    {
+      input: { class: 'Counter', instanceCount: 2 },
+      expectedOutput: 2,
+      description: 'Counter.getInstanceCount returns total instances created',
+    },
+    {
+      input: { class: 'Counter', action: 'getId', instanceNumber: 1 },
+      expectedOutput: 1,
+      description: 'Counter.getId returns instance-specific id',
     },
   ],
   hints: [

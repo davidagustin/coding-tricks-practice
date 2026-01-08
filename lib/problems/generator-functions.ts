@@ -115,42 +115,86 @@ const first10Fib = Array.from({ length: 10 }, () => fib.next().value);
 console.log(first10Fib);
 
 console.log([...chunk([1, 2, 3, 4, 5], 2)]);`,
-  solution: `function* range(start, end) {
+  solution: `// Generator that yields numbers from start to end (inclusive)
+function* range(start, end) {
   for (let i = start; i <= end; i++) {
     yield i;
   }
 }
 
+// Infinite ID generator
 function* idGenerator(prefix = 'id') {
   let id = 1;
   while (true) {
-    yield prefix + '-' + id++;
+    yield \`\${prefix}-\${id++}\`;
   }
 }
 
+// Generator that yields Fibonacci numbers (infinite)
 function* fibonacci() {
-  let a = 0, b = 1;
+  let prev = 0;
+  let curr = 1;
+
+  yield prev; // 0
+  yield curr; // 1
+
   while (true) {
-    yield a;
-    [a, b] = [b, a + b];
+    const next = prev + curr;
+    yield next;
+    prev = curr;
+    curr = next;
   }
 }
 
+// Generator that chunks an array
 function* chunk(arr, size) {
   for (let i = 0; i < arr.length; i += size) {
     yield arr.slice(i, i + size);
   }
-}`,
+}
+
+// Test
+console.log([...range(1, 5)]); // [1, 2, 3, 4, 5]
+
+const ids = idGenerator('user');
+console.log(ids.next().value); // 'user-1'
+console.log(ids.next().value); // 'user-2'
+
+const fib = fibonacci();
+const first10Fib = Array.from({ length: 10 }, () => fib.next().value);
+console.log(first10Fib); // [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+
+console.log([...chunk([1, 2, 3, 4, 5], 2)]); // [[1, 2], [3, 4], [5]]`,
   testCases: [
     {
-      input: [1, 5],
+      input: { function: 'range', args: [1, 5] },
       expectedOutput: [1, 2, 3, 4, 5],
-      description: 'range generator',
+      description: 'range(1, 5) should yield [1, 2, 3, 4, 5]',
     },
     {
-      input: [[1, 2, 3, 4, 5], 2],
+      input: { function: 'range', args: [0, 3] },
+      expectedOutput: [0, 1, 2, 3],
+      description: 'range(0, 3) should yield [0, 1, 2, 3]',
+    },
+    {
+      input: { function: 'idGenerator', prefix: 'user', count: 3 },
+      expectedOutput: ['user-1', 'user-2', 'user-3'],
+      description: 'idGenerator should generate sequential IDs with prefix',
+    },
+    {
+      input: { function: 'fibonacci', count: 10 },
+      expectedOutput: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34],
+      description: 'fibonacci should yield the Fibonacci sequence',
+    },
+    {
+      input: { function: 'chunk', args: [[1, 2, 3, 4, 5], 2] },
       expectedOutput: [[1, 2], [3, 4], [5]],
-      description: 'chunk generator',
+      description: 'chunk should split array into chunks of specified size',
+    },
+    {
+      input: { function: 'chunk', args: [[1, 2, 3, 4, 5, 6], 3] },
+      expectedOutput: [[1, 2, 3], [4, 5, 6]],
+      description: 'chunk should handle even division',
     },
   ],
   hints: [

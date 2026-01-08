@@ -101,33 +101,44 @@ console.log(greetUser(null));
 console.log(getConfigValue({ timeout: 5000 }, 'timeout', 3000));
 console.log(getConfigValue({}, 'timeout', 3000));`,
   solution: `function greetUser(user) {
+  // Use && to only call user.getName() if user exists
   const name = user && user.getName();
+  // Use || to provide default value
   return 'Hello, ' + (name || 'Guest') + '!';
 }
 
 function getConfigValue(config, key, defaultValue) {
-  return (config && config[key]) || defaultValue;
+  // Use && to check config exists, then use ?? (nullish coalescing)
+  // to handle falsy values like 0 or '' correctly
+  // If config doesn't exist or key is not in config, return defaultValue
+  // Otherwise return the value (even if falsy like 0 or '')
+  return config && key in config ? config[key] : defaultValue;
 }`,
   testCases: [
     {
-      input: [{ getName: () => 'John' }],
+      input: { type: 'greet', user: { getName: () => 'John' } },
       expectedOutput: 'Hello, John!',
-      description: 'greetUser with user',
+      description: 'greetUser with valid user returns name'
     },
     {
-      input: [null],
+      input: { type: 'greet', user: null },
       expectedOutput: 'Hello, Guest!',
-      description: 'greetUser without user',
+      description: 'greetUser with null returns Guest'
     },
     {
-      input: [{ timeout: 5000 }, 'timeout', 3000],
+      input: { type: 'config', config: { timeout: 5000 }, key: 'timeout', default: 3000 },
       expectedOutput: 5000,
-      description: 'getConfigValue existing',
+      description: 'getConfigValue returns existing value'
     },
     {
-      input: [{}, 'timeout', 3000],
+      input: { type: 'config', config: {}, key: 'timeout', default: 3000 },
       expectedOutput: 3000,
-      description: 'getConfigValue default',
+      description: 'getConfigValue returns default for missing key'
+    },
+    {
+      input: { type: 'config', config: { count: 0 }, key: 'count', default: 10 },
+      expectedOutput: 0,
+      description: 'getConfigValue handles falsy value (0) correctly'
     },
   ],
   hints: [

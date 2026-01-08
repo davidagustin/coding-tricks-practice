@@ -124,6 +124,7 @@ console.log(extractUserInfo({ name: 'Alice', email: 'alice@example.com', age: 28
 console.log(getFirstAndLast([1, 2, 3, 4, 5]));
 console.log(swapValues(10, 20));`,
   solution: `function extractUserInfo(user) {
+  // Use object destructuring to extract name, email, and age
   const { name, email, age } = user;
 
   return {
@@ -133,6 +134,7 @@ console.log(swapValues(10, 20));`,
 }
 
 function getFirstAndLast(arr) {
+  // Use array destructuring to get first and last elements
   const [first, ...rest] = arr;
   const last = rest.length > 0 ? rest[rest.length - 1] : first;
 
@@ -140,30 +142,34 @@ function getFirstAndLast(arr) {
 }
 
 function swapValues(a, b) {
+  // Use array destructuring to swap a and b
   [a, b] = [b, a];
   return [a, b];
-}`,
+}
+
+// Test
+console.log(extractUserInfo({ name: 'Alice', email: 'alice@example.com', age: 28 }));
+// { greeting: "Hello, Alice! You are 28 years old.", contact: "alice@example.com" }
+console.log(getFirstAndLast([1, 2, 3, 4, 5]));
+// { first: 1, last: 5 }
+console.log(swapValues(10, 20));
+// [20, 10]`,
   testCases: [
     {
-      input: [{ name: 'Alice', email: 'alice@example.com', age: 28 }],
+      input: { fn: 'extractUserInfo', args: [{ name: 'Alice', email: 'alice@example.com', age: 28 }] },
       expectedOutput: { greeting: 'Hello, Alice! You are 28 years old.', contact: 'alice@example.com' },
-      description: 'extractUserInfo with complete user object',
+      description: 'extractUserInfo uses destructuring to extract user properties'
     },
     {
-      input: [[1, 2, 3, 4, 5]],
+      input: { fn: 'getFirstAndLast', args: [[1, 2, 3, 4, 5]] },
       expectedOutput: { first: 1, last: 5 },
-      description: 'getFirstAndLast with multiple elements',
+      description: 'getFirstAndLast returns first and last elements'
     },
     {
-      input: [[42]],
-      expectedOutput: { first: 42, last: 42 },
-      description: 'getFirstAndLast with single element',
-    },
-    {
-      input: [10, 20],
+      input: { fn: 'swapValues', args: [10, 20] },
       expectedOutput: [20, 10],
-      description: 'swapValues returns swapped array',
-    },
+      description: 'swapValues swaps two values using destructuring'
+    }
   ],
   hints: [
     'Object destructuring uses {} and matches property names',

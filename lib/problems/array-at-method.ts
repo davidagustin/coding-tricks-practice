@@ -126,51 +126,50 @@ console.log(getNthFromEnd([10, 20, 30, 40, 50], 3));
 console.log(getFirstAndLast(['start', 'middle', 'end']));
 console.log(safeAt([1, 2, 3], 100, -1));`,
   solution: `function getLastElement(arr) {
+  // Return the last element using at(-1)
+  // Much cleaner than arr[arr.length - 1]
   return arr.at(-1);
 }
 
 function getSecondToLast(arr) {
+  // Return the second-to-last element using at(-2)
   return arr.at(-2);
 }
 
 function getNthFromEnd(arr, n) {
+  // Return the nth element from the end (1-indexed)
+  // n=1 means last element, so use -n
   return arr.at(-n);
 }
 
 function getFirstAndLast(arr) {
-  return { first: arr.at(0), last: arr.at(-1) };
+  // Return an object with first and last elements
+  return {
+    first: arr.at(0),
+    last: arr.at(-1)
+  };
 }
 
 function safeAt(arr, index, defaultValue) {
-  const result = arr.at(index);
-  return result !== undefined ? result : defaultValue;
-}`,
+  // Return element at index, or defaultValue if undefined
+  // at() returns undefined for out of bounds, use ?? for default
+  return arr.at(index) ?? defaultValue;
+}
+
+// Test
+console.log(getLastElement([1, 2, 3, 4, 5])); // 5
+console.log(getSecondToLast(['a', 'b', 'c', 'd'])); // 'c'
+console.log(getNthFromEnd([10, 20, 30, 40, 50], 3)); // 30
+console.log(getFirstAndLast(['start', 'middle', 'end'])); // { first: 'start', last: 'end' }
+console.log(safeAt([1, 2, 3], 100, -1)); // -1`,
   testCases: [
-    {
-      input: [[1, 2, 3, 4, 5]],
-      expectedOutput: 5,
-      description: 'getLastElement returns last element',
-    },
-    {
-      input: [['a', 'b', 'c', 'd']],
-      expectedOutput: 'c',
-      description: 'getSecondToLast returns second-to-last',
-    },
-    {
-      input: [[10, 20, 30, 40, 50], 3],
-      expectedOutput: 30,
-      description: 'getNthFromEnd returns 3rd from end',
-    },
-    {
-      input: [['start', 'middle', 'end']],
-      expectedOutput: { first: 'start', last: 'end' },
-      description: 'getFirstAndLast returns both elements',
-    },
-    {
-      input: [[1, 2, 3], 100, -1],
-      expectedOutput: -1,
-      description: 'safeAt returns default for out of bounds',
-    },
+    { input: [[1, 2, 3, 4, 5]], expectedOutput: 5, description: 'getLastElement returns 5' },
+    { input: [['a', 'b', 'c', 'd']], expectedOutput: 'c', description: 'getSecondToLast returns c' },
+    { input: [[10, 20, 30, 40, 50], 3], expectedOutput: 30, description: 'getNthFromEnd: 3rd from end is 30' },
+    { input: [[10, 20, 30, 40, 50], 1], expectedOutput: 50, description: 'getNthFromEnd: 1st from end is 50' },
+    { input: [['start', 'middle', 'end']], expectedOutput: { first: 'start', last: 'end' }, description: 'getFirstAndLast returns first and last' },
+    { input: [[1, 2, 3], 100, -1], expectedOutput: -1, description: 'safeAt returns default for out of bounds' },
+    { input: [[1, 2, 3], -1, -1], expectedOutput: 3, description: 'safeAt returns element at valid negative index' },
   ],
   hints: [
     'Use at(-1) to get the last element instead of arr[arr.length - 1]',

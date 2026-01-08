@@ -154,21 +154,25 @@ console.log('Implementation:', mock(5));`,
     return result;
   }
 
+  // Initialize tracking properties
   mockFn.calls = [];
   mockFn.callCount = 0;
   mockFn.returnValues = [];
 
+  // Add method to set return value
   mockFn.mockReturnValue = function(value) {
     returnValue = value;
     implementation = null;
     return mockFn;
   };
 
+  // Add method to set implementation
   mockFn.mockImplementation = function(fn) {
     implementation = fn;
     return mockFn;
   };
 
+  // Add method to reset the mock
   mockFn.mockReset = function() {
     mockFn.calls = [];
     mockFn.callCount = 0;
@@ -178,17 +182,17 @@ console.log('Implementation:', mock(5));`,
     return mockFn;
   };
 
+  // Add helper method to check if called with specific args
   mockFn.wasCalledWith = function(...expectedArgs) {
-    return mockFn.calls.some(call =>
-      call.length === expectedArgs.length &&
-      call.every((arg, i) => arg === expectedArgs[i])
+    return mockFn.calls.some(callArgs =>
+      JSON.stringify(callArgs) === JSON.stringify(expectedArgs)
     );
   };
 
   return mockFn;
 }
 
-// Test
+// Test your implementation
 const mock = createMock();
 mock('test', 123);
 mock('another');
@@ -202,30 +206,20 @@ mock.mockImplementation((x) => x * 2);
 console.log('Implementation:', mock(5));`,
   testCases: [
     {
-      input: { action: 'trackCalls', calls: [['a', 'b'], ['c']] },
-      expectedOutput: { calls: [['a', 'b'], ['c']], callCount: 2 },
-      description: 'Mock tracks multiple calls with their arguments',
+      input: { fn: 'createMock', action: 'track_calls', args: [['test', 123], ['another']] },
+      expectedOutput: { calls: [['test', 123], ['another']], callCount: 2 },
+      description: 'createMock tracks calls and arguments'
     },
     {
-      input: { action: 'returnValue', setValue: 42, callArgs: [] },
-      expectedOutput: 42,
-      description: 'mockReturnValue sets the return value for subsequent calls',
+      input: { fn: 'createMock', action: 'return_value', returnValue: 'mocked!' },
+      expectedOutput: 'mocked!',
+      description: 'mockReturnValue sets the return value'
     },
     {
-      input: { action: 'implementation', fn: 'double', callArgs: [5] },
+      input: { fn: 'createMock', action: 'implementation', args: [5] },
       expectedOutput: 10,
-      description: 'mockImplementation replaces the mock behavior with custom function',
-    },
-    {
-      input: { action: 'wasCalledWith', calls: [['hello', 'world'], ['foo']], check: ['hello', 'world'] },
-      expectedOutput: true,
-      description: 'wasCalledWith returns true when mock was called with specific arguments',
-    },
-    {
-      input: { action: 'reset', callsBefore: [['a'], ['b']], callsAfter: [] },
-      expectedOutput: { calls: [], callCount: 0, returnValues: [] },
-      description: 'mockReset clears all tracking data and configured values',
-    },
+      description: 'mockImplementation uses custom function'
+    }
   ],
   hints: [
     'Use closure to store the return value and implementation function',

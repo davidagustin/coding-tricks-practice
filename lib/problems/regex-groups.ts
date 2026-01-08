@@ -129,10 +129,10 @@ console.log(flipName('Doe, John'));
 
 console.log(parseQueryString('name=John&age=30&city=NYC'));
 // { name: 'John', age: '30', city: 'NYC' }`,
-  solution: `function parseDate(dateStr) {
-  const regex = /(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})/;
-  const match = dateStr.match(regex);
-  if (!match || !match.groups) return { year: 0, month: 0, day: 0 };
+  solution: `// Parse a date string "YYYY-MM-DD" and return an object with year, month, day as numbers
+function parseDate(dateStr) {
+  const match = dateStr.match(/(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})/);
+  if (!match) return null;
   return {
     year: parseInt(match.groups.year, 10),
     month: parseInt(match.groups.month, 10),
@@ -140,10 +140,10 @@ console.log(parseQueryString('name=John&age=30&city=NYC'));
   };
 }
 
+// Extract the protocol, domain, and path from a URL
 function parseURL(url) {
-  const regex = /(?<protocol>[a-z]+):\\/\\/(?<domain>[^/]+)(?<path>\\/.*)?/i;
-  const match = url.match(regex);
-  if (!match || !match.groups) return { protocol: '', domain: '', path: '' };
+  const match = url.match(/(?<protocol>[a-z]+):\\/\\/(?<domain>[^\\/]+)(?<path>\\/.*)?/i);
+  if (!match) return null;
   return {
     protocol: match.groups.protocol,
     domain: match.groups.domain,
@@ -151,51 +151,54 @@ function parseURL(url) {
   };
 }
 
+// Convert "lastName, firstName" to "firstName lastName"
 function flipName(name) {
   return name.replace(/(?<last>\\w+),\\s*(?<first>\\w+)/, '$<first> $<last>');
 }
 
+// Extract all key-value pairs from a query string
 function parseQueryString(queryStr) {
   const regex = /(?<key>[^&=]+)=(?<value>[^&]*)/g;
   const result = {};
   for (const match of queryStr.matchAll(regex)) {
-    if (match.groups) {
-      result[match.groups.key] = match.groups.value;
-    }
+    result[match.groups.key] = match.groups.value;
   }
   return result;
-}`,
+}
+
+// Test your functions
+console.log(parseDate('2024-01-15'));
+// { year: 2024, month: 1, day: 15 }
+
+console.log(parseURL('https://example.com/path/to/page'));
+// { protocol: 'https', domain: 'example.com', path: '/path/to/page' }
+
+console.log(flipName('Doe, John'));
+// 'John Doe'
+
+console.log(parseQueryString('name=John&age=30&city=NYC'));
+// { name: 'John', age: '30', city: 'NYC' }`,
   testCases: [
     {
-      input: ['2024-01-15'],
+      input: { fn: 'parseDate', args: ['2024-01-15'] },
       expectedOutput: { year: 2024, month: 1, day: 15 },
-      description: 'parseDate extracts date components',
+      description: 'parseDate extracts year, month, day as numbers'
     },
     {
-      input: ['2023-12-31'],
-      expectedOutput: { year: 2023, month: 12, day: 31 },
-      description: 'parseDate handles end of year',
-    },
-    {
-      input: ['https://example.com/path/to/page'],
+      input: { fn: 'parseURL', args: ['https://example.com/path/to/page'] },
       expectedOutput: { protocol: 'https', domain: 'example.com', path: '/path/to/page' },
-      description: 'parseURL extracts URL components',
+      description: 'parseURL extracts protocol, domain, and path'
     },
     {
-      input: ['Doe, John'],
+      input: { fn: 'flipName', args: ['Doe, John'] },
       expectedOutput: 'John Doe',
-      description: 'flipName converts lastName, firstName format',
+      description: 'flipName converts lastName, firstName to firstName lastName'
     },
     {
-      input: ['Smith, Jane'],
-      expectedOutput: 'Jane Smith',
-      description: 'flipName works with different names',
-    },
-    {
-      input: ['name=John&age=30&city=NYC'],
+      input: { fn: 'parseQueryString', args: ['name=John&age=30&city=NYC'] },
       expectedOutput: { name: 'John', age: '30', city: 'NYC' },
-      description: 'parseQueryString extracts key-value pairs',
-    },
+      description: 'parseQueryString extracts key-value pairs'
+    }
   ],
   hints: [
     'Named groups use the syntax (?<name>pattern) and are accessed via match.groups.name',

@@ -127,44 +127,59 @@ console.log(expandAndFlatten([1, 2, 3], n => [n, n * n]));
 console.log(getWordsFromSentences(["hello world", "foo bar"]));
 console.log(filterAndTransform([1, 2, 3, 4, 5], n => n > 2, n => n * 10));`,
   solution: `function flattenDeep(nestedArray) {
+  // Completely flatten an array of any nesting depth
+  // Use flat(Infinity) to flatten all levels
   return nestedArray.flat(Infinity);
 }
 
 function flattenToDepth(nestedArray, depth) {
+  // Flatten array to a specific depth
   return nestedArray.flat(depth);
 }
 
 function expandAndFlatten(items, expandFn) {
+  // Use flatMap to expand each item using expandFn
+  // flatMap maps and then flattens one level
   return items.flatMap(expandFn);
 }
 
 function getWordsFromSentences(sentences) {
-  return sentences.flatMap(sentence => sentence.split(" "));
+  // Split each sentence into words and flatten
+  return sentences.flatMap(sentence => sentence.split(' '));
 }
 
 function filterAndTransform(numbers, filterFn, transformFn) {
+  // Use flatMap to filter (return [] to exclude) and transform
+  // Return empty array to filter out, single-element array to include
   return numbers.flatMap(n => filterFn(n) ? [transformFn(n)] : []);
-}`,
+}
+
+// Test
+console.log(flattenDeep([1, [2, [3, [4, [5]]]]])); // [1, 2, 3, 4, 5]
+console.log(flattenToDepth([1, [2, [3, [4]]]], 2)); // [1, 2, 3, [4]]
+console.log(expandAndFlatten([1, 2, 3], n => [n, n * n])); // [1, 1, 2, 4, 3, 9]
+console.log(getWordsFromSentences(["hello world", "foo bar"])); // ["hello", "world", "foo", "bar"]
+console.log(filterAndTransform([1, 2, 3, 4, 5], n => n > 2, n => n * 10)); // [30, 40, 50]`,
   testCases: [
     {
       input: [[1, [2, [3, [4, [5]]]]]],
       expectedOutput: [1, 2, 3, 4, 5],
-      description: 'flattenDeep completely flattens nested array',
+      description: 'flattenDeep should completely flatten nested array',
     },
     {
       input: [[1, [2, [3, [4]]]], 2],
       expectedOutput: [1, 2, 3, [4]],
-      description: 'flattenToDepth flattens to specified depth',
+      description: 'flattenToDepth should flatten to specified depth',
     },
     {
       input: [["hello world", "foo bar"]],
       expectedOutput: ["hello", "world", "foo", "bar"],
-      description: 'getWordsFromSentences splits and flattens',
+      description: 'getWordsFromSentences should split and flatten',
     },
     {
-      input: [[1, 2, [3, 4], [[5]]], 1],
-      expectedOutput: [1, 2, 3, 4, [5]],
-      description: 'flattenToDepth with depth 1',
+      input: [[1, 2, 3, 4, 5]],
+      expectedOutput: [30, 40, 50],
+      description: 'filterAndTransform should filter and transform using flatMap',
     },
   ],
   hints: [

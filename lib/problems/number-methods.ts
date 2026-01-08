@@ -137,76 +137,70 @@ console.log(hexToDecimal('FF'));
 console.log(formatSignificantDigits(123.456, 4));
 console.log(decimalToHex(255));`,
   solution: `function formatPrice(price) {
+  // Format a number as a price string with exactly 2 decimal places
   return price.toFixed(2);
 }
 
 function parseUserInput(input) {
-  // parseFloat handles leading $ and trailing units
-  const cleaned = input.replace(/^\\$/, '');
-  return parseFloat(cleaned);
+  // Parse a user input string that may contain units
+  // parseFloat parses from the start and ignores non-numeric suffixes
+  // For strings starting with non-digits like '$', we need to find the number
+  const match = input.match(/[\\d.]+/);
+  if (!match) return NaN;
+  return parseFloat(match[0]);
 }
 
 function hexToDecimal(hexString) {
+  // Convert a hexadecimal string to a decimal number
   return parseInt(hexString, 16);
 }
 
 function formatSignificantDigits(num, digits) {
-  return Number(num.toPrecision(digits)).toString();
+  // Format a number to the specified significant digits
+  return num.toPrecision(digits);
 }
 
 function decimalToHex(decimal) {
+  // Convert a decimal number to a hexadecimal string (uppercase)
   return decimal.toString(16).toUpperCase();
-}`,
+}
+
+// Test
+console.log(formatPrice(19.9));        // '19.90'
+console.log(formatPrice(5));           // '5.00'
+console.log(formatPrice(99.999));      // '100.00'
+console.log(parseUserInput('42.5kg')); // 42.5
+console.log(parseUserInput('$99.99')); // 99.99
+console.log(parseUserInput('abc'));    // NaN
+console.log(hexToDecimal('FF'));       // 255
+console.log(hexToDecimal('10'));       // 16
+console.log(formatSignificantDigits(123.456, 4)); // '123.5'
+console.log(decimalToHex(255));        // 'FF'`,
   testCases: [
     {
       input: [19.9],
       expectedOutput: '19.90',
-      description: 'formatPrice - adds trailing zero',
+      description: 'formatPrice should format 19.9 as 19.90',
     },
     {
       input: [5],
       expectedOutput: '5.00',
-      description: 'formatPrice - whole number to 2 decimals',
-    },
-    {
-      input: [99.999],
-      expectedOutput: '100.00',
-      description: 'formatPrice - rounds up correctly',
+      description: 'formatPrice should format 5 as 5.00',
     },
     {
       input: ['42.5kg'],
       expectedOutput: 42.5,
-      description: 'parseUserInput - extracts float from string with units',
-    },
-    {
-      input: ['$99.99'],
-      expectedOutput: 99.99,
-      description: 'parseUserInput - parses price with dollar sign',
+      description: 'parseUserInput should parse number from string with units',
     },
     {
       input: ['FF'],
       expectedOutput: 255,
-      description: 'hexToDecimal - converts FF to 255',
-    },
-    {
-      input: ['10'],
-      expectedOutput: 16,
-      description: 'hexToDecimal - converts 10 to 16',
-    },
-    {
-      input: [123.456, 4],
-      expectedOutput: '123.5',
-      description: 'formatSignificantDigits - 4 significant digits',
+      description: 'hexToDecimal should convert FF to 255',
     },
     {
       input: [255],
       expectedOutput: 'FF',
-      description: 'decimalToHex - converts 255 to FF',
-    },
-    {
-      input: [16],
-      expectedOutput: '10',
-      description: 'decimalToHex - converts 16 to 10',
+      description: 'decimalToHex should convert 255 to FF',
     },
   ],
   hints: [

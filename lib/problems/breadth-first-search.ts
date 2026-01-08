@@ -172,8 +172,10 @@ console.log(bfsTreeLevelOrder(tree));
 
 console.log(shortestPath(graph, 'A', 'F'));
 // Expected: 2`,
-  solution: `type Graph = { [key: string]: string[] };
+  solution: `// Graph represented as adjacency list
+type Graph = { [key: string]: string[] };
 
+// Binary tree node
 interface TreeNode {
   val: number;
   left: TreeNode | null;
@@ -182,17 +184,16 @@ interface TreeNode {
 
 // BFS for graphs
 function bfsGraph(graph: Graph, start: string): string[] {
-  const result: string[] = [];
   const visited = new Set<string>();
   const queue: string[] = [start];
+  const result: string[] = [];
 
   visited.add(start);
 
   while (queue.length > 0) {
-    const node = queue.shift()!; // Dequeue from front
+    const node = queue.shift()!;
     result.push(node);
 
-    // Enqueue all unvisited neighbors
     for (const neighbor of graph[node] || []) {
       if (!visited.has(neighbor)) {
         visited.add(neighbor);
@@ -206,7 +207,7 @@ function bfsGraph(graph: Graph, start: string): string[] {
 
 // Level-order traversal for binary tree
 function bfsTreeLevelOrder(root: TreeNode | null): number[][] {
-  if (root === null) return [];
+  if (!root) return [];
 
   const result: number[][] = [];
   const queue: TreeNode[] = [root];
@@ -215,12 +216,10 @@ function bfsTreeLevelOrder(root: TreeNode | null): number[][] {
     const levelSize = queue.length;
     const currentLevel: number[] = [];
 
-    // Process all nodes at current level
     for (let i = 0; i < levelSize; i++) {
       const node = queue.shift()!;
       currentLevel.push(node.val);
 
-      // Add children to queue for next level
       if (node.left) queue.push(node.left);
       if (node.right) queue.push(node.right);
     }
@@ -231,12 +230,12 @@ function bfsTreeLevelOrder(root: TreeNode | null): number[][] {
   return result;
 }
 
-// Shortest path using BFS
+// Shortest path finder using BFS
 function shortestPath(graph: Graph, start: string, end: string): number {
   if (start === end) return 0;
 
   const visited = new Set<string>();
-  const queue: Array<[string, number]> = [[start, 0]]; // [node, distance]
+  const queue: [string, number][] = [[start, 0]];
 
   visited.add(start);
 
@@ -247,7 +246,6 @@ function shortestPath(graph: Graph, start: string, end: string): number {
       if (neighbor === end) {
         return distance + 1;
       }
-
       if (!visited.has(neighbor)) {
         visited.add(neighbor);
         queue.push([neighbor, distance + 1]);
@@ -255,43 +253,7 @@ function shortestPath(graph: Graph, start: string, end: string): number {
     }
   }
 
-  return -1; // No path found
-}
-
-// Alternative: BFS with path reconstruction
-function shortestPathWithRoute(graph: Graph, start: string, end: string): string[] | null {
-  if (start === end) return [start];
-
-  const visited = new Set<string>();
-  const queue: string[] = [start];
-  const parent = new Map<string, string>();
-
-  visited.add(start);
-
-  while (queue.length > 0) {
-    const node = queue.shift()!;
-
-    for (const neighbor of graph[node] || []) {
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor);
-        parent.set(neighbor, node);
-        queue.push(neighbor);
-
-        if (neighbor === end) {
-          // Reconstruct path
-          const path: string[] = [];
-          let current = end;
-          while (current !== undefined) {
-            path.unshift(current);
-            current = parent.get(current)!;
-          }
-          return path;
-        }
-      }
-    }
-  }
-
-  return null; // No path found
+  return -1;
 }
 
 // Test cases
@@ -304,34 +266,45 @@ const graph: Graph = {
   'F': []
 };
 
-console.log(bfsGraph(graph, 'A')); // ['A', 'B', 'C', 'D', 'E', 'F']
-console.log(shortestPath(graph, 'A', 'F')); // 2
-console.log(shortestPathWithRoute(graph, 'A', 'F')); // ['A', 'C', 'F']`,
+console.log(bfsGraph(graph, 'A'));
+// Expected: ['A', 'B', 'C', 'D', 'E', 'F']
+
+const tree: TreeNode = {
+  val: 1,
+  left: { val: 2, left: { val: 4, left: null, right: null }, right: { val: 5, left: null, right: null } },
+  right: { val: 3, left: null, right: null }
+};
+
+console.log(bfsTreeLevelOrder(tree));
+// Expected: [[1], [2, 3], [4, 5]]
+
+console.log(shortestPath(graph, 'A', 'F'));
+// Expected: 2`,
   testCases: [
     {
-      input: [{ A: ['B', 'C'], B: ['D', 'E'], C: ['F'], D: [], E: [], F: [] }, 'A'],
+      input: { graph: { 'A': ['B', 'C'], 'B': ['D', 'E'], 'C': ['F'], 'D': [], 'E': [], 'F': [] }, start: 'A' },
       expectedOutput: ['A', 'B', 'C', 'D', 'E', 'F'],
-      description: 'BFS visits nodes level by level',
+      description: 'BFS traverses graph level by level',
     },
     {
-      input: [{ A: ['B', 'C'], B: ['D'], C: ['D'], D: [] }, 'A', 'D'],
+      input: { graph: { 'A': ['B', 'C'], 'B': ['D'], 'C': ['D'], 'D': [] }, start: 'A', end: 'D' },
       expectedOutput: 2,
-      description: 'Shortest path from A to D',
+      description: 'Shortest path from A to D is 2 edges',
     },
     {
-      input: [{ A: ['B'], B: ['C'], C: [] }, 'A', 'C'],
+      input: { tree: { val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } } },
+      expectedOutput: [[1], [2, 3]],
+      description: 'Level-order traversal returns nodes grouped by level',
+    },
+    {
+      input: { graph: { 'A': ['B'], 'B': ['C'], 'C': [] }, start: 'A', end: 'C' },
       expectedOutput: 2,
       description: 'Shortest path in linear graph',
     },
     {
-      input: 'tree-levelorder',
-      expectedOutput: [[1], [2, 3], [4, 5]],
-      description: 'Level-order traversal of binary tree',
-    },
-    {
-      input: [{ A: [] }, 'A'],
-      expectedOutput: ['A'],
-      description: 'Single node graph',
+      input: { graph: { 'A': [], 'B': [] }, start: 'A', end: 'B' },
+      expectedOutput: -1,
+      description: 'No path returns -1',
     },
   ],
   hints: [

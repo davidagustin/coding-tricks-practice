@@ -101,30 +101,75 @@ const first = getFirst([1, 2, 3]);
 const pair: Pair<string, number> = { first: 'age', second: 30 };
 
 console.log(num, str, first, pair);`,
-  solution: `function identity<T>(arg: T): T {
+  solution: `// 1. Generic identity function - returns whatever is passed in
+function identity<T>(arg: T): T {
   return arg;
 }
 
+// 2. Generic function to get first element of array
 function getFirst<T>(arr: T[]): T | undefined {
   return arr[0];
 }
 
+// 3. Generic Pair type with two different type parameters
 type Pair<T, U> = {
   first: T;
   second: U;
 };
 
-const num = identity<number>(42);
-const str = identity<string>('hello');
-const first = getFirst([1, 2, 3]);
+// Additional: Generic function to swap pair values
+function swapPair<T, U>(pair: Pair<T, U>): Pair<U, T> {
+  return { first: pair.second, second: pair.first };
+}
+
+// Additional: Generic function with constraint
+function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
+  return obj[key];
+}
+
+// Test
+const num = identity<number>(42);        // 42
+const str = identity<string>('hello');   // 'hello'
+const inferred = identity(true);         // TypeScript infers boolean
+
+const first = getFirst([1, 2, 3]);       // 1 (type: number | undefined)
+const firstStr = getFirst(['a', 'b']);   // 'a' (type: string | undefined)
+const empty = getFirst([]);              // undefined
+
 const pair: Pair<string, number> = { first: 'age', second: 30 };
+const swapped = swapPair(pair);          // { first: 30, second: 'age' }
 
 console.log(num, str, first, pair);`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Generics work correctly',
+      input: { function: 'identity', arg: 42 },
+      expectedOutput: 42,
+      description: 'identity(42) should return 42',
+    },
+    {
+      input: { function: 'identity', arg: 'hello' },
+      expectedOutput: 'hello',
+      description: 'identity("hello") should return "hello"',
+    },
+    {
+      input: { function: 'getFirst', arr: [1, 2, 3] },
+      expectedOutput: 1,
+      description: 'getFirst([1, 2, 3]) should return 1',
+    },
+    {
+      input: { function: 'getFirst', arr: [] },
+      expectedOutput: undefined,
+      description: 'getFirst([]) should return undefined',
+    },
+    {
+      input: { type: 'Pair', first: 'age', second: 30 },
+      expectedOutput: { first: 'age', second: 30 },
+      description: 'Pair<string, number> should have correct structure',
+    },
+    {
+      input: { function: 'swapPair', pair: { first: 'name', second: 42 } },
+      expectedOutput: { first: 42, second: 'name' },
+      description: 'swapPair should swap first and second values',
     },
   ],
   hints: [

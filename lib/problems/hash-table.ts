@@ -217,22 +217,22 @@ console.log('After delete:', ht.keys());`,
       hash = (hash * PRIME + char) % this.size;
     }
 
-    return hash;
+    return Math.abs(hash);
   }
 
   set(key: K, value: V): void {
     const index = this.hash(key);
     const bucket = this.buckets[index];
 
-    // Check if key already exists
+    // Check if key already exists and update
     for (let i = 0; i < bucket.length; i++) {
       if (bucket[i][0] === key) {
-        bucket[i][1] = value; // Update existing
+        bucket[i][1] = value;
         return;
       }
     }
 
-    // Add new key-value pair
+    // Key doesn't exist, add new entry
     bucket.push([key, value]);
     this.count++;
   }
@@ -280,46 +280,45 @@ console.log('After delete:', ht.keys());`,
 
   keys(): K[] {
     const keys: K[] = [];
-
     for (const bucket of this.buckets) {
       for (const [key] of bucket) {
         keys.push(key);
       }
     }
-
     return keys;
   }
 
   values(): V[] {
     const values: V[] = [];
-
     for (const bucket of this.buckets) {
       for (const [, value] of bucket) {
         values.push(value);
       }
     }
-
     return values;
   }
 
   entries(): Array<[K, V]> {
     const entries: Array<[K, V]> = [];
-
     for (const bucket of this.buckets) {
       for (const entry of bucket) {
         entries.push(entry);
       }
     }
-
     return entries;
   }
 
   getSize(): number {
     return this.count;
   }
+
+  clear(): void {
+    this.buckets = new Array(this.size).fill(null).map(() => []);
+    this.count = 0;
+  }
 }
 
-// Test your implementation
+// Test the implementation
 const ht = new HashTable<string, number>();
 ht.set('one', 1);
 ht.set('two', 2);
@@ -329,33 +328,52 @@ console.log('Has "one":', ht.has('one')); // true
 console.log('Has "four":', ht.has('four')); // false
 console.log('Keys:', ht.keys()); // ['one', 'two', 'three']
 console.log('Values:', ht.values()); // [1, 2, 3]
+console.log('Size:', ht.getSize()); // 3
+ht.set('two', 22); // Update existing key
+console.log('Get "two" after update:', ht.get('two')); // 22
 ht.delete('two');
-console.log('After delete:', ht.keys()); // ['one', 'three']`,
+console.log('After delete:', ht.keys()); // ['one', 'three']
+console.log('Entries:', ht.entries()); // [['one', 1], ['three', 3]]`,
   testCases: [
     {
-      input: { operations: ['set', 'set', 'get'], values: [['a', 1], ['b', 2], 'a'] },
-      expectedOutput: 1,
-      description: 'get() retrieves correct value',
+      input: { operations: ['set("name", "Alice")', 'get("name")'] },
+      expectedOutput: 'Alice',
+      description: 'get() retrieves the value for a key',
     },
     {
-      input: { operations: ['set', 'set', 'has', 'has'], values: [['x', 10], ['y', 20], 'x', 'z'] },
+      input: { operations: ['set("a", 1)', 'set("b", 2)', 'has("a")', 'has("c")'] },
       expectedOutput: [true, false],
-      description: 'has() correctly checks key existence',
+      description: 'has() returns true for existing keys, false otherwise',
     },
     {
-      input: { operations: ['set', 'set', 'delete', 'has'], values: [['a', 1], ['b', 2], 'a', 'a'] },
+      input: { operations: ['set("x", 100)', 'set("x", 200)', 'get("x")'] },
+      expectedOutput: 200,
+      description: 'set() with existing key updates the value',
+    },
+    {
+      input: { operations: ['set("a", 1)', 'set("b", 2)', 'delete("a")', 'has("a")'] },
       expectedOutput: false,
-      description: 'delete() removes key-value pair',
+      description: 'delete() removes the key-value pair',
     },
     {
-      input: { operations: ['set', 'set', 'set', 'keys'], values: [['x', 1], ['y', 2], ['z', 3]] },
-      expectedOutput: ['x', 'y', 'z'],
-      description: 'keys() returns all keys',
+      input: { operations: ['set("a", 1)', 'set("b", 2)', 'set("c", 3)', 'keys()'] },
+      expectedOutput: ['a', 'b', 'c'],
+      description: 'keys() returns all keys in the hash table',
     },
     {
-      input: { operations: ['set', 'set', 'set', 'getSize'], values: [['a', 1], ['b', 2], ['c', 3]] },
-      expectedOutput: 3,
-      description: 'getSize() returns correct count',
+      input: { operations: ['set("a", 1)', 'set("b", 2)', 'set("c", 3)', 'values()'] },
+      expectedOutput: [1, 2, 3],
+      description: 'values() returns all values in the hash table',
+    },
+    {
+      input: { operations: ['set("a", 1)', 'set("b", 2)', 'getSize()'] },
+      expectedOutput: 2,
+      description: 'getSize() returns the number of entries',
+    },
+    {
+      input: { operations: ['set("a", 1)', 'delete("nonexistent")'] },
+      expectedOutput: false,
+      description: 'delete() returns false for non-existing key',
     },
   ],
   hints: [

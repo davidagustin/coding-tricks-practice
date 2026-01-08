@@ -196,13 +196,13 @@ console.log(ColorPalette.primary);  // '#0000FF'
 console.log(Validator.validate('email', 'test@example.com'));  // true
 console.log(Validator.validate('phone', '1234567890'));  // true
 console.log(Validator.validate('age', 25));  // true`,
-  solution: `// Task 1: Create a Logger class with static initialization
+  solution: `// Task 1: Logger class with static initialization
 class Logger {
-  static #logLevel;
+  static #logLevel = 'error';
   static #initialized = false;
 
   static {
-    // Simulate environment check
+    // Set log level based on environment (assume 'development')
     const environment = 'development';
     this.#logLevel = environment === 'development' ? 'info' : 'error';
     this.#initialized = true;
@@ -221,10 +221,10 @@ class Logger {
   }
 }
 
-// Task 2: Create a ColorPalette class
+// Task 2: ColorPalette class
 class ColorPalette {
-  static colors;
-  static primary;
+  static colors = {};
+  static primary = '';
 
   static {
     this.colors = {
@@ -236,11 +236,11 @@ class ColorPalette {
   }
 
   static getColor(name) {
-    return this.colors[name] ?? '#000000';
+    return this.colors[name] || '#000000';
   }
 }
 
-// Task 3: Create a Validator class with validation rules
+// Task 3: Validator class with validation rules
 class Validator {
   static #rules = new Map();
 
@@ -262,47 +262,63 @@ class Validator {
   static hasRule(field) {
     return this.#rules.has(field);
   }
-}`,
+}
+
+// Test
+console.log(Logger.isInitialized());  // true
+console.log(Logger.getLevel());  // 'info'
+
+console.log(ColorPalette.getColor('red'));  // '#FF0000'
+console.log(ColorPalette.primary);  // '#0000FF'
+
+console.log(Validator.validate('email', 'test@example.com'));  // true
+console.log(Validator.validate('phone', '1234567890'));  // true
+console.log(Validator.validate('age', 25));  // true`,
   testCases: [
     {
-      input: [],
+      input: { class: 'Logger', method: 'isInitialized' },
       expectedOutput: true,
       description: 'Logger.isInitialized() returns true after static block runs',
     },
     {
-      input: [],
+      input: { class: 'Logger', method: 'getLevel' },
       expectedOutput: 'info',
-      description: 'Logger.getLevel() returns "info" for development environment',
+      description: 'Logger.getLevel() returns "info" in development environment',
     },
     {
-      input: ['red'],
+      input: { class: 'ColorPalette', method: 'getColor', args: ['red'] },
       expectedOutput: '#FF0000',
-      description: 'ColorPalette.getColor("red") returns #FF0000',
+      description: 'ColorPalette.getColor("red") returns hex value',
     },
     {
-      input: ['unknown'],
+      input: { class: 'ColorPalette', method: 'getColor', args: ['unknown'] },
       expectedOutput: '#000000',
-      description: 'ColorPalette.getColor("unknown") returns default #000000',
+      description: 'ColorPalette.getColor() returns black for unknown colors',
     },
     {
-      input: ['email', 'test@example.com'],
+      input: { class: 'ColorPalette', property: 'primary' },
+      expectedOutput: '#0000FF',
+      description: 'ColorPalette.primary is set to blue in static block',
+    },
+    {
+      input: { class: 'Validator', method: 'validate', args: ['email', 'test@example.com'] },
       expectedOutput: true,
-      description: 'Validator.validate("email", "test@example.com") returns true',
+      description: 'Validator validates email with @ symbol',
     },
     {
-      input: ['email', 'invalid'],
-      expectedOutput: false,
-      description: 'Validator.validate("email", "invalid") returns false',
-    },
-    {
-      input: ['phone', '1234567890'],
+      input: { class: 'Validator', method: 'validate', args: ['phone', '1234567890'] },
       expectedOutput: true,
-      description: 'Validator.validate("phone", "1234567890") returns true',
+      description: 'Validator validates 10-digit phone number',
     },
     {
-      input: ['age', 25],
+      input: { class: 'Validator', method: 'validate', args: ['age', 25] },
       expectedOutput: true,
-      description: 'Validator.validate("age", 25) returns true',
+      description: 'Validator validates age in valid range',
+    },
+    {
+      input: { class: 'Validator', method: 'hasRule', args: ['email'] },
+      expectedOutput: true,
+      description: 'Validator.hasRule returns true for defined rules',
     },
   ],
   hints: [

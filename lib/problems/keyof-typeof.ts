@@ -214,7 +214,7 @@ triggerEvent('hover', 'button');
 console.log(translate('en', 'greeting'));
 console.log(translate('es', 'farewell'));
 console.log(translate('fr', 'thanks'));`,
-  solution: `// Task 1: Create a type-safe getter function using keyof
+  solution: `// Task 1: Type-safe getter function using keyof
 interface Person {
   name: string;
   age: number;
@@ -226,7 +226,7 @@ function getProperty<K extends keyof Person>(person: Person, key: K): Person[K] 
   return person[key];
 }
 
-// Task 2: Derive types from a configuration object using typeof
+// Task 2: Types derived from configuration object using typeof
 const appConfig = {
   apiEndpoint: 'https://api.example.com',
   timeout: 5000,
@@ -239,14 +239,14 @@ const appConfig = {
 
 type AppConfig = typeof appConfig;
 type ConfigKey = keyof typeof appConfig;
-type FeatureFlags = typeof appConfig['features'];
-type FeatureName = keyof typeof appConfig['features'];
+type FeatureFlags = typeof appConfig.features;
+type FeatureName = keyof typeof appConfig.features;
 
 function getConfigValue<K extends ConfigKey>(key: K): typeof appConfig[K] {
   return appConfig[key];
 }
 
-// Task 3: Create a type-safe event system using keyof typeof
+// Task 3: Type-safe event system using keyof typeof
 const eventHandlers = {
   click: (x: number, y: number) => console.log(\`Clicked at \${x}, \${y}\`),
   hover: (element: string) => console.log(\`Hovered over \${element}\`),
@@ -264,7 +264,7 @@ function triggerEvent<E extends EventName>(
   handler(...args);
 }
 
-// Task 4: Create a translation function using keyof
+// Task 4: Translation function using keyof
 const translations = {
   en: {
     greeting: 'Hello',
@@ -284,7 +284,7 @@ const translations = {
 } as const;
 
 type Language = keyof typeof translations;
-type TranslationKey = keyof typeof translations['en'];
+type TranslationKey = keyof typeof translations.en;
 
 function translate(lang: Language, key: TranslationKey): string {
   return translations[lang][key];
@@ -292,39 +292,25 @@ function translate(lang: Language, key: TranslationKey): string {
 
 // Test implementations
 const person: Person = { name: 'Alice', age: 30, email: 'alice@example.com', isActive: true };
-console.log(getProperty(person, 'name'));
-console.log(getProperty(person, 'age'));
+console.log(getProperty(person, 'name')); // 'Alice'
+console.log(getProperty(person, 'age')); // 30
 
-console.log(getConfigValue('apiEndpoint'));
-console.log(getConfigValue('timeout'));
+console.log(getConfigValue('apiEndpoint')); // 'https://api.example.com'
+console.log(getConfigValue('timeout')); // 5000
 
 triggerEvent('click', 100, 200);
 triggerEvent('hover', 'button');
 
-console.log(translate('en', 'greeting'));
-console.log(translate('es', 'farewell'));
-console.log(translate('fr', 'thanks'));`,
+console.log(translate('en', 'greeting')); // 'Hello'
+console.log(translate('es', 'farewell')); // 'Adiós'
+console.log(translate('fr', 'thanks')); // 'Merci'`,
   testCases: [
-    {
-      input: [{ name: 'Alice', age: 30, email: 'alice@example.com', isActive: true }, 'name'],
-      expectedOutput: 'Alice',
-      description: 'getProperty returns correct value with type safety',
-    },
-    {
-      input: ['apiEndpoint'],
-      expectedOutput: 'https://api.example.com',
-      description: 'getConfigValue returns config value with proper type',
-    },
-    {
-      input: ['en', 'greeting'],
-      expectedOutput: 'Hello',
-      description: 'translate returns correct translation for language and key',
-    },
-    {
-      input: ['fr', 'thanks'],
-      expectedOutput: 'Merci',
-      description: 'translate works with different language/key combinations',
-    },
+    { input: [{ name: 'Alice', age: 30, email: 'alice@example.com', isActive: true }, 'name'], expectedOutput: 'Alice', description: 'getProperty returns correct value for name' },
+    { input: [{ name: 'Alice', age: 30, email: 'alice@example.com', isActive: true }, 'age'], expectedOutput: 30, description: 'getProperty returns correct value for age' },
+    { input: ['apiEndpoint'], expectedOutput: 'https://api.example.com', description: 'getConfigValue returns correct config value' },
+    { input: ['en', 'greeting'], expectedOutput: 'Hello', description: 'translate returns correct English translation' },
+    { input: ['es', 'farewell'], expectedOutput: 'Adiós', description: 'translate returns correct Spanish translation' },
+    { input: ['fr', 'thanks'], expectedOutput: 'Merci', description: 'translate returns correct French translation' },
   ],
   hints: [
     'keyof T produces a union type of all property names: keyof { a: 1, b: 2 } = "a" | "b"',

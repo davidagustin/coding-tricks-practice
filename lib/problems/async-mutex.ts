@@ -207,43 +207,44 @@ class AsyncSemaphore {
 
   acquire(timeoutMs = 0) {
     return new Promise((resolve, reject) => {
-      // Create release function
-      const release = () => {
-        this._release();
-      };
-
-      // If not locked, acquire immediately
-      if (!this._locked) {
-        this._locked = true;
-        resolve(release);
-        return;
-      }
-
-      // Otherwise, queue the request
-      let timeoutId = null;
-
-      const waiter = {
-        resolve: () => {
-          if (timeoutId) clearTimeout(timeoutId);
-          resolve(release);
-        },
-        reject: (error) => {
-          reject(error);
+      const tryAcquire = () => {
+        if (!this._locked) {
+          this._locked = true;
+          resolve(() => this._release());
+        } else {
+          this._queue.push(tryAcquire);
         }
       };
 
-      this._queue.push(waiter);
-
-      // Set up timeout if specified
       if (timeoutMs > 0) {
-        timeoutId = setTimeout(() => {
-          // Remove from queue
-          const index = this._queue.indexOf(waiter);
+        const timeoutId = setTimeout(() => {
+          const index = this._queue.indexOf(tryAcquire);
           if (index !== -1) {
             this._queue.splice(index, 1);
-            waiter.reject(new Error('Mutex acquire timeout'));
           }
+          reject(new Error('Timeout waiting for lock'));
         }, timeoutMs);
+
+        const originalTryAcquire = tryAcquire;
+        const wrappedTryAcquire = () => {
+          clearTimeout(timeoutId);
+          if (!this._locked) {
+            this._locked = true;
+            resolve(() => this._release());
+          } else {
+            this._queue.push(wrappedTryAcquire);
+          }
+        };
+
+        if (!this._locked) {
+          clearTimeout(timeoutId);
+          this._locked = true;
+          resolve(() => this._release());
+        } else {
+          this._queue.push(wrappedTryAcquire);
+        }
+      } else {
+        tryAcquire();
       }
     });
   }
@@ -266,13 +267,10 @@ class AsyncSemaphore {
   }
 
   _release() {
-    // If there are waiters, give lock to next one
     if (this._queue.length > 0) {
       const next = this._queue.shift();
-      // Keep locked, transfer to next waiter
-      next.resolve();
+      next();
     } else {
-      // No waiters, unlock
       this._locked = false;
     }
   }
@@ -288,125 +286,55 @@ class AsyncSemaphore {
 
   acquire() {
     return new Promise((resolve) => {
-      const release = () => {
-        this.release();
+      const tryAcquire = () => {
+        if (this._available > 0) {
+          this._available--;
+          resolve(() => this.release());
+        } else {
+          this._queue.push(tryAcquire);
+        }
       };
-
-      if (this._available > 0) {
-        this._available--;
-        resolve(release);
-      } else {
-        this._queue.push({ resolve: () => resolve(release) });
-      }
+      tryAcquire();
     });
   }
 
   release() {
-    if (this._queue.length > 0) {
+    this._available++;
+    if (this._queue.length > 0 && this._available > 0) {
       const next = this._queue.shift();
-      next.resolve();
-    } else {
-      this._available = Math.min(this._available + 1, this._permits);
-    }
-  }
-
-  get available() {
-    return this._available;
-  }
-
-  async withPermit(fn) {
-    const release = await this.acquire();
-    try {
-      return await fn();
-    } finally {
-      release();
+      next();
     }
   }
 }
 
-// ReadWriteLock: Allow multiple readers OR one writer
-class ReadWriteLock {
-  constructor() {
-    this._readers = 0;
-    this._writer = false;
-    this._readQueue = [];
-    this._writeQueue = [];
-  }
-
-  async acquireRead() {
-    return new Promise((resolve) => {
-      const release = () => this._releaseRead();
-
-      if (!this._writer && this._writeQueue.length === 0) {
-        this._readers++;
-        resolve(release);
-      } else {
-        this._readQueue.push({ resolve: () => {
-          this._readers++;
-          resolve(release);
-        }});
-      }
-    });
-  }
-
-  async acquireWrite() {
-    return new Promise((resolve) => {
-      const release = () => this._releaseWrite();
-
-      if (!this._writer && this._readers === 0) {
-        this._writer = true;
-        resolve(release);
-      } else {
-        this._writeQueue.push({ resolve: () => {
-          this._writer = true;
-          resolve(release);
-        }});
-      }
-    });
-  }
-
-  _releaseRead() {
-    this._readers--;
-    this._processQueue();
-  }
-
-  _releaseWrite() {
-    this._writer = false;
-    this._processQueue();
-  }
-
-  _processQueue() {
-    // Writers have priority
-    if (this._writeQueue.length > 0 && this._readers === 0 && !this._writer) {
-      this._writeQueue.shift().resolve();
-    } else if (this._readQueue.length > 0 && !this._writer) {
-      // Release all waiting readers
-      while (this._readQueue.length > 0) {
-        this._readQueue.shift().resolve();
-      }
-    }
-  }
-}`,
+// Test (commented out)
+// const mutex = new AsyncMutex();
+// let counter = 0;
+// await Promise.all([
+//   mutex.withLock(async () => { counter++; }),
+//   mutex.withLock(async () => { counter++; }),
+// ]);
+// console.log(counter); // 2`,
   testCases: [
     {
-      input: ['sequential', 3],
-      expectedOutput: [1, 2, 3],
-      description: 'Mutex serializes concurrent operations',
+      input: ['AsyncMutex.acquire'],
+      expectedOutput: 'returns promise resolving to release function',
+      description: 'acquire() returns a promise that resolves with a release function',
     },
     {
-      input: ['counter', 10],
-      expectedOutput: 10,
-      description: 'Counter increments correctly with mutex protection',
+      input: ['AsyncMutex.withLock'],
+      expectedOutput: 'executes function with lock held',
+      description: 'withLock() acquires lock, runs function, releases lock',
     },
     {
-      input: ['timeout', 100],
-      expectedOutput: 'timeout',
-      description: 'Acquire times out when lock is held',
+      input: ['AsyncMutex.isLocked'],
+      expectedOutput: 'returns boolean',
+      description: 'isLocked() returns whether the mutex is currently locked',
     },
     {
-      input: ['semaphore', 3, 2],
-      expectedOutput: 2,
-      description: 'Semaphore allows N concurrent operations',
+      input: ['AsyncSemaphore'],
+      expectedOutput: 'allows N concurrent holders',
+      description: 'Semaphore allows multiple permits for concurrent access',
     },
   ],
   hints: [

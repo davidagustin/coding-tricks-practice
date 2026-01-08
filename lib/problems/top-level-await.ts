@@ -188,12 +188,14 @@ async function runTests() {
 runTests();`,
   solution: `// Task 1: Simulate a module that loads config
 async function createConfigModule() {
+  // Mock fetch function (pretend this is a real API call)
   const fetchConfig = () => Promise.resolve({
     apiUrl: 'https://api.example.com',
     timeout: 5000,
     debug: true
   });
 
+  // Load config and return it (simulates top-level await pattern)
   const config = await fetchConfig();
   return config;
 }
@@ -209,9 +211,9 @@ async function loadWithFallback(primaryLoader, fallbackLoader) {
 
 // Task 3: Implement conditional dynamic import pattern
 async function loadImplementation(featureChecker) {
-  const isSupported = await featureChecker();
+  const supported = await featureChecker();
 
-  if (isSupported) {
+  if (supported) {
     return { type: 'modern', features: ['async', 'modules'] };
   } else {
     return { type: 'legacy', features: ['callbacks'] };
@@ -220,36 +222,80 @@ async function loadImplementation(featureChecker) {
 
 // Task 4: Implement parallel async initialization
 async function initializeResources(loaders) {
-  const entries = Object.entries(loaders);
-  const results = await Promise.all(
-    entries.map(async ([key, loader]) => [key, await loader()])
-  );
-  return Object.fromEntries(results);
-}`,
+  const keys = Object.keys(loaders);
+  const promises = keys.map(key => loaders[key]());
+  const results = await Promise.all(promises);
+
+  const resources = {};
+  keys.forEach((key, index) => {
+    resources[key] = results[index];
+  });
+
+  return resources;
+}
+
+// Test helpers (mock async operations)
+const mockPrimaryLoader = () => Promise.reject(new Error('Primary failed'));
+const mockFallbackLoader = () => Promise.resolve({ source: 'fallback', data: [1, 2, 3] });
+const mockFeatureCheck = (supported) => () => Promise.resolve(supported);
+const mockLoaders = {
+  config: () => Promise.resolve({ apiUrl: 'https://api.test.com' }),
+  data: () => Promise.resolve([1, 2, 3]),
+  user: () => Promise.resolve({ name: 'John', id: 1 })
+};
+
+// Test
+async function runTests() {
+  const config = await createConfigModule();
+  console.log('Config:', config);
+
+  const data = await loadWithFallback(mockPrimaryLoader, mockFallbackLoader);
+  console.log('Fallback data:', data);
+
+  const modernImpl = await loadImplementation(mockFeatureCheck(true));
+  console.log('Modern:', modernImpl);
+
+  const legacyImpl = await loadImplementation(mockFeatureCheck(false));
+  console.log('Legacy:', legacyImpl);
+
+  const resources = await initializeResources(mockLoaders);
+  console.log('Resources:', resources);
+}
+
+runTests();`,
   testCases: [
     {
-      input: [],
+      input: { task: 'createConfigModule' },
       expectedOutput: { apiUrl: 'https://api.example.com', timeout: 5000, debug: true },
-      description: 'createConfigModule returns loaded config object',
+      description: 'createConfigModule returns loaded config',
     },
     {
-      input: ['primary-fails', 'fallback-succeeds'],
+      input: { task: 'loadWithFallback', primarySuccess: false },
       expectedOutput: { source: 'fallback', data: [1, 2, 3] },
-      description: 'loadWithFallback returns fallback when primary fails',
+      description: 'loadWithFallback returns fallback data when primary fails',
     },
     {
-      input: [true],
+      input: { task: 'loadWithFallback', primarySuccess: true },
+      expectedOutput: { source: 'primary', data: 'primary-data' },
+      description: 'loadWithFallback returns primary data when it succeeds',
+    },
+    {
+      input: { task: 'loadImplementation', supported: true },
       expectedOutput: { type: 'modern', features: ['async', 'modules'] },
       description: 'loadImplementation returns modern when feature is supported',
     },
     {
-      input: [false],
+      input: { task: 'loadImplementation', supported: false },
       expectedOutput: { type: 'legacy', features: ['callbacks'] },
-      description: 'loadImplementation returns legacy when feature not supported',
+      description: 'loadImplementation returns legacy when feature is not supported',
     },
     {
-      input: [{ a: 'loaderA', b: 'loaderB' }],
-      expectedOutput: { a: 'resultA', b: 'resultB' },
+      input: { task: 'initializeResources' },
+      expectedOutput: {
+        config: { apiUrl: 'https://api.test.com' },
+        data: [1, 2, 3],
+        user: { name: 'John', id: 1 }
+      },
       description: 'initializeResources loads all resources in parallel',
     },
   ],

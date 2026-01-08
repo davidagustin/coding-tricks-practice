@@ -189,8 +189,8 @@ class LinkedList<T> {
   append(value: T): void {
     const newNode = new ListNode(value);
 
-    if (!this.head) {
-      // List is empty
+    if (this.head === null) {
+      // Empty list
       this.head = newNode;
       this.tail = newNode;
     } else {
@@ -198,14 +198,15 @@ class LinkedList<T> {
       this.tail!.next = newNode;
       this.tail = newNode;
     }
+
     this.length++;
   }
 
   prepend(value: T): void {
     const newNode = new ListNode(value);
 
-    if (!this.head) {
-      // List is empty
+    if (this.head === null) {
+      // Empty list
       this.head = newNode;
       this.tail = newNode;
     } else {
@@ -213,38 +214,44 @@ class LinkedList<T> {
       newNode.next = this.head;
       this.head = newNode;
     }
+
     this.length++;
   }
 
   delete(value: T): boolean {
-    if (!this.head) {
+    if (this.head === null) {
       return false;
     }
 
-    // Deleting head
+    // If head needs to be deleted
     if (this.head.value === value) {
       this.head = this.head.next;
-      if (!this.head) {
+      this.length--;
+
+      // If list is now empty, update tail
+      if (this.head === null) {
         this.tail = null;
       }
-      this.length--;
+
       return true;
     }
 
-    // Find node before the one to delete
+    // Search for node to delete
     let current = this.head;
-    while (current.next && current.next.value !== value) {
-      current = current.next;
-    }
+    while (current.next !== null) {
+      if (current.next.value === value) {
+        // Found node to delete
+        current.next = current.next.next;
+        this.length--;
 
-    if (current.next) {
-      // Found it - delete it
-      if (current.next === this.tail) {
-        this.tail = current;
+        // If we deleted the tail, update it
+        if (current.next === null) {
+          this.tail = current;
+        }
+
+        return true;
       }
-      current.next = current.next.next;
-      this.length--;
-      return true;
+      current = current.next;
     }
 
     return false;
@@ -252,50 +259,73 @@ class LinkedList<T> {
 
   find(value: T): ListNode<T> | null {
     let current = this.head;
-    while (current) {
+
+    while (current !== null) {
       if (current.value === value) {
         return current;
       }
       current = current.next;
     }
+
     return null;
   }
 
   insertAfter(existingValue: T, newValue: T): boolean {
     const existingNode = this.find(existingValue);
 
-    if (!existingNode) {
+    if (existingNode === null) {
       return false;
     }
 
     const newNode = new ListNode(newValue);
     newNode.next = existingNode.next;
     existingNode.next = newNode;
+    this.length++;
 
+    // If inserting after tail, update tail
     if (existingNode === this.tail) {
       this.tail = newNode;
     }
 
-    this.length++;
     return true;
   }
 
   toArray(): T[] {
     const result: T[] = [];
     let current = this.head;
-    while (current) {
+
+    while (current !== null) {
       result.push(current.value);
       current = current.next;
     }
+
     return result;
   }
 
   getLength(): number {
     return this.length;
   }
+
+  isEmpty(): boolean {
+    return this.length === 0;
+  }
+
+  getHead(): T | null {
+    return this.head ? this.head.value : null;
+  }
+
+  getTail(): T | null {
+    return this.tail ? this.tail.value : null;
+  }
+
+  clear(): void {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
 }
 
-// Test your implementation
+// Test the implementation
 const list = new LinkedList<number>();
 list.append(1);
 list.append(2);
@@ -306,32 +336,51 @@ console.log('After prepend:', list.toArray()); // [0, 1, 2, 3]
 list.delete(2);
 console.log('After delete:', list.toArray()); // [0, 1, 3]
 list.insertAfter(1, 1.5);
-console.log('After insertAfter:', list.toArray()); // [0, 1, 1.5, 3]`,
+console.log('After insertAfter:', list.toArray()); // [0, 1, 1.5, 3]
+console.log('Length:', list.getLength()); // 4
+console.log('Find 1.5:', list.find(1.5)); // ListNode { value: 1.5, next: ListNode }
+console.log('Head:', list.getHead()); // 0
+console.log('Tail:', list.getTail()); // 3`,
   testCases: [
     {
-      input: { operations: ['append', 'append', 'append', 'toArray'], values: [1, 2, 3] },
+      input: { operations: ['append(1)', 'append(2)', 'append(3)', 'toArray()'] },
       expectedOutput: [1, 2, 3],
-      description: 'append() adds elements to the end',
+      description: 'append() adds elements to the end of the list',
     },
     {
-      input: { operations: ['append', 'prepend', 'append', 'toArray'], values: [2, 1, 3] },
-      expectedOutput: [1, 2, 3],
-      description: 'prepend() adds elements to the beginning',
+      input: { operations: ['append(2)', 'prepend(1)', 'toArray()'] },
+      expectedOutput: [1, 2],
+      description: 'prepend() adds elements to the beginning of the list',
     },
     {
-      input: { operations: ['append', 'append', 'append', 'delete', 'toArray'], values: [1, 2, 3, 2] },
+      input: { operations: ['append(1)', 'append(2)', 'append(3)', 'delete(2)', 'toArray()'] },
       expectedOutput: [1, 3],
-      description: 'delete() removes the correct node',
+      description: 'delete() removes the first node with the given value',
     },
     {
-      input: { operations: ['append', 'append', 'find'], values: [1, 2, 2] },
-      expectedOutput: { found: true, value: 2 },
-      description: 'find() returns the correct node',
+      input: { operations: ['append(1)', 'append(2)', 'find(2)'] },
+      expectedOutput: { value: 2, next: null },
+      description: 'find() returns the node with the given value',
     },
     {
-      input: { operations: ['append', 'append', 'insertAfter', 'toArray'], values: [1, 3, 1, 2] },
+      input: { operations: ['append(1)', 'append(3)', 'insertAfter(1, 2)', 'toArray()'] },
       expectedOutput: [1, 2, 3],
-      description: 'insertAfter() inserts at correct position',
+      description: 'insertAfter() inserts a new node after the specified value',
+    },
+    {
+      input: { operations: ['append(1)', 'append(2)', 'getLength()'] },
+      expectedOutput: 2,
+      description: 'getLength() returns the number of nodes',
+    },
+    {
+      input: { operations: ['append(1)', 'delete(1)', 'isEmpty()'] },
+      expectedOutput: true,
+      description: 'isEmpty() returns true for empty list',
+    },
+    {
+      input: { operations: ['append(1)', 'append(2)', 'delete(2)', 'getTail()'] },
+      expectedOutput: 1,
+      description: 'delete() updates tail when deleting last element',
     },
   ],
   hints: [

@@ -154,7 +154,8 @@ console.log(expensiveOperation(5)); // 10 (cached, no "Computing...")
 const account = createBankAccount(100);
 console.log(account.deposit(50)); // 150
 console.log(account.withdraw(30)); // 120`,
-  solution: `function createCounter(initialValue = 0) {
+  solution: `// Counter factory with private count variable
+function createCounter(initialValue = 0) {
   let count = initialValue;
   const initial = initialValue;
 
@@ -162,13 +163,11 @@ console.log(account.withdraw(30)); // 120`,
     increment: () => ++count,
     decrement: () => --count,
     getCount: () => count,
-    reset: () => {
-      count = initial;
-      return count;
-    }
+    reset: () => { count = initial; return count; }
   };
 }
 
+// Memoize function that caches results using closure
 function memoize(fn) {
   const cache = new Map();
 
@@ -182,49 +181,58 @@ function memoize(fn) {
   };
 }
 
+// Bank account using module pattern with private balance
 function createBankAccount(initialBalance = 0) {
   let balance = initialBalance;
 
   return {
     deposit: (amount) => {
-      if (amount <= 0) throw new Error('Deposit amount must be positive');
+      if (amount < 0) throw new Error('Cannot deposit negative amount');
       balance += amount;
       return balance;
     },
     withdraw: (amount) => {
-      if (amount <= 0) throw new Error('Withdrawal amount must be positive');
+      if (amount < 0) throw new Error('Cannot withdraw negative amount');
       if (amount > balance) throw new Error('Insufficient funds');
       balance -= amount;
       return balance;
     },
     getBalance: () => balance
   };
-}`,
+}
+
+// Test
+const counter = createCounter(5);
+console.log(counter.increment()); // 6
+console.log(counter.getCount()); // 6
+counter.reset();
+console.log(counter.getCount()); // 5
+
+const expensiveOperation = memoize((n) => {
+  console.log('Computing...');
+  return n * 2;
+});
+console.log(expensiveOperation(5)); // Computing... 10
+console.log(expensiveOperation(5)); // 10 (cached, no "Computing...")
+
+const account = createBankAccount(100);
+console.log(account.deposit(50)); // 150
+console.log(account.withdraw(30)); // 120`,
   testCases: [
     {
-      input: [],
-      expectedOutput: 6,
-      description: 'createCounter increment works correctly',
+      input: ['createCounter', 5],
+      expectedOutput: { increment: 6, getCount: 6, reset: 5 },
+      description: 'Counter factory creates counter with private count',
     },
     {
-      input: [],
-      expectedOutput: 5,
-      description: 'createCounter reset returns to initial value',
+      input: ['memoize', 5],
+      expectedOutput: 10,
+      description: 'Memoize caches function results using closure',
     },
     {
-      input: [],
-      expectedOutput: true,
-      description: 'memoize caches results (same input returns same output)',
-    },
-    {
-      input: [],
-      expectedOutput: 150,
-      description: 'createBankAccount deposit adds to balance',
-    },
-    {
-      input: [],
-      expectedOutput: 120,
-      description: 'createBankAccount withdraw subtracts from balance',
+      input: ['createBankAccount', 100],
+      expectedOutput: { deposit: 150, withdraw: 120 },
+      description: 'Bank account has private balance with public API',
     },
   ],
   hints: [

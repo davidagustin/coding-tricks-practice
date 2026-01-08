@@ -103,12 +103,35 @@ async function saveUser(user) {
 
 // Test (commented out to prevent immediate execution)
 // processUser(1).then(console.log).catch(console.error);`,
-  solution: `async function fetchUser(id) {
+  solution: `async function processUser(userId) {
+  // Chain promises using async/await syntax
+  // Each step receives output of previous step
+  const user = await fetchUser(userId);
+  const validatedUser = await validateUser(user);
+  const enrichedUser = await enrichUser(validatedUser);
+  const savedUser = await saveUser(enrichedUser);
+  return savedUser;
+}
+
+// Alternative using .then() chaining:
+function processUserWithThen(userId) {
+  return fetchUser(userId)
+    .then(validateUser)
+    .then(enrichUser)
+    .then(saveUser)
+    .catch(error => {
+      console.error('Pipeline failed:', error.message);
+      throw error;
+    });
+}
+
+// Helper functions
+async function fetchUser(id) {
   return { id, name: 'John', email: 'john@example.com' };
 }
 
 async function validateUser(user) {
-  if (!user.email) throw new Error('Invalid user');
+  if (!user.email) throw new Error('Invalid user: missing email');
   return user;
 }
 
@@ -117,26 +140,41 @@ async function enrichUser(user) {
 }
 
 async function saveUser(user) {
-  return { ...user, saved: true };
+  return { ...user, saved: true, savedAt: new Date().toISOString() };
 }
 
-async function processUser(userId) {
-  return fetchUser(userId)
-    .then(validateUser)
-    .then(enrichUser)
-    .then(saveUser);
-}
-
-// Test function
-async function testProcessUser() {
-  const result = await processUser(1);
-  return result && result.id === 1 && result.saved === true;
-}`,
+// Test
+processUser(1).then(console.log).catch(console.error);
+// { id: 1, name: 'John', email: 'john@example.com', role: 'admin', permissions: ['read', 'write'], saved: true, savedAt: '...' }`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'testProcessUser',
+      input: { userId: 1 },
+      expectedOutput: {
+        id: 1,
+        name: 'John',
+        email: 'john@example.com',
+        role: 'admin',
+        permissions: ['read', 'write'],
+        saved: true
+      },
+      description: 'Processes user through all pipeline steps',
+    },
+    {
+      input: { userId: 1, mockUser: { id: 1, name: 'Jane' } },
+      expectedOutput: { throws: true, message: 'Invalid user: missing email' },
+      description: 'Validation step throws for invalid user',
+    },
+    {
+      input: { userId: 2, mockUser: { id: 2, name: 'Bob', email: 'bob@test.com' } },
+      expectedOutput: {
+        id: 2,
+        name: 'Bob',
+        email: 'bob@test.com',
+        role: 'admin',
+        permissions: ['read', 'write'],
+        saved: true
+      },
+      description: 'Pipeline transforms data through each step',
     },
   ],
   hints: [

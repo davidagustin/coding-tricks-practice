@@ -150,50 +150,35 @@ console.log(instance1 === instance2); // Should print true`,
   get(key: string): unknown {
     return this.data.get(key);
   }
-
-  // Helper method to check data size
-  size(): number {
-    return this.data.size;
-  }
-
-  // Helper method to clear data
-  clear(): void {
-    this.data.clear();
-  }
 }
 
-// Usage
+// Test
 const instance1 = Singleton.getInstance();
 const instance2 = Singleton.getInstance();
 
 instance1.set('name', 'MyApp');
-console.log(instance2.get('name')); // 'MyApp'
-console.log(instance1 === instance2); // true`,
+console.log(instance2.get('name')); // Should print 'MyApp'
+console.log(instance1 === instance2); // Should print true`,
   testCases: [
     {
-      input: { action: 'checkSameInstance' },
+      input: { operations: ['getInstance', 'getInstance', 'compare'] },
       expectedOutput: true,
-      description: 'getInstance() returns the same instance on multiple calls',
+      description: 'getInstance() returns the same instance',
     },
     {
-      input: { action: 'setAndGet', key: 'username', value: 'john_doe' },
-      expectedOutput: 'john_doe',
-      description: 'Can set and retrieve values using set() and get()',
+      input: { operations: ['getInstance', 'set', 'getInstance', 'get'], args: [null, ['theme', 'dark'], null, ['theme']] },
+      expectedOutput: 'dark',
+      description: 'Data persists across getInstance calls',
     },
     {
-      input: { action: 'crossInstanceAccess', key: 'apiKey', value: 'abc123' },
-      expectedOutput: 'abc123',
-      description: 'Data set on one instance is accessible from another getInstance() call',
+      input: { operations: ['getInstance', 'set', 'set', 'get'], args: [null, ['key1', 'value1'], ['key2', 'value2'], ['key1']] },
+      expectedOutput: 'value1',
+      description: 'Multiple key-value pairs can be stored',
     },
     {
-      input: { action: 'multipleKeys', data: { a: 1, b: 2, c: 3 } },
-      expectedOutput: { a: 1, b: 2, c: 3 },
-      description: 'Can store and retrieve multiple key-value pairs',
-    },
-    {
-      input: { action: 'getNonExistent', key: 'nonExistentKey' },
+      input: { operations: ['getInstance', 'get'], args: [null, ['nonexistent']] },
       expectedOutput: undefined,
-      description: 'Returns undefined for keys that do not exist',
+      description: 'Getting nonexistent key returns undefined',
     },
   ],
   hints: [

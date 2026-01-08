@@ -130,53 +130,64 @@ console.log(findLastObjectByProperty(
 console.log(findLastGreaterThan([10, 5, 20, 8, 15, 3], 10));
 console.log(findLastWithIndex([1, 2, 3, 2, 1], n => n === 2));`,
   solution: `function findLastEven(numbers) {
+  // Find the last even number in the array
   return numbers.findLast(n => n % 2 === 0);
 }
 
 function findLastIndexOf(arr, predicate) {
+  // Find the index of the last element matching predicate
   return arr.findLastIndex(predicate);
 }
 
 function findLastObjectByProperty(objects, key, value) {
+  // Find the last object where obj[key] === value
   return objects.findLast(obj => obj[key] === value);
 }
 
 function findLastGreaterThan(numbers, threshold) {
+  // Find the last number greater than threshold
   return numbers.findLast(n => n > threshold);
 }
 
 function findLastWithIndex(arr, predicate) {
+  // Return both the element and its index as { element, index }
   const index = arr.findLastIndex(predicate);
-  return {
-    element: index !== -1 ? arr[index] : undefined,
-    index
-  };
-}`,
+  if (index === -1) {
+    return { element: undefined, index: -1 };
+  }
+  return { element: arr[index], index };
+}
+
+// Test
+console.log(findLastEven([1, 2, 3, 4, 5, 7, 8])); // 8
+console.log(findLastIndexOf(['a', 'b', 'c', 'b', 'd'], x => x === 'b')); // 3
+console.log(findLastObjectByProperty(
+  [{name: 'Alice'}, {name: 'Bob'}, {name: 'Alice'}],
+  'name',
+  'Alice'
+)); // {name: 'Alice'} (the last one)
+console.log(findLastGreaterThan([10, 5, 20, 8, 15, 3], 10)); // 15
+console.log(findLastWithIndex([1, 2, 3, 2, 1], n => n === 2)); // { element: 2, index: 3 }`,
   testCases: [
     {
       input: [[1, 2, 3, 4, 5, 7, 8]],
       expectedOutput: 8,
-      description: 'findLastEven returns last even number',
+      description: 'findLastEven should return the last even number',
     },
     {
       input: [['a', 'b', 'c', 'b', 'd']],
       expectedOutput: 3,
-      description: 'findLastIndexOf returns correct index',
-    },
-    {
-      input: [[{name: 'Alice'}, {name: 'Bob'}, {name: 'Alice'}], 'name', 'Alice'],
-      expectedOutput: {name: 'Alice'},
-      description: 'findLastObjectByProperty returns last matching object',
+      description: 'findLastIndexOf should return index of last matching element',
     },
     {
       input: [[10, 5, 20, 8, 15, 3], 10],
       expectedOutput: 15,
-      description: 'findLastGreaterThan returns last number above threshold',
+      description: 'findLastGreaterThan should return last number > threshold',
     },
     {
       input: [[1, 2, 3, 2, 1]],
       expectedOutput: { element: 2, index: 3 },
-      description: 'findLastWithIndex returns element and index',
+      description: 'findLastWithIndex should return element and index',
     },
   ],
   hints: [

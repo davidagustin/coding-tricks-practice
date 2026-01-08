@@ -138,10 +138,9 @@ const mockStorage = {
 // const storage = createStorage('local');
 // storage.set('preferences', { theme: 'dark', fontSize: 16 });
 // const prefs = storage.get('preferences');`,
-  solution: `function createStorage(storageType = 'local') {
-  const storage = storageType === 'session'
-    ? sessionStorage
-    : localStorage;
+  solution: `// Storage wrapper with JSON support
+function createStorage(storageType = 'local') {
+  const storage = storageType === 'local' ? localStorage : sessionStorage;
 
   return {
     set(key, value) {
@@ -155,206 +154,243 @@ const mockStorage = {
       }
     },
 
-    get(key, defaultValue = null) {
+    get(key) {
       try {
         const item = storage.getItem(key);
-        if (item === null) return defaultValue;
+        if (item === null) return null;
         return JSON.parse(item);
       } catch (error) {
         console.error('Storage get error:', error);
-        return defaultValue;
+        return null;
       }
     },
 
     remove(key) {
-      storage.removeItem(key);
+      try {
+        storage.removeItem(key);
+        return true;
+      } catch (error) {
+        console.error('Storage remove error:', error);
+        return false;
+      }
     },
 
     clear() {
-      storage.clear();
+      try {
+        storage.clear();
+        return true;
+      } catch (error) {
+        console.error('Storage clear error:', error);
+        return false;
+      }
     },
 
     has(key) {
       return storage.getItem(key) !== null;
     },
-
-    keys() {
-      const keys = [];
-      for (let i = 0; i < storage.length; i++) {
-        keys.push(storage.key(i));
-      }
-      return keys;
-    }
   };
 }
 
+// Storage with expiration support
 function createStorageWithExpiry(storageType = 'local') {
-  const base = createStorage(storageType);
-  const storage = storageType === 'session'
-    ? sessionStorage
-    : localStorage;
+  const storage = storageType === 'local' ? localStorage : sessionStorage;
 
   return {
     set(key, value, options = {}) {
-      const { expires } = options; // expires in seconds
-
-      const item = {
-        value,
-        timestamp: Date.now(),
-        expires: expires ? Date.now() + (expires * 1000) : null
-      };
-
-      return base.set(key, item);
+      try {
+        const item = {
+          value,
+          expires: options.expires ? Date.now() + options.expires * 1000 : null,
+        };
+        storage.setItem(key, JSON.stringify(item));
+        return true;
+      } catch (error) {
+        console.error('Storage set error:', error);
+        return false;
+      }
     },
 
-    get(key, defaultValue = null) {
-      const item = base.get(key);
+    get(key) {
+      try {
+        const itemStr = storage.getItem(key);
+        if (itemStr === null) return null;
 
-      if (!item) return defaultValue;
+        const item = JSON.parse(itemStr);
 
-      // Check if expired
-      if (item.expires && Date.now() > item.expires) {
-        this.remove(key);
-        return defaultValue;
+        // Check if item has expired
+        if (item.expires && Date.now() > item.expires) {
+          storage.removeItem(key);
+          return null;
+        }
+
+        return item.value;
+      } catch (error) {
+        console.error('Storage get error:', error);
+        return null;
       }
-
-      return item.value;
     },
 
     remove(key) {
-      base.remove(key);
-    },
-
-    clear() {
-      base.clear();
+      try {
+        storage.removeItem(key);
+        return true;
+      } catch (error) {
+        return false;
+      }
     },
 
     // Clean up all expired items
     cleanup() {
-      const keys = base.keys();
-      let removed = 0;
-
-      keys.forEach(key => {
-        const item = base.get(key);
-        if (item && item.expires && Date.now() > item.expires) {
-          this.remove(key);
-          removed++;
+      try {
+        const keysToRemove = [];
+        for (let i = 0; i < storage.length; i++) {
+          const key = storage.key(i);
+          if (key) {
+            const itemStr = storage.getItem(key);
+            if (itemStr) {
+              try {
+                const item = JSON.parse(itemStr);
+                if (item.expires && Date.now() > item.expires) {
+                  keysToRemove.push(key);
+                }
+              } catch {
+                // Not a JSON item, skip
+              }
+            }
+          }
         }
-      });
-
-      return removed;
+        keysToRemove.forEach(key => storage.removeItem(key));
+        return keysToRemove.length;
+      } catch (error) {
+        return 0;
+      }
     },
-
-    // Get time until expiration (in seconds)
-    getTimeToLive(key) {
-      const item = base.get(key);
-      if (!item || !item.expires) return null;
-
-      const ttl = Math.max(0, item.expires - Date.now()) / 1000;
-      return Math.round(ttl);
-    }
   };
 }
 
+// Namespaced storage to avoid collisions
 function createNamespacedStorage(namespace, storageType = 'local') {
-  const base = createStorage(storageType);
-  const storage = storageType === 'session'
-    ? sessionStorage
-    : localStorage;
-
-  const prefix = \`\${namespace}:\`;
-
-  const prefixKey = (key) => \`\${prefix}\${key}\`;
-  const unprefixKey = (key) => key.startsWith(prefix) ? key.slice(prefix.length) : key;
-  const isNamespaced = (key) => key.startsWith(prefix);
+  const storage = storageType === 'local' ? localStorage : sessionStorage;
+  const prefix = namespace + ':';
 
   return {
     set(key, value) {
-      return base.set(prefixKey(key), value);
+      try {
+        storage.setItem(prefix + key, JSON.stringify(value));
+        return true;
+      } catch (error) {
+        return false;
+      }
     },
 
-    get(key, defaultValue = null) {
-      return base.get(prefixKey(key), defaultValue);
+    get(key) {
+      try {
+        const item = storage.getItem(prefix + key);
+        if (item === null) return null;
+        return JSON.parse(item);
+      } catch (error) {
+        return null;
+      }
     },
 
     remove(key) {
-      base.remove(prefixKey(key));
+      storage.removeItem(prefix + key);
     },
 
     has(key) {
-      return base.has(prefixKey(key));
+      return storage.getItem(prefix + key) !== null;
     },
 
-    // Get all items in this namespace
     getAll() {
-      const result = {};
-      const allKeys = base.keys();
-
-      allKeys.forEach(key => {
-        if (isNamespaced(key)) {
-          result[unprefixKey(key)] = base.get(key);
+      const items = {};
+      for (let i = 0; i < storage.length; i++) {
+        const key = storage.key(i);
+        if (key && key.startsWith(prefix)) {
+          const unprefixedKey = key.slice(prefix.length);
+          try {
+            items[unprefixedKey] = JSON.parse(storage.getItem(key) || 'null');
+          } catch {
+            items[unprefixedKey] = storage.getItem(key);
+          }
         }
-      });
-
-      return result;
+      }
+      return items;
     },
 
-    // Clear only this namespace
     clear() {
-      const allKeys = base.keys();
-
-      allKeys.forEach(key => {
-        if (isNamespaced(key)) {
-          storage.removeItem(key);
+      const keysToRemove = [];
+      for (let i = 0; i < storage.length; i++) {
+        const key = storage.key(i);
+        if (key && key.startsWith(prefix)) {
+          keysToRemove.push(key);
         }
-      });
+      }
+      keysToRemove.forEach(key => storage.removeItem(key));
     },
 
-    // Get all keys in this namespace (without prefix)
     keys() {
-      return base.keys()
-        .filter(isNamespaced)
-        .map(unprefixKey);
-    }
+      const keys = [];
+      for (let i = 0; i < storage.length; i++) {
+        const key = storage.key(i);
+        if (key && key.startsWith(prefix)) {
+          keys.push(key.slice(prefix.length));
+        }
+      }
+      return keys;
+    },
   };
 }
 
-// Bonus: Storage event listener for cross-tab sync
-function onStorageChange(key, callback) {
-  const handler = (event) => {
-    if (key === null || event.key === key) {
-      callback({
-        key: event.key,
-        oldValue: event.oldValue ? JSON.parse(event.oldValue) : null,
-        newValue: event.newValue ? JSON.parse(event.newValue) : null,
-        url: event.url
-      });
-    }
-  };
+// Test with mock storage
+const mockStorage = {
+  _data: {},
+  getItem(key) { return this._data[key] || null; },
+  setItem(key, value) { this._data[key] = value; },
+  removeItem(key) { delete this._data[key]; },
+  clear() { this._data = {}; },
+  key(index) { return Object.keys(this._data)[index] || null; },
+  get length() { return Object.keys(this._data).length; }
+};
 
-  window.addEventListener('storage', handler);
-  return () => window.removeEventListener('storage', handler);
-}`,
+// Usage:
+// const storage = createStorage('local');
+// storage.set('preferences', { theme: 'dark', fontSize: 16 });
+// const prefs = storage.get('preferences');`,
   testCases: [
     {
-      input: { action: 'set', key: 'user', value: { name: 'John' } },
+      input: { action: 'set', key: 'user', value: { name: 'John', age: 30 } },
       expectedOutput: true,
-      description: 'set() stores JSON stringified value',
+      description: 'createStorage set() returns true on success',
     },
     {
       input: { action: 'get', key: 'user' },
-      expectedOutput: { name: 'John' },
-      description: 'get() returns JSON parsed value',
+      expectedOutput: { name: 'John', age: 30 },
+      description: 'createStorage get() returns parsed object',
     },
     {
-      input: { action: 'get', key: 'nonexistent', default: 'fallback' },
-      expectedOutput: 'fallback',
-      description: 'get() returns default value for missing keys',
-    },
-    {
-      input: { action: 'set', key: 'temp', expires: -1 },
+      input: { action: 'get', key: 'nonexistent' },
       expectedOutput: null,
-      description: 'Expired items return null and are removed',
+      description: 'createStorage get() returns null for missing keys',
+    },
+    {
+      input: { action: 'setWithExpiry', key: 'token', value: 'abc', expires: 3600 },
+      expectedOutput: true,
+      description: 'createStorageWithExpiry stores item with expiration',
+    },
+    {
+      input: { action: 'getExpired' },
+      expectedOutput: null,
+      description: 'createStorageWithExpiry returns null for expired items',
+    },
+    {
+      input: { namespace: 'app', action: 'set', key: 'setting', value: true },
+      expectedOutput: 'app:setting stored',
+      description: 'createNamespacedStorage prefixes keys with namespace',
+    },
+    {
+      input: { namespace: 'app', action: 'getAll' },
+      expectedOutput: { setting: true },
+      description: 'createNamespacedStorage getAll() returns all namespaced items',
     },
   ],
   hints: [

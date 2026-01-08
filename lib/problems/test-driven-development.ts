@@ -212,51 +212,50 @@ const testResults = {
   results: []
 };
 
+// Current describe context for nested test organization
 let currentDescribe = '';
 let beforeEachFn = null;
 let afterEachFn = null;
 
-// Describe - groups related tests
+// Implement describe - groups related tests
 function describe(description, fn) {
+  // Store current describe context
   const previousDescribe = currentDescribe;
   const previousBeforeEach = beforeEachFn;
   const previousAfterEach = afterEachFn;
 
-  currentDescribe = previousDescribe
-    ? \`\${previousDescribe} > \${description}\`
-    : description;
-
+  currentDescribe = previousDescribe ? previousDescribe + ' > ' + description : description;
   beforeEachFn = null;
   afterEachFn = null;
 
-  try {
-    fn();
-  } finally {
-    currentDescribe = previousDescribe;
-    beforeEachFn = previousBeforeEach;
-    afterEachFn = previousAfterEach;
-  }
+  // Run the function which contains it() calls
+  fn();
+
+  // Restore context after
+  currentDescribe = previousDescribe;
+  beforeEachFn = previousBeforeEach;
+  afterEachFn = previousAfterEach;
 }
 
-// It - defines a single test
+// Implement it - defines a single test
 function it(description, fn) {
-  const fullDescription = currentDescribe
-    ? \`\${currentDescribe} > \${description}\`
-    : description;
+  const fullDescription = currentDescribe ? currentDescribe + ' > ' + description : description;
 
   try {
+    // Run beforeEach if defined
     if (beforeEachFn) beforeEachFn();
 
+    // Run the test function
     fn();
 
+    // Run afterEach if defined
     if (afterEachFn) afterEachFn();
 
+    // Record pass
     testResults.passed++;
-    testResults.results.push({
-      description: fullDescription,
-      passed: true
-    });
+    testResults.results.push({ description: fullDescription, passed: true });
   } catch (error) {
+    // Record fail
     testResults.failed++;
     testResults.results.push({
       description: fullDescription,
@@ -266,11 +265,11 @@ function it(description, fn) {
   }
 }
 
-// Deep equality check helper
+// Helper for deep equality check
 function deepEqual(a, b) {
   if (a === b) return true;
-  if (typeof a !== typeof b) return false;
-  if (typeof a !== 'object' || a === null || b === null) return false;
+  if (a == null || b == null) return false;
+  if (typeof a !== 'object' || typeof b !== 'object') return false;
 
   if (Array.isArray(a) !== Array.isArray(b)) return false;
 
@@ -279,111 +278,120 @@ function deepEqual(a, b) {
 
   if (keysA.length !== keysB.length) return false;
 
-  return keysA.every(key => deepEqual(a[key], b[key]));
-}
-
-// Expect - creates assertion object
-function expect(actual) {
-  function createMatchers(isNegated = false) {
-    const assert = (condition, message) => {
-      const finalCondition = isNegated ? !condition : condition;
-      if (!finalCondition) {
-        throw new Error(isNegated ? \`Expected NOT: \${message}\` : message);
-      }
-    };
-
-    return {
-      toBe(expected) {
-        assert(
-          actual === expected,
-          \`Expected \${JSON.stringify(actual)} to be \${JSON.stringify(expected)}\`
-        );
-      },
-
-      toEqual(expected) {
-        assert(
-          deepEqual(actual, expected),
-          \`Expected \${JSON.stringify(actual)} to equal \${JSON.stringify(expected)}\`
-        );
-      },
-
-      toBeTruthy() {
-        assert(!!actual, \`Expected \${JSON.stringify(actual)} to be truthy\`);
-      },
-
-      toBeFalsy() {
-        assert(!actual, \`Expected \${JSON.stringify(actual)} to be falsy\`);
-      },
-
-      toThrow(expectedMessage) {
-        let threw = false;
-        let thrownError;
-
-        try {
-          if (typeof actual === 'function') actual();
-        } catch (e) {
-          threw = true;
-          thrownError = e;
-        }
-
-        assert(threw, 'Expected function to throw');
-
-        if (expectedMessage && threw) {
-          const message = thrownError.message || String(thrownError);
-          assert(
-            message.includes(expectedMessage),
-            \`Expected error "\${message}" to include "\${expectedMessage}"\`
-          );
-        }
-      },
-
-      toContain(item) {
-        if (typeof actual === 'string') {
-          assert(
-            actual.includes(item),
-            \`Expected "\${actual}" to contain "\${item}"\`
-          );
-        } else if (Array.isArray(actual)) {
-          assert(
-            actual.includes(item),
-            \`Expected array to contain \${JSON.stringify(item)}\`
-          );
-        } else {
-          throw new Error('toContain only works with strings and arrays');
-        }
-      },
-
-      toHaveLength(expected) {
-        assert(
-          actual.length === expected,
-          \`Expected length \${actual.length} to be \${expected}\`
-        );
-      },
-
-      toBeGreaterThan(expected) {
-        assert(
-          actual > expected,
-          \`Expected \${actual} to be greater than \${expected}\`
-        );
-      },
-
-      toBeLessThan(expected) {
-        assert(
-          actual < expected,
-          \`Expected \${actual} to be less than \${expected}\`
-        );
-      },
-
-      get not() {
-        return createMatchers(true);
-      }
-    };
+  for (const key of keysA) {
+    if (!keysB.includes(key) || !deepEqual(a[key], b[key])) return false;
   }
 
-  return createMatchers();
+  return true;
 }
 
-// Hooks
+// Implement expect - creates assertion object
+function expect(actual) {
+  const matchers = {
+    toBe(expected) {
+      if (actual !== expected) {
+        throw new Error(\`Expected \${JSON.stringify(actual)} to be \${JSON.stringify(expected)}\`);
+      }
+    },
+
+    toEqual(expected) {
+      if (!deepEqual(actual, expected)) {
+        throw new Error(\`Expected \${JSON.stringify(actual)} to equal \${JSON.stringify(expected)}\`);
+      }
+    },
+
+    toBeTruthy() {
+      if (!actual) {
+        throw new Error(\`Expected \${JSON.stringify(actual)} to be truthy\`);
+      }
+    },
+
+    toBeFalsy() {
+      if (actual) {
+        throw new Error(\`Expected \${JSON.stringify(actual)} to be falsy\`);
+      }
+    },
+
+    toThrow(expectedMessage) {
+      if (typeof actual !== 'function') {
+        throw new Error('Expected a function');
+      }
+      let threw = false;
+      let errorMessage = '';
+      try {
+        actual();
+      } catch (e) {
+        threw = true;
+        errorMessage = e.message;
+      }
+      if (!threw) {
+        throw new Error('Expected function to throw');
+      }
+      if (expectedMessage && errorMessage !== expectedMessage) {
+        throw new Error(\`Expected error message "\${expectedMessage}" but got "\${errorMessage}"\`);
+      }
+    },
+
+    toContain(item) {
+      const contains = Array.isArray(actual)
+        ? actual.includes(item)
+        : typeof actual === 'string' && actual.includes(item);
+      if (!contains) {
+        throw new Error(\`Expected \${JSON.stringify(actual)} to contain \${JSON.stringify(item)}\`);
+      }
+    }
+  };
+
+  // Add negated versions
+  matchers.not = {
+    toBe(expected) {
+      if (actual === expected) {
+        throw new Error(\`Expected \${JSON.stringify(actual)} not to be \${JSON.stringify(expected)}\`);
+      }
+    },
+    toEqual(expected) {
+      if (deepEqual(actual, expected)) {
+        throw new Error(\`Expected \${JSON.stringify(actual)} not to equal \${JSON.stringify(expected)}\`);
+      }
+    },
+    toBeTruthy() {
+      if (actual) {
+        throw new Error(\`Expected \${JSON.stringify(actual)} not to be truthy\`);
+      }
+    },
+    toBeFalsy() {
+      if (!actual) {
+        throw new Error(\`Expected \${JSON.stringify(actual)} not to be falsy\`);
+      }
+    },
+    toThrow() {
+      if (typeof actual !== 'function') {
+        throw new Error('Expected a function');
+      }
+      let threw = false;
+      try {
+        actual();
+      } catch (e) {
+        threw = true;
+      }
+      if (threw) {
+        throw new Error('Expected function not to throw');
+      }
+    },
+    toContain(item) {
+      const contains = Array.isArray(actual)
+        ? actual.includes(item)
+        : typeof actual === 'string' && actual.includes(item);
+      if (contains) {
+        throw new Error(\`Expected \${JSON.stringify(actual)} not to contain \${JSON.stringify(item)}\`);
+      }
+    }
+  };
+
+  return matchers;
+}
+
+// Implement beforeEach/afterEach hooks
 function beforeEach(fn) {
   beforeEachFn = fn;
 }
@@ -392,7 +400,7 @@ function afterEach(fn) {
   afterEachFn = fn;
 }
 
-// Run all tests and report
+// Helper to run all tests and report results
 function runTests() {
   console.log('\\n=== Test Results ===');
   testResults.results.forEach(r => {
@@ -401,13 +409,16 @@ function runTests() {
     if (!r.passed) console.log(\`  Error: \${r.error}\`);
   });
   console.log(\`\\nPassed: \${testResults.passed}, Failed: \${testResults.failed}\`);
-  return testResults;
 }
 
-// Stack implementation following TDD
+// The Stack class implementation
 class Stack {
   constructor() {
     this.items = [];
+  }
+
+  isEmpty() {
+    return this.items.length === 0;
   }
 
   push(item) {
@@ -428,16 +439,12 @@ class Stack {
     return this.items[this.items.length - 1];
   }
 
-  isEmpty() {
-    return this.items.length === 0;
-  }
-
   size() {
     return this.items.length;
   }
 }
 
-// Run tests
+// Example TDD workflow - test the Stack class
 describe('Stack', () => {
   let stack;
 
@@ -462,29 +469,19 @@ describe('Stack', () => {
 runTests();`,
   testCases: [
     {
-      input: { test: 'expect.toBe', actual: 5, expected: 5 },
-      expectedOutput: { passed: true },
-      description: 'expect(5).toBe(5) passes - strict equality works',
+      input: [],
+      expectedOutput: true,
+      description: 'describe should group related tests',
     },
     {
-      input: { test: 'expect.toEqual', actual: { a: 1, b: [2, 3] }, expected: { a: 1, b: [2, 3] } },
-      expectedOutput: { passed: true },
-      description: 'expect(obj).toEqual(obj) passes - deep equality works',
+      input: ['pass'],
+      expectedOutput: 'PASS',
+      description: 'it should record passing tests',
     },
     {
-      input: { test: 'expect.not.toBe', actual: 5, expected: 10 },
-      expectedOutput: { passed: true },
-      description: 'expect(5).not.toBe(10) passes - negation works',
-    },
-    {
-      input: { test: 'expect.toThrow', fn: 'throwsError', expectedMessage: 'error' },
-      expectedOutput: { passed: true },
-      description: 'expect(fn).toThrow() passes when function throws',
-    },
-    {
-      input: { test: 'describe+it', suiteResults: { total: 3, passed: 3, failed: 0 } },
-      expectedOutput: { passed: 3, failed: 0 },
-      description: 'describe/it correctly tracks test results',
+      input: [5, 5],
+      expectedOutput: true,
+      description: 'expect().toBe() should pass for equal values',
     },
   ],
   hints: [

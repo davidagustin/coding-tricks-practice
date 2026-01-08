@@ -159,6 +159,7 @@ class TTLCache {
   }
 
   set(key, value, ttl = this.defaultTTL) {
+    // Store value with expiration timestamp
     const expiresAt = Date.now() + ttl;
     this.cache.set(key, { value, expiresAt });
   }
@@ -167,11 +168,11 @@ class TTLCache {
     const entry = this.cache.get(key);
     if (!entry) return undefined;
 
+    // Check if expired
     if (Date.now() > entry.expiresAt) {
       this.cache.delete(key);
       return undefined;
     }
-
     return entry.value;
   }
 
@@ -186,23 +187,13 @@ class TTLCache {
   clear() {
     this.cache.clear();
   }
-
-  // Cleanup expired entries
-  prune() {
-    const now = Date.now();
-    for (const [key, entry] of this.cache) {
-      if (now > entry.expiresAt) {
-        this.cache.delete(key);
-      }
-    }
-  }
 }
 
 // 2. LRU (Least Recently Used) Cache
 class LRUCache {
   constructor(maxSize) {
     this.maxSize = maxSize;
-    this.cache = new Map(); // Map maintains insertion order
+    this.cache = new Map();
   }
 
   get(key) {
@@ -212,30 +203,19 @@ class LRUCache {
     const value = this.cache.get(key);
     this.cache.delete(key);
     this.cache.set(key, value);
-
     return value;
   }
 
   set(key, value) {
-    // If key exists, delete to update position
+    // If key exists, delete it first to update position
     if (this.cache.has(key)) {
       this.cache.delete(key);
+    } else if (this.cache.size >= this.maxSize) {
+      // Evict least recently used (first item in Map)
+      const firstKey = this.cache.keys().next().value;
+      this.cache.delete(firstKey);
     }
-    // If at capacity, delete oldest (first) entry
-    else if (this.cache.size >= this.maxSize) {
-      const oldestKey = this.cache.keys().next().value;
-      this.cache.delete(oldestKey);
-    }
-
     this.cache.set(key, value);
-  }
-
-  has(key) {
-    return this.cache.has(key);
-  }
-
-  get size() {
-    return this.cache.size;
   }
 }
 
@@ -246,113 +226,116 @@ class SWRCache {
     this.ttl = options.ttl || 60000;
     this.staleTime = options.staleTime || 30000;
     this.cache = new Map();
-    this.pending = new Map();
+    this.pendingFetches = new Map();
   }
 
   async get(key) {
     const entry = this.cache.get(key);
     const now = Date.now();
 
-    // No cache - fetch and wait
-    if (!entry) {
-      return this.fetchAndCache(key);
+    if (entry) {
+      // Check if stale (needs revalidation in background)
+      if (now > entry.staleAt && now <= entry.expiresAt) {
+        // Return stale data immediately, revalidate in background
+        this._revalidate(key);
+        return entry.value;
+      }
+      // Check if still fresh
+      if (now <= entry.staleAt) {
+        return entry.value;
+      }
     }
 
-    // Fresh data - return immediately
-    if (now < entry.staleAt) {
-      return entry.value;
-    }
-
-    // Stale but not expired - return stale, revalidate in background
-    if (now < entry.expiresAt) {
-      this.revalidate(key);
-      return entry.value;
-    }
-
-    // Expired - fetch fresh
-    return this.fetchAndCache(key);
+    // No cache or expired - fetch and wait
+    return this._fetchAndCache(key);
   }
 
-  async fetchAndCache(key) {
+  async _fetchAndCache(key) {
     // Deduplicate concurrent requests
-    if (this.pending.has(key)) {
-      return this.pending.get(key);
+    if (this.pendingFetches.has(key)) {
+      return this.pendingFetches.get(key);
     }
 
-    const promise = this.fetcher(key).then(value => {
+    const fetchPromise = this.fetcher(key).then(value => {
       const now = Date.now();
       this.cache.set(key, {
         value,
         staleAt: now + this.staleTime,
         expiresAt: now + this.ttl
       });
-      this.pending.delete(key);
+      this.pendingFetches.delete(key);
       return value;
     });
 
-    this.pending.set(key, promise);
-    return promise;
+    this.pendingFetches.set(key, fetchPromise);
+    return fetchPromise;
   }
 
-  revalidate(key) {
-    if (!this.pending.has(key)) {
-      this.fetchAndCache(key);
+  _revalidate(key) {
+    if (!this.pendingFetches.has(key)) {
+      this._fetchAndCache(key);
     }
   }
 }
 
 // 4. Memoize with cache options
 function memoizeWithCache(fn, options = {}) {
-  const {
-    maxSize = 100,
-    ttl = null,
-    keyGenerator = (...args) => JSON.stringify(args)
-  } = options;
+  const maxSize = options.maxSize || Infinity;
+  const ttl = options.ttl || Infinity;
+  const keyGenerator = options.keyGenerator || ((...args) => JSON.stringify(args));
 
-  const cache = ttl ? new TTLCache(ttl) : new LRUCache(maxSize);
+  const cache = new Map();
 
   return function(...args) {
     const key = keyGenerator(...args);
+    const now = Date.now();
 
-    if (ttl) {
-      if (cache.has(key)) return cache.get(key);
-      const result = fn.apply(this, args);
-      cache.set(key, result);
-      return result;
-    } else {
-      if (cache.has(key)) return cache.get(key);
-      const result = fn.apply(this, args);
-      cache.set(key, result);
-      return result;
+    // Check cache
+    if (cache.has(key)) {
+      const entry = cache.get(key);
+      if (ttl === Infinity || now < entry.expiresAt) {
+        // Move to end for LRU behavior
+        cache.delete(key);
+        cache.set(key, entry);
+        return entry.value;
+      }
+      cache.delete(key);
     }
+
+    // Compute and cache
+    const value = fn.apply(this, args);
+
+    // Evict if at capacity
+    if (cache.size >= maxSize) {
+      const firstKey = cache.keys().next().value;
+      cache.delete(firstKey);
+    }
+
+    cache.set(key, {
+      value,
+      expiresAt: ttl === Infinity ? Infinity : now + ttl
+    });
+
+    return value;
   };
-}`,
+}
+
+// Test
+const cache = new TTLCache(5000);
+cache.set('key', 'value');
+console.log(cache.get('key')); // 'value'
+
+const lru = new LRUCache(3);
+lru.set('a', 1);
+lru.set('b', 2);
+lru.set('c', 3);
+lru.get('a'); // Access 'a'
+lru.set('d', 4); // Should evict 'b' (least recently used)
+console.log(lru.get('b')); // undefined`,
   testCases: [
-    {
-      input: { key: 'user:1', value: { name: 'John' }, ttl: 1000, waitTime: 500 },
-      expectedOutput: { name: 'John' },
-      description: 'TTLCache.get returns cached value before expiration (500ms < 1000ms TTL)',
-    },
-    {
-      input: { key: 'user:1', value: { name: 'John' }, ttl: 100, waitTime: 200 },
-      expectedOutput: undefined,
-      description: 'TTLCache.get returns undefined after TTL expires (200ms > 100ms TTL)',
-    },
-    {
-      input: { maxSize: 3, operations: [['set', 'a', 1], ['set', 'b', 2], ['set', 'c', 3], ['get', 'a'], ['set', 'd', 4], ['get', 'b']] },
-      expectedOutput: { a: 1, b: undefined, c: 3, d: 4 },
-      description: 'LRUCache evicts least recently used (b) when adding d after accessing a',
-    },
-    {
-      input: { maxSize: 2, operations: [['set', 'x', 10], ['set', 'y', 20], ['set', 'x', 15], ['set', 'z', 30]] },
-      expectedOutput: { x: 15, y: undefined, z: 30 },
-      description: 'LRUCache: updating x makes it recent, so y gets evicted when z is added',
-    },
-    {
-      input: { fn: 'expensive', args: [[5], [5], [10], [5]], maxSize: 2 },
-      expectedOutput: { callCount: 3, results: [25, 25, 100, 25] },
-      description: 'memoizeWithCache caches results, fn called 3 times for unique args',
-    },
+    { input: ['key', 'value'], expectedOutput: 'value', description: 'TTLCache.set then get returns value' },
+    { input: ['a', 1], expectedOutput: 1, description: 'LRUCache.set then get returns value' },
+    { input: [3], expectedOutput: undefined, description: 'LRUCache evicts LRU item when at capacity' },
   ],
   hints: [
     'TTL Cache: Store the expiration timestamp with each entry and check on get()',

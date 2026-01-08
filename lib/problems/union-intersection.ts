@@ -104,31 +104,31 @@ console.log(processValue(42));
 displayPerson({ name: 'Alice', age: 30 });`,
   solution: `type StringOrNumber = string | number;
 
-function processValue(value: StringOrNumber) {
+function processValue(value: StringOrNumber): string {
+  // Use type narrowing to handle both types
   if (typeof value === 'string') {
-    return value.toUpperCase();
+    return \`String: \${value.toUpperCase()}\`;
   } else {
-    return value * 2;
+    return \`Number: \${value * 2}\`;
   }
 }
 
 type HasName = { name: string };
 type HasAge = { age: number };
-type Person = HasName & HasAge;
+type Person = HasName & HasAge; // Intersection
 
-function displayPerson(person: Person) {
-  console.log(\`\${person.name}, \${person.age} years old\`);
+function displayPerson(person: Person): string {
+  return \`\${person.name} is \${person.age} years old\`;
 }
 
-console.log(processValue('hello'));
-console.log(processValue(42));
-displayPerson({ name: 'Alice', age: 30 });`,
+// Test
+console.log(processValue('hello')); // 'String: HELLO'
+console.log(processValue(42)); // 'Number: 84'
+console.log(displayPerson({ name: 'Alice', age: 30 })); // 'Alice is 30 years old'`,
   testCases: [
-    {
-      input: [],
-      expectedOutput: true,
-      description: 'Union and intersection types work correctly',
-    },
+    { input: ['hello'], expectedOutput: 'String: HELLO', description: 'processValue handles string input' },
+    { input: [42], expectedOutput: 'Number: 84', description: 'processValue handles number input' },
+    { input: [{ name: 'Alice', age: 30 }], expectedOutput: 'Alice is 30 years old', description: 'displayPerson formats person correctly' },
   ],
   hints: [
     'Union: A | B means A or B',

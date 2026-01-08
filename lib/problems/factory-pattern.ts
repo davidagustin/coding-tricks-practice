@@ -126,29 +126,33 @@ console.log(sms.send('Your verification code is 123456'));
 
 const push = NotificationFactory.create('push');
 console.log(push.send('You have a new message'));`,
-  solution: `// Interface (conceptual in JavaScript, enforced in TypeScript)
+  solution: `// Interface for notifications
 interface Notification {
   send(message: string): string;
 }
 
+// Email notification handler
 class EmailNotification implements Notification {
   send(message: string): string {
     return \`Sending email: \${message}\`;
   }
 }
 
+// SMS notification handler
 class SMSNotification implements Notification {
   send(message: string): string {
     return \`Sending SMS: \${message}\`;
   }
 }
 
+// Push notification handler
 class PushNotification implements Notification {
   send(message: string): string {
     return \`Sending push notification: \${message}\`;
   }
 }
 
+// NotificationFactory
 class NotificationFactory {
   static create(type: string): Notification {
     switch (type.toLowerCase()) {
@@ -164,40 +168,40 @@ class NotificationFactory {
   }
 }
 
-// Usage
+// Test
 const email = NotificationFactory.create('email');
-console.log(email.send('Welcome!')); // "Sending email: Welcome!"
+console.log(email.send('Welcome to our service!'));
 
 const sms = NotificationFactory.create('sms');
-console.log(sms.send('Code: 1234')); // "Sending SMS: Code: 1234"
+console.log(sms.send('Your verification code is 123456'));
 
 const push = NotificationFactory.create('push');
-console.log(push.send('New message')); // "Sending push notification: New message"`,
+console.log(push.send('You have a new message'));`,
   testCases: [
     {
-      input: { type: 'email', message: 'Hello World' },
-      expectedOutput: 'Sending email: Hello World',
-      description: 'EmailNotification sends formatted email message',
+      input: { type: 'email', message: 'Hello!' },
+      expectedOutput: 'Sending email: Hello!',
+      description: 'Email notification sends correctly',
     },
     {
-      input: { type: 'sms', message: 'Your code is 5678' },
-      expectedOutput: 'Sending SMS: Your code is 5678',
-      description: 'SMSNotification sends formatted SMS message',
+      input: { type: 'sms', message: 'Your code is 1234' },
+      expectedOutput: 'Sending SMS: Your code is 1234',
+      description: 'SMS notification sends correctly',
     },
     {
-      input: { type: 'push', message: 'New notification' },
-      expectedOutput: 'Sending push notification: New notification',
-      description: 'PushNotification sends formatted push notification',
+      input: { type: 'push', message: 'New message' },
+      expectedOutput: 'Sending push notification: New message',
+      description: 'Push notification sends correctly',
     },
     {
-      input: { type: 'unknown', message: 'test' },
+      input: { type: 'EMAIL', message: 'Test' },
+      expectedOutput: 'Sending email: Test',
+      description: 'Factory handles case-insensitive types',
+    },
+    {
+      input: { type: 'unknown', message: 'Test' },
       expectedOutput: 'Error: Unknown notification type: unknown',
-      description: 'Factory throws error for unknown notification types',
-    },
-    {
-      input: { type: 'EMAIL', message: 'Case insensitive test' },
-      expectedOutput: 'Sending email: Case insensitive test',
-      description: 'Factory handles case-insensitive type strings',
+      description: 'Factory throws error for unknown types',
     },
   ],
   hints: [

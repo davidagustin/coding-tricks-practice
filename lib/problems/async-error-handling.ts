@@ -140,14 +140,15 @@ async function runTests() {
 }
 
 runTests();`,
-  solution: `class TimeoutError extends Error {
-  constructor(message: string = 'Operation timed out') {
+  solution: `// Custom TimeoutError class
+class TimeoutError extends Error {
+  constructor(message = 'Operation timed out') {
     super(message);
     this.name = 'TimeoutError';
-    Object.setPrototypeOf(this, new.target.prototype);
   }
 }
 
+// Utility 1: Try-catch wrapper that returns [error, data] tuple
 async function tryCatchAsync<T>(
   promise: Promise<T>
 ): Promise<[Error | null, T | null]> {
@@ -155,51 +156,59 @@ async function tryCatchAsync<T>(
     const data = await promise;
     return [null, data];
   } catch (error) {
-    return [error instanceof Error ? error : new Error(String(error)), null];
+    const err = error instanceof Error ? error : new Error(String(error));
+    return [err, null];
   }
 }
 
+// Utility 2: Execute with timeout
 async function executeWithTimeout<T>(
   asyncFn: () => Promise<T>,
   timeoutMs: number
 ): Promise<T> {
-  return Promise.race([
-    asyncFn(),
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new TimeoutError(\`Operation timed out after \${timeoutMs}ms\`)), timeoutMs)
-    )
-  ]);
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    setTimeout(() => reject(new TimeoutError(\`Operation timed out after \${timeoutMs}ms\`)), timeoutMs);
+  });
+
+  return Promise.race([asyncFn(), timeoutPromise]);
 }
 
+// Utility 3: Retry async operations with error filtering
 async function retryAsync<T>(
   asyncFn: () => Promise<T>,
   options: {
     maxRetries: number;
     retryIf?: (error: Error) => boolean;
+    delay?: number;
   }
 ): Promise<T> {
-  const { maxRetries, retryIf } = options;
+  const { maxRetries, retryIf, delay = 0 } = options;
   let lastError: Error | null = null;
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       return await asyncFn();
-    } catch (err) {
-      lastError = err instanceof Error ? err : new Error(String(err));
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
 
-      if (attempt === maxRetries) {
-        throw lastError;
+      // Check if we should retry
+      const shouldRetry = retryIf ? retryIf(lastError) : true;
+
+      if (attempt < maxRetries && shouldRetry) {
+        if (delay > 0) {
+          await new Promise(resolve => setTimeout(resolve, delay));
+        }
+        continue;
       }
 
-      if (retryIf && !retryIf(lastError)) {
-        throw lastError;
-      }
+      throw lastError;
     }
   }
 
   throw lastError;
 }
 
+// Utility 4: Execute multiple promises and collect all results (success or failure)
 async function executeAll<T>(
   promises: Promise<T>[]
 ): Promise<Array<{ success: boolean; value?: T; error?: Error }>> {
@@ -217,12 +226,13 @@ async function executeAll<T>(
   });
 }
 
-// Test functions
+// Test functions (simulated async operations)
 async function fetchData(id: number): Promise<{ id: number; data: string }> {
   if (id < 0) throw new Error('Invalid ID');
   return { id, data: \`Data for \${id}\` };
 }
 
+// Test
 async function runTests() {
   const [err, data] = await tryCatchAsync(fetchData(1));
   console.log('Success:', err, data);
@@ -234,33 +244,38 @@ async function runTests() {
 runTests();`,
   testCases: [
     {
-      input: [1],
+      input: { utility: 'tryCatchAsync', success: true, id: 1 },
       expectedOutput: [null, { id: 1, data: 'Data for 1' }],
       description: 'tryCatchAsync returns [null, data] on success',
     },
     {
-      input: [-1],
+      input: { utility: 'tryCatchAsync', success: false, id: -1 },
       expectedOutput: ['Error: Invalid ID', null],
       description: 'tryCatchAsync returns [error, null] on failure',
     },
     {
-      input: [[1, 2, -1]],
-      expectedOutput: [
-        { success: true, value: { id: 1, data: 'Data for 1' } },
-        { success: true, value: { id: 2, data: 'Data for 2' } },
-        { success: false, error: 'Error: Invalid ID' }
-      ],
-      description: 'executeAll collects both successes and failures',
+      input: { utility: 'executeWithTimeout', timeoutMs: 1000, operationMs: 500 },
+      expectedOutput: { completed: true },
+      description: 'executeWithTimeout completes before timeout',
     },
     {
-      input: [100, 50],
-      expectedOutput: 'TimeoutError',
+      input: { utility: 'executeWithTimeout', timeoutMs: 100, operationMs: 500 },
+      expectedOutput: { error: 'TimeoutError' },
       description: 'executeWithTimeout throws TimeoutError when operation exceeds timeout',
     },
     {
-      input: [3, 'retryable'],
-      expectedOutput: { retried: true, attempts: 3 },
-      description: 'retryAsync retries specified number of times on retryable errors',
+      input: { utility: 'retryAsync', maxRetries: 3, failCount: 2 },
+      expectedOutput: { success: true, attempts: 3 },
+      description: 'retryAsync succeeds after retries',
+    },
+    {
+      input: { utility: 'executeAll', results: ['success', 'failure', 'success'] },
+      expectedOutput: [
+        { success: true, value: 'data1' },
+        { success: false, error: 'Error' },
+        { success: true, value: 'data3' }
+      ],
+      description: 'executeAll collects all results with success/failure flags',
     },
   ],
   hints: [

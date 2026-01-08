@@ -122,41 +122,55 @@ console.log(mapToObject(myMap));
 console.log(parseQueryString('?page=1&sort=name&order=asc'));
 
 console.log(zipToObject(['x', 'y', 'z'], [10, 20, 30]));`,
-  solution: `function arrayToObject(pairs) {
+  solution: `// Convert an array of key-value pairs to an object
+function arrayToObject(pairs) {
   return Object.fromEntries(pairs);
 }
 
+// Convert a Map to a plain object
 function mapToObject(map) {
   return Object.fromEntries(map);
 }
 
+// Parse URL search params to an object
 function parseQueryString(queryString) {
-  return Object.fromEntries(new URLSearchParams(queryString));
+  const params = new URLSearchParams(queryString);
+  return Object.fromEntries(params);
 }
 
+// Create an object from two arrays (keys and values)
 function zipToObject(keys, values) {
-  return Object.fromEntries(keys.map((key, i) => [key, values[i]]));
-}`,
+  const pairs = keys.map((key, index) => [key, values[index]]);
+  return Object.fromEntries(pairs);
+}
+
+// Test your implementations
+const pairs = [['fruit', 'apple'], ['color', 'red']];
+console.log(arrayToObject(pairs)); // { fruit: 'apple', color: 'red' }
+
+const myMap = new Map([['id', 123], ['active', true]]);
+console.log(mapToObject(myMap)); // { id: 123, active: true }
+
+console.log(parseQueryString('?page=1&sort=name&order=asc'));
+// { page: '1', sort: 'name', order: 'asc' }
+
+console.log(zipToObject(['x', 'y', 'z'], [10, 20, 30]));
+// { x: 10, y: 20, z: 30 }`,
   testCases: [
     {
-      input: [[['fruit', 'apple'], ['color', 'red']]],
-      expectedOutput: { fruit: 'apple', color: 'red' },
-      description: 'arrayToObject - converts pairs array to object',
+      input: [['a', 1], ['b', 2]],
+      expectedOutput: { a: 1, b: 2 },
+      description: 'arrayToObject converts pairs to object',
     },
     {
-      input: [[['id', 123], ['active', true]]],
-      expectedOutput: { id: 123, active: true },
-      description: 'mapToObject - converts iterable of pairs to plain object',
+      input: '?page=1&limit=10',
+      expectedOutput: { page: '1', limit: '10' },
+      description: 'parseQueryString converts URL params to object',
     },
     {
-      input: ['?page=1&sort=name'],
-      expectedOutput: { page: '1', sort: 'name' },
-      description: 'parseQueryString - parses URL params',
-    },
-    {
-      input: [['a', 'b', 'c'], [1, 2, 3]],
-      expectedOutput: { a: 1, b: 2, c: 3 },
-      description: 'zipToObject - combines keys and values arrays',
+      input: { keys: ['x', 'y'], values: [1, 2] },
+      expectedOutput: { x: 1, y: 2 },
+      description: 'zipToObject combines two arrays into object',
     },
   ],
   hints: [

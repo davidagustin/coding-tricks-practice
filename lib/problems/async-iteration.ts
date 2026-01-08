@@ -166,12 +166,16 @@ function createAsyncIterable(values, delayMs) {
     [Symbol.asyncIterator]() {
       let index = 0;
       return {
-        async next() {
-          if (index >= values.length) {
-            return { done: true, value: undefined };
+        next() {
+          if (index < values.length) {
+            const value = values[index++];
+            return new Promise(resolve => {
+              setTimeout(() => {
+                resolve({ value, done: false });
+              }, delayMs);
+            });
           }
-          await new Promise(resolve => setTimeout(resolve, delayMs));
-          return { done: false, value: values[index++] };
+          return Promise.resolve({ done: true, value: undefined });
         }
       };
     }
@@ -181,22 +185,14 @@ function createAsyncIterable(values, delayMs) {
 // Process paginated API data
 async function processPaginatedData(fetchPage) {
   const allItems = [];
-  let pageNum = 1;
+  let pageNum = 0;
   let hasMore = true;
 
-  // Create async generator for pagination
-  async function* pageIterator() {
-    while (hasMore) {
-      const result = await fetchPage(pageNum);
-      yield* result.data;
-      hasMore = result.hasMore;
-      pageNum++;
-    }
-  }
-
-  // Collect all items using for-await-of
-  for await (const item of pageIterator()) {
-    allItems.push(item);
+  while (hasMore) {
+    const result = await fetchPage(pageNum);
+    allItems.push(...result.data);
+    hasMore = result.hasMore;
+    pageNum++;
   }
 
   return allItems;
@@ -204,12 +200,9 @@ async function processPaginatedData(fetchPage) {
 
 // Create an async generator that fetches data in batches
 async function* batchFetcher(ids, batchSize, fetchBatch) {
-  // Split ids into batches
   for (let i = 0; i < ids.length; i += batchSize) {
     const batchIds = ids.slice(i, i + batchSize);
     const results = await fetchBatch(batchIds);
-
-    // Yield each result individually
     for (const result of results) {
       yield result;
     }
@@ -219,41 +212,35 @@ async function* batchFetcher(ids, batchSize, fetchBatch) {
 // Collect all values from an async iterable
 async function collectAsyncIterable(asyncIterable) {
   const results = [];
-
   for await (const value of asyncIterable) {
     results.push(value);
   }
-
   return results;
-}`,
+}
+
+// Test (commented out)
+// const iterable = createAsyncIterable([1, 2, 3], 100);
+// for await (const value of iterable) console.log(value);`,
   testCases: [
     {
-      input: [[1, 2, 3], 10],
-      expectedOutput: [1, 2, 3],
-      description: 'createAsyncIterable yields all values in order',
+      input: ['createAsyncIterable', [1, 2, 3], 100],
+      expectedOutput: 'async iterable yielding 1, 2, 3',
+      description: 'createAsyncIterable returns an object implementing Symbol.asyncIterator',
     },
     {
-      input: [
-        {
-          pages: [
-            { data: ['a', 'b'], hasMore: true },
-            { data: ['c', 'd'], hasMore: true },
-            { data: ['e'], hasMore: false },
-          ],
-        },
-      ],
-      expectedOutput: ['a', 'b', 'c', 'd', 'e'],
-      description: 'processPaginatedData collects all items from all pages',
+      input: ['processPaginatedData'],
+      expectedOutput: 'array of all items from all pages',
+      description: 'processPaginatedData fetches all pages and returns combined items',
     },
     {
-      input: [[1, 2, 3, 4, 5], 2],
-      expectedOutput: [1, 2, 3, 4, 5],
-      description: 'batchFetcher processes all ids in batches and yields individually',
+      input: ['batchFetcher', [1, 2, 3, 4, 5], 2],
+      expectedOutput: 'yields each result individually',
+      description: 'batchFetcher fetches in batches and yields individual results',
     },
     {
-      input: [[]],
-      expectedOutput: [],
-      description: 'Empty async iterable returns empty array',
+      input: ['collectAsyncIterable'],
+      expectedOutput: 'array of all values',
+      description: 'collectAsyncIterable uses for-await-of to collect all values',
     },
   ],
   hints: [

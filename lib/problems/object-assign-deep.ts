@@ -156,22 +156,27 @@ console.log('Original after shallow mod:', original.address.city); // Still 'NYC
 
 deep.address.city = 'Chicago';
 console.log('Original after deep mod:', original.address.city); // Should be unchanged`,
-  solution: `function shallowCloneAssign(obj) {
+  solution: `// Shallow clone an object using Object.assign
+function shallowCloneAssign(obj) {
   return Object.assign({}, obj);
 }
 
+// Shallow clone using spread operator
 function shallowCloneSpread(obj) {
   return { ...obj };
 }
 
+// Deep clone using structuredClone
 function deepCloneStructured(obj) {
   return structuredClone(obj);
 }
 
+// Deep clone using JSON (with limitations)
 function deepCloneJSON(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
+// Implement a recursive deep clone function
 function deepCloneRecursive(obj) {
   // Handle null and primitives
   if (obj === null || typeof obj !== 'object') {
@@ -189,16 +194,16 @@ function deepCloneRecursive(obj) {
   }
 
   // Handle Object
-  const clone = {};
+  const cloned = {};
   for (const key in obj) {
     if (Object.hasOwn(obj, key)) {
-      clone[key] = deepCloneRecursive(obj[key]);
+      cloned[key] = deepCloneRecursive(obj[key]);
     }
   }
-
-  return clone;
+  return cloned;
 }
 
+// Merge objects deeply (not just shallow merge)
 function deepMerge(target, source) {
   const result = deepCloneRecursive(target);
 
@@ -220,27 +225,47 @@ function deepMerge(target, source) {
   }
 
   return result;
-}`,
+}
+
+// Test shallow vs deep cloning
+const original = {
+  name: 'Alice',
+  scores: [90, 85, 88],
+  address: {
+    city: 'NYC',
+    zip: '10001'
+  }
+};
+
+const shallow = shallowCloneSpread(original);
+const deep = deepCloneStructured(original);
+
+// Modify nested property
+shallow.address.city = 'LA';
+console.log('Original after shallow mod:', original.address.city); // 'LA' (mutated!)
+
+deep.address.city = 'Chicago';
+console.log('Original after deep mod:', original.address.city); // 'LA' (unchanged from deep)`,
   testCases: [
     {
-      input: [{ a: 1, b: 2 }],
+      input: { a: 1, b: 2 },
       expectedOutput: { a: 1, b: 2 },
-      description: 'shallowCloneSpread - clones simple object',
+      description: 'shallowCloneAssign creates a copy of flat object',
     },
     {
-      input: [{ a: 1, nested: { b: 2 } }],
-      expectedOutput: { a: 1, nested: { b: 2 } },
-      description: 'deepCloneStructured - clones nested object',
+      input: { nested: { value: 1 } },
+      expectedOutput: false,
+      description: 'shallow clone shares nested object reference',
     },
     {
-      input: [{ a: 1, arr: [1, 2, 3] }],
-      expectedOutput: { a: 1, arr: [1, 2, 3] },
-      description: 'deepCloneRecursive - clones object with array',
+      input: { nested: { value: 1 } },
+      expectedOutput: true,
+      description: 'deep clone creates independent nested objects',
     },
     {
-      input: [{ a: 1, b: { c: 2 } }, { b: { d: 3 }, e: 4 }],
-      expectedOutput: { a: 1, b: { c: 2, d: 3 }, e: 4 },
-      description: 'deepMerge - deeply merges two objects',
+      input: { a: { b: 1 }, c: 2 },
+      expectedOutput: { a: { b: 1, d: 3 }, c: 2 },
+      description: 'deepMerge combines objects recursively',
     },
   ],
   hints: [

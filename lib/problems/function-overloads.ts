@@ -185,30 +185,29 @@ console.log(find([1, 2, 3], x => x > 10, 0));                // Should return 0
 console.log(combine('Hello, ', 'World!'));   // Should return 'Hello, World!'
 console.log(combine(10, 20));                // Should return 30
 console.log(combine([1, 2], [3, 4]));        // Should return [1, 2, 3, 4]`,
-  solution: `// Task 1: Create a parse function with overloads
+  solution: `// Task 1: Parse function with overloads
 function parse(value: string, type: 'number'): number;
 function parse(value: string, type: 'boolean'): boolean;
 function parse(value: string, type: 'json'): object;
 function parse(value: string, type: 'number' | 'boolean' | 'json'): number | boolean | object {
-  switch (type) {
-    case 'number':
-      return Number(value);
-    case 'boolean':
-      return value.toLowerCase() === 'true';
-    case 'json':
-      return JSON.parse(value);
+  if (type === 'number') {
+    return parseFloat(value);
+  } else if (type === 'boolean') {
+    return value.toLowerCase() === 'true';
+  } else {
+    return JSON.parse(value);
   }
 }
 
-// Task 2: Create a find function with overloads
+// Task 2: Find function with overloads
 function find<T>(arr: T[], predicate: (item: T) => boolean): T | undefined;
 function find<T>(arr: T[], predicate: (item: T) => boolean, defaultValue: T): T;
 function find<T>(arr: T[], predicate: (item: T) => boolean, defaultValue?: T): T | undefined {
-  const result = arr.find(predicate);
-  return result !== undefined ? result : defaultValue;
+  const found = arr.find(predicate);
+  return found !== undefined ? found : defaultValue;
 }
 
-// Task 3: Create a makeRequest function with overloads
+// Task 3: makeRequest function with overloads
 interface User { id: number; name: string; }
 interface Product { id: number; title: string; price: number; }
 
@@ -223,66 +222,59 @@ function makeRequest(
   // Simulate API response
   if (endpoint === '/users') {
     if (id !== undefined) {
-      return Promise.resolve({ id, name: 'John Doe' });
+      return Promise.resolve({ id, name: 'User ' + id });
     }
-    return Promise.resolve([{ id: 1, name: 'John' }, { id: 2, name: 'Jane' }]);
+    return Promise.resolve([{ id: 1, name: 'User 1' }, { id: 2, name: 'User 2' }]);
   } else {
     if (id !== undefined) {
-      return Promise.resolve({ id, title: 'Product', price: 99.99 });
+      return Promise.resolve({ id, title: 'Product ' + id, price: 99.99 });
     }
-    return Promise.resolve([
-      { id: 1, title: 'Product A', price: 29.99 },
-      { id: 2, title: 'Product B', price: 49.99 }
-    ]);
+    return Promise.resolve([{ id: 1, title: 'Product 1', price: 29.99 }]);
   }
 }
 
-// Task 4: Create a combine function with overloads
+// Task 4: Combine function with overloads
 function combine(a: string, b: string): string;
 function combine(a: number, b: number): number;
 function combine<T>(a: T[], b: T[]): T[];
 function combine<T>(a: string | number | T[], b: string | number | T[]): string | number | T[] {
   if (typeof a === 'string' && typeof b === 'string') {
     return a + b;
-  }
-  if (typeof a === 'number' && typeof b === 'number') {
+  } else if (typeof a === 'number' && typeof b === 'number') {
     return a + b;
-  }
-  if (Array.isArray(a) && Array.isArray(b)) {
+  } else if (Array.isArray(a) && Array.isArray(b)) {
     return [...a, ...b];
   }
   throw new Error('Invalid argument types');
 }
 
-// Test implementations
-console.log(parse('42', 'number'));
-console.log(parse('true', 'boolean'));
-console.log(parse('{"a":1}', 'json'));
-
-console.log(find([1, 2, 3, 4, 5], x => x > 3));
-console.log(find([1, 2, 3], x => x > 10, 0));
-
-console.log(combine('Hello, ', 'World!'));
-console.log(combine(10, 20));
-console.log(combine([1, 2], [3, 4]));`,
+// Tests
+console.log(parse('42', 'number'));          // 42
+console.log(parse('true', 'boolean'));       // true
+console.log(parse('{"a":1}', 'json'));       // { a: 1 }
+console.log(find([1, 2, 3, 4, 5], x => x > 3));              // 4
+console.log(find([1, 2, 3], x => x > 10, 0));                // 0
+console.log(combine('Hello, ', 'World!'));   // 'Hello, World!'
+console.log(combine(10, 20));                // 30
+console.log(combine([1, 2], [3, 4]));        // [1, 2, 3, 4]`,
   testCases: [
     {
       input: ['42', 'number'],
       expectedOutput: 42,
-      description: 'parse with "number" type returns a number',
+      description: 'parse with number type returns a number',
     },
     {
       input: ['true', 'boolean'],
       expectedOutput: true,
-      description: 'parse with "boolean" type returns a boolean',
+      description: 'parse with boolean type returns a boolean',
     },
     {
       input: ['{"a":1}', 'json'],
       expectedOutput: { a: 1 },
-      description: 'parse with "json" type returns an object',
+      description: 'parse with json type returns an object',
     },
     {
-      input: [[1, 2, 3, 4, 5], 'x => x > 3'],
+      input: [[1, 2, 3, 4, 5], 3],
       expectedOutput: 4,
       description: 'find returns first matching element',
     },
@@ -295,6 +287,11 @@ console.log(combine([1, 2], [3, 4]));`,
       input: [10, 20],
       expectedOutput: 30,
       description: 'combine adds numbers',
+    },
+    {
+      input: [[1, 2], [3, 4]],
+      expectedOutput: [1, 2, 3, 4],
+      description: 'combine concatenates arrays',
     },
   ],
   hints: [

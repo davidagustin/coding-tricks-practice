@@ -104,29 +104,42 @@ validated.age = 25; // OK
 validated.age = 200; // Should throw error`,
   solution: `function createLoggedObject(target) {
   return new Proxy(target, {
-    get(target, prop) {
+    get(target, prop, receiver) {
       console.log(\`Accessing property: \${String(prop)}\`);
-      return target[prop];
+      return Reflect.get(target, prop, receiver);
+    },
+    set(target, prop, value, receiver) {
+      console.log(\`Setting property: \${String(prop)} to \${value}\`);
+      return Reflect.set(target, prop, value, receiver);
     }
   });
 }
 
 function createValidatedObject(target, validator) {
   return new Proxy(target, {
-    set(target, prop, value) {
-      if (validator(prop, value)) {
-        target[prop] = value;
-        return true;
-      }
-      throw new Error(\`Invalid value for \${String(prop)}\`);
+    set(target, prop, value, receiver) {
+      // Run validator - it should throw if validation fails
+      validator(prop, value);
+      // If validation passes, set the value
+      return Reflect.set(target, prop, value, receiver);
     }
   });
 }`,
   testCases: [
     {
-      input: [{ name: 'John' }],
+      input: { type: 'logged', target: { name: 'John', age: 30 }, access: 'name' },
       expectedOutput: 'John',
-      description: 'createLoggedObject - mock test',
+      description: 'createLoggedObject returns correct value'
+    },
+    {
+      input: { type: 'validated', key: 'age', value: 25 },
+      expectedOutput: true,
+      description: 'createValidatedObject allows valid values'
+    },
+    {
+      input: { type: 'validated', key: 'age', value: 200 },
+      expectedOutput: 'error',
+      description: 'createValidatedObject throws on invalid values'
     },
   ],
   hints: [

@@ -98,7 +98,8 @@ const names: string[] = ['Alice', 'Bob'];
 console.log(greet('John'));
 console.log(calculateArea(10, 5));
 console.log(isEven(4));`,
-  solution: `function greet(name: string): string {
+  solution: `// Type annotations added
+function greet(name: string): string {
   return \`Hello, \${name}!\`;
 }
 
@@ -113,14 +114,25 @@ function isEven(num: number): boolean {
 const numbers: number[] = [1, 2, 3, 4, 5];
 const names: string[] = ['Alice', 'Bob'];
 
-console.log(greet('John'));
-console.log(calculateArea(10, 5));
-console.log(isEven(4));`,
+// Test
+console.log(greet('John')); // "Hello, John!"
+console.log(calculateArea(10, 5)); // 50
+console.log(isEven(4)); // true`,
   testCases: [
     {
-      input: [],
+      input: ['greet', 'John'],
+      expectedOutput: 'Hello, John!',
+      description: 'greet function takes string and returns string',
+    },
+    {
+      input: ['calculateArea', 10, 5],
+      expectedOutput: 50,
+      description: 'calculateArea takes two numbers and returns a number',
+    },
+    {
+      input: ['isEven', 4],
       expectedOutput: true,
-      description: 'Type annotations work correctly',
+      description: 'isEven takes a number and returns a boolean',
     },
   ],
   hints: [

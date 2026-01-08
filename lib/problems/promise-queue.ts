@@ -171,45 +171,28 @@ const users = await Promise.all(
     this.concurrency = concurrency;
     this.queue = [];
     this.running = 0;
-    this._idlePromise = null;
-    this._idleResolve = null;
+    this._idleResolvers = [];
   }
 
   add(taskFn) {
     return new Promise((resolve, reject) => {
-      // Create task wrapper
-      const task = {
-        fn: taskFn,
-        resolve,
-        reject
-      };
-
-      // Add to queue
-      this.queue.push(task);
-
-      // Try to process
+      this.queue.push({ taskFn, resolve, reject });
       this._processQueue();
     });
   }
 
   addAll(taskFns) {
-    return Promise.all(taskFns.map(fn => this.add(fn)));
+    return Promise.all(taskFns.map(taskFn => this.add(taskFn)));
   }
 
   async onIdle() {
-    // If already idle, resolve immediately
     if (this.running === 0 && this.queue.length === 0) {
       return Promise.resolve();
     }
 
-    // Create a promise that resolves when idle
-    if (!this._idlePromise) {
-      this._idlePromise = new Promise(resolve => {
-        this._idleResolve = resolve;
-      });
-    }
-
-    return this._idlePromise;
+    return new Promise(resolve => {
+      this._idleResolvers.push(resolve);
+    });
   }
 
   get size() {
@@ -221,72 +204,78 @@ const users = await Promise.all(
   }
 
   clear() {
-    // Reject all pending tasks
-    const pending = this.queue.splice(0);
-    pending.forEach(task => {
-      task.reject(new Error('Queue cleared'));
-    });
+    this.queue = [];
   }
 
   _processQueue() {
-    // Process tasks up to concurrency limit
     while (this.running < this.concurrency && this.queue.length > 0) {
-      const task = this.queue.shift();
+      const { taskFn, resolve, reject } = this.queue.shift();
       this.running++;
 
-      // Execute the task
       Promise.resolve()
-        .then(() => task.fn())
-        .then(result => {
-          task.resolve(result);
-        })
-        .catch(error => {
-          task.reject(error);
-        })
+        .then(() => taskFn())
+        .then(resolve)
+        .catch(reject)
         .finally(() => {
           this.running--;
-
-          // Check if we should resolve idle promise
-          if (this.running === 0 && this.queue.length === 0) {
-            if (this._idleResolve) {
-              this._idleResolve();
-              this._idlePromise = null;
-              this._idleResolve = null;
-            }
-          }
-
-          // Process next task
           this._processQueue();
+          this._checkIdle();
         });
+    }
+  }
+
+  _checkIdle() {
+    if (this.running === 0 && this.queue.length === 0) {
+      this._idleResolvers.forEach(resolve => resolve());
+      this._idleResolvers = [];
     }
   }
 }
 
-// Helper function to run tasks with concurrency limit
-async function runWithConcurrency(tasks, concurrency) {
-  const queue = new PromiseQueue(concurrency);
-  return queue.addAll(tasks);
-}`,
+// Test
+const queue = new PromiseQueue(2);
+
+const delay = (ms, value) => new Promise(r => setTimeout(() => r(value), ms));
+
+queue.add(() => delay(100, 1)).then(v => console.log('Task 1:', v));
+queue.add(() => delay(100, 2)).then(v => console.log('Task 2:', v));
+queue.add(() => delay(100, 3)).then(v => console.log('Task 3:', v));
+queue.add(() => delay(100, 4)).then(v => console.log('Task 4:', v));
+
+console.log('Queue size:', queue.size); // 2 (tasks 3 and 4 are queued)
+console.log('Running:', queue.pending); // 2 (tasks 1 and 2 are running)
+
+queue.onIdle().then(() => console.log('All done!'));`,
   testCases: [
     {
-      input: [2, [1, 2, 3, 4]],
-      expectedOutput: [1, 2, 3, 4],
-      description: 'Queue processes all tasks and returns results in order',
+      input: { concurrency: 2, tasks: [100, 100, 100, 100] },
+      expectedOutput: { totalTime: 200, order: [1, 2, 3, 4] },
+      description: 'Queue with concurrency 2 runs tasks in parallel pairs',
     },
     {
-      input: [1, [100, 200, 300]],
-      expectedOutput: [100, 200, 300],
-      description: 'Queue with concurrency 1 processes sequentially',
+      input: { concurrency: 1, tasks: [50, 50, 50] },
+      expectedOutput: { totalTime: 150, order: [1, 2, 3] },
+      description: 'Queue with concurrency 1 runs tasks sequentially',
     },
     {
-      input: [3, []],
-      expectedOutput: [],
-      description: 'Empty task array returns empty results',
+      input: { fn: 'size', concurrency: 2, queuedTasks: 4 },
+      expectedOutput: 2,
+      description: 'size returns number of pending tasks in queue',
     },
     {
-      input: [2, [1]],
-      expectedOutput: [1],
-      description: 'Single task works correctly',
+      input: { fn: 'pending', concurrency: 2, queuedTasks: 4 },
+      expectedOutput: 2,
+      description: 'pending returns number of currently running tasks',
+    },
+    {
+      input: { fn: 'addAll', concurrency: 3, values: [1, 2, 3, 4, 5] },
+      expectedOutput: [1, 2, 3, 4, 5],
+      description: 'addAll returns results in original order',
+    },
+    {
+      input: { fn: 'clear', concurrency: 1, tasks: 5 },
+      expectedOutput: { clearedSize: 0 },
+      description: 'clear removes all pending tasks from queue',
     },
   ],
   hints: [

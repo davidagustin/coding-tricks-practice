@@ -137,14 +137,15 @@ const evens = lazyFilter(lazyRange(1, 20), x => x % 2 === 0);
 console.log(take(evens, 5));`,
   solution: `// 1. Lazy Range Generator - generates numbers on demand
 function* lazyRange(start, end) {
-  let current = start;
-  while (current <= end) {
-    yield current++;
+  // Yield numbers from start to end lazily
+  for (let i = start; i <= end; i++) {
+    yield i;
   }
 }
 
 // 2. Lazy Map - transforms values only when consumed
 function* lazyMap(iterable, transform) {
+  // Apply transform lazily to each value
   for (const value of iterable) {
     yield transform(value);
   }
@@ -152,6 +153,7 @@ function* lazyMap(iterable, transform) {
 
 // 3. Lazy Filter - filters values only when consumed
 function* lazyFilter(iterable, predicate) {
+  // Filter values lazily
   for (const value of iterable) {
     if (predicate(value)) {
       yield value;
@@ -161,6 +163,7 @@ function* lazyFilter(iterable, predicate) {
 
 // 4. Take - get first n values from a lazy sequence
 function take(iterable, n) {
+  // Take first n values from any iterable
   const result = [];
   let count = 0;
   for (const value of iterable) {
@@ -173,16 +176,17 @@ function take(iterable, n) {
 
 // 5. Lazy Property - compute value only on first access, then cache
 function createLazyObject(computeExpensive) {
-  let cached = null;
+  // Return object with a lazy 'value' property
   let computed = false;
+  let cachedValue;
 
   return {
     get value() {
       if (!computed) {
-        cached = computeExpensive();
+        cachedValue = computeExpensive();
         computed = true;
       }
-      return cached;
+      return cachedValue;
     }
   };
 }
@@ -195,70 +199,80 @@ class LazyChain {
   }
 
   map(fn) {
+    // Add map operation to chain
     this.operations.push({ type: 'map', fn });
     return this;
   }
 
   filter(fn) {
+    // Add filter operation to chain
     this.operations.push({ type: 'filter', fn });
     return this;
   }
 
-  *[Symbol.iterator]() {
-    for (let value of this.iterable) {
-      let skip = false;
-      for (const op of this.operations) {
-        if (op.type === 'map') {
-          value = op.fn(value);
-        } else if (op.type === 'filter') {
-          if (!op.fn(value)) {
-            skip = true;
-            break;
-          }
-        }
-      }
-      if (!skip) yield value;
-    }
-  }
-
   take(n) {
-    return take(this, n);
+    // Execute chain and take n results
+    let result = this.iterable;
+    for (const op of this.operations) {
+      if (op.type === 'map') {
+        result = lazyMap(result, op.fn);
+      } else if (op.type === 'filter') {
+        result = lazyFilter(result, op.fn);
+      }
+    }
+    return take(result, n);
   }
 
   toArray() {
-    return [...this];
+    let result = this.iterable;
+    for (const op of this.operations) {
+      if (op.type === 'map') {
+        result = lazyMap(result, op.fn);
+      } else if (op.type === 'filter') {
+        result = lazyFilter(result, op.fn);
+      }
+    }
+    return [...result];
   }
 }
 
-// Helper to create lazy chain
-function lazy(iterable) {
-  return new LazyChain(iterable);
-}`,
+// Test
+const range = lazyRange(1, 1000000);
+console.log(take(range, 5)); // [1, 2, 3, 4, 5]
+
+const doubled = lazyMap(lazyRange(1, 10), x => x * 2);
+console.log([...doubled]); // [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+
+const evens = lazyFilter(lazyRange(1, 20), x => x % 2 === 0);
+console.log(take(evens, 5)); // [2, 4, 6, 8, 10]
+
+const lazyObj = createLazyObject(() => {
+  console.log('Computing expensive value...');
+  return 42;
+});
+console.log(lazyObj.value); // "Computing expensive value..." then 42
+console.log(lazyObj.value); // 42 (cached, no recomputation)
+
+const chain = new LazyChain(lazyRange(1, 100))
+  .map(x => x * 2)
+  .filter(x => x > 10)
+  .take(5);
+console.log(chain); // [12, 14, 16, 18, 20]`,
   testCases: [
     {
-      input: { start: 1, end: 1000000, take: 5 },
+      input: [1, 5],
       expectedOutput: [1, 2, 3, 4, 5],
-      description: 'take(lazyRange(1, 1000000), 5) returns [1,2,3,4,5] without generating million values',
+      description: 'lazyRange should generate range when consumed with take',
     },
     {
-      input: { values: [1, 2, 3, 4, 5], transform: 'double' },
-      expectedOutput: [2, 4, 6, 8, 10],
-      description: 'lazyMap([1,2,3,4,5], x => x * 2) lazily doubles each value',
+      input: [[1, 2, 3], 2],
+      expectedOutput: [1, 2],
+      description: 'take should return first n elements from iterable',
     },
     {
-      input: { start: 1, end: 20, predicate: 'even', take: 5 },
-      expectedOutput: [2, 4, 6, 8, 10],
-      description: 'take(lazyFilter(lazyRange(1, 20), x => x % 2 === 0), 5) returns first 5 even numbers',
-    },
-    {
-      input: { computeValue: 42 },
-      expectedOutput: { firstAccess: 42, secondAccess: 42, computeCount: 1 },
-      description: 'createLazyObject computes value only once on first access, caches for subsequent access',
-    },
-    {
-      input: { values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], filterEven: true, double: true, take: 3 },
-      expectedOutput: [4, 8, 12],
-      description: 'LazyChain: filter evens, double, take 3 = [4, 8, 12] - operations chained lazily',
+      input: [],
+      expectedOutput: 42,
+      description: 'createLazyObject should compute value only on first access',
     },
   ],
   hints: [

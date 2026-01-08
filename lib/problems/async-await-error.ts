@@ -97,17 +97,18 @@ async function fetchMultipleUsers(userIds) {
 // fetchMultipleUsers([1, 2, 3]).then(console.log).catch(console.error);`,
   solution: `async function fetchUserData(userId) {
   try {
-    // Mock fetch for testing
-    const mockFetch = () => Promise.resolve({ 
-      ok: true, 
-      json: () => Promise.resolve({ id: userId, name: 'John' }) 
-    });
-    const response = await mockFetch();
+    const response = await fetch(\`/api/users/\${userId}\`);
+
     if (!response.ok) {
-      return null;
+      if (response.status === 404) {
+        return null;
+      }
+      throw new Error(\`HTTP error: \${response.status}\`);
     }
+
     return response.json();
   } catch (error) {
+    console.error('Error fetching user:', error);
     return null;
   }
 }
@@ -116,22 +117,30 @@ async function fetchMultipleUsers(userIds) {
   const results = await Promise.allSettled(
     userIds.map(id => fetchUserData(id))
   );
-  
+
   return results
-    .filter(r => r.status === 'fulfilled' && r.value !== null)
-    .map(r => r.value);
+    .filter(result => result.status === 'fulfilled' && result.value !== null)
+    .map(result => result.value);
 }
 
-// Test function
-async function testFetchUserData() {
-  const result = await fetchUserData(1);
-  return result !== null && typeof result === 'object';
-}`,
+// Test (commented out to prevent immediate execution)
+// fetchUserData(1).then(console.log).catch(console.error);
+// fetchMultipleUsers([1, 2, 3]).then(console.log).catch(console.error);`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'testFetchUserData',
+      input: ['fetchUserData', 1],
+      expectedOutput: 'user object or null',
+      description: 'fetchUserData returns user data or null on error/404',
+    },
+    {
+      input: ['fetchMultipleUsers', [1, 2, 3]],
+      expectedOutput: 'array of users',
+      description: 'fetchMultipleUsers returns array of successfully fetched users',
+    },
+    {
+      input: ['error handling'],
+      expectedOutput: 'try/catch with response.ok check',
+      description: 'Proper error handling with try/catch and HTTP status checking',
     },
   ],
   hints: [

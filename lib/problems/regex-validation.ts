@@ -145,67 +145,93 @@ console.log(isValidIPv4('256.1.1.1'));                // false
 
 console.log(isValidCreditCard('1234-5678-9012-3456')); // true
 console.log(isValidCreditCard('1234567890123456'));    // true`,
-  solution: `function isValidEmail(email) {
-  const regex = /^[\\w.+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$/;
-  return regex.test(email);
+  solution: `// Email validator
+function isValidEmail(email) {
+  // Local part can have letters, digits, dots, underscores, hyphens, plus signs
+  // Domain has letters, digits, hyphens, with 2-6 letter TLD
+  const pattern = /^[\\w.+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$/;
+  return pattern.test(email);
 }
 
+// US phone number validator
 function isValidUSPhone(phone) {
-  const regex = /^\\(?\\d{3}\\)?[-. ]?\\d{3}[-. ]?\\d{4}$/;
-  return regex.test(phone);
+  // Area code can be in (), digits separated by -, ., space, or nothing
+  // Formats: (555) 123-4567, 555-123-4567, 555.123.4567, 5551234567
+  const pattern = /^\\(?\\d{3}\\)?[-. ]?\\d{3}[-. ]?\\d{4}$/;
+  return pattern.test(phone);
 }
 
+// URL validator
 function isValidURL(url) {
-  const regex = /^https?:\\/\\/([\\w-]+\\.)+[\\w-]+(\\/[\\w-./?%&=]*)?$/;
-  return regex.test(url);
+  // Protocol (http/https), optional www, domain, optional port/path/query
+  const pattern = /^https?:\\/\\/([\\w.-]+)(:\\d+)?(\\/[\\w./-]*)?(\\?[\\w=&.-]*)?$/;
+  return pattern.test(url);
 }
 
+// IPv4 address validator
 function isValidIPv4(ip) {
-  const octet = '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)';
-  const regex = new RegExp(\`^\${octet}\\\\.\${octet}\\\\.\${octet}\\\\.\${octet}$\`);
-  return regex.test(ip);
+  // Each octet should be 0-255
+  // Pattern for 0-255: (25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]?\\d)
+  const octet = '(25[0-5]|2[0-4]\\\\d|1\\\\d{2}|[1-9]?\\\\d)';
+  const pattern = new RegExp(\`^\${octet}\\\\.\${octet}\\\\.\${octet}\\\\.\${octet}$\`);
+  return pattern.test(ip);
 }
 
+// Credit card number validator (basic format check)
 function isValidCreditCard(cardNum) {
-  // Remove spaces and dashes, then check for 16 digits
-  const digitsOnly = cardNum.replace(/[- ]/g, '');
-  return /^\\d{16}$/.test(digitsOnly);
-}`,
+  // 16 digits, optionally grouped by 4 with separators (space or dash)
+  // First remove any spaces or dashes, then check if 16 digits
+  const cleaned = cardNum.replace(/[- ]/g, '');
+  return /^\\d{16}$/.test(cleaned);
+}
+
+// Test your functions
+console.log(isValidEmail('user@example.com'));        // true
+console.log(isValidEmail('user.name+tag@domain.co.uk')); // true
+console.log(isValidEmail('invalid-email'));           // false
+
+console.log(isValidUSPhone('(555) 123-4567'));        // true
+console.log(isValidUSPhone('555.123.4567'));          // true
+console.log(isValidUSPhone('123'));                   // false
+
+console.log(isValidURL('https://example.com/path'));  // true
+console.log(isValidURL('not-a-url'));                 // false
+
+console.log(isValidIPv4('192.168.1.1'));              // true
+console.log(isValidIPv4('256.1.1.1'));                // false
+
+console.log(isValidCreditCard('1234-5678-9012-3456')); // true
+console.log(isValidCreditCard('1234567890123456'));    // true`,
   testCases: [
     {
       input: ['user@example.com'],
       expectedOutput: true,
-      description: 'isValidEmail accepts simple email',
-    },
-    {
-      input: ['user.name+tag@domain.co.uk'],
-      expectedOutput: true,
-      description: 'isValidEmail accepts complex email',
+      description: 'isValidEmail should return true for valid email',
     },
     {
       input: ['invalid-email'],
       expectedOutput: false,
-      description: 'isValidEmail rejects invalid format',
+      description: 'isValidEmail should return false for invalid email',
     },
     {
       input: ['(555) 123-4567'],
       expectedOutput: true,
-      description: 'isValidUSPhone accepts formatted number',
+      description: 'isValidUSPhone should return true for valid phone with parentheses',
     },
     {
       input: ['192.168.1.1'],
       expectedOutput: true,
-      description: 'isValidIPv4 accepts valid IP',
+      description: 'isValidIPv4 should return true for valid IP address',
     },
     {
       input: ['256.1.1.1'],
       expectedOutput: false,
-      description: 'isValidIPv4 rejects invalid octet',
+      description: 'isValidIPv4 should return false for IP with octet > 255',
     },
     {
       input: ['1234-5678-9012-3456'],
       expectedOutput: true,
-      description: 'isValidCreditCard accepts dashed format',
+      description: 'isValidCreditCard should return true for card with dashes',
     },
   ],
   hints: [

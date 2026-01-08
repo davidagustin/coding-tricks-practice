@@ -155,110 +155,99 @@ console.log(processor.pay(50));
 
 processor.setStrategy(crypto);
 console.log(processor.pay(75));`,
-  solution: `// Strategy interface (TypeScript)
-interface PaymentStrategy {
-  pay(amount: number): string;
-}
-
-class CreditCardStrategy implements PaymentStrategy {
-  private cardNumber: string;
-  private cvv: string;
-
-  constructor(cardNumber: string, cvv: string) {
+  solution: `// Credit Card payment strategy
+class CreditCardStrategy {
+  constructor(cardNumber, cvv) {
     this.cardNumber = cardNumber;
     this.cvv = cvv;
   }
 
-  pay(amount: number): string {
-    const lastFour = this.cardNumber.slice(-4);
-    return \`Paid $\${amount} using Credit Card ending in \${lastFour}\`;
+  pay(amount) {
+    const last4 = this.cardNumber.slice(-4);
+    return \`Paid $\${amount} using Credit Card ending in \${last4}\`;
   }
 }
 
-class PayPalStrategy implements PaymentStrategy {
-  private email: string;
-
-  constructor(email: string) {
+// PayPal payment strategy
+class PayPalStrategy {
+  constructor(email) {
     this.email = email;
   }
 
-  pay(amount: number): string {
+  pay(amount) {
     return \`Paid $\${amount} using PayPal account \${this.email}\`;
   }
 }
 
-class CryptoStrategy implements PaymentStrategy {
-  private walletAddress: string;
-  private currency: string;
-
-  constructor(walletAddress: string, currency: string = 'BTC') {
+// Cryptocurrency payment strategy
+class CryptoStrategy {
+  constructor(walletAddress, currency = 'BTC') {
     this.walletAddress = walletAddress;
     this.currency = currency;
   }
 
-  pay(amount: number): string {
-    const shortWallet = this.walletAddress.slice(0, 6);
-    return \`Paid $\${amount} using \${this.currency} to wallet \${shortWallet}...\`;
+  pay(amount) {
+    const walletPrefix = this.walletAddress.slice(0, 6);
+    return \`Paid $\${amount} using \${this.currency} to wallet \${walletPrefix}...\`;
   }
 }
 
+// PaymentProcessor context
 class PaymentProcessor {
-  private strategy: PaymentStrategy | null;
-
-  constructor(strategy?: PaymentStrategy) {
-    this.strategy = strategy || null;
-  }
-
-  setStrategy(strategy: PaymentStrategy): void {
+  constructor(strategy) {
     this.strategy = strategy;
   }
 
-  pay(amount: number): string {
+  setStrategy(strategy) {
+    this.strategy = strategy;
+  }
+
+  pay(amount) {
     if (!this.strategy) {
-      throw new Error('No payment strategy set');
+      throw new Error('Payment strategy not set');
     }
     return this.strategy.pay(amount);
   }
 }
 
-// Usage
+// Test
 const creditCard = new CreditCardStrategy('4111111111111234', '123');
 const paypal = new PayPalStrategy('user@example.com');
 const crypto = new CryptoStrategy('0x1234567890abcdef', 'ETH');
 
 const processor = new PaymentProcessor(creditCard);
-console.log(processor.pay(100)); // "Paid $100 using Credit Card ending in 1234"
+console.log(processor.pay(100));
 
 processor.setStrategy(paypal);
-console.log(processor.pay(50)); // "Paid $50 using PayPal account user@example.com"
+console.log(processor.pay(50));
 
 processor.setStrategy(crypto);
-console.log(processor.pay(75)); // "Paid $75 using ETH to wallet 0x1234..."`,
+console.log(processor.pay(75));`,
   testCases: [
     {
-      input: { strategy: 'creditCard', cardNumber: '4111111111111234', cvv: '123', amount: 100 },
+      input: { strategy: 'creditcard', cardNumber: '4111111111111234', cvv: '123', amount: 100 },
       expectedOutput: 'Paid $100 using Credit Card ending in 1234',
-      description: 'CreditCardStrategy formats payment with last 4 digits of card',
+      description: 'CreditCardStrategy shows last 4 digits',
     },
     {
-      input: { strategy: 'paypal', email: 'john@example.com', amount: 50 },
-      expectedOutput: 'Paid $50 using PayPal account john@example.com',
-      description: 'PayPalStrategy formats payment with email address',
+      input: { strategy: 'paypal', email: 'test@example.com', amount: 50 },
+      expectedOutput: 'Paid $50 using PayPal account test@example.com',
+      description: 'PayPalStrategy shows email',
     },
     {
-      input: { strategy: 'crypto', wallet: '0xABCDEF123456', currency: 'ETH', amount: 200 },
-      expectedOutput: 'Paid $200 using ETH to wallet 0xABCD...',
-      description: 'CryptoStrategy formats payment with currency and truncated wallet',
+      input: { strategy: 'crypto', walletAddress: '0xABCDEF123456', currency: 'ETH', amount: 75 },
+      expectedOutput: 'Paid $75 using ETH to wallet 0xABCD...',
+      description: 'CryptoStrategy shows first 6 chars of wallet',
     },
     {
-      input: { strategy: 'none', amount: 100 },
-      expectedOutput: { error: 'No payment strategy set' },
-      description: 'PaymentProcessor throws error when no strategy is set',
+      input: { action: 'switch_strategy' },
+      expectedOutput: true,
+      description: 'Strategy can be changed at runtime via setStrategy',
     },
     {
-      input: { strategy: 'switch', initialStrategy: 'creditCard', newStrategy: 'paypal', amount: 75 },
-      expectedOutput: 'Paid $75 using PayPal account test@test.com',
-      description: 'PaymentProcessor can switch strategies at runtime using setStrategy()',
+      input: { action: 'no_strategy' },
+      expectedOutput: 'error',
+      description: 'Throws error when no strategy is set',
     },
   ],
   hints: [

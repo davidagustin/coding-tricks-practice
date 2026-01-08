@@ -155,79 +155,59 @@ console.log(getRandomInt(1, 6));
 console.log(roundToDecimal(3.14159, 2));
 console.log(calculateDistance(0, 0, 3, 4));`,
   solution: `function calculatePages(totalItems, itemsPerPage) {
+  // Calculate the number of pages needed using Math.ceil
+  // Math.ceil rounds up to ensure partial pages get a full page
   if (totalItems === 0) return 0;
   return Math.ceil(totalItems / itemsPerPage);
 }
 
 function clampValue(value, min, max) {
+  // Clamp a value between min and max using nested Math.min and Math.max
+  // Math.max ensures value is at least min
+  // Math.min ensures value is at most max
   return Math.min(Math.max(value, min), max);
 }
 
 function getRandomInt(min, max) {
+  // Return a random integer between min (inclusive) and max (inclusive)
+  // Math.random() returns [0, 1)
+  // Multiply by (max - min + 1) to get the range
+  // Math.floor to get an integer, then add min to shift the range
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function roundToDecimal(num, decimalPlaces) {
+  // Round a number to specified decimal places
+  // Multiply by 10^decimalPlaces, round, then divide by 10^decimalPlaces
   const multiplier = Math.pow(10, decimalPlaces);
   return Math.round(num * multiplier) / multiplier;
 }
 
 function calculateDistance(x1, y1, x2, y2) {
+  // Calculate the Euclidean distance between two points
+  // Using the formula: sqrt((x2-x1)^2 + (y2-y1)^2)
   const dx = x2 - x1;
   const dy = y2 - y1;
   return Math.sqrt(dx * dx + dy * dy);
-}`,
+}
+
+// Test
+console.log(calculatePages(25, 10)); // 3
+console.log(clampValue(15, 0, 10)); // 10
+console.log(getRandomInt(1, 6)); // Random 1-6
+console.log(roundToDecimal(3.14159, 2)); // 3.14
+console.log(calculateDistance(0, 0, 3, 4)); // 5`,
   testCases: [
-    {
-      input: [25, 10],
-      expectedOutput: 3,
-      description: 'calculatePages - 25 items with 10 per page needs 3 pages',
-    },
-    {
-      input: [30, 10],
-      expectedOutput: 3,
-      description: 'calculatePages - exactly 30 items needs 3 pages',
-    },
-    {
-      input: [0, 10],
-      expectedOutput: 0,
-      description: 'calculatePages - 0 items needs 0 pages',
-    },
-    {
-      input: [5, 0, 10],
-      expectedOutput: 5,
-      description: 'clampValue - value within range stays unchanged',
-    },
-    {
-      input: [-5, 0, 10],
-      expectedOutput: 0,
-      description: 'clampValue - value below min returns min',
-    },
-    {
-      input: [15, 0, 10],
-      expectedOutput: 10,
-      description: 'clampValue - value above max returns max',
-    },
-    {
-      input: [3.14159, 2],
-      expectedOutput: 3.14,
-      description: 'roundToDecimal - rounds PI to 2 decimal places',
-    },
-    {
-      input: [2.555, 2],
-      expectedOutput: 2.56,
-      description: 'roundToDecimal - rounds up 2.555 to 2.56',
-    },
-    {
-      input: [0, 0, 3, 4],
-      expectedOutput: 5,
-      description: 'calculateDistance - classic 3-4-5 triangle',
-    },
-    {
-      input: [1, 1, 4, 5],
-      expectedOutput: 5,
-      description: 'calculateDistance - offset 3-4-5 triangle',
-    },
+    { input: [25, 10], expectedOutput: 3, description: 'calculatePages: 25 items / 10 per page = 3 pages' },
+    { input: [30, 10], expectedOutput: 3, description: 'calculatePages: 30 items / 10 per page = 3 pages' },
+    { input: [0, 10], expectedOutput: 0, description: 'calculatePages: 0 items = 0 pages' },
+    { input: [5, 0, 10], expectedOutput: 5, description: 'clampValue: 5 is within range' },
+    { input: [-5, 0, 10], expectedOutput: 0, description: 'clampValue: -5 clamped to min 0' },
+    { input: [15, 0, 10], expectedOutput: 10, description: 'clampValue: 15 clamped to max 10' },
+    { input: [3.14159, 2], expectedOutput: 3.14, description: 'roundToDecimal: 3.14159 to 2 places = 3.14' },
+    { input: [2.555, 2], expectedOutput: 2.56, description: 'roundToDecimal: 2.555 to 2 places = 2.56' },
+    { input: [0, 0, 3, 4], expectedOutput: 5, description: 'calculateDistance: (0,0) to (3,4) = 5' },
+    { input: [0, 0, 0, 0], expectedOutput: 0, description: 'calculateDistance: same point = 0' },
   ],
   hints: [
     'Math.ceil() rounds up, which is perfect for pagination since partial pages still need a full page',

@@ -161,11 +161,11 @@ console.log(printPersonInfo({ name: 'Bob', startDate: new Date('2023-01-15') }))
 function describeValue(value: string | number | boolean): string {
   if (typeof value === 'string') {
     return \`String: \${value}\`;
-  }
-  if (typeof value === 'number') {
+  } else if (typeof value === 'number') {
     return \`Number: \${value}\`;
+  } else {
+    return \`Boolean: \${value}\`;
   }
-  return \`Boolean: \${value}\`;
 }
 
 // Task 2: Use instanceof to narrow class types
@@ -180,8 +180,9 @@ class Bicycle {
 function useVehicle(vehicle: Car | Bicycle): string {
   if (vehicle instanceof Car) {
     return vehicle.drive();
+  } else {
+    return vehicle.pedal();
   }
-  return vehicle.pedal();
 }
 
 // Task 3: Use 'in' operator to narrow object types
@@ -200,11 +201,12 @@ type UnknownPerson = Admin | Employee;
 function printPersonInfo(person: UnknownPerson): string {
   if ('privileges' in person) {
     return \`Admin: \${person.name}, Privileges: \${person.privileges.length}\`;
+  } else {
+    return \`Employee: \${person.name}, Started: \${person.startDate.toISOString().split('T')[0]}\`;
   }
-  return \`Employee: \${person.name}, Started: \${person.startDate.toISOString().split('T')[0]}\`;
 }
 
-// Test implementations
+// Test your implementations
 console.log(describeValue('hello'));
 console.log(describeValue(42));
 console.log(describeValue(true));
@@ -216,27 +218,37 @@ console.log(printPersonInfo({ name: 'Bob', startDate: new Date('2023-01-15') }))
     {
       input: ['hello'],
       expectedOutput: 'String: hello',
-      description: 'describeValue correctly identifies and formats strings',
+      description: 'describeValue handles string type',
     },
     {
       input: [42],
       expectedOutput: 'Number: 42',
-      description: 'describeValue correctly identifies and formats numbers',
+      description: 'describeValue handles number type',
     },
     {
       input: [true],
       expectedOutput: 'Boolean: true',
-      description: 'describeValue correctly identifies and formats booleans',
+      description: 'describeValue handles boolean type',
     },
     {
       input: ['Car'],
       expectedOutput: 'Driving a car',
-      description: 'useVehicle correctly uses instanceof for Car',
+      description: 'useVehicle calls drive() for Car',
     },
     {
       input: ['Bicycle'],
       expectedOutput: 'Pedaling a bicycle',
-      description: 'useVehicle correctly uses instanceof for Bicycle',
+      description: 'useVehicle calls pedal() for Bicycle',
+    },
+    {
+      input: [{ name: 'Alice', privileges: ['create', 'delete'] }],
+      expectedOutput: 'Admin: Alice, Privileges: 2',
+      description: 'printPersonInfo identifies Admin by privileges property',
+    },
+    {
+      input: [{ name: 'Bob', startDate: '2023-01-15' }],
+      expectedOutput: 'Employee: Bob, Started: 2023-01-15',
+      description: 'printPersonInfo identifies Employee by startDate property',
     },
   ],
   hints: [

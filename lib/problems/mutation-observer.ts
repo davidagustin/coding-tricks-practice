@@ -133,143 +133,132 @@ const mockObserver = {
 //   console.log('Modal added:', modal);
 //   initializeModal(modal);
 // });`,
-  solution: `function watchForElement(selector, callback, options = {}) {
-  const {
-    root = document.body,
-    once = false
-  } = options;
+  solution: `// Watch for elements matching selector to be added to DOM
+function watchForElement(selector, callback, options = {}) {
+  const root = options.root || document.body;
 
-  // Check for existing elements first
+  // Check existing elements first
   const existing = root.querySelectorAll(selector);
   existing.forEach(el => callback(el));
 
-  if (once && existing.length > 0) {
-    return () => {};
-  }
-
-  const checkNode = (node) => {
-    if (node.nodeType !== Node.ELEMENT_NODE) return;
-
-    // Check if the node itself matches
-    if (node.matches && node.matches(selector)) {
-      callback(node);
-      if (once) {
-        observer.disconnect();
-      }
-    }
-
-    // Check descendants
-    if (node.querySelectorAll) {
-      const matches = node.querySelectorAll(selector);
-      matches.forEach(match => {
-        callback(match);
-        if (once) {
-          observer.disconnect();
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        // Check if the added node itself matches
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          if (node.matches && node.matches(selector)) {
+            callback(node);
+          }
+          // Check descendants of the added node
+          if (node.querySelectorAll) {
+            const descendants = node.querySelectorAll(selector);
+            descendants.forEach(el => callback(el));
+          }
         }
       });
-    }
-  };
-
-  const observer = new MutationObserver((mutations) => {
-    for (const mutation of mutations) {
-      if (mutation.type === 'childList') {
-        mutation.addedNodes.forEach(checkNode);
-      }
-    }
+    });
   });
 
   observer.observe(root, {
     childList: true,
-    subtree: true
+    subtree: true,
   });
 
-  return () => observer.disconnect();
+  // Return cleanup function
+  return () => {
+    observer.disconnect();
+  };
 }
 
+// Watch for attribute changes on a specific element
 function watchAttributes(element, attributeNames, callback) {
   const observer = new MutationObserver((mutations) => {
-    for (const mutation of mutations) {
+    mutations.forEach((mutation) => {
       if (mutation.type === 'attributes') {
-        const name = mutation.attributeName;
+        const attributeName = mutation.attributeName;
         const oldValue = mutation.oldValue;
-        const newValue = element.getAttribute(name);
+        const newValue = element.getAttribute(attributeName);
 
         callback({
-          name,
+          name: attributeName,
           oldValue,
           newValue,
-          target: mutation.target
+          target: mutation.target,
         });
       }
-    }
+    });
   });
 
   observer.observe(element, {
     attributes: true,
+    attributeFilter: attributeNames,
     attributeOldValue: true,
-    attributeFilter: attributeNames
   });
 
-  return () => observer.disconnect();
+  // Return cleanup function
+  return () => {
+    observer.disconnect();
+  };
 }
 
+// DOM change recorder for undo/redo functionality
 function createDOMRecorder(root) {
   const history = [];
-  let historyIndex = -1;
+  let currentIndex = -1;
   let isUndoing = false;
-
-  const cloneNode = (node) => {
-    return node.cloneNode(true);
-  };
 
   const observer = new MutationObserver((mutations) => {
     if (isUndoing) return;
 
-    // Clear any redo history when new changes occur
-    if (historyIndex < history.length - 1) {
-      history.splice(historyIndex + 1);
+    // If we've undone some changes, clear the redo history
+    if (currentIndex < history.length - 1) {
+      history.splice(currentIndex + 1);
     }
 
     const record = {
-      mutations: mutations.map(m => ({
+      mutations: mutations.map((m) => ({
         type: m.type,
         target: m.target,
+        addedNodes: Array.from(m.addedNodes).map(n => n.cloneNode(true)),
+        removedNodes: Array.from(m.removedNodes).map(n => n.cloneNode(true)),
+        previousSibling: m.previousSibling,
+        nextSibling: m.nextSibling,
         attributeName: m.attributeName,
         oldValue: m.oldValue,
-        addedNodes: Array.from(m.addedNodes),
-        removedNodes: Array.from(m.removedNodes).map(cloneNode),
-        previousSibling: m.previousSibling,
-        nextSibling: m.nextSibling
-      }))
+        newValue: m.type === 'attributes' ? m.target.getAttribute(m.attributeName) : null,
+      })),
+      timestamp: Date.now(),
     };
 
     history.push(record);
-    historyIndex = history.length - 1;
+    currentIndex = history.length - 1;
   });
 
   observer.observe(root, {
     childList: true,
-    attributes: true,
-    characterData: true,
     subtree: true,
+    attributes: true,
     attributeOldValue: true,
-    characterDataOldValue: true
+    characterData: true,
+    characterDataOldValue: true,
   });
 
   return {
     undo() {
-      if (historyIndex < 0) return false;
+      if (currentIndex < 0) return false;
 
       isUndoing = true;
-      const record = history[historyIndex];
+      const record = history[currentIndex];
 
-      // Reverse mutations in reverse order
-      for (let i = record.mutations.length - 1; i >= 0; i--) {
-        const m = record.mutations[i];
-
+      // Reverse the mutations
+      record.mutations.slice().reverse().forEach((m) => {
         if (m.type === 'childList') {
           // Remove added nodes
-          m.addedNodes.forEach(node => node.remove());
+          m.addedNodes.forEach(node => {
+            const current = m.target.querySelector(\`[data-undo-id="\${node.dataset?.undoId}"]\`) ||
+                           Array.from(m.target.childNodes).find(n => n.isEqualNode && n.isEqualNode(node));
+            if (current) current.remove();
+          });
           // Re-add removed nodes
           m.removedNodes.forEach(node => {
             if (m.nextSibling) {
@@ -287,20 +276,50 @@ function createDOMRecorder(root) {
         } else if (m.type === 'characterData') {
           m.target.textContent = m.oldValue;
         }
-      }
+      });
 
-      historyIndex--;
+      currentIndex--;
       isUndoing = false;
       return true;
     },
 
     redo() {
-      if (historyIndex >= history.length - 1) return false;
+      if (currentIndex >= history.length - 1) return false;
 
-      historyIndex++;
-      // Re-apply would require storing newValues too
-      // This is a simplified implementation
+      isUndoing = true;
+      currentIndex++;
+      const record = history[currentIndex];
+
+      // Replay the mutations
+      record.mutations.forEach((m) => {
+        if (m.type === 'childList') {
+          m.removedNodes.forEach(node => node.remove?.());
+          m.addedNodes.forEach(node => {
+            if (m.nextSibling) {
+              m.target.insertBefore(node.cloneNode(true), m.nextSibling);
+            } else {
+              m.target.appendChild(node.cloneNode(true));
+            }
+          });
+        } else if (m.type === 'attributes') {
+          if (m.newValue === null) {
+            m.target.removeAttribute(m.attributeName);
+          } else {
+            m.target.setAttribute(m.attributeName, m.newValue);
+          }
+        }
+      });
+
+      isUndoing = false;
       return true;
+    },
+
+    canUndo() {
+      return currentIndex >= 0;
+    },
+
+    canRedo() {
+      return currentIndex < history.length - 1;
     },
 
     getHistory() {
@@ -309,29 +328,52 @@ function createDOMRecorder(root) {
 
     disconnect() {
       observer.disconnect();
-    }
+    },
   };
-}`,
+}
+
+// Test (simulated - MutationObserver doesn't exist in Node)
+const mockObserver = {
+  observe: (target, config) => console.log('Observing:', config),
+  disconnect: () => console.log('Disconnected'),
+  takeRecords: () => []
+};
+
+// Usage:
+// const cleanup = watchForElement('.modal', (modal) => {
+//   console.log('Modal added:', modal);
+//   initializeModal(modal);
+// });`,
   testCases: [
     {
-      input: { selector: '.widget', root: 'body' },
-      expectedOutput: true,
+      input: { selector: '.dynamic-widget', action: 'add-element' },
+      expectedOutput: 'callback called with new element',
       description: 'watchForElement calls callback when matching element is added',
     },
     {
-      input: { attributes: ['class', 'disabled'] },
+      input: { selector: '.widget', action: 'add-nested-element' },
+      expectedOutput: 'callback called for descendants of added nodes',
+      description: 'watchForElement checks descendants of added nodes',
+    },
+    {
+      input: { element: 'div', attributeNames: ['class', 'disabled'] },
       expectedOutput: { name: 'class', oldValue: 'old', newValue: 'new' },
-      description: 'watchAttributes tracks attribute changes with old/new values',
+      description: 'watchAttributes tracks attribute changes with old and new values',
     },
     {
-      input: { subtree: true, childList: true },
-      expectedOutput: true,
-      description: 'Observer configured with subtree finds nested elements',
+      input: { action: 'undo' },
+      expectedOutput: 'mutation reversed',
+      description: 'createDOMRecorder undo() reverses the last DOM change',
     },
     {
-      input: { action: 'undo', historyLength: 1 },
-      expectedOutput: true,
-      description: 'DOM recorder undo reverses the last change',
+      input: { action: 'redo' },
+      expectedOutput: 'mutation replayed',
+      description: 'createDOMRecorder redo() replays an undone change',
+    },
+    {
+      input: { action: 'disconnect' },
+      expectedOutput: 'observer stopped',
+      description: 'cleanup/disconnect stops observing DOM changes',
     },
   ],
   hints: [

@@ -127,161 +127,168 @@ const mockObserver = {
 // Usage example:
 // const cleanup = lazyLoad('.lazy-img', { rootMargin: '50px' });
 // cleanup(); // stops observing all images`,
-  solution: `function lazyLoad(selector, options = {}) {
-  const {
-    rootMargin = '50px',
-    threshold = 0,
-    onLoad = null,
-    onError = null
-  } = options;
+  solution: `// Lazy loading with IntersectionObserver
+function lazyLoad(selector, options = {}) {
+  const elements = document.querySelectorAll(selector);
 
-  const images = document.querySelectorAll(selector);
-
-  if (!images.length) return () => {};
-
-  const loadImage = (img) => {
-    const src = img.dataset.src;
-    const srcset = img.dataset.srcset;
-
-    if (src) {
-      img.src = src;
-      img.removeAttribute('data-src');
-    }
-
-    if (srcset) {
-      img.srcset = srcset;
-      img.removeAttribute('data-srcset');
-    }
-
-    img.classList.add('loaded');
-
-    if (onLoad) {
-      img.addEventListener('load', () => onLoad(img), { once: true });
-    }
-
-    if (onError) {
-      img.addEventListener('error', () => onError(img), { once: true });
-    }
+  const observerOptions = {
+    root: options.root || null,
+    rootMargin: options.rootMargin || '0px',
+    threshold: options.threshold || 0,
   };
 
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        loadImage(entry.target);
-        observer.unobserve(entry.target);
+        const element = entry.target;
+
+        // Handle images with data-src
+        if (element.dataset.src) {
+          element.src = element.dataset.src;
+          delete element.dataset.src;
+        }
+
+        // Handle background images with data-bg
+        if (element.dataset.bg) {
+          element.style.backgroundImage = \`url(\${element.dataset.bg})\`;
+          delete element.dataset.bg;
+        }
+
+        // Add loaded class for styling/animations
+        element.classList.add('loaded');
+
+        // Stop observing this element
+        observer.unobserve(element);
       }
     });
-  }, {
-    rootMargin,
-    threshold
-  });
+  }, observerOptions);
 
-  images.forEach(img => observer.observe(img));
+  // Observe all elements
+  elements.forEach((el) => observer.observe(el));
 
-  return () => observer.disconnect();
+  // Return cleanup function
+  return () => {
+    observer.disconnect();
+  };
 }
 
+// Infinite scroll detection
 function setupInfiniteScroll(sentinelSelector, loadMore, options = {}) {
-  const {
-    rootMargin = '100px',
-    threshold = 0
-  } = options;
-
   const sentinel = document.querySelector(sentinelSelector);
   if (!sentinel) return () => {};
 
   let isLoading = false;
 
-  const observer = new IntersectionObserver(async (entries) => {
-    const entry = entries[0];
+  const observerOptions = {
+    root: options.root || null,
+    rootMargin: options.rootMargin || '100px',
+    threshold: options.threshold || 0,
+  };
 
-    if (entry.isIntersecting && !isLoading) {
-      isLoading = true;
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting && !isLoading) {
+        isLoading = true;
 
-      try {
-        await loadMore();
-      } finally {
-        isLoading = false;
+        // Call loadMore and wait for it to complete
+        Promise.resolve(loadMore()).finally(() => {
+          isLoading = false;
+        });
       }
-    }
-  }, {
-    rootMargin,
-    threshold
-  });
+    });
+  }, observerOptions);
 
   observer.observe(sentinel);
 
-  return () => observer.disconnect();
+  // Return cleanup function
+  return () => {
+    observer.disconnect();
+  };
 }
 
+// Visibility tracker for analytics
 function trackVisibility(selector, onVisibilityChange) {
   const elements = document.querySelectorAll(selector);
   const visibilityData = new Map();
 
   const observer = new IntersectionObserver((entries) => {
-    const now = Date.now();
-
-    entries.forEach(entry => {
+    entries.forEach((entry) => {
       const element = entry.target;
+      const data = visibilityData.get(element) || { totalTime: 0, lastEnter: null };
 
       if (entry.isIntersecting) {
-        // Element became visible
-        visibilityData.set(element, {
-          startTime: now,
-          totalTime: visibilityData.get(element)?.totalTime || 0
+        // Element entered viewport
+        data.lastEnter = Date.now();
+        visibilityData.set(element, data);
+        onVisibilityChange({
+          element,
+          isVisible: true,
+          intersectionRatio: entry.intersectionRatio,
+          totalTimeVisible: data.totalTime,
         });
-
-        onVisibilityChange(element, {
-          visible: true,
-          ratio: entry.intersectionRatio,
-          totalTimeVisible: visibilityData.get(element).totalTime
+      } else if (data.lastEnter) {
+        // Element left viewport
+        const duration = Date.now() - data.lastEnter;
+        data.totalTime += duration;
+        data.lastEnter = null;
+        visibilityData.set(element, data);
+        onVisibilityChange({
+          element,
+          isVisible: false,
+          intersectionRatio: 0,
+          totalTimeVisible: data.totalTime,
+          lastViewDuration: duration,
         });
-      } else {
-        // Element became hidden
-        const data = visibilityData.get(element);
-        if (data && data.startTime) {
-          data.totalTime += now - data.startTime;
-          data.startTime = null;
-
-          onVisibilityChange(element, {
-            visible: false,
-            ratio: 0,
-            totalTimeVisible: data.totalTime
-          });
-        }
       }
     });
-  }, {
-    threshold: [0, 0.25, 0.5, 0.75, 1]
+  }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
+
+  elements.forEach((el) => {
+    visibilityData.set(el, { totalTime: 0, lastEnter: null });
+    observer.observe(el);
   });
 
-  elements.forEach(el => observer.observe(el));
-
+  // Return cleanup function
   return () => {
     observer.disconnect();
-    visibilityData.clear();
   };
-}`,
+}
+
+// Test (simulated - IntersectionObserver doesn't exist in Node)
+const mockObserver = {
+  observe: (el) => console.log('Observing:', el),
+  unobserve: (el) => console.log('Unobserving:', el),
+  disconnect: () => console.log('Disconnected')
+};
+
+// Usage example:
+// const cleanup = lazyLoad('.lazy-img', { rootMargin: '50px' });
+// cleanup(); // stops observing all images`,
   testCases: [
     {
-      input: { selector: '.lazy-img', options: { rootMargin: '50px' } },
-      expectedOutput: true,
-      description: 'lazyLoad returns a cleanup function',
+      input: { selector: '.lazy-img', options: { rootMargin: '100px' } },
+      expectedOutput: 'images preload 100px before viewport',
+      description: 'lazyLoad preloads images before they enter viewport',
     },
     {
-      input: { isIntersecting: true, dataSrc: 'image.jpg' },
-      expectedOutput: { src: 'image.jpg', class: 'loaded' },
-      description: 'Image src is set and loaded class added when intersecting',
+      input: { element: 'img[data-src]', action: 'intersect' },
+      expectedOutput: 'data-src copied to src, element unobserved',
+      description: 'lazyLoad copies data-src to src when element intersects',
     },
     {
-      input: { isIntersecting: false },
-      expectedOutput: { loaded: false },
-      description: 'Image is not loaded when not intersecting',
+      input: { sentinel: '.sentinel', action: 'intersect' },
+      expectedOutput: 'loadMore() called',
+      description: 'setupInfiniteScroll calls loadMore when sentinel is visible',
     },
     {
-      input: { sentinel: '.load-more', rootMargin: '100px' },
-      expectedOutput: true,
-      description: 'Infinite scroll triggers loadMore when sentinel is visible',
+      input: { action: 'visibility-enter' },
+      expectedOutput: { isVisible: true, intersectionRatio: 1 },
+      description: 'trackVisibility reports when element enters viewport',
+    },
+    {
+      input: { action: 'visibility-exit' },
+      expectedOutput: { isVisible: false, lastViewDuration: 'number' },
+      description: 'trackVisibility reports duration when element exits viewport',
     },
   ],
   hints: [

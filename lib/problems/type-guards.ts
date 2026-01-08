@@ -111,26 +111,57 @@ function isUser(obj: unknown): obj is User {
     obj !== null &&
     'name' in obj &&
     'age' in obj &&
-    typeof (obj as any).name === 'string' &&
-    typeof (obj as any).age === 'number'
+    typeof (obj as User).name === 'string' &&
+    typeof (obj as User).age === 'number'
   );
 }
 
-function processData(data: unknown) {
+function processData(data: unknown): string {
   if (isUser(data)) {
-    console.log(data.name, data.age);
+    return \`User: \${data.name}, Age: \${data.age}\`;
   } else {
-    console.log('Not a user');
+    return 'Not a user';
   }
 }
 
-processData({ name: 'Alice', age: 30 });
-processData('not a user');`,
+// Test
+console.log(processData({ name: 'Alice', age: 30 }));
+console.log(processData('not a user'));`,
   testCases: [
     {
-      input: [],
+      input: [{ name: 'Alice', age: 30 }],
       expectedOutput: true,
-      description: 'Type guards work correctly',
+      description: 'isUser returns true for valid User object',
+    },
+    {
+      input: ['not a user'],
+      expectedOutput: false,
+      description: 'isUser returns false for string',
+    },
+    {
+      input: [{ name: 'Bob' }],
+      expectedOutput: false,
+      description: 'isUser returns false for object missing age',
+    },
+    {
+      input: [null],
+      expectedOutput: false,
+      description: 'isUser returns false for null',
+    },
+    {
+      input: [{ name: 123, age: 30 }],
+      expectedOutput: false,
+      description: 'isUser returns false when name is not a string',
+    },
+    {
+      input: [{ name: 'Alice', age: 30 }],
+      expectedOutput: 'User: Alice, Age: 30',
+      description: 'processData returns user info for valid User',
+    },
+    {
+      input: ['invalid'],
+      expectedOutput: 'Not a user',
+      description: 'processData returns "Not a user" for invalid input',
     },
   ],
   hints: [

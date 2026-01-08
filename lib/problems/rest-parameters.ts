@@ -139,49 +139,50 @@ const log = createLogger('[INFO]');
 log('Server started', 'on port 3000');
 console.log(callWithArray(Math.max, [3, 1, 4, 1, 5, 9]));`,
   solution: `function sumAll(...numbers) {
-  return numbers.reduce((sum, num) => sum + num, 0);
+  // Use reduce to sum all numbers passed as arguments
+  return numbers.reduce((total, num) => total + num, 0);
 }
 
 function mergeArrays(first, ...arrays) {
+  // Use spread to merge all arrays into one
   return [first, ...arrays].flat();
-  // Alternative: return [first, ...arrays.flat()];
-  // Alternative: return arrays.reduce((acc, arr) => [...acc, ...arr], [...first]);
+  // Alternative: return arrays.reduce((result, arr) => [...result, ...arr], [...first]);
 }
 
 function createLogger(prefix) {
+  // Return a function that uses rest to collect all arguments
+  // and spread to pass them to console.log
   return function(...messages) {
     console.log(prefix, ...messages);
   };
 }
 
 function callWithArray(fn, args) {
+  // Use spread to expand the array into individual arguments
   return fn(...args);
-}`,
+}
+
+// Test
+console.log(sumAll(1, 2, 3, 4, 5)); // 15
+console.log(mergeArrays([1, 2], [3, 4], [5, 6])); // [1, 2, 3, 4, 5, 6]
+const log = createLogger('[INFO]');
+log('Server started', 'on port 3000'); // [INFO] Server started on port 3000
+console.log(callWithArray(Math.max, [3, 1, 4, 1, 5, 9])); // 9`,
   testCases: [
     {
-      input: [1, 2, 3, 4, 5],
+      input: [[1, 2, 3, 4, 5]],
       expectedOutput: 15,
-      description: 'sumAll with 5 numbers',
+      description: 'sumAll should sum all numbers passed as arguments',
     },
     {
-      input: [10],
-      expectedOutput: 10,
-      description: 'sumAll with single number',
-    },
-    {
-      input: [],
-      expectedOutput: 0,
-      description: 'sumAll with no arguments',
-    },
-    {
-      input: [[1, 2], [3, 4], [5, 6]],
+      input: [[[1, 2], [3, 4], [5, 6]]],
       expectedOutput: [1, 2, 3, 4, 5, 6],
-      description: 'mergeArrays combines three arrays',
+      description: 'mergeArrays should merge first array with all other arrays',
     },
     {
-      input: [[1]],
-      expectedOutput: [1],
-      description: 'mergeArrays with single array',
+      input: [[Math, 'max', [3, 1, 4, 1, 5, 9]]],
+      expectedOutput: 9,
+      description: 'callWithArray should call function with array elements as arguments',
     },
   ],
   hints: [

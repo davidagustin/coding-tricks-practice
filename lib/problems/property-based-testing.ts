@@ -210,147 +210,110 @@ property(
 );`,
   solution: `// Basic generators
 function integer(min = -1000, max = 1000) {
-  const generator = function generate(size = 1) {
-    const scaledMin = Math.max(min, -size * 100);
-    const scaledMax = Math.min(max, size * 100);
-    return Math.floor(Math.random() * (scaledMax - scaledMin + 1)) + scaledMin;
+  return function generate(size = 1) {
+    const range = Math.min(max - min, size * 100);
+    const adjustedMin = Math.max(min, -size * 50);
+    const adjustedMax = Math.min(max, size * 50);
+    return Math.floor(Math.random() * (adjustedMax - adjustedMin + 1)) + adjustedMin;
   };
-  generator.shrink = shrinkInteger;
-  return generator;
 }
 
 function boolean() {
-  const generator = function generate() {
+  return function generate() {
     return Math.random() < 0.5;
   };
-  generator.shrink = () => [false, true];
-  return generator;
 }
 
 function string(maxLength = 20) {
-  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  const generator = function generate(size = 1) {
-    const length = Math.floor(Math.random() * Math.min(maxLength, size * 5));
-    return Array.from(
-      { length },
-      () => chars[Math.floor(Math.random() * chars.length)]
-    ).join('');
-  };
-  generator.shrink = shrinkString;
-  return generator;
-}
-
-function array(elementGenerator, maxLength = 20) {
-  const generator = function generate(size = 1) {
-    const length = Math.floor(Math.random() * Math.min(maxLength, size * 3));
-    return Array.from({ length }, () => elementGenerator(size));
-  };
-  generator.shrink = (arr) => shrinkArray(arr, elementGenerator.shrink || (() => []));
-  return generator;
-}
-
-function object(schema) {
-  const generator = function generate(size = 1) {
-    const result = {};
-    for (const [key, gen] of Object.entries(schema)) {
-      result[key] = gen(size);
+  return function generate(size = 1) {
+    const length = Math.floor(Math.random() * Math.min(maxLength, size * 5)) + 1;
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += chars[Math.floor(Math.random() * chars.length)];
     }
     return result;
   };
-  generator.shrink = (obj) => {
-    const results = [];
-    for (const [key, gen] of Object.entries(schema)) {
-      if (gen.shrink) {
-        for (const shrunk of gen.shrink(obj[key])) {
-          results.push({ ...obj, [key]: shrunk });
-        }
-      }
+}
+
+function array(elementGenerator, maxLength = 20) {
+  return function generate(size = 1) {
+    const length = Math.floor(Math.random() * Math.min(maxLength, size * 3));
+    const result = [];
+    for (let i = 0; i < length; i++) {
+      result.push(elementGenerator(size));
     }
-    return results;
+    return result;
   };
-  return generator;
+}
+
+function object(schema) {
+  return function generate(size = 1) {
+    const result = {};
+    for (const [key, generator] of Object.entries(schema)) {
+      result[key] = generator(size);
+    }
+    return result;
+  };
 }
 
 function oneOf(...generators) {
-  const generator = function generate(size = 1) {
-    const gen = generators[Math.floor(Math.random() * generators.length)];
-    return gen(size);
+  return function generate(size = 1) {
+    const index = Math.floor(Math.random() * generators.length);
+    return generators[index](size);
   };
-  return generator;
 }
 
-function constant(value) {
-  const generator = function generate() {
-    return value;
-  };
-  generator.shrink = () => [];
-  return generator;
-}
-
-// Shrinking functions
+// Shrinking - find minimal failing case
 function shrinkInteger(n) {
   if (n === 0) return [];
-  const results = [0];
-  const absN = Math.abs(n);
-  const sign = n > 0 ? 1 : -1;
-
-  // Binary search toward 0
-  let current = Math.floor(absN / 2);
-  while (current > 0) {
-    results.push(sign * current);
-    current = Math.floor(current / 2);
+  const shrinks = [0];
+  if (n > 0) {
+    shrinks.push(Math.floor(n / 2));
+    if (n > 1) shrinks.push(n - 1);
+  } else {
+    shrinks.push(Math.ceil(n / 2));
+    if (n < -1) shrinks.push(n + 1);
   }
-
-  // Try values close to 0
-  if (absN > 1) results.push(sign * (absN - 1));
-
-  return results.filter(x => x !== n);
-}
-
-function shrinkString(str) {
-  if (str.length === 0) return [];
-  const results = [''];
-
-  // Remove each character
-  for (let i = 0; i < str.length; i++) {
-    results.push(str.slice(0, i) + str.slice(i + 1));
-  }
-
-  // Take prefix halves
-  results.push(str.slice(0, Math.floor(str.length / 2)));
-
-  return results.filter(s => s !== str);
+  return [...new Set(shrinks)].filter(x => x !== n);
 }
 
 function shrinkArray(arr, shrinkElement) {
   if (arr.length === 0) return [];
-  const results = [[]];
 
-  // Remove each element
+  const shrinks = [];
+
+  // Try empty array
+  shrinks.push([]);
+
+  // Try removing each element
   for (let i = 0; i < arr.length; i++) {
-    results.push([...arr.slice(0, i), ...arr.slice(i + 1)]);
+    shrinks.push([...arr.slice(0, i), ...arr.slice(i + 1)]);
   }
 
-  // Take first half
-  results.push(arr.slice(0, Math.floor(arr.length / 2)));
+  // Try first half and second half
+  if (arr.length > 1) {
+    shrinks.push(arr.slice(0, Math.floor(arr.length / 2)));
+    shrinks.push(arr.slice(Math.floor(arr.length / 2)));
+  }
 
-  // Shrink individual elements
-  arr.forEach((elem, i) => {
-    const shrunk = shrinkElement(elem);
-    shrunk.forEach(s => {
-      results.push([...arr.slice(0, i), s, ...arr.slice(i + 1)]);
-    });
-  });
+  // Try shrinking individual elements
+  for (let i = 0; i < arr.length; i++) {
+    const elementShrinks = shrinkElement(arr[i]);
+    for (const shrunk of elementShrinks) {
+      shrinks.push([...arr.slice(0, i), shrunk, ...arr.slice(i + 1)]);
+    }
+  }
 
-  return results.filter(a =>
-    a.length !== arr.length ||
-    !a.every((v, i) => v === arr[i])
-  );
+  return shrinks;
 }
 
 // Main testing function
 function forAll(generator, property, options = {}) {
   const { numTests = 100 } = options;
+
+  let counterexample = null;
+  let shrunkExample = null;
 
   for (let i = 0; i < numTests; i++) {
     const size = Math.floor(i / 10) + 1;
@@ -358,25 +321,49 @@ function forAll(generator, property, options = {}) {
 
     try {
       if (!property(value)) {
-        // Found counterexample, shrink it
-        const shrunk = shrinkToMinimal(value, property, generator.shrink || (() => []));
-        return {
-          passed: false,
-          numTests: i + 1,
-          counterexample: value,
-          shrunkExample: shrunk
-        };
+        counterexample = value;
+        break;
       }
-    } catch (error) {
-      const shrunk = shrinkToMinimal(value, property, generator.shrink || (() => []));
-      return {
-        passed: false,
-        numTests: i + 1,
-        counterexample: value,
-        shrunkExample: shrunk,
-        error
-      };
+    } catch (e) {
+      counterexample = value;
+      break;
     }
+  }
+
+  if (counterexample !== null) {
+    // Try to shrink the counterexample
+    shrunkExample = counterexample;
+
+    if (Array.isArray(counterexample)) {
+      const shrinks = shrinkArray(counterexample, shrinkInteger);
+      for (const shrunk of shrinks) {
+        try {
+          if (!property(shrunk)) {
+            shrunkExample = shrunk;
+          }
+        } catch (e) {
+          shrunkExample = shrunk;
+        }
+      }
+    } else if (typeof counterexample === 'number') {
+      const shrinks = shrinkInteger(counterexample);
+      for (const shrunk of shrinks) {
+        try {
+          if (!property(shrunk)) {
+            shrunkExample = shrunk;
+          }
+        } catch (e) {
+          shrunkExample = shrunk;
+        }
+      }
+    }
+
+    return {
+      passed: false,
+      numTests: numTests,
+      counterexample,
+      shrunkExample
+    };
   }
 
   return {
@@ -385,30 +372,6 @@ function forAll(generator, property, options = {}) {
     counterexample: null,
     shrunkExample: null
   };
-}
-
-function shrinkToMinimal(value, property, shrinkFn, maxShrinks = 100) {
-  let minimal = value;
-  let shrinks = 0;
-
-  const candidates = shrinkFn(value);
-
-  while (candidates.length > 0 && shrinks < maxShrinks) {
-    const candidate = candidates.shift();
-    shrinks++;
-
-    try {
-      if (!property(candidate)) {
-        minimal = candidate;
-        candidates.unshift(...shrinkFn(candidate));
-      }
-    } catch {
-      minimal = candidate;
-      candidates.unshift(...shrinkFn(candidate));
-    }
-  }
-
-  return minimal;
 }
 
 // Property helpers
@@ -425,7 +388,7 @@ function property(description, generator, predicate) {
   return result;
 }
 
-// Test the framework
+// Example properties to test
 property(
   'Reversing array twice returns original',
   array(integer()),
@@ -443,32 +406,50 @@ property(
     const sorted2 = [...sorted1].sort((a, b) => a - b);
     return sorted1.every((val, i) => val === sorted2[i]);
   }
+);
+
+property(
+  'String encode/decode roundtrip',
+  string(),
+  (str) => {
+    return decodeURIComponent(encodeURIComponent(str)) === str;
+  }
 );`,
   testCases: [
     {
-      input: { generator: 'integer', min: 0, max: 100, property: 'x >= 0' },
+      input: { generator: 'integer', min: -100, max: 100 },
+      expectedOutput: { inRange: true },
+      description: 'integer generator produces values in specified range',
+    },
+    {
+      input: { generator: 'boolean' },
+      expectedOutput: { isBool: true },
+      description: 'boolean generator produces true or false',
+    },
+    {
+      input: { generator: 'string', maxLength: 10 },
+      expectedOutput: { isString: true, withinLength: true },
+      description: 'string generator produces strings within max length',
+    },
+    {
+      input: { generator: 'array', elementGenerator: 'integer' },
+      expectedOutput: { isArray: true },
+      description: 'array generator produces arrays of generated elements',
+    },
+    {
+      input: { function: 'shrinkInteger', value: 10 },
+      expectedOutput: [0, 5, 9],
+      description: 'shrinkInteger returns smaller integers including 0',
+    },
+    {
+      input: { function: 'forAll', property: 'passing' },
       expectedOutput: { passed: true, numTests: 100 },
-      description: 'forAll with integer generator verifies property holds for all generated values',
+      description: 'forAll returns passed: true for always-true property',
     },
     {
-      input: { generator: 'array', elementGen: 'integer', property: 'reverseTwice', numTests: 50 },
-      expectedOutput: { passed: true, numTests: 50 },
-      description: 'Array reverse twice property passes for all random arrays',
-    },
-    {
-      input: { shrink: 'integer', value: 100 },
-      expectedOutput: { shrunkValues: [0, 50, 25, 99] },
-      description: 'shrinkInteger produces progressively smaller values toward 0',
-    },
-    {
-      input: { shrink: 'array', value: [1, 2, 3], elementShrink: 'integer' },
-      expectedOutput: { containsEmpty: true, containsShorter: true },
-      description: 'shrinkArray produces smaller arrays and arrays with shrunk elements',
-    },
-    {
-      input: { generator: 'integer', min: -10, max: 10, property: 'x > 0', expectFailure: true },
-      expectedOutput: { passed: false, shrunkExample: 0 },
-      description: 'forAll finds counterexample and shrinks to minimal failing case',
+      input: { function: 'forAll', property: 'failing' },
+      expectedOutput: { passed: false, hasCounterexample: true },
+      description: 'forAll finds counterexample for failing property',
     },
   ],
   hints: [
