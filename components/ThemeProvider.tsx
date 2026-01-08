@@ -41,13 +41,27 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setMounted(true);
-    // Sync with the theme that was set by the inline script
-    const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-    setThemeState(currentTheme);
+    // On mount, ensure DOM and state are in sync
+    // The inline script should have already set the DOM class
+    if (typeof window !== 'undefined') {
+      const storedTheme = localStorage.getItem('theme') as Theme | null;
+      const domHasDark = document.documentElement.classList.contains('dark');
+      const domTheme = domHasDark ? 'dark' : 'light';
+      
+      // Use stored theme if available, otherwise use what's in the DOM
+      const actualTheme = storedTheme || domTheme;
+      
+      // Update state to match what's actually in the DOM/localStorage
+      // This ensures consistency after the inline script runs
+      setThemeState((currentTheme) => {
+        // Only update if there's a mismatch
+        return actualTheme !== currentTheme ? actualTheme : currentTheme;
+      });
+    }
   }, []);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined' || !mounted) return;
     
     const root = document.documentElement;
     if (theme === 'dark') {
@@ -56,7 +70,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       root.classList.remove('dark');
     }
     localStorage.setItem('theme', theme);
-  }, [theme]);
+  }, [theme, mounted]);
 
   const toggleTheme = () => {
     setThemeState((prev) => (prev === 'light' ? 'dark' : 'light'));
@@ -66,10 +80,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setThemeState(newTheme);
   };
 
-  // Always provide context, even during SSR
-  const contextValue = mounted 
-    ? { theme, toggleTheme, setTheme }
-    : { theme, toggleTheme: () => {}, setTheme: () => {} };
+  // Always provide working functions, even during SSR
+  // The theme state will sync properly once mounted
+  const contextValue = { theme, toggleTheme, setTheme };
 
   return (
     <ThemeContext.Provider value={contextValue}>
