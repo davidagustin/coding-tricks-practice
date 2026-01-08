@@ -240,17 +240,17 @@ function filterPrivateProperties(obj) {
   return promise;
 }
 
-// Test
-const fastPromise = new Promise(resolve => setTimeout(() => resolve('Success'), 100));
-const slowPromise = new Promise(resolve => setTimeout(() => resolve('Success'), 2000));
-
-withTimeout(fastPromise, 500)
-  .then(console.log)
-  .catch(console.error);
-
-withTimeout(slowPromise, 500)
-  .then(console.log)
-  .catch(console.error);`,
+// Test (commented out to prevent immediate execution)
+// const fastPromise = new Promise(resolve => setTimeout(() => resolve('Success'), 100));
+// const slowPromise = new Promise(resolve => setTimeout(() => resolve('Success'), 2000));
+//
+// withTimeout(fastPromise, 500)
+//   .then(console.log)
+//   .catch(console.error);
+//
+// withTimeout(slowPromise, 500)
+//   .then(console.log)
+//   .catch(console.error);`,
     solution: `function withTimeout(promise, ms) {
   return Promise.race([
     promise,
@@ -313,7 +313,8 @@ const requests = [
   Promise.resolve('Success 2')
 ];
 
-processMultipleRequests(requests).then(console.log);`,
+// Test (commented out to prevent immediate execution)
+// processMultipleRequests(requests).then(console.log).catch(console.error);`,
     solution: `async function processMultipleRequests(requests) {
   const results = await Promise.allSettled(requests);
   
@@ -816,10 +817,10 @@ async function fetchAllWithFailures(urls) {
   return [];
 }
 
-// Test
-const urls = ['/api/1', '/api/2', '/api/3'];
-fetchAllOrFail(urls).then(console.log).catch(console.error);
-fetchAllWithFailures(urls).then(console.log);`,
+// Test (commented out to prevent immediate execution)
+// const urls = ['/api/1', '/api/2', '/api/3'];
+// fetchAllOrFail(urls).then(console.log).catch(console.error);
+// fetchAllWithFailures(urls).then(console.log).catch(console.error);`,
     solution: `async function fetchAllOrFail(promises) {
   return Promise.all(promises);
 }
@@ -1052,9 +1053,10 @@ async function fetchData() {
   return 'Success';
 }
 
-retryWithBackoff(fetchData, { maxRetries: 3, initialDelay: 100 })
-  .then(console.log)
-  .catch(console.error);`,
+// Test (commented out to prevent immediate execution)
+// retryWithBackoff(fetchData, { maxRetries: 3, initialDelay: 100 })
+//   .then(console.log)
+//   .catch(console.error);`,
     solution: `async function retryWithBackoff(fn, options = {}) {
   const { maxRetries = 3, initialDelay = 100 } = options;
   
@@ -1144,7 +1146,8 @@ async function saveUser(user) {
   return { ...user, saved: true };
 }
 
-processUser(1).then(console.log).catch(console.error);`,
+// Test (commented out to prevent immediate execution)
+// processUser(1).then(console.log).catch(console.error);`,
     solution: `async function fetchUser(id) {
   return { id, name: 'John', email: 'john@example.com' };
 }
@@ -1216,13 +1219,14 @@ async function handleMultipleOperations(operations) {
 }
 
 // Test
-const riskyOp = () => Promise.reject(new Error('Failed'));
-const safeOp = () => Promise.resolve('Success');
-
-safeOperation(riskyOp, 'fallback').then(console.log);
-
-handleMultipleOperations([riskyOp, safeOp, riskyOp])
-  .then(console.log);`,
+// Test (commented out to prevent immediate execution)
+// const riskyOp = () => Promise.reject(new Error('Failed'));
+// const safeOp = () => Promise.resolve('Success');
+//
+// safeOperation(riskyOp, 'fallback').then(console.log).catch(console.error);
+//
+// handleMultipleOperations([riskyOp, safeOp, riskyOp])
+//   .then(console.log).catch(console.error);`,
     solution: `async function safeOperation(operation, fallback) {
   try {
     return await operation();
@@ -1365,9 +1369,9 @@ async function fetchMultipleUsers(userIds) {
   return [];
 }
 
-// Test
-fetchUserData(1).then(console.log).catch(console.error);
-fetchMultipleUsers([1, 2, 3]).then(console.log);`,
+// Test (commented out to prevent immediate execution)
+// fetchUserData(1).then(console.log).catch(console.error);
+// fetchMultipleUsers([1, 2, 3]).then(console.log).catch(console.error);`,
     solution: `async function fetchUserData(userId) {
   try {
     // Mock fetch for testing
@@ -1442,12 +1446,14 @@ async function fetchWithFallback(primaryUrl, fallbackUrls) {
   return null;
 }
 
-// Test
-fetchFromFastest(['/api/slow', '/api/fast', '/api/medium'])
-  .then(console.log);
+// Test (commented out to prevent immediate execution)
+// fetchFromFastest(['/api/slow', '/api/fast', '/api/medium'])
+//   .then(console.log)
+//   .catch(console.error);
 
-fetchWithFallback('/api/primary', ['/api/backup1', '/api/backup2'])
-  .then(console.log);`,
+// fetchWithFallback('/api/primary', ['/api/backup1', '/api/backup2'])
+//   .then(console.log)
+//   .catch(console.error);`,
     solution: `async function fetchFromFastest(promises) {
   return Promise.race(promises);
 }
@@ -1519,10 +1525,10 @@ async function processWithLock(resource, operation) {
   return operation();
 }
 
-// Test
-fetchWithCleanup('/api/data').then(console.log);
-processWithLock('resource', () => Promise.resolve('done'))
-  .then(console.log);`,
+// Test (commented out to prevent immediate execution)
+// fetchWithCleanup('/api/data').then(console.log).catch(console.error);
+// processWithLock('resource', () => Promise.resolve('done'))
+//   .then(console.log).catch(console.error);`,
     solution: `async function fetchWithCleanup(url) {
   let loading = true;
   try {
