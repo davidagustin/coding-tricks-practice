@@ -29,7 +29,7 @@ export const problem: Problem = {
 <p>Tagged template literals allow you to process template strings with a custom function (the "tag"). When you write <code>tag followed by a template literal</code>, JavaScript calls the tag function with:</p>
 <ol>
   <li>An array of string literals (the static parts)</li>
-  <li>The interpolated values (the <code>${expression}</code> parts)</li>
+  <li>The interpolated values (the <code>expression</code> parts)</li>
 </ol>
 
 <p>The tag function receives: <code>tag(strings, ...values)</code> where:</p>
