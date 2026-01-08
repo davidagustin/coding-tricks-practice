@@ -48,13 +48,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setThemeState(newTheme);
   };
 
-  // Prevent flash of wrong theme
-  if (!mounted) {
-    return <>{children}</>;
-  }
+  // Always provide context, even during SSR
+  // Use default 'dark' theme during SSR to prevent errors
+  const contextValue = mounted 
+    ? { theme, toggleTheme, setTheme }
+    : { theme: 'dark' as Theme, toggleTheme: () => {}, setTheme: () => {} };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
+    <ThemeContext.Provider value={contextValue}>
       {children}
     </ThemeContext.Provider>
   );

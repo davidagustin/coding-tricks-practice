@@ -92,32 +92,27 @@ delay(1000).then(() => console.log('1 second passed'));
 
 const button = document.createElement('button');
 waitForEvent(button, 'click').then(() => console.log('Button clicked'));`,
-  solution: `function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  solution: `function checkPromiseConstructor() {
+  var p = new Promise(function(resolve) { resolve(42); });
+  return p instanceof Promise;
 }
 
-function waitForEvent(element, eventName) {
-  return new Promise(resolve => {
-    const handler = () => {
-      element.removeEventListener(eventName, handler);
-      resolve();
-    };
-    element.addEventListener(eventName, handler);
+function createResolvedPromise(value) {
+  return new Promise(function(resolve) {
+    resolve(value);
   });
 }
 
-// Test function
-async function testDelay() {
-  const start = Date.now();
-  await delay(10);
-  const elapsed = Date.now() - start;
-  return elapsed >= 10;
+function delay(ms) {
+  return new Promise(function(resolve) {
+    setTimeout(resolve, ms);
+  });
 }`,
   testCases: [
     {
       input: [],
       expectedOutput: true,
-      description: 'testDelay',
+      description: 'checkPromiseConstructor returns true',
     },
   ],
   hints: [
