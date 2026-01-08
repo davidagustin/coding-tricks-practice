@@ -152,6 +152,62 @@ import { problem as regex_lookahead_lookbehind } from './regex-lookahead-lookbeh
 import { problem as regex_validation } from './regex-validation';
 import { problem as regex_replace_patterns } from './regex-replace-patterns';
 
+// Error Handling
+import { problem as try_catch_patterns } from './try-catch-patterns';
+import { problem as custom_errors } from './custom-errors';
+import { problem as async_error_handling } from './async-error-handling';
+import { problem as error_boundaries_pattern } from './error-boundaries-pattern';
+import { problem as graceful_degradation } from './graceful-degradation';
+
+// Design Patterns
+import { problem as singleton_pattern } from './singleton-pattern';
+import { problem as factory_pattern } from './factory-pattern';
+import { problem as observer_pattern } from './observer-pattern';
+import { problem as decorator_pattern } from './decorator-pattern';
+import { problem as strategy_pattern } from './strategy-pattern';
+
+// Testing Patterns
+import { problem as mock_functions } from './mock-functions';
+import { problem as test_doubles } from './test-doubles';
+import { problem as async_testing } from './async-testing';
+import { problem as test_driven_development } from './test-driven-development';
+import { problem as property_based_testing } from './property-based-testing';
+
+// Performance
+import { problem as big_o_analysis } from './big-o-analysis';
+import { problem as lazy_evaluation } from './lazy-evaluation';
+import { problem as batch_processing } from './batch-processing';
+import { problem as caching_strategies } from './caching-strategies';
+import { problem as web_workers } from './web-workers';
+
+// ES6+ Features
+import { problem as iterators_iterables } from './iterators-iterables';
+import { problem as private_class_fields } from './private-class-fields';
+import { problem as static_blocks } from './static-blocks';
+import { problem as top_level_await } from './top-level-await';
+import { problem as logical_assignment } from './logical-assignment';
+
+// Numbers & Math
+import { problem as number_methods } from './number-methods';
+import { problem as math_object } from './math-object';
+import { problem as bigint_usage } from './bigint-usage';
+import { problem as floating_point } from './floating-point';
+import { problem as number_formatting } from './number-formatting';
+
+// Date & Time
+import { problem as date_basics } from './date-basics';
+import { problem as date_arithmetic } from './date-arithmetic';
+import { problem as date_formatting } from './date-formatting';
+import { problem as timezone_handling } from './timezone-handling';
+import { problem as temporal_api } from './temporal-api';
+
+// JSON & Serialization
+import { problem as json_parse_stringify } from './json-parse-stringify';
+import { problem as json_replacer_reviver } from './json-replacer-reviver';
+import { problem as circular_references } from './circular-references';
+import { problem as deep_clone_json } from './deep-clone-json';
+import { problem as custom_serialization } from './custom-serialization';
+
 export const problems: Problem[] = [
   abort_controller,
   array_chaining,
@@ -277,6 +333,54 @@ export const problems: Problem[] = [
   array_findlast_findlastindex,
   array_toSorted_toReversed,
   array_intersection_difference,
+  // Error Handling
+  try_catch_patterns,
+  custom_errors,
+  async_error_handling,
+  error_boundaries_pattern,
+  graceful_degradation,
+  // Design Patterns
+  singleton_pattern,
+  factory_pattern,
+  observer_pattern,
+  decorator_pattern,
+  strategy_pattern,
+  // Testing Patterns
+  mock_functions,
+  test_doubles,
+  async_testing,
+  test_driven_development,
+  property_based_testing,
+  // Performance
+  big_o_analysis,
+  lazy_evaluation,
+  batch_processing,
+  caching_strategies,
+  web_workers,
+  // ES6+ Features
+  iterators_iterables,
+  private_class_fields,
+  static_blocks,
+  top_level_await,
+  logical_assignment,
+  // Numbers & Math
+  number_methods,
+  math_object,
+  bigint_usage,
+  floating_point,
+  number_formatting,
+  // Date & Time
+  date_basics,
+  date_arithmetic,
+  date_formatting,
+  timezone_handling,
+  temporal_api,
+  // JSON & Serialization
+  json_parse_stringify,
+  json_replacer_reviver,
+  circular_references,
+  deep_clone_json,
+  custom_serialization,
 ];
 
 export function getProblemById(id: string): Problem | undefined {

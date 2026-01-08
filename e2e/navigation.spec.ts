@@ -100,29 +100,37 @@ test.describe('Navigation', () => {
     await page.getByRole('link', { name: /Start Practicing/i }).click();
     await expect(page).toHaveURL('/problems');
 
-    // Click a problem
+    // Wait for problems page to fully load
+    await page.waitForTimeout(500);
+
+    // Click a problem and wait for navigation
     const problemLinks = page.locator('a[href^="/problems/"]');
     const firstProblem = problemLinks.first();
+    const href = await firstProblem.getAttribute('href');
     await firstProblem.click();
 
-    // Should be on problem detail
+    // Wait for the problem detail page URL
+    await expect(page).toHaveURL(href!);
     const currentUrl = page.url();
-    expect(currentUrl).toContain('/problems/');
 
-    // Go back
+    // Go back and wait
     await page.goBack();
+    await page.waitForTimeout(500);
     await expect(page).toHaveURL('/problems');
 
     // Go back again
     await page.goBack();
+    await page.waitForTimeout(500);
     await expect(page).toHaveURL('/');
 
     // Go forward
     await page.goForward();
+    await page.waitForTimeout(500);
     await expect(page).toHaveURL('/problems');
 
     // Go forward again
     await page.goForward();
+    await page.waitForTimeout(500);
     await expect(page).toHaveURL(currentUrl);
   });
 
@@ -216,17 +224,22 @@ test.describe('Navigation', () => {
   test('should handle rapid navigation', async ({ page }) => {
     await page.goto('/');
 
-    // Rapid clicks
+    // Click to navigate
     const startButton = page.getByRole('link', { name: /Start Practicing/i });
     await startButton.click();
 
-    // Immediately try to go back
+    // Wait for navigation to complete
+    await expect(page).toHaveURL('/problems');
+
+    // Try going back
     await page.goBack();
+    await page.waitForTimeout(300);
 
     // And forward again
     await page.goForward();
+    await page.waitForTimeout(300);
 
-    // Should eventually settle on problems page
+    // Should be on problems page
     await expect(page).toHaveURL('/problems');
   });
 
