@@ -101,8 +101,7 @@ export default function ProblemPage() {
 
   const handleToggleSolution = () => {
     if (showSolution) {
-      // Hiding solution - restore user's code
-      setCode(userCode || problem.starterCode);
+      // Hiding solution - just hide the solution panel
       setShowSolution(false);
     } else {
       // Showing solution - save current user code first
@@ -110,17 +109,15 @@ export default function ProblemPage() {
       const currentUserCode = codeRef.current || code;
       setUserCode(currentUserCode);
       setShowSolution(true);
-      // The code prop will update to problem.solution via the conditional in render
+      // Don't change the editor code - it stays as user's code
     }
   };
 
   const handleCodeChange = (newCode: string) => {
     setCode(newCode);
     codeRef.current = newCode; // Keep ref in sync
-    // Only update userCode if we're not showing the solution
-    if (!showSolution) {
-      setUserCode(newCode);
-    }
+    // Always update userCode when user types
+    setUserCode(newCode);
   };
 
   // Keep ref in sync with code state
@@ -209,12 +206,27 @@ export default function ProblemPage() {
               </div>
               <div className="h-96">
                 <CodeEditor
-                  code={showSolution ? problem.solution : code}
+                  code={code}
                   onChange={handleCodeChange}
                   language="typescript"
-                  readOnly={showSolution}
+                  readOnly={false}
                 />
               </div>
+              {showSolution && (
+                <div className="border-t border-gray-200 dark:border-gray-700 p-4 bg-gray-50 dark:bg-gray-900/50">
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    Solution:
+                  </h3>
+                  <div className="h-64">
+                    <CodeEditor
+                      code={problem.solution}
+                      onChange={() => {}} // No-op since it's read-only
+                      language="typescript"
+                      readOnly={true}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">

@@ -179,33 +179,30 @@ export async function runTests(
       functions[name] !== null && typeof functions[name] === 'function'
     );
 
-    const functionName = solutionFunctionName || 
-      availableFunctions[0] || 
-      functionNames[0];
-
-    if (!functionName) {
-      resolve({
-        allPassed: false,
-        results: [],
-        error: `Could not find any function in your code. Make sure you define a function (e.g., function myFunction() {...} or const myFunction = () => {...}).`
-      });
-      return;
-    }
-
-    if (!functions[functionName] || typeof functions[functionName] !== 'function') {
-      resolve({
-        allPassed: false,
-        results: [],
-        error: `Function "${functionName}" was found but is not callable. Make sure it's properly defined.`
-      });
-      return;
-    }
-
-    const userFunction = functions[functionName];
     const results: TestResult[] = [];
 
     for (const testCase of testCases) {
       try {
+        // Try to find the function based on test case description, or use default
+        let functionName = solutionFunctionName;
+        
+        // If test case has a description that matches a function name, use it
+        if (testCase.description && availableFunctions.includes(testCase.description)) {
+          functionName = testCase.description;
+        } else if (!functionName) {
+          // Fall back to first available function
+          functionName = availableFunctions[0] || functionNames[0];
+        }
+
+        if (!functionName) {
+          throw new Error(`Could not find any function in your code. Make sure you define a function (e.g., function myFunction() {...} or const myFunction = () => {...}).`);
+        }
+
+        if (!functions[functionName] || typeof functions[functionName] !== 'function') {
+          throw new Error(`Function "${functionName}" was found but is not callable. Make sure it's properly defined.`);
+        }
+
+        const userFunction = functions[functionName];
         let actualOutput: any;
         
         // Handle different input types
@@ -275,7 +272,8 @@ export async function runTests(
 }
 
 function extractFunctionNames(code: string): string[] {
-  const functionRegex = /(?:function\s+(\w+)|const\s+(\w+)\s*=\s*(?:async\s+)?(?:\([^)]*\)\s*=>|function)|(\w+)\s*:\s*(?:\([^)]*\)\s*=>|function))/g;
+  // Match: function name, async function name, async function* name, const name = function, const name = async function, const name = () =>, const name = async () =>
+  const functionRegex = /(?:async\s+)?function\s*\*?\s*(\w+)|const\s+(\w+)\s*=\s*(?:async\s+)?(?:\([^)]*\)\s*=>|function\s*\*?)|(\w+)\s*:\s*(?:\([^)]*\)\s*=>|function)/g;
   const names: string[] = [];
   let match;
   
