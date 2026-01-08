@@ -150,7 +150,7 @@ export default function ProblemPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left Column - Problem Description */}
           <div className="space-y-6">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 border border-gray-200 dark:border-gray-700/50">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-200 dark:border-gray-700/50 h-[600px]">
               <ProblemDescription problem={problem} />
             </div>
 

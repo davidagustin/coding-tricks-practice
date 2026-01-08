@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import parse from 'html-react-parser';
 import type { Problem } from '@/lib/problems';
 
@@ -7,92 +8,141 @@ interface ProblemDescriptionProps {
   problem: Problem;
 }
 
+type Tab = 'description' | 'examples' | 'hints';
+
 export default function ProblemDescription({ problem }: ProblemDescriptionProps) {
+  const [activeTab, setActiveTab] = useState<Tab>('description');
+
   const difficultyColors = {
     easy: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
     medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300',
     hard: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
   };
 
+  const tabs: { id: Tab; label: string; count?: number }[] = [
+    { id: 'description', label: 'Description' },
+    { id: 'examples', label: 'Examples', count: problem.examples.length },
+    { id: 'hints', label: 'Hints', count: problem.hints.length },
+  ];
+
   return (
-    <div className="space-y-8">
-      <div>
-        <div className="flex items-center gap-3 mb-4 flex-wrap">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 tracking-tight leading-tight">
+    <div className="flex flex-col h-full">
+      {/* Header - Always visible */}
+      <div className="flex-shrink-0 pb-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center gap-3 mb-2 flex-wrap">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight leading-tight">
             {problem.title}
           </h1>
           <span
-            className={`px-3 py-1.5 rounded-md text-xs font-semibold uppercase tracking-wide ${difficultyColors[problem.difficulty]}`}
+            className={`px-2.5 py-1 rounded-md text-xs font-semibold uppercase tracking-wide ${difficultyColors[problem.difficulty]}`}
           >
             {problem.difficulty}
           </span>
         </div>
-        <p className="text-base text-gray-700 dark:text-gray-300 font-semibold">{problem.category}</p>
+        <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">{problem.category}</p>
       </div>
 
-      <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-gray-100 prose-p:text-gray-900 dark:prose-p:text-gray-100 prose-p:leading-relaxed prose-p:mb-4 prose-li:text-gray-900 dark:prose-li:text-gray-100">
-        <div className="text-lg leading-relaxed">
-          {parse(problem.description)}
-        </div>
+      {/* Tabs */}
+      <div className="flex-shrink-0 flex gap-1 pt-4 pb-2 border-b border-gray-200 dark:border-gray-700">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors relative ${
+              activeTab === tab.id
+                ? 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800/50'
+            }`}
+          >
+            {tab.label}
+            {tab.count !== undefined && tab.count > 0 && (
+              <span className={`ml-1.5 px-1.5 py-0.5 text-xs rounded-full ${
+                activeTab === tab.id
+                  ? 'bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+              }`}>
+                {tab.count}
+              </span>
+            )}
+          </button>
+        ))}
       </div>
 
-      {problem.examples.length > 0 && (
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold mb-5 pb-3 border-b-2 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
-            Examples
-          </h2>
-          <div className="space-y-6">
-            {problem.examples.map((example, index) => (
-              <div
-                key={index}
-                className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-6 border-2 border-gray-200 dark:border-gray-700 shadow-sm"
-              >
-                <div className="mb-4">
-                  <span className="text-base font-bold text-gray-800 dark:text-gray-200">
-                    Example {index + 1}:
-                  </span>
-                </div>
-                <div className="space-y-4">
-                  <div>
-                    <span className="text-sm font-semibold text-gray-800 dark:text-gray-200 block mb-2 uppercase tracking-wide">
-                      Input:
-                    </span>
-                    <pre className="mt-1 p-4 bg-white dark:bg-gray-800 rounded-lg font-mono text-sm overflow-x-auto leading-relaxed border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100">
-                      {example.input}
-                    </pre>
-                  </div>
-                  <div>
-                    <span className="text-sm font-semibold text-gray-800 dark:text-gray-200 block mb-2 uppercase tracking-wide">
-                      Output:
-                    </span>
-                    <pre className="mt-1 p-4 bg-white dark:bg-gray-800 rounded-lg font-mono text-sm overflow-x-auto leading-relaxed border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100">
-                      {example.output}
-                    </pre>
-                  </div>
-                  {example.explanation && (
-                    <div className="text-sm text-gray-700 dark:text-gray-300 italic pt-2 leading-relaxed border-t border-gray-200 dark:border-gray-700 mt-4">
-                      {example.explanation}
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
+      {/* Tab Content */}
+      <div className="flex-1 overflow-y-auto pt-4">
+        {/* Description Tab */}
+        {activeTab === 'description' && (
+          <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-gray-100 prose-p:text-gray-800 dark:prose-p:text-gray-200 prose-p:leading-relaxed prose-li:text-gray-800 dark:prose-li:text-gray-200 prose-code:text-sm prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded">
+            {parse(problem.description)}
           </div>
-        </div>
-      )}
+        )}
 
-      {problem.hints.length > 0 && (
-        <details className="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-lg p-6 transition-all duration-200 hover:bg-blue-100 dark:hover:bg-blue-900/30 mt-6 shadow-sm">
-          <summary className="cursor-pointer font-bold text-blue-900 dark:text-blue-200 mb-4 hover:text-blue-700 dark:hover:text-blue-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 rounded px-2 py-1 text-lg">
-            💡 Hints
-          </summary>
-          <ul className="list-disc list-inside space-y-3 mt-4 text-base text-blue-900 dark:text-blue-200 leading-relaxed pl-2">
-            {problem.hints.map((hint, index) => (
-              <li key={index} className="text-gray-800 dark:text-gray-200">{hint}</li>
-            ))}
-          </ul>
-        </details>
-      )}
+        {/* Examples Tab */}
+        {activeTab === 'examples' && (
+          <div className="space-y-4">
+            {problem.examples.length > 0 ? (
+              problem.examples.map((example, index) => (
+                <div
+                  key={index}
+                  className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4 border border-gray-200 dark:border-gray-700"
+                >
+                  <div className="mb-3">
+                    <span className="text-sm font-bold text-gray-800 dark:text-gray-200">
+                      Example {index + 1}:
+                    </span>
+                  </div>
+                  <div className="space-y-3">
+                    <div>
+                      <span className="text-xs font-semibold text-gray-600 dark:text-gray-400 block mb-1 uppercase tracking-wide">
+                        Input:
+                      </span>
+                      <pre className="p-3 bg-white dark:bg-gray-800 rounded-md font-mono text-sm overflow-x-auto border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100">
+                        {example.input}
+                      </pre>
+                    </div>
+                    <div>
+                      <span className="text-xs font-semibold text-gray-600 dark:text-gray-400 block mb-1 uppercase tracking-wide">
+                        Output:
+                      </span>
+                      <pre className="p-3 bg-white dark:bg-gray-800 rounded-md font-mono text-sm overflow-x-auto border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100">
+                        {example.output}
+                      </pre>
+                    </div>
+                    {example.explanation && (
+                      <div className="text-sm text-gray-600 dark:text-gray-400 italic pt-2 border-t border-gray-200 dark:border-gray-700">
+                        {example.explanation}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500 dark:text-gray-400 text-sm">No examples available.</p>
+            )}
+          </div>
+        )}
+
+        {/* Hints Tab */}
+        {activeTab === 'hints' && (
+          <div>
+            {problem.hints.length > 0 ? (
+              <ul className="space-y-3">
+                {problem.hints.map((hint, index) => (
+                  <li
+                    key={index}
+                    className="flex gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800"
+                  >
+                    <span className="text-blue-500 dark:text-blue-400 flex-shrink-0">💡</span>
+                    <span className="text-sm text-gray-800 dark:text-gray-200">{hint}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-gray-500 dark:text-gray-400 text-sm">No hints available.</p>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
