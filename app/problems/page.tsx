@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState, useEffect, Suspense } from 'react';
+import { useMemo, useState, useEffect, Suspense, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { problems } from '@/lib/problems';
+import { DIFFICULTY_COLORS } from '@/lib/constants';
 import ThemeToggle from '@/components/ThemeToggle';
 
 type Difficulty = 'easy' | 'medium' | 'hard';
@@ -29,13 +30,8 @@ function ProblemsPageContent() {
     }
   }, [searchParams]);
 
-  const categories = Array.from(new Set(problems.map((p) => p.category)));
-
-  const difficultyColors = {
-    easy: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
-    medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300',
-    hard: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
-  };
+  // Memoize categories extraction to avoid recalculating on every render
+  const categories = useMemo(() => Array.from(new Set(problems.map((p) => p.category))), []);
 
   const filteredAndSortedProblems = useMemo(() => {
     let filtered = problems;
@@ -87,19 +83,23 @@ function ProblemsPageContent() {
   const hasActiveFilters =
     searchQuery.trim() !== '' || selectedDifficulty !== 'all' || selectedCategory !== 'all';
 
-  const clearFilters = () => {
+  const clearFilters = useCallback(() => {
     setSearchQuery('');
     setSelectedDifficulty('all');
     setSelectedCategory('all');
     setSortBy('default');
-  };
+  }, []);
 
-  const stats = {
-    total: problems.length,
-    easy: problems.filter((p) => p.difficulty === 'easy').length,
-    medium: problems.filter((p) => p.difficulty === 'medium').length,
-    hard: problems.filter((p) => p.difficulty === 'hard').length,
-  };
+  // Memoize stats calculation
+  const stats = useMemo(
+    () => ({
+      total: problems.length,
+      easy: problems.filter((p) => p.difficulty === 'easy').length,
+      medium: problems.filter((p) => p.difficulty === 'medium').length,
+      hard: problems.filter((p) => p.difficulty === 'hard').length,
+    }),
+    []
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
@@ -303,7 +303,7 @@ function ProblemsPageContent() {
                         {problem.title}
                       </h3>
                       <span
-                        className={`px-2 py-1 rounded text-xs font-semibold whitespace-nowrap ${difficultyColors[problem.difficulty]}`}
+                        className={`px-2 py-1 rounded text-xs font-semibold whitespace-nowrap ${DIFFICULTY_COLORS[problem.difficulty]}`}
                       >
                         {problem.difficulty.toUpperCase()}
                       </span>

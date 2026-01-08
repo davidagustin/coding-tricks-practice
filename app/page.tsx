@@ -1,18 +1,24 @@
 'use client';
 
+import { useMemo } from 'react';
 import Link from 'next/link';
 import { problems } from '@/lib/problems';
 import ThemeToggle from '@/components/ThemeToggle';
 
 export default function Home() {
-  const stats = {
-    total: problems.length,
-    easy: problems.filter((p) => p.difficulty === 'easy').length,
-    medium: problems.filter((p) => p.difficulty === 'medium').length,
-    hard: problems.filter((p) => p.difficulty === 'hard').length,
-  };
+  // Memoize stats calculation to avoid recalculating on every render
+  const stats = useMemo(
+    () => ({
+      total: problems.length,
+      easy: problems.filter((p) => p.difficulty === 'easy').length,
+      medium: problems.filter((p) => p.difficulty === 'medium').length,
+      hard: problems.filter((p) => p.difficulty === 'hard').length,
+    }),
+    []
+  );
 
-  const categories = Array.from(new Set(problems.map((p) => p.category)));
+  // Memoize categories extraction
+  const categories = useMemo(() => Array.from(new Set(problems.map((p) => p.category))), []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">

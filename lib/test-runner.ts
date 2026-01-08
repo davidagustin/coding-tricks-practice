@@ -1,4 +1,7 @@
 import ts from 'typescript';
+import { TEST_CONFIG, BROWSER_API_KEYWORDS } from './constants';
+import { getErrorMessage, isError } from './utils/type-guards';
+import { analyzeCodeSafety, sanitizeErrorMessage } from './utils/code-safety';
 
 export interface TestResult {
   passed: boolean;
@@ -17,29 +20,24 @@ export interface TestRunnerResult {
 
 /**
  * Transpile TypeScript code to JavaScript
- * Uses numeric enum values to avoid isolatedModules issues
+ * Uses TypeScript API with proper enum values
  */
 function transpileTypeScript(code: string): { code: string; error?: string } {
   try {
-    // Use numeric values for enums to avoid isolatedModules issues
-    // ScriptTarget.ES2020 = 5, ModuleKind.ESNext = 99, JsxEmit.React = 2
     const result = ts.transpile(code, {
-      target: 5, // ES2020
-      module: 99, // ESNext
-      jsx: 2, // React
+      target: ts.ScriptTarget.ES2020,
+      module: ts.ModuleKind.ESNext,
+      jsx: ts.JsxEmit.React,
       esModuleInterop: true,
       skipLibCheck: true,
       strict: false,
       allowJs: true,
-      // Don't preserve const enums - convert them to regular enums that transpile to JS
       preserveConstEnums: false,
-    } as ts.CompilerOptions);
+    });
 
     return { code: result };
   } catch (error: unknown) {
-    // If transpilation fails, try to provide a more helpful error
-    const errorMessage =
-      error instanceof Error ? error.message : String(error) || 'Unknown TypeScript error';
+    const errorMessage = getErrorMessage(error);
 
     // Check if it's an enum-specific error
     if (errorMessage.includes('enum') || code.includes('enum ')) {
@@ -51,7 +49,7 @@ function transpileTypeScript(code: string): { code: string; error?: string } {
 
     return {
       code: '',
-      error: `TypeScript compilation error: ${errorMessage}`,
+      error: `TypeScript compilation error: ${sanitizeErrorMessage(errorMessage)}`,
     };
   }
 }
@@ -67,8 +65,18 @@ export async function runTests(
 ): Promise<TestRunnerResult> {
   // Wrap everything in a promise to catch all errors
   return new Promise(async (resolve) => {
+    // Add timeout protection
+    const timeoutId = setTimeout(() => {
+      resolve({
+        allPassed: false,
+        results: [],
+        error: `Test execution timed out after ${TEST_CONFIG.EXECUTION_TIMEOUT / 1000} seconds. Your code may have an infinite loop or be too slow.`,
+      });
+    }, TEST_CONFIG.EXECUTION_TIMEOUT);
+
     try {
       if (!userCode || !userCode.trim()) {
+        clearTimeout(timeoutId);
         resolve({
           allPassed: false,
           results: [],
@@ -77,7 +85,38 @@ export async function runTests(
         return;
       }
 
+      // Check code size limit
+      if (userCode.length > TEST_CONFIG.MAX_CODE_SIZE) {
+        clearTimeout(timeoutId);
+        resolve({
+          allPassed: false,
+          results: [],
+          error: `Code is too large (${userCode.length} bytes). Maximum allowed is ${TEST_CONFIG.MAX_CODE_SIZE} bytes.`,
+        });
+        return;
+      }
+
+      // Analyze code for safety issues
+      const safetyAnalysis = analyzeCodeSafety(userCode);
+      if (!safetyAnalysis.safe) {
+        clearTimeout(timeoutId);
+        resolve({
+          allPassed: false,
+          results: [],
+          error: `Code safety check failed:\n${safetyAnalysis.issues.join('\n')}`,
+        });
+        return;
+      }
+
+      // Show warnings if any (but don't block execution)
+      const warnings = safetyAnalysis.warnings.length > 0
+        ? `\n⚠️ Warnings: ${safetyAnalysis.warnings.join(', ')}`
+        : '';
+
       const consoleOutput: string[] = [];
+      if (warnings) {
+        consoleOutput.push(warnings);
+      }
       const mockConsole = {
         log: (...args: unknown[]) => {
           consoleOutput.push(
@@ -97,6 +136,7 @@ export async function runTests(
       // Transpile TypeScript to JavaScript if needed
       const transpiled = transpileTypeScript(userCode);
       if (transpiled.error) {
+        clearTimeout(timeoutId);
         resolve({
           allPassed: false,
           results: [],
@@ -282,22 +322,19 @@ export async function runTests(
         }
       }
 
+      clearTimeout(timeoutId);
       resolve({
         allPassed: results.every((r) => r.passed),
         results,
         error: consoleOutput.length > 0 ? consoleOutput.join('\n') : undefined,
       });
     } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : typeof error === 'string'
-            ? error
-            : String(error) || 'Unknown error occurred';
+      clearTimeout(timeoutId);
+      const errorMessage = getErrorMessage(error);
       resolve({
         allPassed: false,
         results: [],
-        error: `Test runner error: ${errorMessage}. Please check your code and try again.`,
+        error: `Test runner error: ${sanitizeErrorMessage(errorMessage)}. Please check your code and try again.`,
       });
     }
   });

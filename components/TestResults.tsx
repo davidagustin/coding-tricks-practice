@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import type { TestResult } from '@/lib/test-runner';
 
 interface TestResultsProps {
@@ -9,7 +10,7 @@ interface TestResultsProps {
   isRunning: boolean;
 }
 
-export default function TestResults({ results, allPassed, error, isRunning }: TestResultsProps) {
+const TestResults = memo(function TestResults({ results, allPassed, error, isRunning }: TestResultsProps) {
   if (isRunning) {
     return (
       <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
@@ -190,7 +191,7 @@ export default function TestResults({ results, allPassed, error, isRunning }: Te
       )}
     </div>
   );
-}
+});
 
 function formatValue(value: unknown): string {
   if (value === undefined) return 'undefined';
@@ -198,3 +199,5 @@ function formatValue(value: unknown): string {
   if (typeof value === 'function') return value.toString();
   return JSON.stringify(value, null, 2);
 }
+
+export default TestResults;

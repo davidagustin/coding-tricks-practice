@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useCallback, memo } from 'react';
 import parse from 'html-react-parser';
+import DOMPurify from 'isomorphic-dompurify';
 import type { Problem } from '@/lib/problems';
+import { DIFFICULTY_COLORS, DOMPURIFY_CONFIG } from '@/lib/constants';
 
 interface ProblemDescriptionProps {
   problem: Problem;
@@ -10,14 +12,18 @@ interface ProblemDescriptionProps {
 
 type Tab = 'description' | 'examples' | 'hints';
 
-export default function ProblemDescription({ problem }: ProblemDescriptionProps) {
+const ProblemDescription = memo(function ProblemDescription({ problem }: ProblemDescriptionProps) {
   const [activeTab, setActiveTab] = useState<Tab>('description');
 
-  const difficultyColors = {
-    easy: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
-    medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300',
-    hard: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
-  };
+  // Sanitize and parse HTML description only once
+  const parsedDescription = useMemo(() => {
+    const sanitized = DOMPurify.sanitize(problem.description, DOMPURIFY_CONFIG);
+    return parse(sanitized);
+  }, [problem.description]);
+
+  const handleTabChange = useCallback((tab: Tab) => {
+    setActiveTab(tab);
+  }, []);
 
   const tabs: { id: Tab; label: string; count?: number }[] = [
     { id: 'description', label: 'Description' },
@@ -34,7 +40,7 @@ export default function ProblemDescription({ problem }: ProblemDescriptionProps)
             {problem.title}
           </h1>
           <span
-            className={`px-2.5 py-1 rounded-md text-xs font-semibold uppercase tracking-wide ${difficultyColors[problem.difficulty]}`}
+            className={`px-2.5 py-1 rounded-md text-xs font-semibold uppercase tracking-wide ${DIFFICULTY_COLORS[problem.difficulty]}`}
           >
             {problem.difficulty}
           </span>
@@ -47,7 +53,7 @@ export default function ProblemDescription({ problem }: ProblemDescriptionProps)
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => handleTabChange(tab.id)}
             className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors relative ${
               activeTab === tab.id
                 ? 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
@@ -73,7 +79,7 @@ export default function ProblemDescription({ problem }: ProblemDescriptionProps)
         {/* Description Tab */}
         {activeTab === 'description' && (
           <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-gray-100 prose-p:text-gray-800 dark:prose-p:text-gray-200 prose-p:leading-relaxed prose-li:text-gray-800 dark:prose-li:text-gray-200 prose-code:text-sm prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded">
-            {parse(problem.description)}
+            {parsedDescription}
           </div>
         )}
 
@@ -145,4 +151,6 @@ export default function ProblemDescription({ problem }: ProblemDescriptionProps)
       </div>
     </div>
   );
-}
+});
+
+export default ProblemDescription;
