@@ -4,6 +4,8 @@ import './globals.css';
 import ErrorHandler from '@/components/ErrorHandler';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import { ProgressProvider } from '@/components/ProgressProvider';
+import Navbar from '@/components/Navbar';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -50,11 +52,14 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-100 antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ErrorBoundary>
           <ThemeProvider>
-            <ErrorHandler />
-            {children}
+            <ProgressProvider>
+              <ErrorHandler />
+              <Navbar />
+              <main>{children}</main>
+            </ProgressProvider>
           </ThemeProvider>
         </ErrorBoundary>
       </body>

@@ -3,9 +3,11 @@
 import { useMemo } from 'react';
 import Link from 'next/link';
 import { problems } from '@/lib/problems';
-import ThemeToggle from '@/components/ThemeToggle';
+import { useProgress } from '@/components/ProgressProvider';
 
 export default function Home() {
+  const { solvedCount } = useProgress();
+
   // Memoize stats calculation to avoid recalculating on every render
   const stats = useMemo(
     () => ({
@@ -22,10 +24,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="flex justify-end mb-8">
-          <ThemeToggle />
-        </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4">
             JavaScript & TypeScript Tricks
@@ -42,30 +41,51 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 text-center">
-            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+        {/* Progress Card */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-8 max-w-md mx-auto">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-gray-600 dark:text-gray-400">Your Progress</span>
+            <span className="text-2xl font-bold text-green-600 dark:text-green-400">
+              {solvedCount}/{stats.total}
+            </span>
+          </div>
+          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+            <div
+              className="bg-green-500 h-3 rounded-full transition-all duration-500"
+              style={{ width: `${(solvedCount / stats.total) * 100}%` }}
+            />
+          </div>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 text-center">
+            {solvedCount === 0
+              ? 'Start solving problems to track your progress!'
+              : `${Math.round((solvedCount / stats.total) * 100)}% complete`}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-5 text-center">
+            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">
               {stats.total}
             </div>
-            <div className="text-gray-600 dark:text-gray-400">Total Problems</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">Total</div>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 text-center">
-            <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-5 text-center">
+            <div className="text-2xl font-bold text-green-600 dark:text-green-400 mb-1">
               {stats.easy}
             </div>
-            <div className="text-gray-600 dark:text-gray-400">Easy</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">Easy</div>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 text-center">
-            <div className="text-3xl font-bold text-yellow-600 dark:text-yellow-400 mb-2">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-5 text-center">
+            <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400 mb-1">
               {stats.medium}
             </div>
-            <div className="text-gray-600 dark:text-gray-400">Medium</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">Medium</div>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 text-center">
-            <div className="text-3xl font-bold text-red-600 dark:text-red-400 mb-2">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-5 text-center">
+            <div className="text-2xl font-bold text-red-600 dark:text-red-400 mb-1">
               {stats.hard}
             </div>
-            <div className="text-gray-600 dark:text-gray-400">Hard</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">Hard</div>
           </div>
         </div>
 

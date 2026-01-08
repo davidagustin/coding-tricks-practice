@@ -1,28 +1,32 @@
 'use client';
 
-import Link from 'next/link';
-import { useMemo, useState, useEffect, Suspense, useCallback } from 'react';
+import { useMemo, useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { problems } from '@/lib/problems';
-import { DIFFICULTY_COLORS } from '@/lib/constants';
-import ThemeToggle from '@/components/ThemeToggle';
+import { useProgress } from '@/components/ProgressProvider';
+import ProblemTable from '@/components/ProblemTable';
+import FilterSidebar from '@/components/FilterSidebar';
 
 type Difficulty = 'easy' | 'medium' | 'hard';
-type SortOption = 'default' | 'difficulty' | 'category' | 'title';
+type SortOption = 'default' | 'difficulty' | 'category' | 'title' | 'acceptance';
+type StatusFilter = 'all' | 'solved' | 'unsolved';
 
 function ProblemsPageContent() {
   const searchParams = useSearchParams();
+  const { isSolved } = useProgress();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | 'all'>('all');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedStatus, setSelectedStatus] = useState<StatusFilter>('all');
   const [sortBy, setSortBy] = useState<SortOption>('default');
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   // Read category from URL params on mount
   useEffect(() => {
     const categoryParam = searchParams.get('category');
     if (categoryParam) {
       const decodedCategory = decodeURIComponent(categoryParam);
-      // Verify the category exists in our categories list
       const categories = Array.from(new Set(problems.map((p) => p.category)));
       if (categories.includes(decodedCategory)) {
         setSelectedCategory(decodedCategory);
@@ -30,8 +34,20 @@ function ProblemsPageContent() {
     }
   }, [searchParams]);
 
-  // Memoize categories extraction to avoid recalculating on every render
-  const categories = useMemo(() => Array.from(new Set(problems.map((p) => p.category))), []);
+  const categories = useMemo(
+    () => Array.from(new Set(problems.map((p) => p.category))).sort(),
+    []
+  );
+
+  const problemCounts = useMemo(
+    () => ({
+      easy: problems.filter((p) => p.difficulty === 'easy').length,
+      medium: problems.filter((p) => p.difficulty === 'medium').length,
+      hard: problems.filter((p) => p.difficulty === 'hard').length,
+      total: problems.length,
+    }),
+    []
+  );
 
   const filteredAndSortedProblems = useMemo(() => {
     let filtered = problems;
@@ -42,7 +58,6 @@ function ProblemsPageContent() {
       filtered = filtered.filter(
         (problem) =>
           problem.title.toLowerCase().includes(query) ||
-          problem.description.toLowerCase().includes(query) ||
           problem.category.toLowerCase().includes(query) ||
           problem.id.toLowerCase().includes(query)
       );
@@ -58,284 +73,74 @@ function ProblemsPageContent() {
       filtered = filtered.filter((p) => p.category === selectedCategory);
     }
 
+    // Filter by status
+    if (selectedStatus === 'solved') {
+      filtered = filtered.filter((p) => isSolved(p.id));
+    } else if (selectedStatus === 'unsolved') {
+      filtered = filtered.filter((p) => !isSolved(p.id));
+    }
+
     // Sort
     const sorted = [...filtered];
+    const difficultyOrder: Record<Difficulty, number> = { easy: 1, medium: 2, hard: 3 };
+
     switch (sortBy) {
-      case 'difficulty': {
-        const difficultyOrder: Record<Difficulty, number> = { easy: 1, medium: 2, hard: 3 };
+      case 'difficulty':
         sorted.sort((a, b) => difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty]);
         break;
-      }
       case 'category':
         sorted.sort((a, b) => a.category.localeCompare(b.category));
         break;
       case 'title':
         sorted.sort((a, b) => a.title.localeCompare(b.title));
         break;
+      case 'acceptance':
+        // Sort by fake acceptance rate (based on difficulty)
+        sorted.sort((a, b) => {
+          const aRate = a.difficulty === 'easy' ? 65 : a.difficulty === 'medium' ? 45 : 30;
+          const bRate = b.difficulty === 'easy' ? 65 : b.difficulty === 'medium' ? 45 : 30;
+          return bRate - aRate;
+        });
+        break;
       default:
-        // Keep original order
         break;
     }
 
     return sorted;
-  }, [searchQuery, selectedDifficulty, selectedCategory, sortBy]);
+  }, [searchQuery, selectedDifficulty, selectedCategory, selectedStatus, sortBy, isSolved]);
 
-  const hasActiveFilters =
-    searchQuery.trim() !== '' || selectedDifficulty !== 'all' || selectedCategory !== 'all';
-
-  const clearFilters = useCallback(() => {
+  const clearFilters = () => {
     setSearchQuery('');
     setSelectedDifficulty('all');
     setSelectedCategory('all');
+    setSelectedStatus('all');
     setSortBy('default');
-  }, []);
-
-  // Memoize stats calculation
-  const stats = useMemo(
-    () => ({
-      total: problems.length,
-      easy: problems.filter((p) => p.difficulty === 'easy').length,
-      medium: problems.filter((p) => p.difficulty === 'medium').length,
-      hard: problems.filter((p) => p.difficulty === 'hard').length,
-    }),
-    []
-  );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <div className="flex items-start justify-between mb-4">
-            <Link
-              href="/"
-              className="text-blue-600 dark:text-blue-400 hover:underline inline-block transition-colors duration-200 cursor-pointer hover:text-blue-700 dark:hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 rounded px-1"
-            >
-              ← Back to Home
-            </Link>
-            <ThemeToggle />
-          </div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-            JavaScript & TypeScript Tricks
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Practice advanced JavaScript and TypeScript patterns and techniques
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Problems</h1>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            {filteredAndSortedProblems.length} of {problems.length} problems
           </p>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 text-center">
-            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">
-              {stats.total}
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Total</div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 text-center">
-            <div className="text-2xl font-bold text-green-600 dark:text-green-400 mb-1">
-              {stats.easy}
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Easy</div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 text-center">
-            <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400 mb-1">
-              {stats.medium}
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Medium</div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 text-center">
-            <div className="text-2xl font-bold text-red-600 dark:text-red-400 mb-1">
-              {stats.hard}
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Hard</div>
-          </div>
-        </div>
-
-        {/* Search and Filters */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
-          <div className="space-y-4">
-            {/* Search Bar */}
-            <div>
-              <label
-                htmlFor="search"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >
-                Search Problems
-              </label>
-              <div className="relative">
-                <input
-                  id="search"
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search by title, description, or category..."
-                  className="w-full px-4 py-2 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                />
-                <svg
-                  className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 rounded p-0.5 active:scale-95"
-                    aria-label="Clear search"
-                  >
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Filters Row */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Difficulty Filter */}
-              <div>
-                <label
-                  htmlFor="difficulty"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                >
-                  Difficulty
-                </label>
-                <select
-                  id="difficulty"
-                  value={selectedDifficulty}
-                  onChange={(e) => setSelectedDifficulty(e.target.value as Difficulty | 'all')}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer"
-                >
-                  <option value="all">All Difficulties</option>
-                  <option value="easy">Easy</option>
-                  <option value="medium">Medium</option>
-                  <option value="hard">Hard</option>
-                </select>
-              </div>
-
-              {/* Category Filter */}
-              <div>
-                <label
-                  htmlFor="category"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                >
-                  Category
-                </label>
-                <select
-                  id="category"
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer"
-                >
-                  <option value="all">All Categories</option>
-                  {categories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Sort By */}
-              <div>
-                <label
-                  htmlFor="sort"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                >
-                  Sort By
-                </label>
-                <select
-                  id="sort"
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as SortOption)}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer"
-                >
-                  <option value="default">Default Order</option>
-                  <option value="difficulty">Difficulty</option>
-                  <option value="category">Category</option>
-                  <option value="title">Title (A-Z)</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Active Filters & Clear */}
-            {hasActiveFilters && (
-              <div className="flex items-center justify-between pt-2 border-t border-gray-200 dark:border-gray-700">
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  Showing {filteredAndSortedProblems.length} of {problems.length} problems
-                </div>
-                <button
-                  onClick={clearFilters}
-                  className="text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 rounded px-1 active:scale-95"
-                >
-                  Clear all filters
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Problems List */}
-        {filteredAndSortedProblems.length > 0 ? (
-          <div className="space-y-4">
-            {filteredAndSortedProblems.map((problem) => (
-              <Link
-                key={problem.id}
-                href={`/problems/${problem.id}`}
-                className="block bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-all duration-200 p-6 border border-transparent hover:border-blue-200 dark:hover:border-blue-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 active:scale-[0.99] group"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-2 flex-wrap">
-                      <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                        {problem.title}
-                      </h3>
-                      <span
-                        className={`px-2 py-1 rounded text-xs font-semibold whitespace-nowrap ${DIFFICULTY_COLORS[problem.difficulty]}`}
-                      >
-                        {problem.difficulty.toUpperCase()}
-                      </span>
-                      <span className="px-2 py-1 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 whitespace-nowrap">
-                        {problem.category}
-                      </span>
-                    </div>
-                    <p className="text-gray-700 dark:text-gray-300 line-clamp-2 text-sm">
-                      {problem.description.replace(/<[^>]*>/g, '').split('\n')[0]}
-                    </p>
-                  </div>
-                  <svg
-                    className="w-5 h-5 text-gray-400 flex-shrink-0 ml-4 group-hover:text-blue-500 transition-colors duration-200"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </div>
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-12 text-center">
+        {/* Search and Sort Bar */}
+        <div className="mb-6 flex flex-col sm:flex-row gap-4">
+          {/* Search */}
+          <div className="flex-1 relative">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search problems..."
+              className="w-full px-4 py-2 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            />
             <svg
-              className="mx-auto h-12 w-12 text-gray-400 mb-4"
+              className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -344,68 +149,94 @@ function ProblemsPageContent() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
             </svg>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
-              No problems found
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Try adjusting your search or filters to find what you&apos;re looking for.
-            </p>
-            {hasActiveFilters && (
+            {searchQuery && (
               <button
-                onClick={clearFilters}
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 active:scale-95 shadow-md hover:shadow-lg"
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               >
-                Clear all filters
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
               </button>
             )}
           </div>
-        )}
 
-        {/* Category Overview */}
-        <div className="mt-8">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-            Browse by Category
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {categories.map((category) => {
-              const categoryProblems = problems.filter((p) => p.category === category);
-              const categoryCount = categoryProblems.length;
-              return (
-                <button
-                  key={category}
-                  onClick={() => {
-                    setSelectedCategory(category);
-                    setSearchQuery('');
-                    setSelectedDifficulty('all');
-                  }}
-                  className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-left hover:shadow-lg transition-all duration-200 cursor-pointer border border-transparent hover:border-blue-200 dark:hover:border-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 active:scale-[0.98]"
-                >
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                    {category}
-                  </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {categoryCount} {categoryCount === 1 ? 'problem' : 'problems'}
-                  </p>
-                </button>
-              );
-            })}
-          </div>
+          {/* Sort Dropdown */}
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as SortOption)}
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
+          >
+            <option value="default">Sort: Default</option>
+            <option value="difficulty">Sort: Difficulty</option>
+            <option value="acceptance">Sort: Acceptance</option>
+            <option value="title">Sort: Title (A-Z)</option>
+            <option value="category">Sort: Category</option>
+          </select>
+
+          {/* Mobile Filter Toggle */}
+          <button
+            onClick={() => setShowMobileFilters(!showMobileFilters)}
+            className="lg:hidden px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 flex items-center gap-2"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+              />
+            </svg>
+            Filters
+          </button>
         </div>
 
-        {/* Info Box */}
-        <div className="mt-8 p-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-          <h2 className="text-lg font-semibold text-blue-900 dark:text-blue-200 mb-2">
-            About This Practice Platform
-          </h2>
-          <p className="text-sm text-blue-800 dark:text-blue-300">
-            This platform helps you master advanced JavaScript and TypeScript patterns through
-            hands-on practice. Each problem focuses on a specific technique or pattern, with test
-            cases to verify your solution. Use the search and filters above to find problems that
-            match your learning goals.
-          </p>
+        {/* Main Content */}
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Sidebar - Desktop */}
+          <div className="hidden lg:block">
+            <FilterSidebar
+              categories={categories}
+              selectedDifficulty={selectedDifficulty}
+              selectedCategory={selectedCategory}
+              selectedStatus={selectedStatus}
+              onDifficultyChange={(d) => setSelectedDifficulty(d as Difficulty | 'all')}
+              onCategoryChange={setSelectedCategory}
+              onStatusChange={(s) => setSelectedStatus(s as StatusFilter)}
+              onClearFilters={clearFilters}
+              problemCounts={problemCounts}
+            />
+          </div>
+
+          {/* Mobile Filters */}
+          {showMobileFilters && (
+            <div className="lg:hidden">
+              <FilterSidebar
+                categories={categories}
+                selectedDifficulty={selectedDifficulty}
+                selectedCategory={selectedCategory}
+                selectedStatus={selectedStatus}
+                onDifficultyChange={(d) => setSelectedDifficulty(d as Difficulty | 'all')}
+                onCategoryChange={setSelectedCategory}
+                onStatusChange={(s) => setSelectedStatus(s as StatusFilter)}
+                onClearFilters={clearFilters}
+                problemCounts={problemCounts}
+              />
+            </div>
+          )}
+
+          {/* Problem Table */}
+          <div className="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <ProblemTable problems={filteredAndSortedProblems} />
+          </div>
         </div>
       </div>
     </div>
@@ -414,7 +245,13 @@ function ProblemsPageContent() {
 
 export default function ProblemsPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center">Loading...</div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center">
+          <div className="text-gray-500 dark:text-gray-400">Loading...</div>
+        </div>
+      }
+    >
       <ProblemsPageContent />
     </Suspense>
   );

@@ -6,15 +6,17 @@ import { useEffect, useRef, useState } from 'react';
 import CodeEditor from '@/components/CodeEditor';
 import ProblemDescription from '@/components/ProblemDescription';
 import TestResults from '@/components/TestResults';
-import ThemeToggle from '@/components/ThemeToggle';
+import { useProgress } from '@/components/ProgressProvider';
 import { getProblemById, problems } from '@/lib/problems';
 import { runTests, type TestRunnerResult } from '@/lib/test-runner';
 
 export default function ProblemPage() {
   const params = useParams();
   const problemId = params.id as string;
+  const { markSolved, isSolved } = useProgress();
 
   const problem = getProblemById(problemId);
+  const solved = isSolved(problemId);
   const [code, setCode] = useState('');
   const [userCode, setUserCode] = useState(''); // Store user's code separately
   const [testResults, setTestResults] = useState<TestRunnerResult | null>(null);
@@ -83,6 +85,11 @@ export default function ProblemPage() {
       );
 
       setTestResults(results);
+
+      // Mark as solved if all tests passed
+      if (results.allPassed) {
+        markSolved(problemId);
+      }
     } catch (error: unknown) {
       console.error('Unexpected test execution error:', error);
       const errorMessage =
@@ -137,15 +144,15 @@ export default function ProblemPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-6 flex items-center justify-between">
-          <Link
-            href="/problems"
-            className="text-blue-600 dark:text-blue-400 hover:underline transition-colors duration-200 cursor-pointer inline-flex items-center gap-1 hover:text-blue-700 dark:hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 rounded px-1"
-          >
-            ← Back to Problems
-          </Link>
-          <ThemeToggle />
-        </div>
+        {/* Solved Badge */}
+        {solved && (
+          <div className="mb-4 inline-flex items-center gap-2 px-3 py-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full text-sm font-medium">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            Solved
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left Column - Problem Description */}
