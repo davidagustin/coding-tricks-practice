@@ -1,2 +1,2 @@
 // Re-export everything from the problems directory
-export * from './problems';
+export * from './problems/index';

@@ -69,4 +69,86 @@ Symbols are used extensively:
         input: `const ID = Symbol('id');`,
         output: `Unique symbol that won't conflict`,
         explanation: 'Symbols are always unique, even with same description',
-      };
+      },
+    ],
+    starterCode: `// TODO: Create a private property using Symbol
+const ID = Symbol('id');
+
+class User {
+  constructor(name) {
+    this.name = name;
+    // TODO: Store ID privately using Symbol
+    this.id = Math.random(); // Fix: use Symbol
+  }
+
+  getId() {
+    // TODO: Return private ID
+    return this.id;
+  }
+}
+
+// TODO: Implement Symbol.iterator for custom iteration
+class NumberRange {
+  constructor(start, end) {
+    this.start = start;
+    this.end = end;
+  }
+  // TODO: Add [Symbol.iterator] method
+}
+
+// Test
+const user = new User('John');
+console.log(user.name); // 'John'
+console.log(user.id); // Should be undefined (private)
+console.log(user.getId()); // Should return the ID
+
+const range = new NumberRange(1, 5);
+for (const num of range) {
+  console.log(num); // Should iterate 1, 2, 3, 4, 5
+}`,
+    solution: `const ID = Symbol('id');
+
+class User {
+  constructor(name) {
+    this.name = name;
+    this[ID] = Math.random();
+  }
+
+  getId() {
+    return this[ID];
+  }
+}
+
+class NumberRange {
+  constructor(start, end) {
+    this.start = start;
+    this.end = end;
+  }
+
+  [Symbol.iterator]() {
+    let current = this.start;
+    const end = this.end;
+    return {
+      next() {
+        if (current <= end) {
+          return { value: current++, done: false };
+        }
+        return { done: true };
+      }
+    };
+  }
+}`,
+    testCases: [
+      {
+        input: [],
+        expectedOutput: true,
+        description: 'Symbol usage works',
+      },
+    ],
+    hints: [
+      'Use Symbol() to create unique property keys',
+      'Symbol properties: obj[symbol] = value',
+      'Symbol.iterator enables for...of iteration',
+    ],
+  };
+
