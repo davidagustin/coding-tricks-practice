@@ -57,10 +57,10 @@ Tagged templates are essential for safe string processing because:
 
 Tagged templates are used extensively:
 
-- **HTML Escaping**: \`html\`<div>${userInput}</div>\`\` - escape HTML entities
-- **Styled Components**: \`styled.div\`color: ${color}\`\` - CSS-in-JS
-- **Internationalization**: \`i18n\`Hello ${name}\`\` - translate strings
-- **SQL Queries**: \`sql\`SELECT * FROM users WHERE id = ${id}\`\` - parameterized queries
+- **HTML Escaping**: \`html\`<div>\${userInput}</div>\`\` - escape HTML entities
+- **Styled Components**: \`styled.div\`color: \${color}\`\` - CSS-in-JS
+- **Internationalization**: \`i18n\`Hello \${name}\`\` - translate strings
+- **SQL Queries**: \`sql\`SELECT * FROM users WHERE id = \${id}\`\` - parameterized queries
 - **String Formatting**: \`format\`Price: ${amount}\`\` - format currency, dates
 - **Logging**: \`log\`User ${id} logged in\`\` - structured logging
 - **GraphQL**: Building GraphQL queries safely
