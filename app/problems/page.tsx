@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { problems } from '@/lib/problems';
+import ThemeToggle from '@/components/ThemeToggle';
 
 type Difficulty = 'easy' | 'medium' | 'hard';
 type SortOption = 'default' | 'difficulty' | 'category' | 'title';
@@ -86,15 +87,18 @@ export default function ProblemsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <Link
-            href="/"
-            className="text-blue-600 dark:text-blue-400 hover:underline mb-4 inline-block transition-colors duration-200 cursor-pointer hover:text-blue-700 dark:hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 rounded px-1"
-          >
-            ← Back to Home
-          </Link>
+          <div className="flex items-start justify-between mb-4">
+            <Link
+              href="/"
+              className="text-blue-600 dark:text-blue-400 hover:underline inline-block transition-colors duration-200 cursor-pointer hover:text-blue-700 dark:hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 rounded px-1"
+            >
+              ← Back to Home
+            </Link>
+            <ThemeToggle />
+          </div>
           <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             JavaScript & TypeScript Tricks
           </h1>

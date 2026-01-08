@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import CodeEditor from '@/components/CodeEditor';
 import ProblemDescription from '@/components/ProblemDescription';
 import TestResults from '@/components/TestResults';
+import ThemeToggle from '@/components/ThemeToggle';
 import { getProblemById, problems } from '@/lib/problems';
 import { runTests, type TestRunnerResult } from '@/lib/test-runner';
 
@@ -134,21 +135,22 @@ export default function ProblemPage() {
   const nextProblem = currentIndex < problems.length - 1 ? problems[currentIndex + 1] : null;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-6">
+        <div className="mb-6 flex items-center justify-between">
           <Link
             href="/problems"
             className="text-blue-600 dark:text-blue-400 hover:underline transition-colors duration-200 cursor-pointer inline-flex items-center gap-1 hover:text-blue-700 dark:hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 rounded px-1"
           >
             ← Back to Problems
           </Link>
+          <ThemeToggle />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left Column - Problem Description */}
           <div className="space-y-6">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 border border-gray-200 dark:border-gray-700/50">
               <ProblemDescription problem={problem} />
             </div>
 
@@ -181,8 +183,8 @@ export default function ProblemPage() {
 
           {/* Right Column - Code Editor and Tests */}
           <div className="space-y-6">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-              <div className="border-b border-gray-200 dark:border-gray-700 p-4 flex items-center justify-between">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700/50">
+              <div className="border-b border-gray-200 dark:border-gray-700 p-4 flex items-center justify-between bg-gray-50 dark:bg-gray-900/30">
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                   Code Editor
                 </h2>
@@ -217,7 +219,7 @@ export default function ProblemPage() {
                 />
               </div>
               {showSolution && (
-                <div className="border-t border-gray-200 dark:border-gray-700 p-4 bg-gray-50 dark:bg-gray-900/50">
+                <div className="border-t border-gray-200 dark:border-gray-700 p-4 bg-gray-50 dark:bg-gray-900/30">
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
                     Solution:
                   </h3>
@@ -233,7 +235,7 @@ export default function ProblemPage() {
               )}
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-200 dark:border-gray-700/50">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
                 Test Results
               </h2>

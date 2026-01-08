@@ -1,5 +1,8 @@
+'use client';
+
 import Link from 'next/link';
 import { problems } from '@/lib/problems';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function Home() {
   const stats = {
@@ -14,6 +17,9 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="flex justify-end mb-8">
+          <ThemeToggle />
+        </div>
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4">
             JavaScript & TypeScript Tricks

@@ -3,6 +3,7 @@
 import Editor, { type OnMount } from '@monaco-editor/react';
 import type { editor } from 'monaco-editor';
 import { useEffect, useRef } from 'react';
+import { useTheme } from './ThemeProvider';
 
 interface CodeEditorProps {
   code: string;
@@ -17,6 +18,7 @@ export default function CodeEditor({
   language = 'typescript',
   readOnly = false,
 }: CodeEditorProps) {
+  const { theme } = useTheme();
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const isSettingValueRef = useRef(false); // Track when we're programmatically setting value
   const modelUriRef = useRef<string | null>(null); // Store unique URI for this editor instance
@@ -181,14 +183,14 @@ export default function CodeEditor({
   }, []);
 
   return (
-    <div className="relative w-full h-full rounded-lg border border-gray-700 overflow-hidden">
+    <div className="relative w-full h-full rounded-lg border border-gray-300 dark:border-gray-700 overflow-hidden bg-white dark:bg-gray-900">
       <Editor
         height="100%"
         language={language}
         value={code}
         onChange={handleEditorChange}
         onMount={handleEditorDidMount}
-        theme="vs-dark"
+        theme={theme === 'dark' ? 'vs-dark' : 'vs'}
         options={{
           readOnly,
           minimap: { enabled: false },
@@ -226,7 +228,7 @@ export default function CodeEditor({
           fontLigatures: true,
         }}
         loading={
-          <div className="flex items-center justify-center h-full bg-[#1e1e1e] text-gray-400">
+          <div className="flex items-center justify-center h-full bg-white dark:bg-[#1e1e1e] text-gray-600 dark:text-gray-400">
             <div className="flex items-center gap-2">
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
               <span>Loading editor...</span>
