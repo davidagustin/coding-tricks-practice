@@ -14,9 +14,21 @@ interface CodeEditorProps {
 export default function CodeEditor({ code, onChange, language = 'typescript', readOnly = false }: CodeEditorProps) {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const isSettingValueRef = useRef(false); // Track when we're programmatically setting value
+  const modelUriRef = useRef<string | null>(null); // Store unique URI for this editor instance
 
   const handleEditorDidMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
+    
+    // Create a unique model URI for this editor instance to prevent conflicts
+    // This ensures each editor has its own isolated TypeScript language service context
+    if (!modelUriRef.current) {
+      const uniqueId = `file:///editor-${Date.now()}-${Math.random().toString(36).substr(2, 9)}.ts`;
+      modelUriRef.current = uniqueId;
+      
+      // Create a new model with the unique URI to isolate it from other editors
+      const model = monaco.editor.createModel(code, language, monaco.Uri.parse(uniqueId));
+      editor.setModel(model);
+    }
 
     // Configure TypeScript/JavaScript settings
     // IMPORTANT: Set allowJs to false when language is 'typescript' to prevent enum errors
@@ -51,12 +63,20 @@ export default function CodeEditor({ code, onChange, language = 'typescript', re
     
     // Set diagnostics options to suppress enum errors when in TypeScript mode
     if (isTypeScript) {
+      // Configure diagnostics - ignore duplicate function errors for read-only solution editors
+      const diagnosticCodesToIgnore = [8006]; // Ignore "enum declarations can only be used in TypeScript files"
+      
+      if (readOnly) {
+        // For solution editors, also ignore duplicate function implementation errors
+        // since they share the TypeScript language service with the main editor
+        diagnosticCodesToIgnore.push(2393); // Ignore "Duplicate function implementation"
+      }
+      
       monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
         noSemanticValidation: false,
         noSyntaxValidation: false,
         noSuggestionDiagnostics: false,
-        // Don't report errors for TypeScript-only features when in TS mode
-        diagnosticCodesToIgnore: [8006], // Ignore "enum declarations can only be used in TypeScript files"
+        diagnosticCodesToIgnore,
       });
     }
 
@@ -92,17 +112,34 @@ export default function CodeEditor({ code, onChange, language = 'typescript', re
 
   // Format code when it changes externally (e.g., when showing solution)
   useEffect(() => {
-    if (editorRef.current && code !== editorRef.current.getValue()) {
-      isSettingValueRef.current = true; // Mark that we're setting value programmatically
-      editorRef.current.setValue(code);
-      // Reset flag after a brief delay to allow Monaco to process the change
-      setTimeout(() => {
-        isSettingValueRef.current = false;
-        // Auto-format after setting value
-        editorRef.current?.getAction('editor.action.formatDocument')?.run();
-      }, 50);
+    if (editorRef.current) {
+      const model = editorRef.current.getModel();
+      if (model && code !== model.getValue()) {
+        isSettingValueRef.current = true; // Mark that we're setting value programmatically
+        model.setValue(code);
+        // Reset flag after a brief delay to allow Monaco to process the change
+        setTimeout(() => {
+          isSettingValueRef.current = false;
+          // Auto-format after setting value (only if not read-only)
+          if (!readOnly) {
+            editorRef.current?.getAction('editor.action.formatDocument')?.run();
+          }
+        }, 50);
+      }
     }
-  }, [code]);
+  }, [code, readOnly]);
+
+  // Cleanup: dispose of the model when component unmounts
+  useEffect(() => {
+    return () => {
+      if (editorRef.current && modelUriRef.current) {
+        const model = editorRef.current.getModel();
+        if (model) {
+          model.dispose();
+        }
+      }
+    };
+  }, []);
 
   return (
     <div className="relative w-full h-full rounded-lg border border-gray-700 overflow-hidden">
