@@ -77,8 +77,8 @@ export default function ProblemDescription({ problem }: ProblemDescriptionProps)
       )}
 
       {problem.hints.length > 0 && (
-        <details className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-          <summary className="cursor-pointer font-semibold text-blue-900 dark:text-blue-200 mb-2">
+        <details className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 transition-all duration-200 hover:bg-blue-100 dark:hover:bg-blue-900/30">
+          <summary className="cursor-pointer font-semibold text-blue-900 dark:text-blue-200 mb-2 hover:text-blue-700 dark:hover:text-blue-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 rounded px-1">
             Hints
           </summary>
           <ul className="list-disc list-inside space-y-1 mt-2 text-sm text-blue-800 dark:text-blue-300">

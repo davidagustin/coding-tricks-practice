@@ -137,7 +137,10 @@ export default function ProblemPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
-          <Link href="/problems" className="text-blue-600 dark:text-blue-400 hover:underline">
+          <Link
+            href="/problems"
+            className="text-blue-600 dark:text-blue-400 hover:underline transition-colors duration-200 cursor-pointer inline-flex items-center gap-1 hover:text-blue-700 dark:hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 rounded px-1"
+          >
             ← Back to Problems
           </Link>
         </div>
@@ -154,7 +157,7 @@ export default function ProblemPage() {
               {prevProblem && (
                 <Link
                   href={`/problems/${prevProblem.id}`}
-                  className="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow p-4 hover:shadow-lg transition-shadow"
+                  className="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow p-4 hover:shadow-lg transition-all duration-200 cursor-pointer border border-transparent hover:border-blue-200 dark:hover:border-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 active:scale-[0.98]"
                 >
                   <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Previous</div>
                   <div className="font-semibold text-gray-900 dark:text-gray-100">
@@ -165,7 +168,7 @@ export default function ProblemPage() {
               {nextProblem && (
                 <Link
                   href={`/problems/${nextProblem.id}`}
-                  className="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow p-4 hover:shadow-lg transition-shadow text-right"
+                  className="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow p-4 hover:shadow-lg transition-all duration-200 cursor-pointer border border-transparent hover:border-blue-200 dark:hover:border-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 active:scale-[0.98] text-right"
                 >
                   <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Next</div>
                   <div className="font-semibold text-gray-900 dark:text-gray-100">
@@ -186,20 +189,20 @@ export default function ProblemPage() {
                 <div className="flex gap-2">
                   <button
                     onClick={handleReset}
-                    className="px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                    className="px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 active:scale-95"
                   >
                     Reset
                   </button>
                   <button
                     onClick={handleToggleSolution}
-                    className="px-3 py-1.5 text-sm bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
+                    className="px-3 py-1.5 text-sm bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 active:scale-95"
                   >
                     {showSolution ? 'Hide' : 'Show'} Solution
                   </button>
                   <button
                     onClick={handleRunTests}
                     disabled={isRunning}
-                    className="px-4 py-1.5 text-sm bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-4 py-1.5 text-sm bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 active:scale-95 disabled:active:scale-100"
                   >
                     {isRunning ? 'Running...' : 'Run Tests'}
                   </button>

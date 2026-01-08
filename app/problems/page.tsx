@@ -91,7 +91,7 @@ export default function ProblemsPage() {
         <div className="mb-8">
           <Link
             href="/"
-            className="text-blue-600 dark:text-blue-400 hover:underline mb-4 inline-block"
+            className="text-blue-600 dark:text-blue-400 hover:underline mb-4 inline-block transition-colors duration-200 cursor-pointer hover:text-blue-700 dark:hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 rounded px-1"
           >
             ← Back to Home
           </Link>
@@ -149,7 +149,7 @@ export default function ProblemsPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search by title, description, or category..."
-                  className="w-full px-4 py-2 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 />
                 <svg
                   className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
@@ -167,7 +167,8 @@ export default function ProblemsPage() {
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                    className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 rounded p-0.5 active:scale-95"
+                    aria-label="Clear search"
                   >
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -196,7 +197,7 @@ export default function ProblemsPage() {
                   id="difficulty"
                   value={selectedDifficulty}
                   onChange={(e) => setSelectedDifficulty(e.target.value as Difficulty | 'all')}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer"
                 >
                   <option value="all">All Difficulties</option>
                   <option value="easy">Easy</option>
@@ -217,7 +218,7 @@ export default function ProblemsPage() {
                   id="category"
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer"
                 >
                   <option value="all">All Categories</option>
                   {categories.map((category) => (
@@ -240,7 +241,7 @@ export default function ProblemsPage() {
                   id="sort"
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as SortOption)}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer"
                 >
                   <option value="default">Default Order</option>
                   <option value="difficulty">Difficulty</option>
@@ -258,7 +259,7 @@ export default function ProblemsPage() {
                 </div>
                 <button
                   onClick={clearFilters}
-                  className="text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                  className="text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 rounded px-1 active:scale-95"
                 >
                   Clear all filters
                 </button>
@@ -274,7 +275,7 @@ export default function ProblemsPage() {
               <Link
                 key={problem.id}
                 href={`/problems/${problem.id}`}
-                className="block bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-all duration-200 p-6 border border-transparent hover:border-blue-200 dark:hover:border-blue-800"
+                className="block bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-all duration-200 p-6 border border-transparent hover:border-blue-200 dark:hover:border-blue-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 active:scale-[0.99] group"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
@@ -296,7 +297,7 @@ export default function ProblemsPage() {
                     </p>
                   </div>
                   <svg
-                    className="w-5 h-5 text-gray-400 flex-shrink-0 ml-4 group-hover:text-blue-500"
+                    className="w-5 h-5 text-gray-400 flex-shrink-0 ml-4 group-hover:text-blue-500 transition-colors duration-200"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -336,7 +337,7 @@ export default function ProblemsPage() {
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 active:scale-95 shadow-md hover:shadow-lg"
               >
                 Clear all filters
               </button>
@@ -361,7 +362,7 @@ export default function ProblemsPage() {
                     setSearchQuery('');
                     setSelectedDifficulty('all');
                   }}
-                  className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-left hover:shadow-lg transition-shadow border border-transparent hover:border-blue-200 dark:hover:border-blue-800"
+                  className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-left hover:shadow-lg transition-all duration-200 cursor-pointer border border-transparent hover:border-blue-200 dark:hover:border-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 active:scale-[0.98]"
                 >
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
                     {category}
