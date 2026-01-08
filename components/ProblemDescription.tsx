@@ -28,9 +28,10 @@ export default function ProblemDescription({ problem }: ProblemDescriptionProps)
       </div>
 
       <div className="prose prose-sm dark:prose-invert max-w-none">
-        <div className="whitespace-pre-wrap text-gray-700 dark:text-gray-300">
-          {problem.description}
-        </div>
+        <div 
+          className="text-gray-700 dark:text-gray-300"
+          dangerouslySetInnerHTML={{ __html: problem.description }}
+        />
       </div>
 
       {problem.examples.length > 0 && (
