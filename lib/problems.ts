@@ -806,7 +806,7 @@ processUser(1).then(console.log).catch(console.error);`,
     testCases: [
       {
         input: [1],
-        expectedOutput: expect => {
+        expectedOutput: (expect: any) => {
           return expect && expect.id === 1 && expect.saved === true;
         }
       }
@@ -938,7 +938,7 @@ function waitForEvent(element, eventName) {
     testCases: [
       {
         input: [100],
-        expectedOutput: expect => {
+        expectedOutput: (expect: any) => {
           return expect instanceof Promise;
         }
       }
@@ -1008,7 +1008,7 @@ async function fetchMultipleUsers(userIds) {
     testCases: [
       {
         input: [1],
-        expectedOutput: expect => {
+        expectedOutput: (expect: any) => {
           return expect === null || typeof expect === 'object';
         }
       }
@@ -1144,7 +1144,7 @@ async function processWithLock(resource, operation) {
     testCases: [
       {
         input: ['/api/data'],
-        expectedOutput: expect => {
+        expectedOutput: (expect: any) => {
           return expect !== undefined;
         }
       }
