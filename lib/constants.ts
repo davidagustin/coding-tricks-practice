@@ -100,7 +100,7 @@ export const DOMPURIFY_CONFIG = {
     'td',
     'br',
     'a',
-  ],
-  ALLOWED_ATTR: ['class', 'href', 'target', 'rel'],
+  ] as string[],
+  ALLOWED_ATTR: ['class', 'href', 'target', 'rel'] as string[],
   ALLOW_DATA_ATTR: false,
 };
