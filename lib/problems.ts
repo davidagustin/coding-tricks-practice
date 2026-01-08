@@ -1563,7 +1563,7 @@ async function processWithLock(resource, operation) {
     ]
   },
 {
-    id: 'conditional-types',
+    id: 'basic-typescript-types',
     title: 'Basic TypeScript Types',
     difficulty: 'easy',
     category: 'TypeScript Basics',
