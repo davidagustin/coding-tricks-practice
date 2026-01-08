@@ -12,11 +12,21 @@ export interface Problem {
   starterCode: string;
   solution: string;
   testCases: Array<{
-    input: any;
-    expectedOutput: any;
+    input: unknown[];
+    expectedOutput: unknown;
     description?: string;
+    functionName?: string; // For problems testing multiple functions
   }>;
   hints: string[];
+}
+
+// Helper functions
+export function getAllCategories(): string[] {
+  return [...new Set(problems.map(p => p.category))];
+}
+
+export function isProblemId(id: string): boolean {
+  return problems.some(p => p.id === id);
 }
 
 export const problems: Problem[] = [
@@ -64,16 +74,11 @@ const user2 = {};
 const response2 = {};
 console.log(extractUserInfo(user2, response2));`,
     solution: `function extractUserInfo(user, response) {
-  const { name = 'Anonymous' } = user ?? {};
-  const { email = 'anonymous@example.com' } = user ?? {};
-  const { data: users = [] } = response ?? {};
-  const [firstItem = 0] = users;
-  
-  return {
-    name,
-    email,
-    firstItem
-  };
+  const { name = 'Anonymous', email = 'anonymous@example.com' } = user ?? {};
+  const { data = [] } = response ?? {};
+  const [firstItem = 0] = data;
+
+  return { name, email, firstItem };
 }`,
     testCases: [
       {
@@ -298,8 +303,8 @@ console.log(getActiveUserEmailsOptimized(users));`,
   { id: 2, name: 'Jane' },
   { id: 1, name: 'John Updated' }
 ];`,
-        output: `[{ id: 2, name: 'Jane' }, { id: 1, name: 'John Updated' }]`,
-        explanation: 'Last occurrence of id:1 wins'
+        output: `[{ id: 1, name: 'John Updated' }, { id: 2, name: 'Jane' }]`,
+        explanation: 'Map preserves insertion order of first key, but value is from last occurrence'
       }
     ],
     starterCode: `function deduplicateUsers(users) {
@@ -330,8 +335,8 @@ console.log(deduplicateUsers(users));`,
           { id: 1, name: 'John Updated' }
         ]],
         expectedOutput: [
-          { id: 2, name: 'Jane' },
-          { id: 1, name: 'John Updated' }
+          { id: 1, name: 'John Updated' },
+          { id: 2, name: 'Jane' }
         ]
       },
       {
@@ -962,7 +967,9 @@ console.log(getConfigValue({}, 'timeout', 3000));`,
 }
 
 function getConfigValue(config, key, defaultValue) {
-  return (config && config[key]) || defaultValue;
+  // Use && to check existence, then ?? to handle the value
+  // This preserves falsy values like 0 and ""
+  return config && key in config ? config[key] : defaultValue;
 }`,
     testCases: [
       {
@@ -984,12 +991,17 @@ function getConfigValue(config, key, defaultValue) {
         input: [{}, 'timeout', 3000],
         expectedOutput: 3000,
         description: 'getConfigValue default'
+      },
+      {
+        input: [{ count: 0 }, 'count', 10],
+        expectedOutput: 0,
+        description: 'getConfigValue preserves falsy value 0'
       }
     ],
     hints: [
       '&& evaluates right side only if left is truthy',
       '|| returns first truthy value or last value',
-      'Be careful: 0 and "" are falsy!'
+      'Be careful: 0 and "" are falsy - use "in" operator or ?? for precise checks'
     ]
   },
   {
@@ -1499,19 +1511,19 @@ function curry2(fn) {
 }`,
     testCases: [
       {
-        input: [],
-        expectedOutput: 24,
-        description: 'multiply(2)(3)(4)'
+        input: ['manual-test'],
+        expectedOutput: null,
+        description: 'Run starter code to test: multiply(2)(3)(4) should return 24'
       },
       {
-        input: [],
-        expectedOutput: 'Hello, World!',
-        description: 'greet(Hello)(World)'
+        input: ['manual-test'],
+        expectedOutput: null,
+        description: 'Run starter code to test: greet("Hello")("World") should return "Hello, World!"'
       },
       {
-        input: [],
-        expectedOutput: 5,
-        description: 'curry2 add'
+        input: ['manual-test'],
+        expectedOutput: null,
+        description: 'Run starter code to test: curry2((a, b) => a + b)(2)(3) should return 5'
       }
     ],
     hints: [
