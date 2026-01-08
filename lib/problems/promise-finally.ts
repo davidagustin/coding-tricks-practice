@@ -24,44 +24,50 @@ export const problem: Problem = {
   title: 'Promise.finally for Cleanup',
   difficulty: 'easy',
   category: 'Async/Promises',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-\`.finally()\` is a promise method that executes code regardless of whether the promise resolves or rejects. It's similar to \`finally\` blocks in \`try/catch\` statements - the cleanup code always runs.
+<p>\<code>.finally()\</code> is a promise method that executes code regardless of whether the promise resolves or rejects. It's similar to \<code>finally\</code> blocks in \<code>try/catch\</code> statements - the cleanup code always runs.</p>
 
-The key characteristics:
-- Always executes, even if promise resolves or rejects
-- Doesn't receive the resolved value or rejection reason
-- Can return a value (which becomes the new promise value)
-- If it throws, the promise chain rejects with that error
-- Perfect for cleanup operations (closing connections, clearing timers, resetting state)
+<p>The key characteristics:</p>
+<ul>
+  <li>Always executes, even if promise resolves or rejects</li>
+  <li>Doesn't receive the resolved value or rejection reason</li>
+  <li>Can return a value (which becomes the new promise value)</li>
+  <li>If it throws, the promise chain rejects with that error</li>
+  <li>Perfect for cleanup operations (closing connections, clearing timers, resetting state)</li>
+</ul>
 
-This is essential for resource management - ensuring cleanup happens even when errors occur, preventing memory leaks and resource exhaustion.
+<p>This is essential for resource management - ensuring cleanup happens even when errors occur, preventing memory leaks and resource exhaustion.</p>
 
-## Importance
+<h2>Importance</h2>
 
-\`.finally()\` is crucial for resource management:
+<p>\<code>.finally()\</code> is crucial for resource management:</p>
 
-- **Resource Cleanup**: Ensures resources are always released
-- **State Management**: Resets state regardless of success/failure
-- **Memory Leaks**: Prevents leaks from abandoned resources
-- **Consistency**: Guarantees cleanup code runs
-- **Error Safety**: Cleanup happens even when errors occur
-- **Best Practice**: Industry standard for async resource management
+<ul>
+  <li><strong>Resource Cleanup</strong>: Ensures resources are always released</li>
+  <li><strong>State Management</strong>: Resets state regardless of success/failure</li>
+  <li><strong>Memory Leaks</strong>: Prevents leaks from abandoned resources</li>
+  <li><strong>Consistency</strong>: Guarantees cleanup code runs</li>
+  <li><strong>Error Safety</strong>: Cleanup happens even when errors occur</li>
+  <li><strong>Best Practice</strong>: Industry standard for async resource management</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-This pattern is essential in production code:
+<p>This pattern is essential in production code:</p>
 
-- **Loading States**: Always reset loading indicators
-- **Connection Cleanup**: Close database/WebSocket connections
-- **Timer Cleanup**: Clear timeouts and intervals
-- **Lock Management**: Release locks even on errors
-- **UI State**: Reset UI state (disable buttons, hide spinners)
-- **Transaction Cleanup**: Rollback or cleanup transactions
-- **File Handles**: Close file handles and streams
-- **Event Listeners**: Remove event listeners
+<ul>
+  <li><strong>Loading States</strong>: Always reset loading indicators</li>
+  <li><strong>Connection Cleanup</strong>: Close database/WebSocket connections</li>
+  <li><strong>Timer Cleanup</strong>: Clear timeouts and intervals</li>
+  <li><strong>Lock Management</strong>: Release locks even on errors</li>
+  <li><strong>UI State</strong>: Reset UI state (disable buttons, hide spinners)</li>
+  <li><strong>Transaction Cleanup</strong>: Rollback or cleanup transactions</li>
+  <li><strong>File Handles</strong>: Close file handles and streams</li>
+  <li><strong>Event Listeners</strong>: Remove event listeners</li>
+</ul>
 
-**Challenge:** Always clean up resources.`,
+<p><strong>Challenge:</strong> Always clean up resources.</p>`,
   examples: [
     {
       input: `fetch('/api').finally(() => cleanup())`,

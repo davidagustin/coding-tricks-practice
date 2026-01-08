@@ -24,46 +24,54 @@ export const problem: Problem = {
   title: 'TypeScript Infer Keyword',
   difficulty: 'hard',
   category: 'TypeScript Advanced',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-The \`infer\` keyword allows you to extract types from complex type structures within conditional types. It creates a type variable that captures the type at a specific position.
+<p>The <code>infer</code> keyword allows you to extract types from complex type structures within conditional types. It creates a type variable that captures the type at a specific position.</p>
 
-The pattern: \`T extends SomePattern<infer U> ? U : never\`
-- \`infer U\` captures the type at that position
-- If \`T\` matches the pattern, \`U\` is the extracted type
-- Otherwise, the type is \`never\`
+<p>The pattern: <code>T extends SomePattern&lt;infer U&gt; ? U : never</code></p>
+<ul>
+  <li><code>infer U</code> captures the type at that position</li>
+  <li>If <code>T</code> matches the pattern, <code>U</code> is the extracted type</li>
+  <li>Otherwise, the type is <code>never</code></li>
+</ul>
 
-Common extractions:
-- **Return Types**: \`T extends (...args: any[]) => infer R ? R : never\`
-- **Parameter Types**: \`T extends (arg: infer P) => any ? P : never\`
-- **Promise Types**: \`T extends Promise<infer U> ? U : T\`
-- **Array Types**: \`T extends (infer U)[] ? U : never\`
+<p>Common extractions:</p>
+<ul>
+  <li><strong>Return Types</strong>: <code>T extends (...args: any[]) => infer R ? R : never</code></li>
+  <li><strong>Parameter Types</strong>: <code>T extends (arg: infer P) => any ? P : never</code></li>
+  <li><strong>Promise Types</strong>: <code>T extends Promise&lt;infer U&gt; ? U : T</code></li>
+  <li><strong>Array Types</strong>: <code>T extends (infer U)[] ? U : never</code></li>
+</ul>
 
-## Importance
+<h2>Importance</h2>
 
-The infer keyword is essential for type extraction because:
+<p>The infer keyword is essential for type extraction because:</p>
 
-- **Type Extraction**: Extract types from complex structures
-- **Utility Types**: Build utility types like ReturnType, Parameters
-- **Type Inference**: Infer types from function signatures
-- **Framework Development**: Essential for advanced type systems
-- **API Types**: Extract types from API response types
-- **Generic Programming**: Advanced generic type programming
+<ul>
+  <li><strong>Type Extraction</strong>: Extract types from complex structures</li>
+  <li><strong>Utility Types</strong>: Build utility types like ReturnType, Parameters</li>
+  <li><strong>Type Inference</strong>: Infer types from function signatures</li>
+  <li><strong>Framework Development</strong>: Essential for advanced type systems</li>
+  <li><strong>API Types</strong>: Extract types from API response types</li>
+  <li><strong>Generic Programming</strong>: Advanced generic type programming</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-The infer keyword is used extensively:
+<p>The infer keyword is used extensively:</p>
 
-- **Utility Types**: ReturnType, Parameters, ConstructorParameters, InstanceType
-- **Promise Unwrapping**: Unwrapping Promise types
-- **Function Types**: Extracting function parameter and return types
-- **React Types**: Extracting component prop types
-- **API Types**: Extracting types from API response types
-- **Generic Libraries**: Building generic type utilities
-- **Type Utilities**: Creating reusable type utilities
-- **Framework Internals**: Used internally by TypeScript and frameworks
+<ul>
+  <li><strong>Utility Types</strong>: ReturnType, Parameters, ConstructorParameters, InstanceType</li>
+  <li><strong>Promise Unwrapping</strong>: Unwrapping Promise types</li>
+  <li><strong>Function Types</strong>: Extracting function parameter and return types</li>
+  <li><strong>React Types</strong>: Extracting component prop types</li>
+  <li><strong>API Types</strong>: Extracting types from API response types</li>
+  <li><strong>Generic Libraries</strong>: Building generic type utilities</li>
+  <li><strong>Type Utilities</strong>: Creating reusable type utilities</li>
+  <li><strong>Framework Internals</strong>: Used internally by TypeScript and frameworks</li>
+</ul>
 
-**Challenge:** Use infer to extract types from functions, promises, and more.`,
+<p><strong>Challenge:</strong> Use infer to extract types from functions, promises, and more.</p>`,
   examples: [
     {
       input: `type Unwrap<T> = T extends Promise<infer U> ? U : T`,

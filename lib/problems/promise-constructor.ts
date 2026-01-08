@@ -24,43 +24,49 @@ export const problem: Problem = {
   title: 'Promise Constructor Pattern',
   difficulty: 'medium',
   category: 'Async/Promises',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-The \`Promise\` constructor allows you to create promises from scratch, wrapping callback-based APIs or creating custom async operations. The constructor takes a function (executor) with two parameters: \`resolve\` and \`reject\`.
+<p>The \<code>Promise\</code> constructor allows you to create promises from scratch, wrapping callback-based APIs or creating custom async operations. The constructor takes a function (executor) with two parameters: \<code>resolve\</code> and \<code>reject\</code>.</p>
 
-The pattern is:
-1. Create a new Promise with an executor function
-2. Perform the async operation inside the executor
-3. Call \`resolve(value)\` on success
-4. Call \`reject(error)\` on failure
+<p>The pattern is:</p>
+<ol>
+  <li>Create a new Promise with an executor function</li>
+  <li>Perform the async operation inside the executor</li>
+  <li>Call \<code>resolve(value)\</code> on success</li>
+  <li>Call \<code>reject(error)\</code> on failure</li>
+</ol>
 
-This is essential for "promisifying" callback-based APIs (like setTimeout, event listeners, file operations) and creating custom async operations that don't fit standard patterns.
+<p>This is essential for "promisifying" callback-based APIs (like setTimeout, event listeners, file operations) and creating custom async operations that don't fit standard patterns.</p>
 
-## Importance
+<h2>Importance</h2>
 
-The Promise constructor is fundamental because:
+<p>The Promise constructor is fundamental because:</p>
 
-- **API Wrapping**: Converts callback-based APIs to promise-based APIs
-- **Custom Async Operations**: Creates promises for operations that don't have built-in promise support
-- **Legacy Code Integration**: Bridges old callback code with modern async/await
-- **Event Handling**: Converts event-driven code to promises
-- **Flexibility**: Full control over when and how the promise resolves/rejects
-- **Interoperability**: Enables mixing promises with callback-based code
+<ul>
+  <li><strong>API Wrapping</strong>: Converts callback-based APIs to promise-based APIs</li>
+  <li><strong>Custom Async Operations</strong>: Creates promises for operations that don't have built-in promise support</li>
+  <li><strong>Legacy Code Integration</strong>: Bridges old callback code with modern async/await</li>
+  <li><strong>Event Handling</strong>: Converts event-driven code to promises</li>
+  <li><strong>Flexibility</strong>: Full control over when and how the promise resolves/rejects</li>
+  <li><strong>Interoperability</strong>: Enables mixing promises with callback-based code</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-This pattern is used extensively:
+<p>This pattern is used extensively:</p>
 
-- **Timer Wrappers**: Converting setTimeout/setInterval to promises
-- **Event Listeners**: Converting DOM events to promises (wait for click, wait for load)
-- **File Operations**: Wrapping Node.js fs callbacks in promises
-- **Database Operations**: Wrapping database callbacks in promises
-- **Animation**: Creating promises that resolve when animations complete
-- **User Input**: Creating promises that resolve when user provides input
-- **Stream Processing**: Converting streams to promises
-- **Legacy Libraries**: Wrapping old callback-based libraries
+<ul>
+  <li><strong>Timer Wrappers</strong>: Converting setTimeout/setInterval to promises</li>
+  <li><strong>Event Listeners</strong>: Converting DOM events to promises (wait for click, wait for load)</li>
+  <li><strong>File Operations</strong>: Wrapping Node.js fs callbacks in promises</li>
+  <li><strong>Database Operations</strong>: Wrapping database callbacks in promises</li>
+  <li><strong>Animation</strong>: Creating promises that resolve when animations complete</li>
+  <li><strong>User Input</strong>: Creating promises that resolve when user provides input</li>
+  <li><strong>Stream Processing</strong>: Converting streams to promises</li>
+  <li><strong>Legacy Libraries</strong>: Wrapping old callback-based libraries</li>
+</ul>
 
-**Challenge:** Convert setTimeout and event listeners to promises.`,
+<p><strong>Challenge:</strong> Convert setTimeout and event listeners to promises.</p>`,
   examples: [
     {
       input: `delay(1000).then(() => console.log('Done'))`,

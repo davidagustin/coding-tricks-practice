@@ -24,54 +24,64 @@ export const problem: Problem = {
   title: 'Spread Operator Tricks',
   difficulty: 'easy',
   category: 'JavaScript Basics',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-The spread operator (\`...\`) is one of the most versatile features in modern JavaScript. It works with arrays, objects, strings, and any iterable, enabling concise and powerful operations.
+<p>The spread operator (\<code>...\</code>) is one of the most versatile features in modern JavaScript. It works with arrays, objects, strings, and any iterable, enabling concise and powerful operations.</p>
 
-For arrays:
-- **Copying**: \`[...array]\` creates a new array
-- **Concatenating**: \`[...arr1, ...arr2]\` combines arrays
-- **Adding Elements**: \`[...arr, newItem]\` adds to end
-- **Function Arguments**: \`func(...args)\` spreads as arguments
+<p>For arrays:</p>
+<ul>
+  <li><strong>Copying</strong>: \<code>[...array]\</code> creates a new array</li>
+  <li><strong>Concatenating</strong>: \<code>[...arr1, ...arr2]\</code> combines arrays</li>
+  <li><strong>Adding Elements</strong>: \<code>[...arr, newItem]\</code> adds to end</li>
+  <li><strong>Function Arguments</strong>: \<code>func(...args)\</code> spreads as arguments</li>
+</ul>
 
-For objects:
-- **Copying**: \`{ ...obj }\` creates shallow copy
-- **Merging**: \`{ ...obj1, ...obj2 }\` merges objects
-- **Adding Properties**: \`{ ...obj, newProp: value }\`
+<p>For objects:</p>
+<ul>
+  <li><strong>Copying</strong>: \<code>{ ...obj }\</code> creates shallow copy</li>
+  <li><strong>Merging</strong>: \<code>{ ...obj1, ...obj2 }\</code> merges objects</li>
+  <li><strong>Adding Properties</strong>: \<code>{ ...obj, newProp: value }\</code></li>
+</ul>
 
-The spread operator is syntactic sugar that makes code more readable and functional.
+<p>The spread operator is syntactic sugar that makes code more readable and functional.</p>
 
-## Importance
+<h2>Importance</h2>
 
-Spread operator is fundamental to modern JavaScript because:
+<p>Spread operator is fundamental to modern JavaScript because:</p>
 
-- **Immutability**: Essential for immutable data patterns
-- **Code Clarity**: More readable than manual copying/merging
-- **Functional Style**: Enables functional programming patterns
-- **React/Vue**: Used extensively in component libraries
-- **State Management**: Core to Redux, Vuex patterns
-- **ES6+ Standard**: Modern JavaScript best practice
+<ul>
+  <li><strong>Immutability</strong>: Essential for immutable data patterns</li>
+  <li><strong>Code Clarity</strong>: More readable than manual copying/merging</li>
+  <li><strong>Functional Style</strong>: Enables functional programming patterns</li>
+  <li><strong>React/Vue</strong>: Used extensively in component libraries</li>
+  <li><strong>State Management</strong>: Core to Redux, Vuex patterns</li>
+  <li><strong>ES6+ Standard</strong>: Modern JavaScript best practice</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Spread operator is used everywhere:
+<p>Spread operator is used everywhere:</p>
 
-- **Array Operations**: Copying, concatenating, transforming arrays
-- **Object Operations**: Cloning, merging, updating objects
-- **React Props**: Spreading props to components
-- **Function Calls**: Spreading arrays as arguments
-- **State Updates**: Immutable state updates
-- **Configuration**: Merging configuration objects
-- **API Requests**: Building request objects
-- **Data Transformation**: Transforming data structures
+<ul>
+  <li><strong>Array Operations</strong>: Copying, concatenating, transforming arrays</li>
+  <li><strong>Object Operations</strong>: Cloning, merging, updating objects</li>
+  <li><strong>React Props</strong>: Spreading props to components</li>
+  <li><strong>Function Calls</strong>: Spreading arrays as arguments</li>
+  <li><strong>State Updates</strong>: Immutable state updates</li>
+  <li><strong>Configuration</strong>: Merging configuration objects</li>
+  <li><strong>API Requests</strong>: Building request objects</li>
+  <li><strong>Data Transformation</strong>: Transforming data structures</li>
+</ul>
 
-**Challenge:** Use spread to merge objects, clone arrays, and convert iterables.
+<p><strong>Challenge:</strong> Use spread to merge objects, clone arrays, and convert iterables.</p>
 
-**Key Concepts:**
-- Shallow cloning arrays and objects
-- Merging objects (last wins)
-- Converting iterables to arrays
-- Rest parameters vs spread`,
+<p><strong>Key Concepts:</strong></p>
+<ul>
+  <li>Shallow cloning arrays and objects</li>
+  <li>Merging objects (last wins)</li>
+  <li>Converting iterables to arrays</li>
+  <li>Rest parameters vs spread</li>
+</ul>`,
   examples: [
     {
       input: `const obj1 = { a: 1 }; const obj2 = { b: 2 };`,

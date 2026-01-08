@@ -24,47 +24,55 @@ export const problem: Problem = {
   title: 'WeakMap and WeakSet',
   difficulty: 'medium',
   category: 'JavaScript Advanced',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-WeakMap and WeakSet are collections with "weak" references to their keys/elements. Unlike Map and Set, they don't prevent garbage collection of their keys/elements. When an object used as a key is garbage collected, the entry is automatically removed.
+<p>WeakMap and WeakSet are collections with "weak" references to their keys/elements. Unlike Map and Set, they don't prevent garbage collection of their keys/elements. When an object used as a key is garbage collected, the entry is automatically removed.</p>
 
-Key characteristics:
-- **Weak References**: Don't prevent garbage collection
-- **Object Keys Only**: Keys must be objects (not primitives)
-- **No Iteration**: Cannot iterate over entries (no size, keys, values, entries)
-- **Automatic Cleanup**: Entries removed when key is garbage collected
+<p>Key characteristics:</p>
+<ul>
+  <li><strong>Weak References</strong>: Don't prevent garbage collection</li>
+  <li><strong>Object Keys Only</strong>: Keys must be objects (not primitives)</li>
+  <li><strong>No Iteration</strong>: Cannot iterate over entries (no size, keys, values, entries)</li>
+  <li><strong>Automatic Cleanup</strong>: Entries removed when key is garbage collected</li>
+</ul>
 
-This makes them perfect for:
-- **Private Data**: Store private data associated with objects
-- **Metadata**: Store metadata without preventing GC
-- **Caching**: Cache computed values without memory leaks
-- **Event Handlers**: Store event handlers without preventing GC
+<p>This makes them perfect for:</p>
+<ul>
+  <li><strong>Private Data</strong>: Store private data associated with objects</li>
+  <li><strong>Metadata</strong>: Store metadata without preventing GC</li>
+  <li><strong>Caching</strong>: Cache computed values without memory leaks</li>
+  <li><strong>Event Handlers</strong>: Store event handlers without preventing GC</li>
+</ul>
 
-## Importance
+<h2>Importance</h2>
 
-Weak collections are essential for memory management because:
+<p>Weak collections are essential for memory management because:</p>
 
-- **Memory Efficiency**: Don't prevent garbage collection of keys
-- **No Memory Leaks**: Automatic cleanup prevents memory leaks
-- **Private Data**: Store private data without exposing it
-- **Metadata Storage**: Store metadata without memory concerns
-- **Library Development**: Essential for libraries that attach data to user objects
-- **Performance**: Better memory usage in long-running applications
+<ul>
+  <li><strong>Memory Efficiency</strong>: Don't prevent garbage collection of keys</li>
+  <li><strong>No Memory Leaks</strong>: Automatic cleanup prevents memory leaks</li>
+  <li><strong>Private Data</strong>: Store private data without exposing it</li>
+  <li><strong>Metadata Storage</strong>: Store metadata without memory concerns</li>
+  <li><strong>Library Development</strong>: Essential for libraries that attach data to user objects</li>
+  <li><strong>Performance</strong>: Better memory usage in long-running applications</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Weak collections are used extensively:
+<p>Weak collections are used extensively:</p>
 
-- **Private Properties**: Implementing private properties in classes
-- **Metadata Storage**: Storing metadata about DOM elements or objects
-- **Caching**: Caching computed values without preventing GC
-- **Event Handlers**: Storing event handlers without memory leaks
-- **Library Internals**: Libraries storing internal data about user objects
-- **DOM Manipulation**: Storing data about DOM nodes
-- **Object Tracking**: Tracking visited objects without preventing GC
-- **Memoization**: Memoizing without preventing object collection
+<ul>
+  <li><strong>Private Properties</strong>: Implementing private properties in classes</li>
+  <li><strong>Metadata Storage</strong>: Storing metadata about DOM elements or objects</li>
+  <li><strong>Caching</strong>: Caching computed values without preventing GC</li>
+  <li><strong>Event Handlers</strong>: Storing event handlers without memory leaks</li>
+  <li><strong>Library Internals</strong>: Libraries storing internal data about user objects</li>
+  <li><strong>DOM Manipulation</strong>: Storing data about DOM nodes</li>
+  <li><strong>Object Tracking</strong>: Tracking visited objects without preventing GC</li>
+  <li><strong>Memoization</strong>: Memoizing without preventing object collection</li>
+</ul>
 
-**Challenge:** Implement private data and caching with WeakMap.`,
+<p><strong>Challenge:</strong> Implement private data and caching with WeakMap.</p>`,
   examples: [
     {
       input: `const privateData = new WeakMap();`,

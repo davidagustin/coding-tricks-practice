@@ -24,39 +24,45 @@ export const problem: Problem = {
   title: 'Find vs Filter - When to Use Each',
   difficulty: 'easy',
   category: 'Array Methods',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-\`find()\` and \`filter()\` are both array methods for searching, but they serve different purposes. \`find()\` returns the first element that matches the condition (or \`undefined\` if none match), while \`filter()\` returns a new array containing all elements that match the condition.
+<p><code>find()</code> and <code>filter()</code> are both array methods for searching, but they serve different purposes. <code>find()</code> returns the first element that matches the condition (or <code>undefined</code> if none match), while <code>filter()</code> returns a new array containing all elements that match the condition.</p>
 
-The key difference is:
-- \`find()\`: Stops searching after finding the first match (short-circuit behavior), returns a single element
-- \`filter()\`: Continues through the entire array, returns an array (even if empty or with one element)
+<p>The key difference is:</p>
+<ul>
+  <li><code>find()</code>: Stops searching after finding the first match (short-circuit behavior), returns a single element</li>
+  <li><code>filter()</code>: Continues through the entire array, returns an array (even if empty or with one element)</li>
+</ul>
 
-\`find()\` is more efficient when you only need one result because it stops early. \`filter()\` is necessary when you need all matching elements.
+<p><code>find()</code> is more efficient when you only need one result because it stops early. <code>filter()</code> is necessary when you need all matching elements.</p>
 
-## Importance
+<h2>Importance</h2>
 
-Understanding when to use each method is crucial because:
+<p>Understanding when to use each method is crucial because:</p>
 
-- **Performance**: \`find()\` can be faster for large arrays when you only need one result
-- **Correctness**: Using the wrong method leads to bugs (expecting an array but getting an element, or vice versa)
-- **Code Clarity**: Choosing the right method makes code intent clearer
-- **Type Safety**: TypeScript types differ - \`find()\` returns \`T | undefined\`, \`filter()\` returns \`T[]\`
-- **API Design**: Different return types affect how functions are used
+<ul>
+  <li><strong>Performance</strong>: <code>find()</code> can be faster for large arrays when you only need one result</li>
+  <li><strong>Correctness</strong>: Using the wrong method leads to bugs (expecting an array but getting an element, or vice versa)</li>
+  <li><strong>Code Clarity</strong>: Choosing the right method makes code intent clearer</li>
+  <li><strong>Type Safety</strong>: TypeScript types differ - <code>find()</code> returns <code>T | undefined</code>, <code>filter()</code> returns <code>T[]</code></li>
+  <li><strong>API Design</strong>: Different return types affect how functions are used</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-This distinction is important in many scenarios:
+<p>This distinction is important in many scenarios:</p>
 
-- **User Lookups**: \`find()\` for finding a user by ID, \`filter()\` for finding all admins
-- **Search Functionality**: \`find()\` for exact matches, \`filter()\` for search results
-- **Validation**: \`find()\` to check if any item is invalid, \`filter()\` to get all invalid items
-- **Data Processing**: \`find()\` for unique lookups, \`filter()\` for collections
-- **UI Rendering**: \`find()\` for single item display, \`filter()\` for list rendering
-- **State Management**: \`find()\` for single item updates, \`filter()\` for bulk operations
-- **API Responses**: \`find()\` for single resource, \`filter()\` for collections
+<ul>
+  <li><strong>User Lookups</strong>: <code>find()</code> for finding a user by ID, <code>filter()</code> for finding all admins</li>
+  <li><strong>Search Functionality</strong>: <code>find()</code> for exact matches, <code>filter()</code> for search results</li>
+  <li><strong>Validation</strong>: <code>find()</code> to check if any item is invalid, <code>filter()</code> to get all invalid items</li>
+  <li><strong>Data Processing</strong>: <code>find()</code> for unique lookups, <code>filter()</code> for collections</li>
+  <li><strong>UI Rendering</strong>: <code>find()</code> for single item display, <code>filter()</code> for list rendering</li>
+  <li><strong>State Management</strong>: <code>find()</code> for single item updates, <code>filter()</code> for bulk operations</li>
+  <li><strong>API Responses</strong>: <code>find()</code> for single resource, <code>filter()</code> for collections</li>
+</ul>
 
-**Challenge:** Use find to get the first matching item, and filter to get all matches.`,
+<p><strong>Challenge:</strong> Use find to get the first matching item, and filter to get all matches.</p>`,
   examples: [
     {
       input: `const users = [

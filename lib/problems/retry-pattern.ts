@@ -24,47 +24,55 @@ export const problem: Problem = {
   title: 'Retry Pattern with Exponential Backoff',
   difficulty: 'hard',
   category: 'Async/Promises',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-The retry pattern with exponential backoff is a resilience strategy for handling transient failures. Instead of retrying immediately, you wait progressively longer between attempts (delay doubles each time: 100ms, 200ms, 400ms, etc.).
+<p>The retry pattern with exponential backoff is a resilience strategy for handling transient failures. Instead of retrying immediately, you wait progressively longer between attempts (delay doubles each time: 100ms, 200ms, 400ms, etc.).</p>
 
-Exponential backoff is crucial because:
-1. Transient failures often resolve themselves (network hiccups, temporary server overload)
-2. Immediate retries can overwhelm already-struggling servers
-3. Increasing delays give systems time to recover
-4. Prevents "thundering herd" problems where many clients retry simultaneously
+<p>Exponential backoff is crucial because:</p>
+<ol>
+  <li>Transient failures often resolve themselves (network hiccups, temporary server overload)</li>
+  <li>Immediate retries can overwhelm already-struggling servers</li>
+  <li>Increasing delays give systems time to recover</li>
+  <li>Prevents "thundering herd" problems where many clients retry simultaneously</li>
+</ol>
 
-The pattern typically includes:
-- Maximum retry count to prevent infinite loops
-- Initial delay that doubles each attempt
-- Optional jitter (random variation) to prevent synchronized retries
-- Error handling to distinguish retryable vs non-retryable errors
+<p>The pattern typically includes:</p>
+<ul>
+  <li>Maximum retry count to prevent infinite loops</li>
+  <li>Initial delay that doubles each attempt</li>
+  <li>Optional jitter (random variation) to prevent synchronized retries</li>
+  <li>Error handling to distinguish retryable vs non-retryable errors</li>
+</ul>
 
-## Importance
+<h2>Importance</h2>
 
-Retry patterns are essential for production applications because:
+<p>Retry patterns are essential for production applications because:</p>
 
-- **Resilience**: Handles transient network and server failures automatically
-- **User Experience**: Transparently retries failed operations without user intervention
-- **Server Protection**: Exponential backoff prevents overwhelming struggling servers
-- **Cost Efficiency**: Reduces failed API calls and improves success rates
-- **Reliability**: Critical for distributed systems and microservices
-- **Best Practice**: Industry standard for handling unreliable networks
+<ul>
+  <li><strong>Resilience</strong>: Handles transient network and server failures automatically</li>
+  <li><strong>User Experience</strong>: Transparently retries failed operations without user intervention</li>
+  <li><strong>Server Protection</strong>: Exponential backoff prevents overwhelming struggling servers</li>
+  <li><strong>Cost Efficiency</strong>: Reduces failed API calls and improves success rates</li>
+  <li><strong>Reliability</strong>: Critical for distributed systems and microservices</li>
+  <li><strong>Best Practice</strong>: Industry standard for handling unreliable networks</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-This pattern is used extensively in production:
+<p>This pattern is used extensively in production:</p>
 
-- **API Clients**: Retrying failed API requests with exponential backoff
-- **Database Operations**: Retrying transient database connection failures
-- **File Operations**: Retrying file I/O operations that may fail temporarily
-- **WebSocket Connections**: Reconnecting WebSocket with backoff
-- **Payment Processing**: Retrying payment transactions (with care for idempotency)
-- **Data Synchronization**: Retrying sync operations between systems
-- **Queue Processing**: Retrying failed queue message processing
-- **Service Discovery**: Retrying service discovery lookups
+<ul>
+  <li><strong>API Clients</strong>: Retrying failed API requests with exponential backoff</li>
+  <li><strong>Database Operations</strong>: Retrying transient database connection failures</li>
+  <li><strong>File Operations</strong>: Retrying file I/O operations that may fail temporarily</li>
+  <li><strong>WebSocket Connections</strong>: Reconnecting WebSocket with backoff</li>
+  <li><strong>Payment Processing</strong>: Retrying payment transactions (with care for idempotency)</li>
+  <li><strong>Data Synchronization</strong>: Retrying sync operations between systems</li>
+  <li><strong>Queue Processing</strong>: Retrying failed queue message processing</li>
+  <li><strong>Service Discovery</strong>: Retrying service discovery lookups</li>
+</ul>
 
-**Challenge:** Retry a function with increasing delays.`,
+<p><strong>Challenge:</strong> Retry a function with increasing delays.</p>`,
   examples: [
     {
       input: `retryWithBackoff(fetchData, { maxRetries: 3 })`,

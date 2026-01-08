@@ -24,48 +24,56 @@ export const problem: Problem = {
   title: 'TypeScript Mapped Types',
   difficulty: 'hard',
   category: 'TypeScript Advanced',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Mapped types transform existing types by iterating over their properties and applying transformations. The syntax \`[K in keyof T]: Transformation\` creates a new type by mapping over each key in \`T\`.
+<p>Mapped types transform existing types by iterating over their properties and applying transformations. The syntax <code>[K in keyof T]: Transformation</code> creates a new type by mapping over each key in <code>T</code>.</p>
 
-Key modifiers:
-- **?**: Makes property optional (\`Partial<T>\`)
-- **-?**: Removes optional modifier (\`Required<T>\`)
-- **readonly**: Makes property readonly (\`Readonly<T>\`)
-- **-readonly**: Removes readonly modifier
+<p>Key modifiers:</p>
+<ul>
+  <li><strong>?</strong>: Makes property optional (<code>Partial&lt;T&gt;</code>)</li>
+  <li><strong>-?</strong>: Removes optional modifier (<code>Required&lt;T&gt;</code>)</li>
+  <li><strong>readonly</strong>: Makes property readonly (<code>Readonly&lt;T&gt;</code>)</li>
+  <li><strong>-readonly</strong>: Removes readonly modifier</li>
+</ul>
 
-This enables creating utility types like:
-- \`Partial<T>\`: All properties optional
-- \`Required<T>\`: All properties required
-- \`Readonly<T>\`: All properties readonly
-- \`Pick<T, K>\`: Select specific properties
-- \`Omit<T, K>\`: Exclude specific properties
+<p>This enables creating utility types like:</p>
+<ul>
+  <li><code>Partial&lt;T&gt;</code>: All properties optional</li>
+  <li><code>Required&lt;T&gt;</code>: All properties required</li>
+  <li><code>Readonly&lt;T&gt;</code>: All properties readonly</li>
+  <li><code>Pick&lt;T, K&gt;</code>: Select specific properties</li>
+  <li><code>Omit&lt;T, K&gt;</code>: Exclude specific properties</li>
+</ul>
 
-## Importance
+<h2>Importance</h2>
 
-Mapped types are essential for TypeScript type manipulation because:
+<p>Mapped types are essential for TypeScript type manipulation because:</p>
 
-- **Type Transformation**: Transform types programmatically
-- **Utility Types**: Create reusable utility types
-- **DRY Principle**: Avoid duplicating type definitions
-- **Type Safety**: Maintain type safety while transforming
-- **Framework Development**: Essential for building type-safe frameworks
-- **API Design**: Create flexible, type-safe APIs
+<ul>
+  <li><strong>Type Transformation</strong>: Transform types programmatically</li>
+  <li><strong>Utility Types</strong>: Create reusable utility types</li>
+  <li><strong>DRY Principle</strong>: Avoid duplicating type definitions</li>
+  <li><strong>Type Safety</strong>: Maintain type safety while transforming</li>
+  <li><strong>Framework Development</strong>: Essential for building type-safe frameworks</li>
+  <li><strong>API Design</strong>: Create flexible, type-safe APIs</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Mapped types are used extensively:
+<p>Mapped types are used extensively:</p>
 
-- **Utility Types**: Creating Partial, Required, Readonly, Pick, Omit
-- **API Types**: Transforming API request/response types
-- **Form Types**: Creating form types from data types
-- **State Management**: Transforming state types
-- **Component Props**: Transforming component prop types
-- **Database Types**: Transforming database model types
-- **Configuration Types**: Creating configuration types from schemas
-- **Library Development**: Building type-safe libraries
+<ul>
+  <li><strong>Utility Types</strong>: Creating Partial, Required, Readonly, Pick, Omit</li>
+  <li><strong>API Types</strong>: Transforming API request/response types</li>
+  <li><strong>Form Types</strong>: Creating form types from data types</li>
+  <li><strong>State Management</strong>: Transforming state types</li>
+  <li><strong>Component Props</strong>: Transforming component prop types</li>
+  <li><strong>Database Types</strong>: Transforming database model types</li>
+  <li><strong>Configuration Types</strong>: Creating configuration types from schemas</li>
+  <li><strong>Library Development</strong>: Building type-safe libraries</li>
+</ul>
 
-**Challenge:** Create utility types using mapped type syntax.`,
+<p><strong>Challenge:</strong> Create utility types using mapped type syntax.</p>`,
   examples: [
     {
       input: `type Partial<T> = { [K in keyof T]?: T[K] }`,

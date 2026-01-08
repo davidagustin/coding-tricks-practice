@@ -24,39 +24,43 @@ export const problem: Problem = {
   title: 'Type Guards',
   difficulty: 'medium',
   category: 'TypeScript Basics',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Type guards narrow (refine) types within conditional blocks, allowing TypeScript to know the specific type after a check. Built-in guards include \`typeof\`, \`instanceof\`, and \`in\` operator.
+<p>Type guards narrow (refine) types within conditional blocks, allowing TypeScript to know the specific type after a check. Built-in guards include <code>typeof</code>, <code>instanceof</code>, and <code>in</code> operator.</p>
 
-Custom type guards use the syntax \`value is Type\` - a type predicate that tells TypeScript "if this function returns true, the value is definitely this type."
+<p>Custom type guards use the syntax <code>value is Type</code> - a type predicate that tells TypeScript "if this function returns true, the value is definitely this type."</p>
 
-Type narrowing is essential for working with union types safely. Without narrowing, TypeScript only allows operations available on all types in the union. After narrowing, you can use type-specific operations.
+<p>Type narrowing is essential for working with union types safely. Without narrowing, TypeScript only allows operations available on all types in the union. After narrowing, you can use type-specific operations.</p>
 
-## Importance
+<h2>Importance</h2>
 
-Type guards are crucial for type safety because:
+<p>Type guards are crucial for type safety because:</p>
 
-- **Union Type Safety**: Safely work with union types
-- **Runtime Safety**: Verify types at runtime
-- **Type Narrowing**: Enable type-specific operations
-- **Error Prevention**: Catch type errors before runtime
-- **API Validation**: Validate API responses match expected types
-- **User Input**: Safely handle unknown user input
+<ul>
+  <li><strong>Union Type Safety</strong>: Safely work with union types</li>
+  <li><strong>Runtime Safety</strong>: Verify types at runtime</li>
+  <li><strong>Type Narrowing</strong>: Enable type-specific operations</li>
+  <li><strong>Error Prevention</strong>: Catch type errors before runtime</li>
+  <li><strong>API Validation</strong>: Validate API responses match expected types</li>
+  <li><strong>User Input</strong>: Safely handle unknown user input</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Type guards are used extensively:
+<p>Type guards are used extensively:</p>
 
-- **API Responses**: Validating and narrowing API response types
-- **User Input**: Validating form input and user data
-- **Error Handling**: Distinguishing between error types
-- **State Management**: Narrowing state union types
-- **Event Handling**: Narrowing event types
-- **Data Parsing**: Validating parsed data
-- **Type Assertions**: Safe type assertions with runtime checks
-- **Discriminated Unions**: Narrowing discriminated union types
+<ul>
+  <li><strong>API Responses</strong>: Validating and narrowing API response types</li>
+  <li><strong>User Input</strong>: Validating form input and user data</li>
+  <li><strong>Error Handling</strong>: Distinguishing between error types</li>
+  <li><strong>State Management</strong>: Narrowing state union types</li>
+  <li><strong>Event Handling</strong>: Narrowing event types</li>
+  <li><strong>Data Parsing</strong>: Validating parsed data</li>
+  <li><strong>Type Assertions</strong>: Safe type assertions with runtime checks</li>
+  <li><strong>Discriminated Unions</strong>: Narrowing discriminated union types</li>
+</ul>
 
-**Challenge:** Create and use type guards to narrow types.`,
+<p><strong>Challenge:</strong> Create and use type guards to narrow types.</p>`,
   examples: [
     {
       input: `function isString(value: unknown): value is string {

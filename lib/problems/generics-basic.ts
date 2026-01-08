@@ -24,43 +24,49 @@ export const problem: Problem = {
   title: 'Generic Functions and Types',
   difficulty: 'medium',
   category: 'TypeScript Basics',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Generics enable writing reusable code that works with multiple types while maintaining type safety. They're like function parameters, but for types. The syntax \`<T>\` introduces a type parameter that can be used throughout the function or type.
+<p>Generics enable writing reusable code that works with multiple types while maintaining type safety. They're like function parameters, but for types. The syntax <code>&lt;T&gt;</code> introduces a type parameter that can be used throughout the function or type.</p>
 
-Generic functions preserve type information - if you pass a \`number[]\`, TypeScript knows the return type is \`number\`, not \`unknown\`. This enables:
-- **Type Safety**: Catch type errors at compile time
-- **Code Reuse**: Write once, use with any type
-- **IntelliSense**: Full IDE support for generic types
-- **Constraints**: Use \`extends\` to limit generic types
+<p>Generic functions preserve type information - if you pass a <code>number[]</code>, TypeScript knows the return type is <code>number</code>, not <code>unknown</code>. This enables:</p>
+<ul>
+  <li><strong>Type Safety</strong>: Catch type errors at compile time</li>
+  <li><strong>Code Reuse</strong>: Write once, use with any type</li>
+  <li><strong>IntelliSense</strong>: Full IDE support for generic types</li>
+  <li><strong>Constraints</strong>: Use <code>extends</code> to limit generic types</li>
+</ul>
 
-TypeScript can often infer generic types, so you don't always need to specify them explicitly. Generics are the foundation of TypeScript's type system.
+<p>TypeScript can often infer generic types, so you don't always need to specify them explicitly. Generics are the foundation of TypeScript's type system.</p>
 
-## Importance
+<h2>Importance</h2>
 
-Generics are fundamental to TypeScript because:
+<p>Generics are fundamental to TypeScript because:</p>
 
-- **Type Safety**: Maintain type safety in reusable code
-- **Code Reuse**: Write generic functions instead of type-specific duplicates
-- **Library Development**: Essential for building reusable libraries
-- **API Design**: Create flexible, type-safe APIs
-- **Collections**: Type-safe arrays, maps, sets, etc.
-- **Framework Development**: React, Vue, and other frameworks rely heavily on generics
+<ul>
+  <li><strong>Type Safety</strong>: Maintain type safety in reusable code</li>
+  <li><strong>Code Reuse</strong>: Write generic functions instead of type-specific duplicates</li>
+  <li><strong>Library Development</strong>: Essential for building reusable libraries</li>
+  <li><strong>API Design</strong>: Create flexible, type-safe APIs</li>
+  <li><strong>Collections</strong>: Type-safe arrays, maps, sets, etc.</li>
+  <li><strong>Framework Development</strong>: React, Vue, and other frameworks rely heavily on generics</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Generics are used everywhere in TypeScript:
+<p>Generics are used everywhere in TypeScript:</p>
 
-- **Array Functions**: \`map<T>\`, \`filter<T>\`, \`reduce<T>\`
-- **API Clients**: Generic API client functions
-- **State Management**: Generic state containers
-- **React Components**: Generic component props
-- **Utility Types**: \`Partial<T>\`, \`Pick<T>\`, \`Omit<T>\`
-- **Data Structures**: Generic stacks, queues, trees
-- **Event Handlers**: Generic event handler types
-- **Database ORMs**: Generic query builders and models
+<ul>
+  <li><strong>Array Functions</strong>: <code>map&lt;T&gt;</code>, <code>filter&lt;T&gt;</code>, <code>reduce&lt;T&gt;</code></li>
+  <li><strong>API Clients</strong>: Generic API client functions</li>
+  <li><strong>State Management</strong>: Generic state containers</li>
+  <li><strong>React Components</strong>: Generic component props</li>
+  <li><strong>Utility Types</strong>: <code>Partial&lt;T&gt;</code>, <code>Pick&lt;T&gt;</code>, <code>Omit&lt;T&gt;</code></li>
+  <li><strong>Data Structures</strong>: Generic stacks, queues, trees</li>
+  <li><strong>Event Handlers</strong>: Generic event handler types</li>
+  <li><strong>Database ORMs</strong>: Generic query builders and models</li>
+</ul>
 
-**Challenge:** Create generic functions and types.`,
+<p><strong>Challenge:</strong> Create generic functions and types.</p>`,
   examples: [
     {
       input: `function identity<T>(arg: T): T {

@@ -24,43 +24,49 @@ export const problem: Problem = {
   title: 'Union and Intersection Types',
   difficulty: 'medium',
   category: 'TypeScript Basics',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Union types (\`|\`) represent values that can be one of several types: \`string | number\` means "either string or number". Intersection types (\`&\`) combine multiple types: \`A & B\` means "both A and B".
+<p>Union types (<code>|</code>) represent values that can be one of several types: <code>string | number</code> means "either string or number". Intersection types (<code>&</code>) combine multiple types: <code>A & B</code> means "both A and B".</p>
 
-Union types require type narrowing (using \`typeof\`, \`instanceof\`, or type guards) to access type-specific properties. Intersection types combine all properties from both types.
+<p>Union types require type narrowing (using <code>typeof</code>, <code>instanceof</code>, or type guards) to access type-specific properties. Intersection types combine all properties from both types.</p>
 
-Key concepts:
-- **Union = OR**: Value can be any of the types
-- **Intersection = AND**: Value must satisfy all types
-- **Type Narrowing**: Required to use union types safely
-- **Discriminated Unions**: Union types with a common property for narrowing
+<p>Key concepts:</p>
+<ul>
+  <li><strong>Union = OR</strong>: Value can be any of the types</li>
+  <li><strong>Intersection = AND</strong>: Value must satisfy all types</li>
+  <li><strong>Type Narrowing</strong>: Required to use union types safely</li>
+  <li><strong>Discriminated Unions</strong>: Union types with a common property for narrowing</li>
+</ul>
 
-## Importance
+<h2>Importance</h2>
 
-Union and intersection types are essential because:
+<p>Union and intersection types are essential because:</p>
 
-- **Flexibility**: Represent values that can be multiple types
-- **Type Safety**: TypeScript ensures you handle all cases
-- **API Design**: Model APIs that return different types
-- **State Machines**: Represent state transitions with discriminated unions
-- **Composition**: Combine types to create new types
-- **Error Handling**: Type-safe error handling with union types
+<ul>
+  <li><strong>Flexibility</strong>: Represent values that can be multiple types</li>
+  <li><strong>Type Safety</strong>: TypeScript ensures you handle all cases</li>
+  <li><strong>API Design</strong>: Model APIs that return different types</li>
+  <li><strong>State Machines</strong>: Represent state transitions with discriminated unions</li>
+  <li><strong>Composition</strong>: Combine types to create new types</li>
+  <li><strong>Error Handling</strong>: Type-safe error handling with union types</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-These types are used extensively:
+<p>These types are used extensively:</p>
 
-- **API Responses**: \`type Response = Success | Error\`
-- **State Management**: \`type State = Loading | Success | Error\`
-- **Form Validation**: \`type ValidationResult = Valid | Invalid\`
-- **Optional Values**: \`type Maybe<T> = T | null | undefined\`
-- **Event Types**: Union of different event types
-- **Component Props**: Props that can be different shapes
-- **Configuration**: Options that can be different types
-- **Database Queries**: Results that can be different shapes
+<ul>
+  <li><strong>API Responses</strong>: <code>type Response = Success | Error</code></li>
+  <li><strong>State Management</strong>: <code>type State = Loading | Success | Error</code></li>
+  <li><strong>Form Validation</strong>: <code>type ValidationResult = Valid | Invalid</code></li>
+  <li><strong>Optional Values</strong>: <code>type Maybe&lt;T&gt; = T | null | undefined</code></li>
+  <li><strong>Event Types</strong>: Union of different event types</li>
+  <li><strong>Component Props</strong>: Props that can be different shapes</li>
+  <li><strong>Configuration</strong>: Options that can be different types</li>
+  <li><strong>Database Queries</strong>: Results that can be different shapes</li>
+</ul>
 
-**Challenge:** Use union and intersection types effectively.`,
+<p><strong>Challenge:</strong> Use union and intersection types effectively.</p>`,
   examples: [
     {
       input: `type StringOrNumber = string | number;

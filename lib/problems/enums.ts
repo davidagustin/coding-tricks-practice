@@ -24,43 +24,49 @@ export const problem: Problem = {
   title: 'Enums',
   difficulty: 'easy',
   category: 'TypeScript Basics',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Enums define a set of named constants, making code more readable and maintainable. TypeScript supports numeric enums (default, auto-incrementing) and string enums (explicit string values).
+<p>Enums define a set of named constants, making code more readable and maintainable. TypeScript supports numeric enums (default, auto-incrementing) and string enums (explicit string values).</p>
 
-Numeric enums auto-increment from 0, but you can set initial values. String enums require explicit values but are more readable and serialize better to JSON. Enums create both a type and a value at runtime (unlike most TypeScript types).
+<p>Numeric enums auto-increment from 0, but you can set initial values. String enums require explicit values but are more readable and serialize better to JSON. Enums create both a type and a value at runtime (unlike most TypeScript types).</p>
 
-Key features:
-- **Type Safety**: Prevents invalid values
-- **Autocomplete**: IDE support for enum values
-- **Reverse Mapping**: Numeric enums support reverse lookup
-- **Const Enums**: \`const enum\` for better performance (inlined at compile time)
+<p>Key features:</p>
+<ul>
+  <li><strong>Type Safety</strong>: Prevents invalid values</li>
+  <li><strong>Autocomplete</strong>: IDE support for enum values</li>
+  <li><strong>Reverse Mapping</strong>: Numeric enums support reverse lookup</li>
+  <li><strong>Const Enums</strong>: <code>const enum</code> for better performance (inlined at compile time)</li>
+</ul>
 
-## Importance
+<h2>Importance</h2>
 
-Enums are essential for type-safe constants because:
+<p>Enums are essential for type-safe constants because:</p>
 
-- **Type Safety**: Prevent typos and invalid values
-- **Refactoring**: Rename enum values safely across codebase
-- **Documentation**: Self-documenting code with named constants
-- **IDE Support**: Autocomplete and go-to-definition
-- **Maintainability**: Change values in one place
-- **API Contracts**: Type-safe API status codes and types
+<ul>
+  <li><strong>Type Safety</strong>: Prevent typos and invalid values</li>
+  <li><strong>Refactoring</strong>: Rename enum values safely across codebase</li>
+  <li><strong>Documentation</strong>: Self-documenting code with named constants</li>
+  <li><strong>IDE Support</strong>: Autocomplete and go-to-definition</li>
+  <li><strong>Maintainability</strong>: Change values in one place</li>
+  <li><strong>API Contracts</strong>: Type-safe API status codes and types</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Enums are used extensively:
+<p>Enums are used extensively:</p>
 
-- **Status Codes**: \`enum Status { Pending, Approved, Rejected }\`
-- **API Responses**: HTTP status codes, error codes
-- **State Management**: Application state enums
-- **Configuration**: Environment types, feature flags
-- **UI States**: Loading, success, error states
-- **Permissions**: User role and permission enums
-- **Directions**: Navigation and direction enums
-- **Event Types**: Type-safe event type constants
+<ul>
+  <li><strong>Status Codes</strong>: <code>enum Status { Pending, Approved, Rejected }</code></li>
+  <li><strong>API Responses</strong>: HTTP status codes, error codes</li>
+  <li><strong>State Management</strong>: Application state enums</li>
+  <li><strong>Configuration</strong>: Environment types, feature flags</li>
+  <li><strong>UI States</strong>: Loading, success, error states</li>
+  <li><strong>Permissions</strong>: User role and permission enums</li>
+  <li><strong>Directions</strong>: Navigation and direction enums</li>
+  <li><strong>Event Types</strong>: Type-safe event type constants</li>
+</ul>
 
-**Challenge:** Create and use enums effectively.`,
+<p><strong>Challenge:</strong> Create and use enums effectively.</p>`,
   examples: [
     {
       input: `enum Status {

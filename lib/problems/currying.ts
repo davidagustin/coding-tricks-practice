@@ -24,43 +24,49 @@ export const problem: Problem = {
   title: 'Function Currying',
   difficulty: 'medium',
   category: 'Functional Programming',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Currying transforms a function that takes multiple arguments into a sequence of functions, each taking a single argument. Instead of \`f(a, b, c)\`, you get \`f(a)(b)(c)\`. Each function returns another function until all arguments are provided.
+<p>Currying transforms a function that takes multiple arguments into a sequence of functions, each taking a single argument. Instead of <code>f(a, b, c)</code>, you get <code>f(a)(b)(c)</code>. Each function returns another function until all arguments are provided.</p>
 
-Currying enables:
-- **Partial Application**: Apply some arguments now, others later
-- **Function Composition**: Easier to compose functions
-- **Reusability**: Create specialized functions from general ones
-- **Functional Style**: Enables point-free programming
+<p>Currying enables:</p>
+<ul>
+  <li><strong>Partial Application</strong>: Apply some arguments now, others later</li>
+  <li><strong>Function Composition</strong>: Easier to compose functions</li>
+  <li><strong>Reusability</strong>: Create specialized functions from general ones</li>
+  <li><strong>Functional Style</strong>: Enables point-free programming</li>
+</ul>
 
-The key insight is that curried functions are more flexible - you can partially apply arguments to create new functions, making code more reusable and composable.
+<p>The key insight is that curried functions are more flexible - you can partially apply arguments to create new functions, making code more reusable and composable.</p>
 
-## Importance
+<h2>Importance</h2>
 
-Currying is fundamental to functional programming because:
+<p>Currying is fundamental to functional programming because:</p>
 
-- **Partial Application**: Create specialized functions from general ones
-- **Function Composition**: Easier to compose and chain functions
-- **Code Reusability**: Write more generic, reusable functions
-- **Functional Style**: Enables functional programming patterns
-- **Library Design**: Many functional libraries use currying
-- **Testability**: Easier to test functions with partial application
+<ul>
+  <li><strong>Partial Application</strong>: Create specialized functions from general ones</li>
+  <li><strong>Function Composition</strong>: Easier to compose and chain functions</li>
+  <li><strong>Code Reusability</strong>: Write more generic, reusable functions</li>
+  <li><strong>Functional Style</strong>: Enables functional programming patterns</li>
+  <li><strong>Library Design</strong>: Many functional libraries use currying</li>
+  <li><strong>Testability</strong>: Easier to test functions with partial application</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Currying is used extensively in functional programming:
+<p>Currying is used extensively in functional programming:</p>
 
-- **Event Handlers**: \`const handleClick = handleEvent('click')\`
-- **API Calls**: \`const getUser = apiCall('/users')\`
-- **Validation**: \`const validateEmail = validate('email')\`
-- **Configuration**: \`const createLogger = logger(config)\`
-- **Data Transformation**: Creating reusable transformation functions
-- **Functional Libraries**: Lodash, Ramda use currying extensively
-- **React Hooks**: Custom hooks often use currying patterns
-- **Middleware**: Express.js middleware uses currying
+<ul>
+  <li><strong>Event Handlers</strong>: <code>const handleClick = handleEvent('click')</code></li>
+  <li><strong>API Calls</strong>: <code>const getUser = apiCall('/users')</code></li>
+  <li><strong>Validation</strong>: <code>const validateEmail = validate('email')</code></li>
+  <li><strong>Configuration</strong>: <code>const createLogger = logger(config)</code></li>
+  <li><strong>Data Transformation</strong>: Creating reusable transformation functions</li>
+  <li><strong>Functional Libraries</strong>: Lodash, Ramda use currying extensively</li>
+  <li><strong>React Hooks</strong>: Custom hooks often use currying patterns</li>
+  <li><strong>Middleware</strong>: Express.js middleware uses currying</li>
+</ul>
 
-**Challenge:** Create curried functions and a generic curry utility.`,
+<p><strong>Challenge:</strong> Create curried functions and a generic curry utility.</p>`,
   examples: [
     {
       input: `const add = a => b => a + b; add(2)(3)`,

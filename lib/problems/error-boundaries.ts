@@ -24,47 +24,55 @@ export const problem: Problem = {
   title: 'Error Handling Patterns',
   difficulty: 'medium',
   category: 'Async/Promises',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Error handling in async code requires understanding when and how to catch errors. \`try/catch\` works with \`async/await\`, while \`.catch()\` works with promise chains. The key is catching errors at the right level and providing appropriate fallbacks or user feedback.
+<p>Error handling in async code requires understanding when and how to catch errors. <code>try/catch</code> works with <code>async/await</code>, while <code>.catch()</code> works with promise chains. The key is catching errors at the right level and providing appropriate fallbacks or user feedback.</p>
 
-Error boundaries (a React concept) can be generalized to any error handling strategy that:
-1. Catches errors from a specific scope
-2. Provides fallback behavior
-3. Prevents errors from propagating further
-4. Logs errors for debugging
+<p>Error boundaries (a React concept) can be generalized to any error handling strategy that:</p>
+<ol>
+  <li>Catches errors from a specific scope</li>
+  <li>Provides fallback behavior</li>
+  <li>Prevents errors from propagating further</li>
+  <li>Logs errors for debugging</li>
+</ol>
 
-The pattern involves:
-- Catching errors at appropriate boundaries
-- Providing fallback values or UI
-- Logging errors for monitoring
-- Distinguishing between retryable and non-retryable errors
+<p>The pattern involves:</p>
+<ul>
+  <li>Catching errors at appropriate boundaries</li>
+  <li>Providing fallback values or UI</li>
+  <li>Logging errors for monitoring</li>
+  <li>Distinguishing between retryable and non-retryable errors</li>
+</ul>
 
-## Importance
+<h2>Importance</h2>
 
-Proper error handling is critical because:
+<p>Proper error handling is critical because:</p>
 
-- **User Experience**: Prevents applications from crashing, provides graceful degradation
-- **Debugging**: Error logging helps identify and fix issues
-- **Reliability**: Applications continue functioning even when parts fail
-- **Monitoring**: Error tracking enables proactive issue detection
-- **Security**: Prevents error messages from leaking sensitive information
-- **Resilience**: Applications can recover from transient failures
+<ul>
+  <li><strong>User Experience</strong>: Prevents applications from crashing, provides graceful degradation</li>
+  <li><strong>Debugging</strong>: Error logging helps identify and fix issues</li>
+  <li><strong>Reliability</strong>: Applications continue functioning even when parts fail</li>
+  <li><strong>Monitoring</strong>: Error tracking enables proactive issue detection</li>
+  <li><strong>Security</strong>: Prevents error messages from leaking sensitive information</li>
+  <li><strong>Resilience</strong>: Applications can recover from transient failures</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Error handling is essential in all applications:
+<p>Error handling is essential in all applications:</p>
 
-- **API Calls**: Handling network errors, timeouts, and API errors
-- **Form Validation**: Catching and displaying validation errors
-- **File Operations**: Handling file read/write errors
-- **Database Operations**: Handling connection and query errors
-- **Third-Party Services**: Handling failures from external services
-- **User Input**: Validating and handling invalid user input
-- **Component Errors**: React error boundaries for component errors
-- **Async Operations**: Handling errors in async workflows
+<ul>
+  <li><strong>API Calls</strong>: Handling network errors, timeouts, and API errors</li>
+  <li><strong>Form Validation</strong>: Catching and displaying validation errors</li>
+  <li><strong>File Operations</strong>: Handling file read/write errors</li>
+  <li><strong>Database Operations</strong>: Handling connection and query errors</li>
+  <li><strong>Third-Party Services</strong>: Handling failures from external services</li>
+  <li><strong>User Input</strong>: Validating and handling invalid user input</li>
+  <li><strong>Component Errors</strong>: React error boundaries for component errors</li>
+  <li><strong>Async Operations</strong>: Handling errors in async workflows</li>
+</ul>
 
-**Challenge:** Implement comprehensive error handling.`,
+<p><strong>Challenge:</strong> Implement comprehensive error handling.</p>`,
   examples: [
     {
       input: `try { await riskyOperation(); } catch (error) { handle(error); }`,

@@ -24,39 +24,43 @@ export const problem: Problem = {
   title: 'Promise.race for Timeouts',
   difficulty: 'medium',
   category: 'Async/Promises',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-\`Promise.race()\` is a powerful method that takes an array of promises and returns a new promise that settles (resolves or rejects) as soon as the first promise in the array settles. This behavior makes it perfect for implementing timeouts.
+<p>\<code>Promise.race()\</code> is a powerful method that takes an array of promises and returns a new promise that settles (resolves or rejects) as soon as the first promise in the array settles. This behavior makes it perfect for implementing timeouts.</p>
 
-The timeout pattern works by racing your actual promise against a "timeout promise" that rejects after a specified duration. If your promise completes first, you get its result. If the timeout promise settles first, you get a timeout error. This ensures that operations don't hang indefinitely.
+<p>The timeout pattern works by racing your actual promise against a "timeout promise" that rejects after a specified duration. If your promise completes first, you get its result. If the timeout promise settles first, you get a timeout error. This ensures that operations don't hang indefinitely.</p>
 
-The key insight is that \`Promise.race()\` doesn't wait for all promises - it returns immediately when any promise settles, making it ideal for timeout scenarios where you want to enforce a maximum wait time.
+<p>The key insight is that \<code>Promise.race()\</code> doesn't wait for all promises - it returns immediately when any promise settles, making it ideal for timeout scenarios where you want to enforce a maximum wait time.</p>
 
-## Importance
+<h2>Importance</h2>
 
-Timeouts are critical for building robust applications because:
+<p>Timeouts are critical for building robust applications because:</p>
 
-- **Prevents Hanging**: Ensures operations don't wait indefinitely
-- **User Experience**: Provides feedback when operations take too long
-- **Resource Management**: Prevents resource leaks from long-running operations
-- **Error Handling**: Allows graceful degradation when services are slow
-- **Network Resilience**: Essential for handling unreliable network conditions
-- **API Reliability**: Protects against slow or unresponsive APIs
+<ul>
+  <li><strong>Prevents Hanging</strong>: Ensures operations don't wait indefinitely</li>
+  <li><strong>User Experience</strong>: Provides feedback when operations take too long</li>
+  <li><strong>Resource Management</strong>: Prevents resource leaks from long-running operations</li>
+  <li><strong>Error Handling</strong>: Allows graceful degradation when services are slow</li>
+  <li><strong>Network Resilience</strong>: Essential for handling unreliable network conditions</li>
+  <li><strong>API Reliability</strong>: Protects against slow or unresponsive APIs</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-This pattern is essential in production applications:
+<p>This pattern is essential in production applications:</p>
 
-- **API Calls**: Adding timeouts to fetch requests, preventing infinite waits
-- **Database Queries**: Enforcing maximum query execution time
-- **File Operations**: Timeout for file reads/writes that might hang
-- **Third-Party Services**: Protecting against slow external API calls
-- **User Actions**: Timeout for user-triggered operations (uploads, downloads)
-- **WebSocket Connections**: Implementing connection timeouts
-- **Authentication**: Timeout for login/authentication flows
-- **Data Fetching**: Timeout for data loading in React/Vue applications
+<ul>
+  <li><strong>API Calls</strong>: Adding timeouts to fetch requests, preventing infinite waits</li>
+  <li><strong>Database Queries</strong>: Enforcing maximum query execution time</li>
+  <li><strong>File Operations</strong>: Timeout for file reads/writes that might hang</li>
+  <li><strong>Third-Party Services</strong>: Protecting against slow external API calls</li>
+  <li><strong>User Actions</strong>: Timeout for user-triggered operations (uploads, downloads)</li>
+  <li><strong>WebSocket Connections</strong>: Implementing connection timeouts</li>
+  <li><strong>Authentication</strong>: Timeout for login/authentication flows</li>
+  <li><strong>Data Fetching</strong>: Timeout for data loading in React/Vue applications</li>
+</ul>
 
-**Challenge:** Create a withTimeout function that rejects if the promise takes too long.`,
+<p><strong>Challenge:</strong> Create a withTimeout function that rejects if the promise takes too long.</p>`,
   examples: [
     {
       input: `await withTimeout(fetch('/api/data'), 5000)`,

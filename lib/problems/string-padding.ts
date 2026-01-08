@@ -24,46 +24,54 @@ export const problem: Problem = {
   title: 'String Padding and Formatting',
   difficulty: 'easy',
   category: 'String Methods',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-\`padStart()\` and \`padEnd()\` add padding characters to strings to reach a specified length. \`padStart()\` adds padding at the beginning (left), \`padEnd()\` adds padding at the end (right).
+<p>\<code>padStart()\</code> and \<code>padEnd()\</code> add padding characters to strings to reach a specified length. \<code>padStart()\</code> adds padding at the beginning (left), \<code>padEnd()\</code> adds padding at the end (right).</p>
 
-The syntax: \`str.padStart(targetLength, padString)\`
-- \`targetLength\`: Desired length of the resulting string
-- \`padString\`: Character(s) to pad with (defaults to space)
+<p>The syntax: \<code>str.padStart(targetLength, padString)\</code></p>
+<ul>
+  <li>\<code>targetLength\</code>: Desired length of the resulting string</li>
+  <li>\<code>padString\</code>: Character(s) to pad with (defaults to space)</li>
+</ul>
 
-Common uses:
-- **Leading Zeros**: Format numbers with leading zeros (\`'5'.padStart(2, '0')\` → \`'05'\`)
-- **Alignment**: Align text in tables or columns
-- **Masking**: Mask sensitive data (credit cards, SSNs)
-- **Time Formatting**: Format time as HH:MM:SS
-- **ID Formatting**: Format IDs with consistent length
+<p>Common uses:</p>
+<ul>
+  <li><strong>Leading Zeros</strong>: Format numbers with leading zeros (\<code>'5'.padStart(2, '0')\</code> → \<code>'05'\</code>)</li>
+  <li><strong>Alignment</strong>: Align text in tables or columns</li>
+  <li><strong>Masking</strong>: Mask sensitive data (credit cards, SSNs)</li>
+  <li><strong>Time Formatting</strong>: Format time as HH:MM:SS</li>
+  <li><strong>ID Formatting</strong>: Format IDs with consistent length</li>
+</ul>
 
-## Importance
+<h2>Importance</h2>
 
-String padding is essential for formatting because:
+<p>String padding is essential for formatting because:</p>
 
-- **Consistency**: Ensure consistent string lengths for display
-- **Alignment**: Align text in tables, columns, reports
-- **Formatting**: Format numbers, dates, IDs consistently
-- **Security**: Mask sensitive information
-- **User Experience**: Better formatted output improves UX
-- **Data Presentation**: Professional-looking formatted data
+<ul>
+  <li><strong>Consistency</strong>: Ensure consistent string lengths for display</li>
+  <li><strong>Alignment</strong>: Align text in tables, columns, reports</li>
+  <li><strong>Formatting</strong>: Format numbers, dates, IDs consistently</li>
+  <li><strong>Security</strong>: Mask sensitive information</li>
+  <li><strong>User Experience</strong>: Better formatted output improves UX</li>
+  <li><strong>Data Presentation</strong>: Professional-looking formatted data</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-String padding is used extensively:
+<p>String padding is used extensively:</p>
 
-- **Time Formatting**: Format time as HH:MM:SS with leading zeros
-- **Date Formatting**: Format dates with consistent padding
-- **ID Formatting**: Format IDs, order numbers with leading zeros
-- **Table Alignment**: Align columns in text tables
-- **Currency Formatting**: Right-align currency values
-- **Masking**: Mask credit card numbers, phone numbers
-- **Logging**: Format log entries with consistent widths
-- **Reports**: Format report data with consistent alignment
+<ul>
+  <li><strong>Time Formatting</strong>: Format time as HH:MM:SS with leading zeros</li>
+  <li><strong>Date Formatting</strong>: Format dates with consistent padding</li>
+  <li><strong>ID Formatting</strong>: Format IDs, order numbers with leading zeros</li>
+  <li><strong>Table Alignment</strong>: Align columns in text tables</li>
+  <li><strong>Currency Formatting</strong>: Right-align currency values</li>
+  <li><strong>Masking</strong>: Mask credit card numbers, phone numbers</li>
+  <li><strong>Logging</strong>: Format log entries with consistent widths</li>
+  <li><strong>Reports</strong>: Format report data with consistent alignment</li>
+</ul>
 
-**Challenge:** Format numbers, create aligned output, and mask strings.`,
+<p><strong>Challenge:</strong> Format numbers, create aligned output, and mask strings.</p>`,
   examples: [
     {
       input: `'5'.padStart(2, '0')`,

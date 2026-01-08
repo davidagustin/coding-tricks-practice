@@ -24,45 +24,50 @@ export const problem: Problem = {
   title: 'Short-Circuit Evaluation',
   difficulty: 'easy',
   category: 'JavaScript Basics',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Short-circuit evaluation is a feature where logical operators (\`&&\` and \`||\`) don't evaluate the right operand if the result can be determined from the left operand alone.
+<p>Short-circuit evaluation is a feature where logical operators (\<code>&&\</code> and \<code>||\</code>) don't evaluate the right operand if the result can be determined from the left operand alone.</p>
 
-\`&&\` (AND): Returns the first falsy value, or the last value if all are truthy. Stops evaluating at the first falsy value.
-\`||\` (OR): Returns the first truthy value, or the last value if all are falsy. Stops evaluating at the first truthy value.
+<p>\<code>&&\</code> (AND): Returns the first falsy value, or the last value if all are truthy. Stops evaluating at the first falsy value. \<code>||\</code> (OR): Returns the first truthy value, or the last value if all are falsy. Stops evaluating at the first truthy value.</p>
 
-This enables:
-- **Conditional Execution**: \`condition && doSomething()\` - only executes if condition is truthy
-- **Default Values**: \`value || defaultValue\` - uses default if value is falsy
-- **Optional Chaining**: \`obj && obj.prop && obj.prop.value\` - safely access nested properties
+<p>This enables:</p>
+<ul>
+  <li><strong>Conditional Execution</strong>: \<code>condition && doSomething()\</code> - only executes if condition is truthy</li>
+  <li><strong>Default Values</strong>: \<code>value || defaultValue\</code> - uses default if value is falsy</li>
+  <li><strong>Optional Chaining</strong>: \<code>obj && obj.prop && obj.prop.value\</code> - safely access nested properties</li>
+</ul>
 
-Important: Be careful with falsy values like \`0\`, \`''\`, \`false\` - they will trigger defaults with \`||\`.
+<p>Important: Be careful with falsy values like <code>0</code>, <code>''</code>, <code>false</code> - they will trigger defaults with <code>||</code>.</p>
 
-## Importance
+<h2>Importance</h2>
 
-Short-circuit evaluation is essential for concise JavaScript because:
+<p>Short-circuit evaluation is essential for concise JavaScript because:</p>
 
-- **Code Conciseness**: Replace if statements with one-liners
-- **Default Values**: Common pattern for providing defaults
-- **Optional Access**: Safely access properties that might not exist
-- **Performance**: Avoids unnecessary evaluations
-- **Readability**: More readable than verbose if statements
-- **Functional Style**: Enables functional programming patterns
+<ul>
+  <li><strong>Code Conciseness</strong>: Replace if statements with one-liners</li>
+  <li><strong>Default Values</strong>: Common pattern for providing defaults</li>
+  <li><strong>Optional Access</strong>: Safely access properties that might not exist</li>
+  <li><strong>Performance</strong>: Avoids unnecessary evaluations</li>
+  <li><strong>Readability</strong>: More readable than verbose if statements</li>
+  <li><strong>Functional Style</strong>: Enables functional programming patterns</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Short-circuit evaluation is used everywhere:
+<p>Short-circuit evaluation is used everywhere:</p>
 
-- **Default Values**: \`const name = user.name || 'Guest'\`
-- **Conditional Rendering**: React \`{isLoggedIn && <Dashboard />}\`
-- **Optional Chaining**: \`user && user.profile && user.profile.name\`
-- **Function Calls**: \`config && config.onLoad && config.onLoad()\`
-- **API Responses**: \`response.data || []\` for default empty array
-- **Configuration**: \`timeout || 5000\` for default timeout
-- **Validation**: \`email && validateEmail(email)\`
-- **Error Handling**: \`error && console.error(error)\`
+<ul>
+  <li><strong>Default Values</strong>: <code>const name = user.name || 'Guest'</code></li>
+  <li><strong>Conditional Rendering</strong>: React <code>{isLoggedIn && &lt;Dashboard /&gt;}</code></li>
+  <li><strong>Optional Chaining</strong>: <code>user && user.profile && user.profile.name</code></li>
+  <li><strong>Function Calls</strong>: <code>config && config.onLoad && config.onLoad()</code></li>
+  <li><strong>API Responses</strong>: <code>response.data || []</code> for default empty array</li>
+  <li><strong>Configuration</strong>: <code>timeout || 5000</code> for default timeout</li>
+  <li><strong>Validation</strong>: <code>email && validateEmail(email)</code></li>
+  <li><strong>Error Handling</strong>: <code>error && console.error(error)</code></li>
+</ul>
 
-**Challenge:** Replace if statements with short-circuit patterns.`,
+<p><strong>Challenge:</strong> Replace if statements with short-circuit patterns.</p>`,
   examples: [
     {
       input: `const name = user && user.name;`,

@@ -24,43 +24,43 @@ export const problem: Problem = {
   title: 'Advanced Reduce Patterns',
   difficulty: 'medium',
   category: 'Array Methods',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-\`reduce\` is the most powerful array method, capable of implementing any array transformation. Advanced patterns include:
+<p>\<code>reduce\</code> is the most powerful array method, capable of implementing any array transformation. Advanced patterns include:</p>
 
-**Counting**: Build objects that count occurrences - \`{ item: count }\`
-**Grouping**: Build objects that group items - \`{ key: [items] }\`
-**Running Totals**: Build arrays with cumulative values
-**Flattening**: Flatten nested arrays
-**Transforming**: Transform arrays into any data structure
+<p><strong>Counting</strong>: Build objects that count occurrences - \<code>{ item: count }\</code> <strong>Grouping</strong>: Build objects that group items - \<code>{ key: [items] }\</code> <strong>Running Totals</strong>: Build arrays with cumulative values <strong>Flattening</strong>: Flatten nested arrays <strong>Transforming</strong>: Transform arrays into any data structure</p>
 
-The key insight is that the accumulator can be any type - object, array, Map, Set, or even a primitive. This flexibility makes \`reduce\` capable of replacing combinations of \`filter\`, \`map\`, and other methods in a single pass.
+<p>The key insight is that the accumulator can be any type - object, array, Map, Set, or even a primitive. This flexibility makes <code>reduce</code> capable of replacing combinations of <code>filter</code>, <code>map</code>, and other methods in a single pass.</p>
 
-## Importance
+<h2>Importance</h2>
 
-Advanced reduce patterns are essential for data processing because:
+<p>Advanced reduce patterns are essential for data processing because:</p>
 
-- **Performance**: Single pass instead of multiple iterations
-- **Flexibility**: Can build any data structure
-- **Power**: Most general-purpose array method
-- **Functional Style**: Core to functional programming
-- **Data Transformation**: Essential for ETL operations
-- **Code Efficiency**: Replace multiple method chains with one reduce
+<ul>
+  <li><strong>Performance</strong>: Single pass instead of multiple iterations</li>
+  <li><strong>Flexibility</strong>: Can build any data structure</li>
+  <li><strong>Power</strong>: Most general-purpose array method</li>
+  <li><strong>Functional Style</strong>: Core to functional programming</li>
+  <li><strong>Data Transformation</strong>: Essential for ETL operations</li>
+  <li><strong>Code Efficiency</strong>: Replace multiple method chains with one reduce</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-These patterns are used extensively:
+<p>These patterns are used extensively:</p>
 
-- **Data Analytics**: Counting occurrences, grouping by categories
-- **State Management**: Building state objects from arrays
-- **API Processing**: Transforming API responses into desired formats
-- **Report Generation**: Grouping and aggregating data for reports
-- **Data Normalization**: Normalizing nested data structures
-- **Statistics**: Calculating running totals, averages, etc.
-- **UI Data Preparation**: Preparing data for display (grouping, counting)
-- **Database Queries**: Mimicking SQL GROUP BY, COUNT operations
+<ul>
+  <li><strong>Data Analytics</strong>: Counting occurrences, grouping by categories</li>
+  <li><strong>State Management</strong>: Building state objects from arrays</li>
+  <li><strong>API Processing</strong>: Transforming API responses into desired formats</li>
+  <li><strong>Report Generation</strong>: Grouping and aggregating data for reports</li>
+  <li><strong>Data Normalization</strong>: Normalizing nested data structures</li>
+  <li><strong>Statistics</strong>: Calculating running totals, averages, etc.</li>
+  <li><strong>UI Data Preparation</strong>: Preparing data for display (grouping, counting)</li>
+  <li><strong>Database Queries</strong>: Mimicking SQL GROUP BY, COUNT operations</li>
+</ul>
 
-**Challenge:** Use reduce for grouping, counting occurrences, and running totals.`,
+<p><strong>Challenge:</strong> Use reduce for grouping, counting occurrences, and running totals.</p>`,
   examples: [
     {
       input: `['apple', 'banana', 'apple', 'cherry', 'banana', 'apple']`,

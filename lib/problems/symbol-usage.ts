@@ -24,46 +24,54 @@ export const problem: Problem = {
   title: 'Symbols for Unique Keys',
   difficulty: 'medium',
   category: 'Object Methods',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Symbols are unique, immutable primitive values that can be used as property keys. Every Symbol is unique, even if created with the same description. This makes them perfect for creating "private" properties that won't conflict with other code.
+<p>Symbols are unique, immutable primitive values that can be used as property keys. Every Symbol is unique, even if created with the same description. This makes them perfect for creating "private" properties that won't conflict with other code.</p>
 
-Key characteristics:
-- **Uniqueness**: Each Symbol is unique, even with the same description
-- **Privacy**: Symbol properties are not enumerable (won't show in Object.keys(), for...in)
-- **Well-Known Symbols**: Built-in symbols like Symbol.iterator, Symbol.toStringTag for meta-programming
-- **Global Registry**: Symbol.for() creates shared symbols in a global registry
+<p>Key characteristics:</p>
+<ul>
+  <li><strong>Uniqueness</strong>: Each Symbol is unique, even with the same description</li>
+  <li><strong>Privacy</strong>: Symbol properties are not enumerable (won't show in Object.keys(), for...in)</li>
+  <li><strong>Well-Known Symbols</strong>: Built-in symbols like Symbol.iterator, Symbol.toStringTag for meta-programming</li>
+  <li><strong>Global Registry</strong>: Symbol.for() creates shared symbols in a global registry</li>
+</ul>
 
-Symbols enable:
-- Private properties (not truly private, but hidden from enumeration)
-- Well-known symbols for customizing object behavior (iteration, string conversion)
-- Avoiding property name collisions in libraries
+<p>Symbols enable:</p>
+<ul>
+  <li>Private properties (not truly private, but hidden from enumeration)</li>
+  <li>Well-known symbols for customizing object behavior (iteration, string conversion)</li>
+  <li>Avoiding property name collisions in libraries</li>
+</ul>
 
-## Importance
+<h2>Importance</h2>
 
-Symbols are essential for advanced JavaScript patterns because:
+<p>Symbols are essential for advanced JavaScript patterns because:</p>
 
-- **Property Privacy**: Create properties that don't appear in enumeration
-- **Library Development**: Avoid property name collisions in libraries
-- **Meta-Programming**: Well-known symbols customize object behavior
-- **Iteration**: Symbol.iterator enables custom iteration behavior
-- **Type Safety**: Symbols can be used for type branding in TypeScript
-- **Framework Development**: Essential for frameworks that attach metadata
+<ul>
+  <li><strong>Property Privacy</strong>: Create properties that don't appear in enumeration</li>
+  <li><strong>Library Development</strong>: Avoid property name collisions in libraries</li>
+  <li><strong>Meta-Programming</strong>: Well-known symbols customize object behavior</li>
+  <li><strong>Iteration</strong>: Symbol.iterator enables custom iteration behavior</li>
+  <li><strong>Type Safety</strong>: Symbols can be used for type branding in TypeScript</li>
+  <li><strong>Framework Development</strong>: Essential for frameworks that attach metadata</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Symbols are used extensively:
+<p>Symbols are used extensively:</p>
 
-- **Private Properties**: Creating "private" properties in objects
-- **Library Internals**: Storing internal library state without conflicts
-- **Custom Iteration**: Implementing Symbol.iterator for custom iterables
-- **Type Branding**: Creating distinct types in TypeScript
-- **Metadata Storage**: Storing metadata about objects
-- **Framework Internals**: React, Vue use symbols for internal tracking
-- **Polyfills**: Implementing new language features using symbols
-- **Serialization**: Controlling JSON.stringify behavior with Symbol.toPrimitive
+<ul>
+  <li><strong>Private Properties</strong>: Creating "private" properties in objects</li>
+  <li><strong>Library Internals</strong>: Storing internal library state without conflicts</li>
+  <li><strong>Custom Iteration</strong>: Implementing Symbol.iterator for custom iterables</li>
+  <li><strong>Type Branding</strong>: Creating distinct types in TypeScript</li>
+  <li><strong>Metadata Storage</strong>: Storing metadata about objects</li>
+  <li><strong>Framework Internals</strong>: React, Vue use symbols for internal tracking</li>
+  <li><strong>Polyfills</strong>: Implementing new language features using symbols</li>
+  <li><strong>Serialization</strong>: Controlling JSON.stringify behavior with Symbol.toPrimitive</li>
+</ul>
 
-**Challenge:** Use Symbols for private properties and well-known symbols.`,
+<p><strong>Challenge:</strong> Use Symbols for private properties and well-known symbols.</p>`,
   examples: [
     {
       input: `const ID = Symbol('id');`,

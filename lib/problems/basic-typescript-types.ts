@@ -24,43 +24,49 @@ export const problem: Problem = {
   title: 'Basic TypeScript Types',
   difficulty: 'easy',
   category: 'TypeScript Basics',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-TypeScript adds static type checking to JavaScript, catching errors at compile-time rather than runtime. Basic types include primitives (\`string\`, \`number\`, \`boolean\`) and special types (\`null\`, \`undefined\`, \`void\`).
+<p>TypeScript adds static type checking to JavaScript, catching errors at compile-time rather than runtime. Basic types include primitives (<code>string</code>, <code>number</code>, <code>boolean</code>) and special types (<code>null</code>, <code>undefined</code>, <code>void</code>).</p>
 
-Type annotations use the syntax \`variable: type\` or \`function(param: type): returnType\`. TypeScript infers types when possible, but explicit annotations provide:
-- Documentation: Types serve as inline documentation
-- Error Prevention: Catch type mismatches before runtime
-- IDE Support: Better autocomplete and refactoring
-- Refactoring Safety: Changes are checked across the codebase
+<p>Type annotations use the syntax <code>variable: type</code> or <code>function(param: type): returnType</code>. TypeScript infers types when possible, but explicit annotations provide:</p>
+<ul>
+  <li>Documentation: Types serve as inline documentation</li>
+  <li>Error Prevention: Catch type mismatches before runtime</li>
+  <li>IDE Support: Better autocomplete and refactoring</li>
+  <li>Refactoring Safety: Changes are checked across the codebase</li>
+</ul>
 
-Arrays can be typed as \`Type[]\` or \`Array<Type>\`. TypeScript's type system is structural (duck typing) - if it looks like a duck and quacks like a duck, it's a duck.
+<p>Arrays can be typed as <code>Type[]</code> or <code>Array&lt;Type&gt;</code>. TypeScript's type system is structural (duck typing) - if it looks like a duck and quacks like a duck, it's a duck.</p>
 
-## Importance
+<h2>Importance</h2>
 
-Basic types are the foundation of TypeScript because:
+<p>Basic types are the foundation of TypeScript because:</p>
 
-- **Type Safety**: Prevents common JavaScript errors (wrong types, undefined access)
-- **Documentation**: Types document code without comments
-- **Refactoring**: Safe refactoring with compiler checking
-- **IDE Support**: Autocomplete, go-to-definition, find-references
-- **Team Collaboration**: Types make code easier to understand for teams
-- **Early Error Detection**: Catch bugs during development, not production
+<ul>
+  <li><strong>Type Safety</strong>: Prevents common JavaScript errors (wrong types, undefined access)</li>
+  <li><strong>Documentation</strong>: Types document code without comments</li>
+  <li><strong>Refactoring</strong>: Safe refactoring with compiler checking</li>
+  <li><strong>IDE Support</strong>: Autocomplete, go-to-definition, find-references</li>
+  <li><strong>Team Collaboration</strong>: Types make code easier to understand for teams</li>
+  <li><strong>Early Error Detection</strong>: Catch bugs during development, not production</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Type annotations are used everywhere in TypeScript:
+<p>Type annotations are used everywhere in TypeScript:</p>
 
-- **Function Signatures**: Documenting parameters and return types
-- **Variable Declarations**: Ensuring variables hold expected types
-- **API Contracts**: Defining interfaces between modules
-- **Configuration Objects**: Typing configuration and settings
-- **Data Models**: Typing database models and DTOs
-- **Form Validation**: Ensuring form data matches expected types
-- **State Management**: Typing application state
-- **Component Props**: Typing React/Vue component props
+<ul>
+  <li><strong>Function Signatures</strong>: Documenting parameters and return types</li>
+  <li><strong>Variable Declarations</strong>: Ensuring variables hold expected types</li>
+  <li><strong>API Contracts</strong>: Defining interfaces between modules</li>
+  <li><strong>Configuration Objects</strong>: Typing configuration and settings</li>
+  <li><strong>Data Models</strong>: Typing database models and DTOs</li>
+  <li><strong>Form Validation</strong>: Ensuring form data matches expected types</li>
+  <li><strong>State Management</strong>: Typing application state</li>
+  <li><strong>Component Props</strong>: Typing React/Vue component props</li>
+</ul>
 
-**Challenge:** Add proper type annotations to functions and variables.`,
+<p><strong>Challenge:</strong> Add proper type annotations to functions and variables.</p>`,
   examples: [
     {
       input: `const name: string = 'John';

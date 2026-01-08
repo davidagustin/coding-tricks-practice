@@ -24,39 +24,43 @@ export const problem: Problem = {
   title: 'Object.fromEntries / Object.entries',
   difficulty: 'medium',
   category: 'Object Methods',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-\`Object.entries()\` and \`Object.fromEntries()\` form a powerful pair that allows you to convert objects to arrays and back. This transformation enables you to leverage all array methods (map, filter, reduce, etc.) on object properties, then convert the result back to an object.
+<p><code>Object.entries()</code> and <code>Object.fromEntries()</code> form a powerful pair that allows you to convert objects to arrays and back. This transformation enables you to leverage all array methods (map, filter, reduce, etc.) on object properties, then convert the result back to an object.</p>
 
-\`Object.entries(obj)\` converts an object into an array of [key, value] pairs: \`[['key1', value1], ['key2', value2], ...]\`. Once in array form, you can use any array method to transform, filter, or manipulate the entries. \`Object.fromEntries()\` does the reverse - it takes an array of [key, value] pairs and reconstructs an object.
+<p><code>Object.entries(obj)</code> converts an object into an array of [key, value] pairs: <code>[['key1', value1], ['key2', value2], ...]</code>. Once in array form, you can use any array method to transform, filter, or manipulate the entries. <code>Object.fromEntries()</code> does the reverse - it takes an array of [key, value] pairs and reconstructs an object.</p>
 
-This pattern is particularly powerful because it bridges the gap between object-oriented and functional programming paradigms, allowing you to apply functional transformations to objects.
+<p>This pattern is particularly powerful because it bridges the gap between object-oriented and functional programming paradigms, allowing you to apply functional transformations to objects.</p>
 
-## Importance
+<h2>Importance</h2>
 
-This technique is crucial for object manipulation because:
+<p>This technique is crucial for object manipulation because:</p>
 
-- **Array Method Access**: Unlocks the full power of array methods (map, filter, reduce) for objects
-- **Immutable Transformations**: Creates new objects without mutating originals
-- **Functional Style**: Enables functional programming patterns with objects
-- **Type Safety**: Works well with TypeScript's type system
-- **Composability**: Can chain multiple transformations together
-- **Standard API**: Uses built-in methods, no dependencies required
+<ul>
+  <li><strong>Array Method Access</strong>: Unlocks the full power of array methods (map, filter, reduce) for objects</li>
+  <li><strong>Immutable Transformations</strong>: Creates new objects without mutating originals</li>
+  <li><strong>Functional Style</strong>: Enables functional programming patterns with objects</li>
+  <li><strong>Type Safety</strong>: Works well with TypeScript's type system</li>
+  <li><strong>Composability</strong>: Can chain multiple transformations together</li>
+  <li><strong>Standard API</strong>: Uses built-in methods, no dependencies required</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-This pattern is essential in modern JavaScript/TypeScript development:
+<p>This pattern is essential in modern JavaScript/TypeScript development:</p>
 
-- **Data Transformation**: Transforming API responses, normalizing data structures
-- **Configuration Processing**: Filtering, mapping, or validating configuration objects
-- **State Management**: Transforming Redux state, Vuex mutations, or MobX observables
-- **Form Data Processing**: Converting form objects, validating and sanitizing inputs
-- **API Request Building**: Transforming objects before sending to APIs
-- **Data Validation**: Filtering invalid properties, transforming values
-- **Object Utilities**: Creating reusable utility functions for object manipulation
-- **React Props Processing**: Transforming props objects before passing to components
+<ul>
+  <li><strong>Data Transformation</strong>: Transforming API responses, normalizing data structures</li>
+  <li><strong>Configuration Processing</strong>: Filtering, mapping, or validating configuration objects</li>
+  <li><strong>State Management</strong>: Transforming Redux state, Vuex mutations, or MobX observables</li>
+  <li><strong>Form Data Processing</strong>: Converting form objects, validating and sanitizing inputs</li>
+  <li><strong>API Request Building</strong>: Transforming objects before sending to APIs</li>
+  <li><strong>Data Validation</strong>: Filtering invalid properties, transforming values</li>
+  <li><strong>Object Utilities</strong>: Creating reusable utility functions for object manipulation</li>
+  <li><strong>React Props Processing</strong>: Transforming props objects before passing to components</li>
+</ul>
 
-**Challenge:** Transform object values and filter properties.`,
+<p><strong>Challenge:</strong> Transform object values and filter properties.</p>`,
   examples: [
     {
       input: `const prices = { apple: 1, banana: 2, cherry: 3 };`,

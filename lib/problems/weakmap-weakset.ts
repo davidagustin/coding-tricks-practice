@@ -24,43 +24,49 @@ export const problem: Problem = {
   title: 'WeakMap and WeakSet',
   difficulty: 'medium',
   category: 'Object Methods',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-\`WeakMap\` and \`WeakSet\` are collections with "weak" references to their keys/elements. Unlike \`Map\` and \`Set\`, they don't prevent garbage collection of their keys/elements. When an object used as a key is garbage collected, the entry is automatically removed.
+<p><code>WeakMap</code> and <code>WeakSet</code> are collections with "weak" references to their keys/elements. Unlike <code>Map</code> and <code>Set</code>, they don't prevent garbage collection of their keys/elements. When an object used as a key is garbage collected, the entry is automatically removed.</p>
 
-Key characteristics:
-- **Weak References**: Don't prevent garbage collection
-- **Object Keys Only**: Keys must be objects (not primitives)
-- **No Iteration**: Cannot iterate over entries (no size, keys, values, entries)
-- **Automatic Cleanup**: Entries removed when key is garbage collected
+<p>Key characteristics:</p>
+<ul>
+  <li><strong>Weak References</strong>: Don't prevent garbage collection</li>
+  <li><strong>Object Keys Only</strong>: Keys must be objects (not primitives)</li>
+  <li><strong>No Iteration</strong>: Cannot iterate over entries (no size, keys, values, entries)</li>
+  <li><strong>Automatic Cleanup</strong>: Entries removed when key is garbage collected</li>
+</ul>
 
-This makes them perfect for storing metadata about objects without preventing those objects from being garbage collected.
+<p>This makes them perfect for storing metadata about objects without preventing those objects from being garbage collected.</p>
 
-## Importance
+<h2>Importance</h2>
 
-Weak collections are essential for memory management because:
+<p>Weak collections are essential for memory management because:</p>
 
-- **Memory Efficiency**: Don't prevent garbage collection of keys
-- **Private Data**: Store private data associated with objects
-- **Metadata Storage**: Store metadata without memory leaks
-- **Circular Reference Prevention**: Avoid memory leaks from circular references
-- **Library Development**: Essential for libraries that attach data to user objects
-- **Performance**: Better memory usage in long-running applications
+<ul>
+  <li><strong>Memory Efficiency</strong>: Don't prevent garbage collection of keys</li>
+  <li><strong>Private Data</strong>: Store private data associated with objects</li>
+  <li><strong>Metadata Storage</strong>: Store metadata without memory leaks</li>
+  <li><strong>Circular Reference Prevention</strong>: Avoid memory leaks from circular references</li>
+  <li><strong>Library Development</strong>: Essential for libraries that attach data to user objects</li>
+  <li><strong>Performance</strong>: Better memory usage in long-running applications</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Weak collections are used in many scenarios:
+<p>Weak collections are used in many scenarios:</p>
 
-- **Private Properties**: Implementing private properties in classes
-- **Metadata Storage**: Storing metadata about DOM elements or objects
-- **Caching**: Caching computed values without preventing GC
-- **Event Handlers**: Storing event handlers without memory leaks
-- **Library Internals**: Libraries storing internal data about user objects
-- **DOM Manipulation**: Storing data about DOM nodes
-- **Object Tracking**: Tracking visited objects without preventing GC
-- **Memoization**: Memoizing without preventing object collection
+<ul>
+  <li><strong>Private Properties</strong>: Implementing private properties in classes</li>
+  <li><strong>Metadata Storage</strong>: Storing metadata about DOM elements or objects</li>
+  <li><strong>Caching</strong>: Caching computed values without preventing GC</li>
+  <li><strong>Event Handlers</strong>: Storing event handlers without memory leaks</li>
+  <li><strong>Library Internals</strong>: Libraries storing internal data about user objects</li>
+  <li><strong>DOM Manipulation</strong>: Storing data about DOM nodes</li>
+  <li><strong>Object Tracking</strong>: Tracking visited objects without preventing GC</li>
+  <li><strong>Memoization</strong>: Memoizing without preventing object collection</li>
+</ul>
 
-**Challenge:** Use WeakMap to store private data and WeakSet to track visited objects.`,
+<p><strong>Challenge:</strong> Use WeakMap to store private data and WeakSet to track visited objects.</p>`,
   examples: [
     {
       input: `const privateData = new WeakMap();`,

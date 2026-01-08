@@ -24,49 +24,59 @@ export const problem: Problem = {
   title: 'Tagged Template Literals',
   difficulty: 'medium',
   category: 'JavaScript Basics',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Tagged template literals allow you to process template strings with a custom function (the "tag"). When you write \`tag\`string\`, JavaScript calls the tag function with:
-1. An array of string literals (the static parts)
-2. The interpolated values (the \`$\` + \`{expression}\` parts)
+<p>Tagged template literals allow you to process template strings with a custom function (the "tag"). When you write <code>tag`string`</code>, JavaScript calls the tag function with:</p>
+<ol>
+  <li>An array of string literals (the static parts)</li>
+  <li>The interpolated values (the <code>${expression}</code> parts)</li>
+</ol>
 
-The tag function receives: \`tag(strings, ...values)\` where:
-- \`strings\` is an array of string literals
-- \`values\` are the interpolated expressions
-- \`strings.length === values.length + 1\` (always one more string than value)
+<p>The tag function receives: <code>tag(strings, ...values)</code> where:</p>
+<ul>
+  <li><code>strings</code> is an array of string literals</li>
+  <li><code>values</code> are the interpolated expressions</li>
+  <li><code>strings.length === values.length + 1</code> (always one more string than value)</li>
+</ul>
 
-This enables:
-- **HTML Escaping**: Sanitize user input in templates
-- **Internationalization**: Process strings for translation
-- **Styled Components**: CSS-in-JS libraries use this
-- **SQL Queries**: Build parameterized queries safely
-- **String Formatting**: Custom formatting logic
+<p>This enables:</p>
+<ul>
+  <li><strong>HTML Escaping</strong>: Sanitize user input in templates</li>
+  <li><strong>Internationalization</strong>: Process strings for translation</li>
+  <li><strong>Styled Components</strong>: CSS-in-JS libraries use this</li>
+  <li><strong>SQL Queries</strong>: Build parameterized queries safely</li>
+  <li><strong>String Formatting</strong>: Custom formatting logic</li>
+</ul>
 
-## Importance
+<h2>Importance</h2>
 
-Tagged templates are essential for safe string processing because:
+<p>Tagged templates are essential for safe string processing because:</p>
 
-- **Security**: Escape HTML/XML to prevent XSS attacks
-- **Internationalization**: Process strings for translation
-- **Custom Processing**: Apply custom logic to template strings
-- **Type Safety**: TypeScript can type-check tagged templates
-- **Framework Features**: Used by styled-components, Apollo, etc.
-- **SQL Safety**: Build parameterized queries
+<ul>
+  <li><strong>Security</strong>: Escape HTML/XML to prevent XSS attacks</li>
+  <li><strong>Internationalization</strong>: Process strings for translation</li>
+  <li><strong>Custom Processing</strong>: Apply custom logic to template strings</li>
+  <li><strong>Type Safety</strong>: TypeScript can type-check tagged templates</li>
+  <li><strong>Framework Features</strong>: Used by styled-components, Apollo, etc.</li>
+  <li><strong>SQL Safety</strong>: Build parameterized queries</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Tagged templates are used extensively:
+<p>Tagged templates are used extensively:</p>
 
-- **HTML Escaping**: \`html\`<div>\${userInput}</div>\`\` - escape HTML entities
-- **Styled Components**: \`styled.div\`color: \${color}\`\` - CSS-in-JS
-- **Internationalization**: \`i18n\`Hello \${name}\`\` - translate strings
-- **SQL Queries**: \`sql\`SELECT * FROM users WHERE id = \${id}\`\` - parameterized queries
-- **String Formatting**: \`format\`Price: \${amount}\`\` - format currency, dates
-- **Logging**: \`log\`User \${id} logged in\`\` - structured logging
-- **GraphQL**: Building GraphQL queries safely
-- **Markdown**: Processing markdown templates
+<ul>
+  <li><strong>HTML Escaping</strong>: <code>html`&lt;div&gt;${userInput}&lt;/div&gt;`</code> - escape HTML entities</li>
+  <li><strong>Styled Components</strong>: <code>styled.div`color: ${color}`</code> - CSS-in-JS</li>
+  <li><strong>Internationalization</strong>: <code>i18n`Hello ${name}`</code> - translate strings</li>
+  <li><strong>SQL Queries</strong>: <code>sql`SELECT * FROM users WHERE id = ${id}`</code> - parameterized queries</li>
+  <li><strong>String Formatting</strong>: <code>format`Price: ${amount}`</code> - format currency, dates</li>
+  <li><strong>Logging</strong>: <code>log`User ${id} logged in`</code> - structured logging</li>
+  <li><strong>GraphQL</strong>: Building GraphQL queries safely</li>
+  <li><strong>Markdown</strong>: Processing markdown templates</li>
+</ul>
 
-**Challenge:** Build a simple HTML escaping tag and a highlight tag.`,
+<p><strong>Challenge:</strong> Build a simple HTML escaping tag and a highlight tag.</p>`,
   examples: [
     {
       input: 'html`<div>${userInput}</div>`',

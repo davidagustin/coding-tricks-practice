@@ -24,43 +24,49 @@ export const problem: Problem = {
   title: 'AbortController for Cancellation',
   difficulty: 'hard',
   category: 'Async/Promises',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-\`AbortController\` provides a way to cancel fetch requests and other async operations. It works by creating a controller with a \`signal\` that can be passed to fetch (and other APIs), and then calling \`abort()\` when you want to cancel.
+<p><code>AbortController</code> provides a way to cancel fetch requests and other async operations. It works by creating a controller with a <code>signal</code> that can be passed to fetch (and other APIs), and then calling <code>abort()</code> when you want to cancel.</p>
 
-The pattern is:
-1. Create an \`AbortController\`
-2. Pass \`controller.signal\` to the async operation
-3. Call \`controller.abort()\` to cancel
-4. The operation throws an \`AbortError\` that you can catch
+<p>The pattern is:</p>
+<ol>
+  <li>Create an <code>AbortController</code></li>
+  <li>Pass <code>controller.signal</code> to the async operation</li>
+  <li>Call <code>controller.abort()</code> to cancel</li>
+  <li>The operation throws an <code>AbortError</code> that you can catch</li>
+</ol>
 
-This is essential for user experience - allowing users to cancel long-running requests, preventing memory leaks from abandoned requests, and implementing timeouts.
+<p>This is essential for user experience - allowing users to cancel long-running requests, preventing memory leaks from abandoned requests, and implementing timeouts.</p>
 
-## Importance
+<h2>Importance</h2>
 
-Cancellation is critical for modern applications because:
+<p>Cancellation is critical for modern applications because:</p>
 
-- **User Experience**: Users can cancel operations they no longer need
-- **Resource Management**: Prevents memory leaks from abandoned requests
-- **Performance**: Stops unnecessary network traffic and processing
-- **Timeout Implementation**: Essential for implementing request timeouts
-- **Race Condition Prevention**: Prevents stale responses from updating UI
-- **Cost Control**: Stops API calls that are no longer needed (important for paid APIs)
+<ul>
+  <li><strong>User Experience</strong>: Users can cancel operations they no longer need</li>
+  <li><strong>Resource Management</strong>: Prevents memory leaks from abandoned requests</li>
+  <li><strong>Performance</strong>: Stops unnecessary network traffic and processing</li>
+  <li><strong>Timeout Implementation</strong>: Essential for implementing request timeouts</li>
+  <li><strong>Race Condition Prevention</strong>: Prevents stale responses from updating UI</li>
+  <li><strong>Cost Control</strong>: Stops API calls that are no longer needed (important for paid APIs)</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-This pattern is essential in production applications:
+<p>This pattern is essential in production applications:</p>
 
-- **Search**: Cancelling previous search requests when user types new query
-- **File Uploads**: Allowing users to cancel file uploads
-- **Data Fetching**: Cancelling data fetches when component unmounts (React cleanup)
-- **Timeout Implementation**: Implementing request timeouts
-- **Race Condition Prevention**: Preventing stale API responses
-- **User Actions**: Cancelling operations when user navigates away
-- **Batch Operations**: Cancelling batch operations
-- **WebSocket Cleanup**: Properly cleaning up WebSocket connections
+<ul>
+  <li><strong>Search</strong>: Cancelling previous search requests when user types new query</li>
+  <li><strong>File Uploads</strong>: Allowing users to cancel file uploads</li>
+  <li><strong>Data Fetching</strong>: Cancelling data fetches when component unmounts (React cleanup)</li>
+  <li><strong>Timeout Implementation</strong>: Implementing request timeouts</li>
+  <li><strong>Race Condition Prevention</strong>: Preventing stale API responses</li>
+  <li><strong>User Actions</strong>: Cancelling operations when user navigates away</li>
+  <li><strong>Batch Operations</strong>: Cancelling batch operations</li>
+  <li><strong>WebSocket Cleanup</strong>: Properly cleaning up WebSocket connections</li>
+</ul>
 
-**Challenge:** Create a cancellable fetch function.`,
+<p><strong>Challenge:</strong> Create a cancellable fetch function.</p>`,
   examples: [
     {
       input: `const controller = new AbortController();

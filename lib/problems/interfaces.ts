@@ -24,44 +24,50 @@ export const problem: Problem = {
   title: 'Interfaces',
   difficulty: 'easy',
   category: 'TypeScript Basics',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Interfaces define the shape (structure) of objects in TypeScript. They act as contracts that objects must satisfy - specifying which properties are required, their types, and which are optional (marked with \`?\`).
+<p>Interfaces define the shape (structure) of objects in TypeScript. They act as contracts that objects must satisfy - specifying which properties are required, their types, and which are optional (marked with <code>?</code>).</p>
 
-Interfaces are:
-- **Structural**: Objects only need to have the required properties (duck typing)
-- **Extensible**: Can extend other interfaces with \`extends\`
-- **Reusable**: Define once, use across multiple objects
-- **Optional Properties**: Use \`?\` for properties that may not exist
-- **Readonly Properties**: Use \`readonly\` for immutable properties
+<p>Interfaces are:</p>
+<ul>
+  <li><strong>Structural</strong>: Objects only need to have the required properties (duck typing)</li>
+  <li><strong>Extensible</strong>: Can extend other interfaces with <code>extends</code></li>
+  <li><strong>Reusable</strong>: Define once, use across multiple objects</li>
+  <li><strong>Optional Properties</strong>: Use <code>?</code> for properties that may not exist</li>
+  <li><strong>Readonly Properties</strong>: Use <code>readonly</code> for immutable properties</li>
+</ul>
 
-Unlike classes, interfaces are compile-time only - they don't exist at runtime. They're purely for type checking and documentation.
+<p>Unlike classes, interfaces are compile-time only - they don't exist at runtime. They're purely for type checking and documentation.</p>
 
-## Importance
+<h2>Importance</h2>
 
-Interfaces are fundamental to TypeScript because:
+<p>Interfaces are fundamental to TypeScript because:</p>
 
-- **API Contracts**: Define contracts between functions and modules
-- **Object Shape**: Ensure objects have required properties
-- **Documentation**: Self-documenting code structure
-- **Refactoring Safety**: Changes to interfaces are checked everywhere
-- **Team Communication**: Clear contracts for team collaboration
-- **Type Reuse**: Define common shapes once, reuse everywhere
+<ul>
+  <li><strong>API Contracts</strong>: Define contracts between functions and modules</li>
+  <li><strong>Object Shape</strong>: Ensure objects have required properties</li>
+  <li><strong>Documentation</strong>: Self-documenting code structure</li>
+  <li><strong>Refactoring Safety</strong>: Changes to interfaces are checked everywhere</li>
+  <li><strong>Team Communication</strong>: Clear contracts for team collaboration</li>
+  <li><strong>Type Reuse</strong>: Define common shapes once, reuse everywhere</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Interfaces are used extensively in TypeScript applications:
+<p>Interfaces are used extensively in TypeScript applications:</p>
 
-- **API Responses**: Typing API request/response objects
-- **Component Props**: Defining React/Vue component prop types
-- **Database Models**: Typing database entities and DTOs
-- **Configuration**: Typing application configuration objects
-- **Form Data**: Ensuring form data matches expected structure
-- **State Management**: Typing Redux/Vuex state and actions
-- **Function Parameters**: Typing complex function parameters
-- **Library APIs**: Defining public APIs for libraries
+<ul>
+  <li><strong>API Responses</strong>: Typing API request/response objects</li>
+  <li><strong>Component Props</strong>: Defining React/Vue component prop types</li>
+  <li><strong>Database Models</strong>: Typing database entities and DTOs</li>
+  <li><strong>Configuration</strong>: Typing application configuration objects</li>
+  <li><strong>Form Data</strong>: Ensuring form data matches expected structure</li>
+  <li><strong>State Management</strong>: Typing Redux/Vuex state and actions</li>
+  <li><strong>Function Parameters</strong>: Typing complex function parameters</li>
+  <li><strong>Library APIs</strong>: Defining public APIs for libraries</li>
+</ul>
 
-**Challenge:** Create and use interfaces to type objects.`,
+<p><strong>Challenge:</strong> Create and use interfaces to type objects.</p>`,
   examples: [
     {
       input: `interface User {

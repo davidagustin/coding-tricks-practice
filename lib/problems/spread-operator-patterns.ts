@@ -24,44 +24,50 @@ export const problem: Problem = {
   title: 'Advanced Spread Operator Patterns',
   difficulty: 'medium',
   category: 'Object Methods',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-The spread operator (\`...\`) is a powerful tool for working with objects and arrays. It "spreads" or expands an iterable into individual elements. For objects, it creates shallow copies and enables immutable updates.
+<p>The spread operator (\<code>...\</code>) is a powerful tool for working with objects and arrays. It "spreads" or expands an iterable into individual elements. For objects, it creates shallow copies and enables immutable updates.</p>
 
-Key patterns:
-- **Cloning**: \`{ ...obj }\` creates a shallow copy
-- **Merging**: \`{ ...obj1, ...obj2 }\` merges objects (later overrides earlier)
-- **Immutable Updates**: \`{ ...obj, prop: newValue }\` updates without mutation
-- **Omitting Properties**: \`const { key, ...rest } = obj\` removes properties
-- **Nested Updates**: Spread at each level for deep updates
+<p>Key patterns:</p>
+<ul>
+  <li><strong>Cloning</strong>: \<code>{ ...obj }\</code> creates a shallow copy</li>
+  <li><strong>Merging</strong>: \<code>{ ...obj1, ...obj2 }\</code> merges objects (later overrides earlier)</li>
+  <li><strong>Immutable Updates</strong>: \<code>{ ...obj, prop: newValue }\</code> updates without mutation</li>
+  <li><strong>Omitting Properties</strong>: \<code>const { key, ...rest } = obj\</code> removes properties</li>
+  <li><strong>Nested Updates</strong>: Spread at each level for deep updates</li>
+</ul>
 
-Important: Spread creates shallow copies. Nested objects are still referenced, not copied. For deep cloning, you need recursive spreading or libraries like Lodash.
+<p>Important: Spread creates shallow copies. Nested objects are still referenced, not copied. For deep cloning, you need recursive spreading or libraries like Lodash.</p>
 
-## Importance
+<h2>Importance</h2>
 
-Spread operator patterns are essential for modern JavaScript because:
+<p>Spread operator patterns are essential for modern JavaScript because:</p>
 
-- **Immutability**: Update objects/arrays without mutation
-- **Functional Programming**: Supports immutable data patterns
-- **State Management**: Essential for Redux, Vuex immutable updates
-- **React**: Used extensively for props and state updates
-- **Code Clarity**: More readable than Object.assign()
-- **Performance**: Efficient shallow copying
+<ul>
+  <li><strong>Immutability</strong>: Update objects/arrays without mutation</li>
+  <li><strong>Functional Programming</strong>: Supports immutable data patterns</li>
+  <li><strong>State Management</strong>: Essential for Redux, Vuex immutable updates</li>
+  <li><strong>React</strong>: Used extensively for props and state updates</li>
+  <li><strong>Code Clarity</strong>: More readable than Object.assign()</li>
+  <li><strong>Performance</strong>: Efficient shallow copying</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Spread patterns are used everywhere:
+<p>Spread patterns are used everywhere:</p>
 
-- **State Updates**: React setState with spread: \`setState({ ...state, key: value })\`
-- **Redux Reducers**: Immutable state updates in Redux
-- **Object Merging**: Merging configuration objects
-- **Default Values**: \`{ ...defaults, ...overrides }\`
-- **Array Operations**: Cloning, concatenating arrays
-- **Function Arguments**: Spreading arrays as function arguments
-- **Props Spreading**: React \`<Component {...props} />\`
-- **API Requests**: Merging request parameters
+<ul>
+  <li><strong>State Updates</strong>: React setState with spread: \<code>setState({ ...state, key: value })\</code></li>
+  <li><strong>Redux Reducers</strong>: Immutable state updates in Redux</li>
+  <li><strong>Object Merging</strong>: Merging configuration objects</li>
+  <li><strong>Default Values</strong>: \<code>{ ...defaults, ...overrides }\</code></li>
+  <li><strong>Array Operations</strong>: Cloning, concatenating arrays</li>
+  <li><strong>Function Arguments</strong>: Spreading arrays as function arguments</li>
+  <li><strong>Props Spreading</strong>: React \<code><Component {...props} />\</code></li>
+  <li><strong>API Requests</strong>: Merging request parameters</li>
+</ul>
 
-**Challenge:** Master spread operator for common patterns.`,
+<p><strong>Challenge:</strong> Master spread operator for common patterns.</p>`,
   examples: [
     {
       input: `const merged = { ...obj1, ...obj2 };`,

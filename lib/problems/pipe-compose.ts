@@ -24,44 +24,49 @@ export const problem: Problem = {
   title: 'Pipe and Compose',
   difficulty: 'medium',
   category: 'Functional Programming',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-\`pipe\` and \`compose\` are utilities for function composition - chaining functions together to create transformation pipelines. \`pipe\` applies functions left-to-right (top-to-bottom), while \`compose\` applies them right-to-left (bottom-to-top).
+<p>\<code>pipe\</code> and \<code>compose\</code> are utilities for function composition - chaining functions together to create transformation pipelines. \<code>pipe\</code> applies functions left-to-right (top-to-bottom), while \<code>compose\</code> applies them right-to-left (bottom-to-top).</p>
 
-\`pipe(f, g, h)(x)\` means \`h(g(f(x)))\` - apply f, then g, then h.
-\`compose(f, g, h)(x)\` means \`f(g(h(x)))\` - apply h, then g, then f.
+<p>\<code>pipe(f, g, h)(x)\</code> means \<code>h(g(f(x)))\</code> - apply f, then g, then h. \<code>compose(f, g, h)(x)\</code> means \<code>f(g(h(x)))\</code> - apply h, then g, then f.</p>
 
-Both create reusable pipelines where:
-- Each function receives the output of the previous function
-- The pipeline reads like a sequence of transformations
-- Easy to add, remove, or reorder steps
-- Composable and testable
+<p>Both create reusable pipelines where:</p>
+<ul>
+  <li>Each function receives the output of the previous function</li>
+  <li>The pipeline reads like a sequence of transformations</li>
+  <li>Easy to add, remove, or reorder steps</li>
+  <li>Composable and testable</li>
+</ul>
 
-## Importance
+<h2>Importance</h2>
 
-Pipe and compose are fundamental to functional programming because:
+<p>Pipe and compose are fundamental to functional programming because:</p>
 
-- **Readability**: Code reads like a pipeline of transformations
-- **Composability**: Build complex operations from simple functions
-- **Maintainability**: Easy to modify pipelines
-- **Testability**: Each function can be tested independently
-- **Reusability**: Create reusable transformation pipelines
-- **Functional Style**: Enables functional programming patterns
+<ul>
+  <li><strong>Readability</strong>: Code reads like a pipeline of transformations</li>
+  <li><strong>Composability</strong>: Build complex operations from simple functions</li>
+  <li><strong>Maintainability</strong>: Easy to modify pipelines</li>
+  <li><strong>Testability</strong>: Each function can be tested independently</li>
+  <li><strong>Reusability</strong>: Create reusable transformation pipelines</li>
+  <li><strong>Functional Style</strong>: Enables functional programming patterns</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-These utilities are used extensively:
+<p>These utilities are used extensively:</p>
 
-- **Data Processing**: Transforming data through multiple steps
-- **API Response Processing**: Processing API responses through pipelines
-- **Form Validation**: Chaining validation rules
-- **Data Transformation**: ETL (Extract, Transform, Load) pipelines
-- **Functional Libraries**: Core utilities in Lodash, Ramda
-- **React**: Composing higher-order components
-- **Redux**: Composing middleware and enhancers
-- **Utility Functions**: Creating reusable utility pipelines
+<ul>
+  <li><strong>Data Processing</strong>: Transforming data through multiple steps</li>
+  <li><strong>API Response Processing</strong>: Processing API responses through pipelines</li>
+  <li><strong>Form Validation</strong>: Chaining validation rules</li>
+  <li><strong>Data Transformation</strong>: ETL (Extract, Transform, Load) pipelines</li>
+  <li><strong>Functional Libraries</strong>: Core utilities in Lodash, Ramda</li>
+  <li><strong>React</strong>: Composing higher-order components</li>
+  <li><strong>Redux</strong>: Composing middleware and enhancers</li>
+  <li><strong>Utility Functions</strong>: Creating reusable utility pipelines</li>
+</ul>
 
-**Challenge:** Implement pipe (left-to-right) and compose (right-to-left).`,
+<p><strong>Challenge:</strong> Implement pipe (left-to-right) and compose (right-to-left).</p>`,
   examples: [
     {
       input: `pipe(addOne, double, square)(2)`,

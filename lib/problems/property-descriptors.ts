@@ -24,48 +24,56 @@ export const problem: Problem = {
   title: 'Property Descriptors',
   difficulty: 'medium',
   category: 'Object Methods',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Property descriptors control how properties behave in JavaScript. Each property has a descriptor with attributes:
-- **enumerable**: Whether property appears in \`for...in\` loops and \`Object.keys()\`
-- **writable**: Whether property value can be changed
-- **configurable**: Whether property can be deleted or its descriptor modified
-- **value**: The property's value (for data properties)
-- **get/set**: Accessor functions (for accessor properties)
+<p>Property descriptors control how properties behave in JavaScript. Each property has a descriptor with attributes:</p>
+<ul>
+  <li><strong>enumerable</strong>: Whether property appears in \<code>for...in\</code> loops and \<code>Object.keys()\</code></li>
+  <li><strong>writable</strong>: Whether property value can be changed</li>
+  <li><strong>configurable</strong>: Whether property can be deleted or its descriptor modified</li>
+  <li><strong>value</strong>: The property's value (for data properties)</li>
+  <li><strong>get/set</strong>: Accessor functions (for accessor properties)</li>
+</ul>
 
-\`Object.defineProperty()\` and \`Object.defineProperties()\` allow fine-grained control over property behavior. \`Object.getOwnPropertyDescriptor()\` retrieves a property's descriptor.
+<p>\<code>Object.defineProperty()\</code> and \<code>Object.defineProperties()\</code> allow fine-grained control over property behavior. \<code>Object.getOwnPropertyDescriptor()\</code> retrieves a property's descriptor.</p>
 
-This enables:
-- Hidden properties (non-enumerable)
-- Read-only properties (non-writable)
-- Computed properties (getters/setters)
-- Property protection (non-configurable)
+<p>This enables:</p>
+<ul>
+  <li>Hidden properties (non-enumerable)</li>
+  <li>Read-only properties (non-writable)</li>
+  <li>Computed properties (getters/setters)</li>
+  <li>Property protection (non-configurable)</li>
+</ul>
 
-## Importance
+<h2>Importance</h2>
 
-Property descriptors are essential for object design because:
+<p>Property descriptors are essential for object design because:</p>
 
-- **Property Control**: Fine-grained control over property behavior
-- **API Design**: Create clean public APIs with hidden internals
-- **Immutability**: Create read-only properties
-- **Computed Properties**: Implement getters/setters for computed values
-- **Library Development**: Essential for building robust libraries
-- **Framework Development**: Used extensively in frameworks
+<ul>
+  <li><strong>Property Control</strong>: Fine-grained control over property behavior</li>
+  <li><strong>API Design</strong>: Create clean public APIs with hidden internals</li>
+  <li><strong>Immutability</strong>: Create read-only properties</li>
+  <li><strong>Computed Properties</strong>: Implement getters/setters for computed values</li>
+  <li><strong>Library Development</strong>: Essential for building robust libraries</li>
+  <li><strong>Framework Development</strong>: Used extensively in frameworks</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Property descriptors are used extensively:
+<p>Property descriptors are used extensively:</p>
 
-- **Hidden Properties**: Creating internal properties that don't appear in enumeration
-- **Read-Only Properties**: Protecting important properties from modification
-- **Computed Properties**: Implementing getters/setters for derived values
-- **Library APIs**: Creating clean public APIs with hidden internals
-- **Framework Internals**: React, Vue use descriptors for internal properties
-- **Validation**: Implementing property validation with setters
-- **Lazy Loading**: Implementing lazy-loaded properties with getters
-- **Observables**: Creating observable properties with getters/setters
+<ul>
+  <li><strong>Hidden Properties</strong>: Creating internal properties that don't appear in enumeration</li>
+  <li><strong>Read-Only Properties</strong>: Protecting important properties from modification</li>
+  <li><strong>Computed Properties</strong>: Implementing getters/setters for derived values</li>
+  <li><strong>Library APIs</strong>: Creating clean public APIs with hidden internals</li>
+  <li><strong>Framework Internals</strong>: React, Vue use descriptors for internal properties</li>
+  <li><strong>Validation</strong>: Implementing property validation with setters</li>
+  <li><strong>Lazy Loading</strong>: Implementing lazy-loaded properties with getters</li>
+  <li><strong>Observables</strong>: Creating observable properties with getters/setters</li>
+</ul>
 
-**Challenge:** Create properties with specific descriptors.`,
+<p><strong>Challenge:</strong> Create properties with specific descriptors.</p>`,
   examples: [
     {
       input: `Object.defineProperty(obj, 'prop', { enumerable: false })`,

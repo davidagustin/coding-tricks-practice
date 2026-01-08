@@ -24,46 +24,54 @@ export const problem: Problem = {
   title: 'Object.freeze, seal, and preventExtensions',
   difficulty: 'medium',
   category: 'Object Methods',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-JavaScript provides three levels of object immutability protection:
+<p>JavaScript provides three levels of object immutability protection:</p>
 
-1. **Object.preventExtensions()**: Prevents adding new properties, but allows modifying/deleting existing ones
-2. **Object.seal()**: Prevents adding/removing properties, but allows modifying existing property values
-3. **Object.freeze()**: Prevents all changes - no adding, deleting, or modifying properties (shallow freeze)
+<ol>
+  <li><strong>Object.preventExtensions()</strong>: Prevents adding new properties, but allows modifying/deleting existing ones</li>
+  <li><strong>Object.seal()</strong>: Prevents adding/removing properties, but allows modifying existing property values</li>
+  <li><strong>Object.freeze()</strong>: Prevents all changes - no adding, deleting, or modifying properties (shallow freeze)</li>
+</ol>
 
-The hierarchy: \`freeze\` > \`seal\` > \`preventExtensions\` in terms of restrictiveness.
+<p>The hierarchy: <code>freeze</code> &gt; <code>seal</code> &gt; <code>preventExtensions</code> in terms of restrictiveness.</p>
 
-Important notes:
-- All are shallow - nested objects are not protected
-- Use \`Object.isFrozen()\`, \`Object.isSealed()\`, \`Object.isExtensible()\` to check status
-- Frozen objects are immutable at the top level only
+<p>Important notes:</p>
+<ul>
+  <li>All are shallow - nested objects are not protected</li>
+  <li>Use <code>Object.isFrozen()</code>, <code>Object.isSealed()</code>, <code>Object.isExtensible()</code> to check status</li>
+  <li>Frozen objects are immutable at the top level only</li>
+</ul>
 
-## Importance
+<h2>Importance</h2>
 
-These methods are essential for immutability because:
+<p>These methods are essential for immutability because:</p>
 
-- **Data Protection**: Prevent accidental mutations of important data
-- **Functional Programming**: Support immutable data patterns
-- **State Management**: Protect state in Redux, Vuex, etc.
-- **Configuration Objects**: Protect configuration from modification
-- **Constants**: Create truly constant objects
-- **Debugging**: Prevent bugs from accidental mutations
+<ul>
+  <li><strong>Data Protection</strong>: Prevent accidental mutations of important data</li>
+  <li><strong>Functional Programming</strong>: Support immutable data patterns</li>
+  <li><strong>State Management</strong>: Protect state in Redux, Vuex, etc.</li>
+  <li><strong>Configuration Objects</strong>: Protect configuration from modification</li>
+  <li><strong>Constants</strong>: Create truly constant objects</li>
+  <li><strong>Debugging</strong>: Prevent bugs from accidental mutations</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-These methods are used extensively:
+<p>These methods are used extensively:</p>
 
-- **State Management**: Freezing Redux state to prevent mutations
-- **Configuration**: Protecting configuration objects
-- **Constants**: Creating constant objects and enums
-- **API Responses**: Protecting API response data
-- **Functional Programming**: Supporting immutable data structures
-- **Library Development**: Protecting library internals
-- **Testing**: Ensuring test data isn't accidentally modified
-- **Security**: Protecting sensitive data from modification
+<ul>
+  <li><strong>State Management</strong>: Freezing Redux state to prevent mutations</li>
+  <li><strong>Configuration</strong>: Protecting configuration objects</li>
+  <li><strong>Constants</strong>: Creating constant objects and enums</li>
+  <li><strong>API Responses</strong>: Protecting API response data</li>
+  <li><strong>Functional Programming</strong>: Supporting immutable data structures</li>
+  <li><strong>Library Development</strong>: Protecting library internals</li>
+  <li><strong>Testing</strong>: Ensuring test data isn't accidentally modified</li>
+  <li><strong>Security</strong>: Protecting sensitive data from modification</li>
+</ul>
 
-**Challenge:** Understand the differences and use cases for each.`,
+<p><strong>Challenge:</strong> Understand the differences and use cases for each.</p>`,
   examples: [
     {
       input: `Object.freeze(obj), Object.seal(obj), Object.preventExtensions(obj)`,

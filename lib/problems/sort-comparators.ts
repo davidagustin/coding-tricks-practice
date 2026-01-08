@@ -24,47 +24,55 @@ export const problem: Problem = {
   title: 'Custom Sort Comparators',
   difficulty: 'medium',
   category: 'Array Methods',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Custom sort comparators allow you to define how elements are ordered. A comparator function takes two elements (\`a\` and \`b\`) and returns:
-- **Negative number**: \`a\` comes before \`b\`
-- **Zero**: \`a\` and \`b\` are equal (order unchanged)
-- **Positive number**: \`a\` comes after \`b\`
+<p>Custom sort comparators allow you to define how elements are ordered. A comparator function takes two elements (\<code>a\</code> and \<code>b\</code>) and returns:</p>
+<ul>
+  <li><strong>Negative number</strong>: \<code>a\</code> comes before \<code>b\</code></li>
+  <li><strong>Zero</strong>: \<code>a\</code> and \<code>b\</code> are equal (order unchanged)</li>
+  <li><strong>Positive number</strong>: \<code>a\</code> comes after \<code>b\</code></li>
+</ul>
 
-For numbers: \`(a, b) => a - b\` sorts ascending, \`(a, b) => b - a\` sorts descending.
+<p>For numbers: \<code>(a, b) => a - b\</code> sorts ascending, \<code>(a, b) => b - a\</code> sorts descending.</p>
 
-Advanced patterns:
-- **Multiple Criteria**: Sort by primary field, then secondary field
-- **Null Handling**: Put nulls first or last
-- **Object Sorting**: Sort objects by property values
-- **Case-Insensitive**: Sort strings ignoring case
-- **Custom Logic**: Any custom comparison logic
+<p>Advanced patterns:</p>
+<ul>
+  <li><strong>Multiple Criteria</strong>: Sort by primary field, then secondary field</li>
+  <li><strong>Null Handling</strong>: Put nulls first or last</li>
+  <li><strong>Object Sorting</strong>: Sort objects by property values</li>
+  <li><strong>Case-Insensitive</strong>: Sort strings ignoring case</li>
+  <li><strong>Custom Logic</strong>: Any custom comparison logic</li>
+</ul>
 
-## Importance
+<h2>Importance</h2>
 
-Custom comparators are essential for data sorting because:
+<p>Custom comparators are essential for data sorting because:</p>
 
-- **Flexibility**: Sort by any criteria, not just default comparison
-- **Object Sorting**: Sort arrays of objects by properties
-- **Multiple Criteria**: Sort by multiple fields (e.g., last name, then first name)
-- **Edge Cases**: Handle nulls, undefined, special values
-- **Localization**: Sort according to locale-specific rules
-- **Performance**: Efficient sorting for complex data structures
+<ul>
+  <li><strong>Flexibility</strong>: Sort by any criteria, not just default comparison</li>
+  <li><strong>Object Sorting</strong>: Sort arrays of objects by properties</li>
+  <li><strong>Multiple Criteria</strong>: Sort by multiple fields (e.g., last name, then first name)</li>
+  <li><strong>Edge Cases</strong>: Handle nulls, undefined, special values</li>
+  <li><strong>Localization</strong>: Sort according to locale-specific rules</li>
+  <li><strong>Performance</strong>: Efficient sorting for complex data structures</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Custom comparators are used everywhere:
+<p>Custom comparators are used everywhere:</p>
 
-- **User Lists**: Sort users by name, age, role, etc.
-- **Product Lists**: Sort products by price, rating, name
-- **Tables**: Sort table columns in data tables
-- **Search Results**: Sort search results by relevance, date, etc.
-- **Reports**: Sort report data by various dimensions
-- **Leaderboards**: Sort players by score, time, etc.
-- **Data Analysis**: Sort data for analysis and visualization
-- **UI Components**: Sortable lists, tables, grids
+<ul>
+  <li><strong>User Lists</strong>: Sort users by name, age, role, etc.</li>
+  <li><strong>Product Lists</strong>: Sort products by price, rating, name</li>
+  <li><strong>Tables</strong>: Sort table columns in data tables</li>
+  <li><strong>Search Results</strong>: Sort search results by relevance, date, etc.</li>
+  <li><strong>Reports</strong>: Sort report data by various dimensions</li>
+  <li><strong>Leaderboards</strong>: Sort players by score, time, etc.</li>
+  <li><strong>Data Analysis</strong>: Sort data for analysis and visualization</li>
+  <li><strong>UI Components</strong>: Sortable lists, tables, grids</li>
+</ul>
 
-**Challenge:** Sort by multiple criteria, handle nulls, and sort objects.`,
+<p><strong>Challenge:</strong> Sort by multiple criteria, handle nulls, and sort objects.</p>`,
   examples: [
     {
       input: `users.sort((a, b) => a.age - b.age)`,

@@ -24,46 +24,52 @@ export const problem: Problem = {
   title: 'Debounce and Throttle',
   difficulty: 'hard',
   category: 'Functional Programming',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Debounce and throttle are techniques to control how often a function executes, essential for performance optimization.
+<p>Debounce and throttle are techniques to control how often a function executes, essential for performance optimization.</p>
 
-**Debounce**: Delays execution until after a specified time has passed since the last call. If called again before the delay, the timer resets. Perfect for search inputs, resize events, or API calls triggered by user input.
+<p><strong>Debounce</strong>: Delays execution until after a specified time has passed since the last call. If called again before the delay, the timer resets. Perfect for search inputs, resize events, or API calls triggered by user input.</p>
 
-**Throttle**: Limits execution to at most once per specified interval. Unlike debounce, it guarantees execution at regular intervals. Perfect for scroll events, mouse movements, or any event that fires frequently.
+<p><strong>Throttle</strong>: Limits execution to at most once per specified interval. Unlike debounce, it guarantees execution at regular intervals. Perfect for scroll events, mouse movements, or any event that fires frequently.</p>
 
-The key difference:
-- Debounce: "Wait until user stops typing, then search"
-- Throttle: "Search at most once per second while typing"
+<p>The key difference:</p>
+<ul>
+  <li>Debounce: "Wait until user stops typing, then search"</li>
+  <li>Throttle: "Search at most once per second while typing"</li>
+</ul>
 
-Both use closures and timers (setTimeout/clearTimeout) to control execution timing.
+<p>Both use closures and timers (setTimeout/clearTimeout) to control execution timing.</p>
 
-## Importance
+<h2>Importance</h2>
 
-Debounce and throttle are essential for performance because:
+<p>Debounce and throttle are essential for performance because:</p>
 
-- **Performance**: Reduce unnecessary function calls and computations
-- **API Rate Limiting**: Prevent overwhelming APIs with requests
-- **User Experience**: Improve responsiveness by reducing work
-- **Resource Efficiency**: Reduce CPU usage and network traffic
-- **Browser Performance**: Essential for handling frequent events (scroll, resize)
-- **Cost Reduction**: Fewer API calls reduce costs
+<ul>
+  <li><strong>Performance</strong>: Reduce unnecessary function calls and computations</li>
+  <li><strong>API Rate Limiting</strong>: Prevent overwhelming APIs with requests</li>
+  <li><strong>User Experience</strong>: Improve responsiveness by reducing work</li>
+  <li><strong>Resource Efficiency</strong>: Reduce CPU usage and network traffic</li>
+  <li><strong>Browser Performance</strong>: Essential for handling frequent events (scroll, resize)</li>
+  <li><strong>Cost Reduction</strong>: Fewer API calls reduce costs</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-These patterns are used extensively:
+<p>These patterns are used extensively:</p>
 
-- **Search Inputs**: Debounce search queries as user types
-- **Scroll Events**: Throttle scroll handlers for performance
-- **Resize Events**: Debounce window resize handlers
-- **API Calls**: Debounce/throttle API requests
-- **Button Clicks**: Prevent double-clicks and rapid submissions
-- **Mouse Movements**: Throttle mouse move handlers
-- **Auto-save**: Debounce auto-save functionality
-- **Infinite Scroll**: Throttle scroll detection for infinite scroll
+<ul>
+  <li><strong>Search Inputs</strong>: Debounce search queries as user types</li>
+  <li><strong>Scroll Events</strong>: Throttle scroll handlers for performance</li>
+  <li><strong>Resize Events</strong>: Debounce window resize handlers</li>
+  <li><strong>API Calls</strong>: Debounce/throttle API requests</li>
+  <li><strong>Button Clicks</strong>: Prevent double-clicks and rapid submissions</li>
+  <li><strong>Mouse Movements</strong>: Throttle mouse move handlers</li>
+  <li><strong>Auto-save</strong>: Debounce auto-save functionality</li>
+  <li><strong>Infinite Scroll</strong>: Throttle scroll detection for infinite scroll</li>
+</ul>
 
-**Challenge:** Implement debounce and throttle utilities.
-- Essential for scroll, resize, input handlers`,
+<p><strong>Challenge:</strong> Implement debounce and throttle utilities.</p>
+<p>Essential for scroll, resize, input handlers</p>`,
   examples: [
     {
       input: `const debouncedSearch = debounce(search, 300)`,

@@ -24,45 +24,51 @@ export const problem: Problem = {
   title: 'Reflect API for Meta-Programming',
   difficulty: 'hard',
   category: 'Object Methods',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-The Reflect API provides methods that mirror Proxy trap operations, offering a programmatic way to perform object operations. Each Reflect method corresponds to a Proxy trap and provides a functional alternative to operators like \`in\`, \`delete\`, and \`new\`.
+<p>The Reflect API provides methods that mirror Proxy trap operations, offering a programmatic way to perform object operations. Each Reflect method corresponds to a Proxy trap and provides a functional alternative to operators like <code>in</code>, <code>delete</code>, and <code>new</code>.</p>
 
-Key Reflect methods:
-- \`Reflect.get(target, prop)\`: Get property value
-- \`Reflect.set(target, prop, value)\`: Set property (returns boolean)
-- \`Reflect.has(target, prop)\`: Check if property exists
-- \`Reflect.deleteProperty(target, prop)\`: Delete property
-- \`Reflect.construct(Constructor, args)\`: Create instance
-- \`Reflect.apply(func, thisArg, args)\`: Call function
+<p>Key Reflect methods:</p>
+<ul>
+  <li><code>Reflect.get(target, prop)</code>: Get property value</li>
+  <li><code>Reflect.set(target, prop, value)</code>: Set property (returns boolean)</li>
+  <li><code>Reflect.has(target, prop)</code>: Check if property exists</li>
+  <li><code>Reflect.deleteProperty(target, prop)</code>: Delete property</li>
+  <li><code>Reflect.construct(Constructor, args)</code>: Create instance</li>
+  <li><code>Reflect.apply(func, thisArg, args)</code>: Call function</li>
+</ul>
 
-The Reflect API is designed to work seamlessly with Proxies - Proxy traps can forward operations to Reflect methods, maintaining default behavior while adding custom logic.
+<p>The Reflect API is designed to work seamlessly with Proxies - Proxy traps can forward operations to Reflect methods, maintaining default behavior while adding custom logic.</p>
 
-## Importance
+<h2>Importance</h2>
 
-The Reflect API is essential for meta-programming because:
+<p>The Reflect API is essential for meta-programming because:</p>
 
-- **Proxy Integration**: Designed to work with Proxy traps
-- **Functional Style**: Provides functional alternatives to operators
-- **Error Handling**: Returns booleans instead of throwing (for set/delete)
-- **Meta-Programming**: Enables programmatic object manipulation
-- **Framework Development**: Essential for building frameworks and libraries
-- **Type Safety**: Better TypeScript support than operators
+<ul>
+  <li><strong>Proxy Integration</strong>: Designed to work with Proxy traps</li>
+  <li><strong>Functional Style</strong>: Provides functional alternatives to operators</li>
+  <li><strong>Error Handling</strong>: Returns booleans instead of throwing (for set/delete)</li>
+  <li><strong>Meta-Programming</strong>: Enables programmatic object manipulation</li>
+  <li><strong>Framework Development</strong>: Essential for building frameworks and libraries</li>
+  <li><strong>Type Safety</strong>: Better TypeScript support than operators</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-The Reflect API is used in advanced scenarios:
+<p>The Reflect API is used in advanced scenarios:</p>
 
-- **Proxy Handlers**: Forwarding operations in Proxy traps
-- **ORM Libraries**: Programmatic property access and manipulation
-- **Validation Libraries**: Dynamic property validation
-- **Framework Internals**: React, Vue use Reflect for internal operations
-- **Testing**: Creating mocks and test doubles
-- **Dynamic Code**: Building dynamic object manipulation code
-- **Decorators**: Implementing decorators in TypeScript
-- **Serialization**: Custom serialization logic
+<ul>
+  <li><strong>Proxy Handlers</strong>: Forwarding operations in Proxy traps</li>
+  <li><strong>ORM Libraries</strong>: Programmatic property access and manipulation</li>
+  <li><strong>Validation Libraries</strong>: Dynamic property validation</li>
+  <li><strong>Framework Internals</strong>: React, Vue use Reflect for internal operations</li>
+  <li><strong>Testing</strong>: Creating mocks and test doubles</li>
+  <li><strong>Dynamic Code</strong>: Building dynamic object manipulation code</li>
+  <li><strong>Decorators</strong>: Implementing decorators in TypeScript</li>
+  <li><strong>Serialization</strong>: Custom serialization logic</li>
+</ul>
 
-**Challenge:** Use Reflect for property operations and function calls.`,
+<p><strong>Challenge:</strong> Use Reflect for property operations and function calls.</p>`,
   examples: [
     {
       input: `Reflect.get(obj, 'prop'), Reflect.set(obj, 'prop', value)`,

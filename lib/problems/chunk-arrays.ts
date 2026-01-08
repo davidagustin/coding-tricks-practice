@@ -24,42 +24,48 @@ export const problem: Problem = {
   title: 'Chunking Arrays into Groups',
   difficulty: 'medium',
   category: 'Array Methods',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Chunking splits an array into smaller arrays of a specified size. This is useful for processing large datasets in batches, implementing pagination, or displaying data in grids.
+<p>Chunking splits an array into smaller arrays of a specified size. This is useful for processing large datasets in batches, implementing pagination, or displaying data in grids.</p>
 
-The pattern uses \`Array.from()\` to create an array of chunk indices, then uses \`slice()\` to extract each chunk from the original array. The number of chunks is calculated using \`Math.ceil(array.length / size)\` to ensure the last chunk (which may be smaller) is included.
+<p>The pattern uses <code>Array.from()</code> to create an array of chunk indices, then uses <code>slice()</code> to extract each chunk from the original array. The number of chunks is calculated using <code>Math.ceil(array.length / size)</code> to ensure the last chunk (which may be smaller) is included.</p>
 
-This approach is elegant because it:
-1. Calculates the exact number of chunks needed
-2. Uses \`slice()\` to extract non-overlapping chunks
-3. Handles edge cases (empty arrays, size larger than array) naturally
+<p>This approach is elegant because it:</p>
+<ol>
+  <li>Calculates the exact number of chunks needed</li>
+  <li>Uses <code>slice()</code> to extract non-overlapping chunks</li>
+  <li>Handles edge cases (empty arrays, size larger than array) naturally</li>
+</ol>
 
-## Importance
+<h2>Importance</h2>
 
-Chunking is essential for handling large datasets because:
+<p>Chunking is essential for handling large datasets because:</p>
 
-- **Memory Management**: Processes data in manageable chunks, reducing memory usage
-- **Performance**: Allows batch processing, which can be more efficient
-- **Pagination**: Foundation for pagination in UIs and APIs
-- **API Limits**: Respects API rate limits by batching requests
-- **UI Rendering**: Enables virtual scrolling and lazy loading
-- **Database Operations**: Essential for batch database operations
+<ul>
+  <li><strong>Memory Management</strong>: Processes data in manageable chunks, reducing memory usage</li>
+  <li><strong>Performance</strong>: Allows batch processing, which can be more efficient</li>
+  <li><strong>Pagination</strong>: Foundation for pagination in UIs and APIs</li>
+  <li><strong>API Limits</strong>: Respects API rate limits by batching requests</li>
+  <li><strong>UI Rendering</strong>: Enables virtual scrolling and lazy loading</li>
+  <li><strong>Database Operations</strong>: Essential for batch database operations</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-This pattern is used extensively in production applications:
+<p>This pattern is used extensively in production applications:</p>
 
-- **Pagination**: Splitting data into pages for display
-- **Batch Processing**: Processing large datasets in batches
-- **API Requests**: Batching API calls to respect rate limits
-- **Image Galleries**: Organizing images into rows or grids
-- **Data Export**: Exporting data in chunks to avoid memory issues
-- **Web Workers**: Sending data to web workers in chunks
-- **Streaming**: Processing streams in chunks
-- **Grid Layouts**: Organizing items into grid layouts
+<ul>
+  <li><strong>Pagination</strong>: Splitting data into pages for display</li>
+  <li><strong>Batch Processing</strong>: Processing large datasets in batches</li>
+  <li><strong>API Requests</strong>: Batching API calls to respect rate limits</li>
+  <li><strong>Image Galleries</strong>: Organizing images into rows or grids</li>
+  <li><strong>Data Export</strong>: Exporting data in chunks to avoid memory issues</li>
+  <li><strong>Web Workers</strong>: Sending data to web workers in chunks</li>
+  <li><strong>Streaming</strong>: Processing streams in chunks</li>
+  <li><strong>Grid Layouts</strong>: Organizing items into grid layouts</li>
+</ul>
 
-**Challenge:** Create a function to chunk arrays into smaller arrays.`,
+<p><strong>Challenge:</strong> Create a function to chunk arrays into smaller arrays.</p>`,
   examples: [
     {
       input: `chunk([1, 2, 3, 4, 5], 2)`,

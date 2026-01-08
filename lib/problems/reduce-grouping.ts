@@ -24,33 +24,37 @@ export const problem: Problem = {
   title: 'Reduce for Grouping',
   difficulty: 'medium',
   category: 'Array Methods',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-The \`reduce\` method is one of the most powerful array methods in JavaScript. When used for grouping, it transforms an array into an object or Map where keys represent categories and values are arrays of items belonging to that category. The accumulator pattern in \`reduce\` allows you to build up a data structure incrementally as you iterate through the array.
+<p>The \<code>reduce\</code> method is one of the most powerful array methods in JavaScript. When used for grouping, it transforms an array into an object or Map where keys represent categories and values are arrays of items belonging to that category. The accumulator pattern in \<code>reduce\</code> allows you to build up a data structure incrementally as you iterate through the array.</p>
 
-The key insight is that \`reduce\` takes an initial value (the accumulator) and a reducer function that combines each element with the accumulator. For grouping, you initialize with an empty object \`{}\` and for each element, you check if a group exists for that element's key. If not, create it; then add the element to that group.
+<p>The key insight is that \<code>reduce\</code> takes an initial value (the accumulator) and a reducer function that combines each element with the accumulator. For grouping, you initialize with an empty object \<code>{}\</code> and for each element, you check if a group exists for that element's key. If not, create it; then add the element to that group.</p>
 
-## Importance
+<h2>Importance</h2>
 
-Grouping data is a fundamental operation in data processing. Whether you're organizing user data, categorizing products, or analyzing datasets, grouping allows you to transform flat lists into structured, hierarchical data. The \`reduce\` approach is particularly valuable because:
+<p>Grouping data is a fundamental operation in data processing. Whether you're organizing user data, categorizing products, or analyzing datasets, grouping allows you to transform flat lists into structured, hierarchical data. The \<code>reduce\</code> approach is particularly valuable because:</p>
 
-- **Single Pass**: Groups data in a single iteration, making it O(n) time complexity
-- **Flexible**: Can group by any property or computed value
-- **Functional Style**: Avoids imperative loops and mutations, leading to more predictable code
-- **Composable**: Can be easily combined with other array methods
+<ul>
+  <li><strong>Single Pass</strong>: Groups data in a single iteration, making it O(n) time complexity</li>
+  <li><strong>Flexible</strong>: Can group by any property or computed value</li>
+  <li><strong>Functional Style</strong>: Avoids imperative loops and mutations, leading to more predictable code</li>
+  <li><strong>Composable</strong>: Can be easily combined with other array methods</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-This pattern is essential in real-world applications:
+<p>This pattern is essential in real-world applications:</p>
 
-- **Data Analytics**: Grouping sales by region, products by category, or events by date
-- **UI Development**: Organizing list items by status (pending, completed, archived)
-- **API Response Processing**: Transforming flat API responses into grouped structures for display
-- **Report Generation**: Creating summary reports with data organized by various dimensions
-- **State Management**: Grouping items in Redux or other state management libraries
-- **Database Queries**: Mimicking SQL GROUP BY functionality in JavaScript
+<ul>
+  <li><strong>Data Analytics</strong>: Grouping sales by region, products by category, or events by date</li>
+  <li><strong>UI Development</strong>: Organizing list items by status (pending, completed, archived)</li>
+  <li><strong>API Response Processing</strong>: Transforming flat API responses into grouped structures for display</li>
+  <li><strong>Report Generation</strong>: Creating summary reports with data organized by various dimensions</li>
+  <li><strong>State Management</strong>: Grouping items in Redux or other state management libraries</li>
+  <li><strong>Database Queries</strong>: Mimicking SQL GROUP BY functionality in JavaScript</li>
+</ul>
 
-**Challenge:** Group users by their role using reduce.`,
+<p><strong>Challenge:</strong> Group users by their role using reduce.</p>`,
   examples: [
     {
       input: `const users = [

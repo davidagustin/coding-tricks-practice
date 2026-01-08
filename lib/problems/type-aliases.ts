@@ -24,43 +24,49 @@ export const problem: Problem = {
   title: 'Type Aliases',
   difficulty: 'easy',
   category: 'TypeScript Basics',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Type aliases create names for types, making code more readable and maintainable. Unlike interfaces (which only describe object shapes), type aliases can represent any type: primitives, unions, intersections, tuples, and more.
+<p>Type aliases create names for types, making code more readable and maintainable. Unlike interfaces (which only describe object shapes), type aliases can represent any type: primitives, unions, intersections, tuples, and more.</p>
 
-The syntax is \`type Name = Type\`. Type aliases are particularly powerful for:
-- **Union Types**: \`type ID = string | number\`
-- **Literal Types**: \`type Status = 'pending' | 'approved'\`
-- **Complex Types**: Combining multiple types
-- **Function Types**: \`type Handler = (x: number) => void\`
+<p>The syntax is \<code>type Name = Type\</code>. Type aliases are particularly powerful for:</p>
+<ul>
+  <li><strong>Union Types</strong>: \<code>type ID = string | number\</code></li>
+  <li><strong>Literal Types</strong>: \<code>type Status = 'pending' | 'approved'\</code></li>
+  <li><strong>Complex Types</strong>: Combining multiple types</li>
+  <li><strong>Function Types</strong>: \<code>type Handler = (x: number) => void\</code></li>
+</ul>
 
-Type aliases can be extended and combined, and they provide the same type safety as interfaces. The choice between \`type\` and \`interface\` is often stylistic, though interfaces can be merged (declaration merging) while types cannot.
+<p>Type aliases can be extended and combined, and they provide the same type safety as interfaces. The choice between \<code>type\</code> and \<code>interface\</code> is often stylistic, though interfaces can be merged (declaration merging) while types cannot.</p>
 
-## Importance
+<h2>Importance</h2>
 
-Type aliases are essential for type organization because:
+<p>Type aliases are essential for type organization because:</p>
 
-- **Readability**: Descriptive names for complex types
-- **Reusability**: Define once, use everywhere
-- **Maintainability**: Change type in one place
-- **Union Types**: Essential for representing "one of" scenarios
-- **Literal Types**: Type-safe string/number constants
-- **Code Organization**: Group related types together
+<ul>
+  <li><strong>Readability</strong>: Descriptive names for complex types</li>
+  <li><strong>Reusability</strong>: Define once, use everywhere</li>
+  <li><strong>Maintainability</strong>: Change type in one place</li>
+  <li><strong>Union Types</strong>: Essential for representing "one of" scenarios</li>
+  <li><strong>Literal Types</strong>: Type-safe string/number constants</li>
+  <li><strong>Code Organization</strong>: Group related types together</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Type aliases are used extensively:
+<p>Type aliases are used extensively:</p>
 
-- **Status Types**: \`type Status = 'loading' | 'success' | 'error'\`
-- **ID Types**: \`type ID = string | number\` for flexible identifiers
-- **Event Types**: \`type EventType = 'click' | 'hover' | 'focus'\`
-- **API Responses**: Typing API response variants
-- **Configuration**: Typing configuration options
-- **State Management**: Typing application state variants
-- **Function Types**: Typing callback functions and handlers
-- **Discriminated Unions**: Creating type-safe state machines
+<ul>
+  <li><strong>Status Types</strong>: \<code>type Status = 'loading' | 'success' | 'error'\</code></li>
+  <li><strong>ID Types</strong>: \<code>type ID = string | number\</code> for flexible identifiers</li>
+  <li><strong>Event Types</strong>: \<code>type EventType = 'click' | 'hover' | 'focus'\</code></li>
+  <li><strong>API Responses</strong>: Typing API response variants</li>
+  <li><strong>Configuration</strong>: Typing configuration options</li>
+  <li><strong>State Management</strong>: Typing application state variants</li>
+  <li><strong>Function Types</strong>: Typing callback functions and handlers</li>
+  <li><strong>Discriminated Unions</strong>: Creating type-safe state machines</li>
+</ul>
 
-**Challenge:** Create type aliases for complex types.`,
+<p><strong>Challenge:</strong> Create type aliases for complex types.</p>`,
   examples: [
     {
       input: `type ID = string | number;

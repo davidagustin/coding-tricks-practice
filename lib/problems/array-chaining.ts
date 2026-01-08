@@ -24,42 +24,48 @@ export const problem: Problem = {
   title: 'Method Chaining with Arrays',
   difficulty: 'medium',
   category: 'Array Methods',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Method chaining is a powerful pattern where you call multiple array methods in sequence, with each method operating on the result of the previous one. This creates a pipeline of transformations that reads like a sentence: "filter, then map, then map again."
+<p>Method chaining is a powerful pattern where you call multiple array methods in sequence, with each method operating on the result of the previous one. This creates a pipeline of transformations that reads like a sentence: "filter, then map, then map again."</p>
 
-The key insight is that most array methods (map, filter, reduce, etc.) return new arrays, allowing you to immediately call another array method on the result. This creates a fluent, readable API where complex transformations are expressed as a series of simple steps.
+<p>The key insight is that most array methods (map, filter, reduce, etc.) return new arrays, allowing you to immediately call another array method on the result. This creates a fluent, readable API where complex transformations are expressed as a series of simple steps.</p>
 
-Chaining works because:
-1. Each method returns a new array (immutability)
-2. Arrays have all the same methods available
-3. The chain reads left-to-right, top-to-bottom
+<p>Chaining works because:</p>
+<ol>
+  <li>Each method returns a new array (immutability)</li>
+  <li>Arrays have all the same methods available</li>
+  <li>The chain reads left-to-right, top-to-bottom</li>
+</ol>
 
-## Importance
+<h2>Importance</h2>
 
-Method chaining is fundamental to functional programming in JavaScript because:
+<p>Method chaining is fundamental to functional programming in JavaScript because:</p>
 
-- **Readability**: Code reads like a pipeline of transformations
-- **Composability**: Complex operations built from simple steps
-- **Immutability**: Each step creates a new array, avoiding mutations
-- **Debugging**: Easy to add/remove steps in the chain
-- **Maintainability**: Clear separation of concerns at each step
-- **Expressiveness**: Code describes what you want, not how to do it
+<ul>
+  <li><strong>Readability</strong>: Code reads like a pipeline of transformations</li>
+  <li><strong>Composability</strong>: Complex operations built from simple steps</li>
+  <li><strong>Immutability</strong>: Each step creates a new array, avoiding mutations</li>
+  <li><strong>Debugging</strong>: Easy to add/remove steps in the chain</li>
+  <li><strong>Maintainability</strong>: Clear separation of concerns at each step</li>
+  <li><strong>Expressiveness</strong>: Code describes what you want, not how to do it</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-This pattern is ubiquitous in modern JavaScript development:
+<p>This pattern is ubiquitous in modern JavaScript development:</p>
 
-- **Data Processing**: Transforming API responses, normalizing data structures
-- **UI Data Preparation**: Preparing data for rendering in React/Vue components
-- **ETL Pipelines**: Extract, Transform, Load operations on data
-- **Query Building**: Building complex queries from simple filters and maps
-- **Form Validation**: Chaining validation rules and transformations
-- **State Management**: Transforming state in Redux/Vuex selectors
-- **Analytics**: Processing event streams through multiple transformations
-- **Report Generation**: Building reports through chains of filters and aggregations
+<ul>
+  <li><strong>Data Processing</strong>: Transforming API responses, normalizing data structures</li>
+  <li><strong>UI Data Preparation</strong>: Preparing data for rendering in React/Vue components</li>
+  <li><strong>ETL Pipelines</strong>: Extract, Transform, Load operations on data</li>
+  <li><strong>Query Building</strong>: Building complex queries from simple filters and maps</li>
+  <li><strong>Form Validation</strong>: Chaining validation rules and transformations</li>
+  <li><strong>State Management</strong>: Transforming state in Redux/Vuex selectors</li>
+  <li><strong>Analytics</strong>: Processing event streams through multiple transformations</li>
+  <li><strong>Report Generation</strong>: Building reports through chains of filters and aggregations</li>
+</ul>
 
-**Challenge:** Transform data through a chain of operations.`,
+<p><strong>Challenge:</strong> Transform data through a chain of operations.</p>`,
   examples: [
     {
       input: `const products = [

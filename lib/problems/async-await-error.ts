@@ -24,44 +24,50 @@ export const problem: Problem = {
   title: 'Async/Await Error Handling',
   difficulty: 'easy',
   category: 'Async/Promises',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-\`async/await\` provides a synchronous-looking syntax for asynchronous code, but error handling requires \`try/catch\` blocks (unlike promise chains which use \`.catch()\`). When an \`await\`ed promise rejects, it throws an exception that must be caught.
+<p><code>async/await</code> provides a synchronous-looking syntax for asynchronous code, but error handling requires <code>try/catch</code> blocks (unlike promise chains which use <code>.catch()</code>). When an <code>await</code>ed promise rejects, it throws an exception that must be caught.</p>
 
-The key points:
-- \`await\` throws exceptions when promises reject
-- Use \`try/catch\` to handle these exceptions
-- Errors propagate up the call stack if not caught
-- Multiple \`await\` calls in a try block: first rejection triggers catch
-- Can use \`Promise.allSettled()\` to handle multiple operations independently
+<p>The key points:</p>
+<ul>
+  <li><code>await</code> throws exceptions when promises reject</li>
+  <li>Use <code>try/catch</code> to handle these exceptions</li>
+  <li>Errors propagate up the call stack if not caught</li>
+  <li>Multiple <code>await</code> calls in a try block: first rejection triggers catch</li>
+  <li>Can use <code>Promise.allSettled()</code> to handle multiple operations independently</li>
+</ul>
 
-This makes error handling more intuitive for developers familiar with synchronous code, but requires understanding that async functions always return promises.
+<p>This makes error handling more intuitive for developers familiar with synchronous code, but requires understanding that async functions always return promises.</p>
 
-## Importance
+<h2>Importance</h2>
 
-Proper async/await error handling is critical because:
+<p>Proper async/await error handling is critical because:</p>
 
-- **Unhandled Rejections**: Uncaught errors become unhandled promise rejections
-- **User Experience**: Errors must be caught and displayed to users
-- **Debugging**: Proper error handling makes debugging easier
-- **Application Stability**: Prevents crashes from unhandled errors
-- **Error Recovery**: Enables graceful error recovery and fallbacks
-- **Best Practice**: Industry standard for modern async JavaScript
+<ul>
+  <li><strong>Unhandled Rejections</strong>: Uncaught errors become unhandled promise rejections</li>
+  <li><strong>User Experience</strong>: Errors must be caught and displayed to users</li>
+  <li><strong>Debugging</strong>: Proper error handling makes debugging easier</li>
+  <li><strong>Application Stability</strong>: Prevents crashes from unhandled errors</li>
+  <li><strong>Error Recovery</strong>: Enables graceful error recovery and fallbacks</li>
+  <li><strong>Best Practice</strong>: Industry standard for modern async JavaScript</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Error handling is essential in all async operations:
+<p>Error handling is essential in all async operations:</p>
 
-- **API Calls**: Catching network errors, timeouts, and API errors
-- **Data Fetching**: Handling fetch failures and parsing errors
-- **Form Submission**: Catching validation and submission errors
-- **File Operations**: Handling file read/write errors
-- **Database Queries**: Handling query errors and connection failures
-- **Authentication**: Handling login/authentication errors
-- **Third-Party APIs**: Handling failures from external services
-- **User Actions**: Catching errors from user-triggered async operations
+<ul>
+  <li><strong>API Calls</strong>: Catching network errors, timeouts, and API errors</li>
+  <li><strong>Data Fetching</strong>: Handling fetch failures and parsing errors</li>
+  <li><strong>Form Submission</strong>: Catching validation and submission errors</li>
+  <li><strong>File Operations</strong>: Handling file read/write errors</li>
+  <li><strong>Database Queries</strong>: Handling query errors and connection failures</li>
+  <li><strong>Authentication</strong>: Handling login/authentication errors</li>
+  <li><strong>Third-Party APIs</strong>: Handling failures from external services</li>
+  <li><strong>User Actions</strong>: Catching errors from user-triggered async operations</li>
+</ul>
 
-**Challenge:** Properly catch and handle async errors.`,
+<p><strong>Challenge:</strong> Properly catch and handle async errors.</p>`,
   examples: [
     {
       input: `try { const data = await fetchData(); } catch (error) { ... }`,

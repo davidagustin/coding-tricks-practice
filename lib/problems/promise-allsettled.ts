@@ -24,39 +24,43 @@ export const problem: Problem = {
   title: 'Promise.allSettled for Mixed Results',
   difficulty: 'medium',
   category: 'Async/Promises',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-\`Promise.allSettled()\` is a method that waits for all promises to settle (either fulfill or reject) and returns an array of result objects. Unlike \`Promise.all()\`, which rejects immediately on the first failure, \`allSettled()\` waits for all promises to complete regardless of individual outcomes.
+<p><code>Promise.allSettled()</code> is a method that waits for all promises to settle (either fulfill or reject) and returns an array of result objects. Unlike <code>Promise.all()</code>, which rejects immediately on the first failure, <code>allSettled()</code> waits for all promises to complete regardless of individual outcomes.</p>
 
-Each result object has a \`status\` property that is either \`'fulfilled'\` or \`'rejected'\`. For fulfilled promises, the result includes a \`value\` property. For rejected promises, it includes a \`reason\` property. This structure allows you to process all results and handle successes and failures separately.
+<p>Each result object has a <code>status</code> property that is either <code>'fulfilled'</code> or <code>'rejected'</code>. For fulfilled promises, the result includes a <code>value</code> property. For rejected promises, it includes a <code>reason</code> property. This structure allows you to process all results and handle successes and failures separately.</p>
 
-This is particularly useful when you need partial results - you want to know what succeeded and what failed, rather than failing entirely if any single operation fails.
+<p>This is particularly useful when you need partial results - you want to know what succeeded and what failed, rather than failing entirely if any single operation fails.</p>
 
-## Importance
+<h2>Importance</h2>
 
-\`Promise.allSettled()\` is crucial for resilient applications because:
+<p><code>Promise.allSettled()</code> is crucial for resilient applications because:</p>
 
-- **Partial Success Handling**: Allows processing successful results even when some operations fail
-- **Error Isolation**: Failures in one operation don't prevent others from completing
-- **Better UX**: Users see partial results rather than complete failure
-- **Data Collection**: Essential when you need to gather results from multiple sources
-- **Batch Operations**: Perfect for batch processing where individual failures are acceptable
-- **Resilient Systems**: Enables building systems that degrade gracefully
+<ul>
+  <li><strong>Partial Success Handling</strong>: Allows processing successful results even when some operations fail</li>
+  <li><strong>Error Isolation</strong>: Failures in one operation don't prevent others from completing</li>
+  <li><strong>Better UX</strong>: Users see partial results rather than complete failure</li>
+  <li><strong>Data Collection</strong>: Essential when you need to gather results from multiple sources</li>
+  <li><strong>Batch Operations</strong>: Perfect for batch processing where individual failures are acceptable</li>
+  <li><strong>Resilient Systems</strong>: Enables building systems that degrade gracefully</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-This pattern is essential in many real-world scenarios:
+<p>This pattern is essential in many real-world scenarios:</p>
 
-- **Multi-API Calls**: Fetching data from multiple APIs where some may be down
-- **Batch Processing**: Processing multiple items where individual failures are acceptable
-- **Data Aggregation**: Collecting data from multiple sources (databases, APIs, caches)
-- **Form Validation**: Validating multiple fields independently
-- **File Operations**: Processing multiple files where some may be corrupted
-- **Notification Systems**: Sending notifications through multiple channels
-- **Analytics**: Collecting analytics from multiple services
-- **Microservices**: Calling multiple microservices and handling partial failures
+<ul>
+  <li><strong>Multi-API Calls</strong>: Fetching data from multiple APIs where some may be down</li>
+  <li><strong>Batch Processing</strong>: Processing multiple items where individual failures are acceptable</li>
+  <li><strong>Data Aggregation</strong>: Collecting data from multiple sources (databases, APIs, caches)</li>
+  <li><strong>Form Validation</strong>: Validating multiple fields independently</li>
+  <li><strong>File Operations</strong>: Processing multiple files where some may be corrupted</li>
+  <li><strong>Notification Systems</strong>: Sending notifications through multiple channels</li>
+  <li><strong>Analytics</strong>: Collecting analytics from multiple services</li>
+  <li><strong>Microservices</strong>: Calling multiple microservices and handling partial failures</li>
+</ul>
 
-**Challenge:** Process multiple API calls and separate successes from failures.`,
+<p><strong>Challenge:</strong> Process multiple API calls and separate successes from failures.</p>`,
   examples: [
     {
       input: `[fetch('/api/1'), fetch('/api/2'), fetch('/api/3')]`,

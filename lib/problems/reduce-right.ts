@@ -24,38 +24,42 @@ export const problem: Problem = {
   title: 'ReduceRight for Right-to-Left Operations',
   difficulty: 'medium',
   category: 'Array Methods',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-\`reduceRight()\` is similar to \`reduce()\`, but processes the array from right to left (last element to first). This is essential when the order of operations matters, particularly in function composition where you want to apply functions in a specific sequence.
+<p><code>reduceRight()</code> is similar to <code>reduce()</code>, but processes the array from right to left (last element to first). This is essential when the order of operations matters, particularly in function composition where you want to apply functions in a specific sequence.</p>
 
-In function composition, \`compose(f, g, h)(x)\` means \`f(g(h(x)))\` - you apply \`h\` first, then \`g\`, then \`f\`. This requires processing the array of functions from right to left, which is exactly what \`reduceRight\` does.
+<p>In function composition, <code>compose(f, g, h)(x)</code> means <code>f(g(h(x)))</code> - you apply <code>h</code> first, then <code>g</code>, then <code>f</code>. This requires processing the array of functions from right to left, which is exactly what <code>reduceRight</code> does.</p>
 
-The accumulator pattern works the same as \`reduce()\`, but the iteration order is reversed. This makes it perfect for operations where the rightmost element should be processed first.
+<p>The accumulator pattern works the same as <code>reduce()</code>, but the iteration order is reversed. This makes it perfect for operations where the rightmost element should be processed first.</p>
 
-## Importance
+<h2>Importance</h2>
 
-\`reduceRight()\` is crucial for operations where order matters:
+<p><code>reduceRight()</code> is crucial for operations where order matters:</p>
 
-- **Function Composition**: Essential for building compose functions
-- **Mathematical Operations**: Some operations require right-to-left evaluation
-- **String Processing**: Building strings or parsing from the end
-- **Stack Operations**: Mimicking stack behavior (LIFO - Last In, First Out)
-- **Reverse Processing**: When you need to process data in reverse order
-- **Pipeline Construction**: Building pipelines that process in reverse order
+<ul>
+  <li><strong>Function Composition</strong>: Essential for building compose functions</li>
+  <li><strong>Mathematical Operations</strong>: Some operations require right-to-left evaluation</li>
+  <li><strong>String Processing</strong>: Building strings or parsing from the end</li>
+  <li><strong>Stack Operations</strong>: Mimicking stack behavior (LIFO - Last In, First Out)</li>
+  <li><strong>Reverse Processing</strong>: When you need to process data in reverse order</li>
+  <li><strong>Pipeline Construction</strong>: Building pipelines that process in reverse order</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-This method is essential in functional programming:
+<p>This method is essential in functional programming:</p>
 
-- **Function Composition**: Building compose/pipe utilities for functional programming
-- **Middleware Stacks**: Processing middleware in reverse order (like Express.js)
-- **Mathematical Expressions**: Evaluating expressions that require right-to-left processing
-- **String Reversal**: Building reversed strings or processing from the end
-- **Stack Simulation**: Implementing stack-based algorithms
-- **Reverse Iteration**: When you need to iterate backwards through an array
-- **Pipeline Construction**: Building data processing pipelines
+<ul>
+  <li><strong>Function Composition</strong>: Building compose/pipe utilities for functional programming</li>
+  <li><strong>Middleware Stacks</strong>: Processing middleware in reverse order (like Express.js)</li>
+  <li><strong>Mathematical Expressions</strong>: Evaluating expressions that require right-to-left processing</li>
+  <li><strong>String Reversal</strong>: Building reversed strings or processing from the end</li>
+  <li><strong>Stack Simulation</strong>: Implementing stack-based algorithms</li>
+  <li><strong>Reverse Iteration</strong>: When you need to iterate backwards through an array</li>
+  <li><strong>Pipeline Construction</strong>: Building data processing pipelines</li>
+</ul>
 
-**Challenge:** Build a function composition pipeline using reduceRight.`,
+<p><strong>Challenge:</strong> Build a function composition pipeline using reduceRight.</p>`,
   examples: [
     {
       input: `const functions = [x => x * 2, x => x + 1, x => x - 5];`,

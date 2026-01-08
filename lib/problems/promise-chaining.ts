@@ -24,41 +24,47 @@ export const problem: Problem = {
   title: 'Promise Chaining Patterns',
   difficulty: 'medium',
   category: 'Async/Promises',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Promise chaining allows you to transform data through a series of asynchronous operations. Each \`.then()\` receives the result of the previous promise and returns a new promise, creating a pipeline of transformations.
+<p>Promise chaining allows you to transform data through a series of asynchronous operations. Each \<code>.then()\</code> receives the result of the previous promise and returns a new promise, creating a pipeline of transformations.</p>
 
-The key insight is that \`.then()\` can return either:
-1. A value (wrapped in a resolved promise)
-2. A promise (which will be awaited)
-3. A rejected promise (which triggers error handling)
+<p>The key insight is that \<code>.then()\</code> can return either:</p>
+<ol>
+  <li>A value (wrapped in a resolved promise)</li>
+  <li>A promise (which will be awaited)</li>
+  <li>A rejected promise (which triggers error handling)</li>
+</ol>
 
-This creates a fluent API where complex async workflows read like a sequence of steps. Error handling is centralized with a single \`.catch()\` at the end, making it easy to handle errors from any step in the chain.
+<p>This creates a fluent API where complex async workflows read like a sequence of steps. Error handling is centralized with a single \<code>.catch()\</code> at the end, making it easy to handle errors from any step in the chain.</p>
 
-## Importance
+<h2>Importance</h2>
 
-Promise chaining is fundamental to async JavaScript because:
+<p>Promise chaining is fundamental to async JavaScript because:</p>
 
-- **Readability**: Code reads like a sequence of steps
-- **Composability**: Build complex workflows from simple functions
-- **Error Handling**: Centralized error handling with single catch
-- **Transformation Pipeline**: Natural fit for data transformation pipelines
-- **Separation of Concerns**: Each step is a separate function
-- **Flexibility**: Easy to add, remove, or reorder steps
+<ul>
+  <li><strong>Readability</strong>: Code reads like a sequence of steps</li>
+  <li><strong>Composability</strong>: Build complex workflows from simple functions</li>
+  <li><strong>Error Handling</strong>: Centralized error handling with single catch</li>
+  <li><strong>Transformation Pipeline</strong>: Natural fit for data transformation pipelines</li>
+  <li><strong>Separation of Concerns</strong>: Each step is a separate function</li>
+  <li><strong>Flexibility</strong>: Easy to add, remove, or reorder steps</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-This pattern is used everywhere in async code:
+<p>This pattern is used everywhere in async code:</p>
 
-- **API Workflows**: Fetch data, transform, validate, save
-- **Data Processing**: Load, transform, enrich, persist
-- **Authentication Flows**: Fetch user, validate token, load permissions, update session
-- **Form Submission**: Validate, transform, submit, handle response
-- **File Processing**: Read file, parse, validate, save
-- **E-commerce**: Fetch product, check inventory, calculate price, add to cart
-- **Data Pipelines**: ETL (Extract, Transform, Load) operations
+<ul>
+  <li><strong>API Workflows</strong>: Fetch data, transform, validate, save</li>
+  <li><strong>Data Processing</strong>: Load, transform, enrich, persist</li>
+  <li><strong>Authentication Flows</strong>: Fetch user, validate token, load permissions, update session</li>
+  <li><strong>Form Submission</strong>: Validate, transform, submit, handle response</li>
+  <li><strong>File Processing</strong>: Read file, parse, validate, save</li>
+  <li><strong>E-commerce</strong>: Fetch product, check inventory, calculate price, add to cart</li>
+  <li><strong>Data Pipelines</strong>: ETL (Extract, Transform, Load) operations</li>
+</ul>
 
-**Challenge:** Process data through a pipeline of async transformations.`,
+<p><strong>Challenge:</strong> Process data through a pipeline of async transformations.</p>`,
   examples: [
     {
       input: `fetchUser(id).then(validate).then(enrich).then(save)`,

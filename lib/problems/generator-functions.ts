@@ -24,49 +24,57 @@ export const problem: Problem = {
   title: 'Generator Functions',
   difficulty: 'hard',
   category: 'JavaScript Advanced',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Generator functions (declared with \`function*\`) create iterators that can pause and resume execution. They use \`yield\` to produce values and pause execution, returning control to the caller.
+<p>Generator functions (declared with <code>function*</code>) create iterators that can pause and resume execution. They use <code>yield</code> to produce values and pause execution, returning control to the caller.</p>
 
-Key characteristics:
-- **Lazy Evaluation**: Values are computed on-demand, not all at once
-- **Pausable**: Execution pauses at each \`yield\`, resumes when next value is requested
-- **Iterable**: Generators are iterables, can be used with \`for...of\`, spread operator
-- **Infinite Sequences**: Can produce infinite sequences (Fibonacci, primes, etc.)
-- **Stateful**: Maintain state between yields
+<p>Key characteristics:</p>
+<ul>
+  <li><strong>Lazy Evaluation</strong>: Values are computed on-demand, not all at once</li>
+  <li><strong>Pausable</strong>: Execution pauses at each <code>yield</code>, resumes when next value is requested</li>
+  <li><strong>Iterable</strong>: Generators are iterables, can be used with <code>for...of</code>, spread operator</li>
+  <li><strong>Infinite Sequences</strong>: Can produce infinite sequences (Fibonacci, primes, etc.)</li>
+  <li><strong>Stateful</strong>: Maintain state between yields</li>
+</ul>
 
-Use cases:
-- **Sequences**: Generate number sequences, ranges, patterns
-- **Pagination**: Yield pages of data one at a time
-- **Infinite Data**: Generate infinite sequences (IDs, random numbers)
-- **State Machines**: Implement state machines with generators
-- **Coroutines**: Implement coroutines and cooperative multitasking
+<p>Use cases:</p>
+<ul>
+  <li><strong>Sequences</strong>: Generate number sequences, ranges, patterns</li>
+  <li><strong>Pagination</strong>: Yield pages of data one at a time</li>
+  <li><strong>Infinite Data</strong>: Generate infinite sequences (IDs, random numbers)</li>
+  <li><strong>State Machines</strong>: Implement state machines with generators</li>
+  <li><strong>Coroutines</strong>: Implement coroutines and cooperative multitasking</li>
+</ul>
 
-## Importance
+<h2>Importance</h2>
 
-Generators are essential for advanced JavaScript patterns because:
+<p>Generators are essential for advanced JavaScript patterns because:</p>
 
-- **Memory Efficiency**: Generate values on-demand, not all at once
-- **Infinite Sequences**: Handle infinite data streams
-- **Control Flow**: Complex control flow with pausable execution
-- **Iteration**: Create custom iterables easily
-- **Async Patterns**: Foundation for async generators
-- **Performance**: Efficient for large or infinite sequences
+<ul>
+  <li><strong>Memory Efficiency</strong>: Generate values on-demand, not all at once</li>
+  <li><strong>Infinite Sequences</strong>: Handle infinite data streams</li>
+  <li><strong>Control Flow</strong>: Complex control flow with pausable execution</li>
+  <li><strong>Iteration</strong>: Create custom iterables easily</li>
+  <li><strong>Async Patterns</strong>: Foundation for async generators</li>
+  <li><strong>Performance</strong>: Efficient for large or infinite sequences</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Generators are used extensively:
+<p>Generators are used extensively:</p>
 
-- **Sequence Generation**: Number sequences, date ranges, patterns
-- **Pagination**: Fetching and processing paginated data
-- **Infinite Scrolling**: Generating content for infinite scroll
-- **ID Generation**: Generating unique IDs on demand
-- **Data Processing**: Processing large datasets in chunks
-- **State Machines**: Implementing state machines
-- **Coroutines**: Implementing coroutines
-- **Testing**: Generating test data on demand
+<ul>
+  <li><strong>Sequence Generation</strong>: Number sequences, date ranges, patterns</li>
+  <li><strong>Pagination</strong>: Fetching and processing paginated data</li>
+  <li><strong>Infinite Scrolling</strong>: Generating content for infinite scroll</li>
+  <li><strong>ID Generation</strong>: Generating unique IDs on demand</li>
+  <li><strong>Data Processing</strong>: Processing large datasets in chunks</li>
+  <li><strong>State Machines</strong>: Implementing state machines</li>
+  <li><strong>Coroutines</strong>: Implementing coroutines</li>
+  <li><strong>Testing</strong>: Generating test data on demand</li>
+</ul>
 
-**Challenge:** Use generators for sequences, pagination, and async iteration.`,
+<p><strong>Challenge:</strong> Use generators for sequences, pagination, and async iteration.</p>`,
   examples: [
     {
       input: `function* count() { yield 1; yield 2; yield 3; }`,

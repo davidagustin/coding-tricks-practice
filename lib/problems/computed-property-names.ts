@@ -24,43 +24,49 @@ export const problem: Problem = {
   title: 'Computed Property Names',
   difficulty: 'easy',
   category: 'Object Methods',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Computed property names allow you to use expressions (variables, template literals, function calls) as property keys in object literals. The syntax uses square brackets: \`{ [expression]: value }\`.
+<p>Computed property names allow you to use expressions (variables, template literals, function calls) as property keys in object literals. The syntax uses square brackets: <code>{ [expression]: value }</code>.</p>
 
-This enables:
-- Dynamic property names based on variables
-- Property names from template literals
-- Property names from function calls or expressions
-- Creating objects from arrays or other data structures
+<p>This enables:</p>
+<ul>
+  <li>Dynamic property names based on variables</li>
+  <li>Property names from template literals</li>
+  <li>Property names from function calls or expressions</li>
+  <li>Creating objects from arrays or other data structures</li>
+</ul>
 
-Before ES6, you had to create objects first, then assign properties. Computed property names let you define dynamic keys directly in object literals, making code more concise and expressive.
+<p>Before ES6, you had to create objects first, then assign properties. Computed property names let you define dynamic keys directly in object literals, making code more concise and expressive.</p>
 
-## Importance
+<h2>Importance</h2>
 
-Computed property names are essential for dynamic object creation because:
+<p>Computed property names are essential for dynamic object creation because:</p>
 
-- **Dynamic Keys**: Create objects with keys determined at runtime
-- **Code Conciseness**: Define dynamic properties in object literals
-- **Data Transformation**: Transform arrays/maps into objects easily
-- **Configuration**: Create configuration objects with dynamic keys
-- **API Building**: Build API request objects dynamically
-- **State Management**: Create state objects with dynamic keys
+<ul>
+  <li><strong>Dynamic Keys</strong>: Create objects with keys determined at runtime</li>
+  <li><strong>Code Conciseness</strong>: Define dynamic properties in object literals</li>
+  <li><strong>Data Transformation</strong>: Transform arrays/maps into objects easily</li>
+  <li><strong>Configuration</strong>: Create configuration objects with dynamic keys</li>
+  <li><strong>API Building</strong>: Build API request objects dynamically</li>
+  <li><strong>State Management</strong>: Create state objects with dynamic keys</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Computed property names are used extensively:
+<p>Computed property names are used extensively:</p>
 
-- **Configuration Objects**: Creating configs with environment-based keys
-- **API Requests**: Building request objects with dynamic parameters
-- **State Management**: Creating state with dynamic property names
-- **Data Transformation**: Converting arrays/maps to objects
-- **Form Handling**: Creating form data objects dynamically
-- **Dynamic Props**: React/Vue components with dynamic prop names
-- **Object Factories**: Creating objects from templates
-- **Key Mapping**: Mapping data with transformed keys
+<ul>
+  <li><strong>Configuration Objects</strong>: Creating configs with environment-based keys</li>
+  <li><strong>API Requests</strong>: Building request objects with dynamic parameters</li>
+  <li><strong>State Management</strong>: Creating state with dynamic property names</li>
+  <li><strong>Data Transformation</strong>: Converting arrays/maps to objects</li>
+  <li><strong>Form Handling</strong>: Creating form data objects dynamically</li>
+  <li><strong>Dynamic Props</strong>: React/Vue components with dynamic prop names</li>
+  <li><strong>Object Factories</strong>: Creating objects from templates</li>
+  <li><strong>Key Mapping</strong>: Mapping data with transformed keys</li>
+</ul>
 
-**Challenge:** Create objects with dynamic property names.`,
+<p><strong>Challenge:</strong> Create objects with dynamic property names.</p>`,
   examples: [
     {
       input: `const key = 'name'; const obj = { [key]: 'John' };`,

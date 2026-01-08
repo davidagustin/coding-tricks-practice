@@ -24,43 +24,49 @@ export const problem: Problem = {
   title: 'Proxy API for Interception',
   difficulty: 'hard',
   category: 'Object Methods',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-The \`Proxy\` object enables meta-programming by intercepting and customizing operations on objects (property access, assignment, enumeration, function invocation, etc.). It's a powerful tool for creating abstractions and implementing patterns like validation, logging, and reactive programming.
+<p>The \<code>Proxy\</code> object enables meta-programming by intercepting and customizing operations on objects (property access, assignment, enumeration, function invocation, etc.). It's a powerful tool for creating abstractions and implementing patterns like validation, logging, and reactive programming.</p>
 
-A Proxy wraps a target object with a handler that defines "traps" - functions that intercept operations. Common traps include:
-- \`get\`: Intercepts property access
-- \`set\`: Intercepts property assignment
-- \`has\`: Intercepts \`in\` operator
-- \`deleteProperty\`: Intercepts \`delete\` operator
+<p>A Proxy wraps a target object with a handler that defines "traps" - functions that intercept operations. Common traps include:</p>
+<ul>
+  <li>\<code>get\</code>: Intercepts property access</li>
+  <li>\<code>set\</code>: Intercepts property assignment</li>
+  <li>\<code>has\</code>: Intercepts \<code>in\</code> operator</li>
+  <li>\<code>deleteProperty\</code>: Intercepts \<code>delete\</code> operator</li>
+</ul>
 
-Proxies are transparent - code using the proxy doesn't know it's a proxy. This enables powerful patterns like reactive frameworks, validation libraries, and debugging tools.
+<p>Proxies are transparent - code using the proxy doesn't know it's a proxy. This enables powerful patterns like reactive frameworks, validation libraries, and debugging tools.</p>
 
-## Importance
+<h2>Importance</h2>
 
-Proxies are essential for advanced JavaScript patterns because:
+<p>Proxies are essential for advanced JavaScript patterns because:</p>
 
-- **Meta-Programming**: Intercept and customize object operations
-- **Validation**: Automatic validation on property assignment
-- **Reactivity**: Foundation for reactive frameworks (Vue 3 reactivity)
-- **Debugging**: Logging and monitoring object access
-- **Virtual Properties**: Create computed properties
-- **Security**: Implement access control and validation layers
+<ul>
+  <li><strong>Meta-Programming</strong>: Intercept and customize object operations</li>
+  <li><strong>Validation</strong>: Automatic validation on property assignment</li>
+  <li><strong>Reactivity</strong>: Foundation for reactive frameworks (Vue 3 reactivity)</li>
+  <li><strong>Debugging</strong>: Logging and monitoring object access</li>
+  <li><strong>Virtual Properties</strong>: Create computed properties</li>
+  <li><strong>Security</strong>: Implement access control and validation layers</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Proxies are used in many advanced scenarios:
+<p>Proxies are used in many advanced scenarios:</p>
 
-- **Reactive Frameworks**: Vue 3 reactivity system uses Proxies
-- **Validation Libraries**: Automatic property validation
-- **ORM Libraries**: Lazy loading and virtual properties
-- **Debugging Tools**: Logging object access and mutations
-- **Access Control**: Implementing private properties and access control
-- **API Wrappers**: Intercepting API calls for caching or logging
-- **State Management**: Reactive state management systems
-- **Mocking/Testing**: Creating test doubles and mocks
+<ul>
+  <li><strong>Reactive Frameworks</strong>: Vue 3 reactivity system uses Proxies</li>
+  <li><strong>Validation Libraries</strong>: Automatic property validation</li>
+  <li><strong>ORM Libraries</strong>: Lazy loading and virtual properties</li>
+  <li><strong>Debugging Tools</strong>: Logging object access and mutations</li>
+  <li><strong>Access Control</strong>: Implementing private properties and access control</li>
+  <li><strong>API Wrappers</strong>: Intercepting API calls for caching or logging</li>
+  <li><strong>State Management</strong>: Reactive state management systems</li>
+  <li><strong>Mocking/Testing</strong>: Creating test doubles and mocks</li>
+</ul>
 
-**Challenge:** Create a proxy that logs property access and validates assignments.`,
+<p><strong>Challenge:</strong> Create a proxy that logs property access and validates assignments.</p>`,
   examples: [
     {
       input: `const obj = new Proxy(target, handler);`,

@@ -24,51 +24,59 @@ export const problem: Problem = {
   title: 'JavaScript Proxy',
   difficulty: 'hard',
   category: 'JavaScript Advanced',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Proxy traps are methods in a Proxy handler that intercept operations on the target object. Each trap corresponds to a JavaScript operation and allows you to customize behavior.
+<p>Proxy traps are methods in a Proxy handler that intercept operations on the target object. Each trap corresponds to a JavaScript operation and allows you to customize behavior.</p>
 
-Common traps:
-- **get**: Intercepts property access
-- **set**: Intercepts property assignment
-- **has**: Intercepts \`in\` operator
-- **deleteProperty**: Intercepts \`delete\` operator
-- **ownKeys**: Intercepts \`Object.keys()\`
-- **apply**: Intercepts function calls (for function proxies)
+<p>Common traps:</p>
+<ul>
+  <li><strong>get</strong>: Intercepts property access</li>
+  <li><strong>set</strong>: Intercepts property assignment</li>
+  <li><strong>has</strong>: Intercepts \<code>in\</code> operator</li>
+  <li><strong>deleteProperty</strong>: Intercepts \<code>delete\</code> operator</li>
+  <li><strong>ownKeys</strong>: Intercepts \<code>Object.keys()\</code></li>
+  <li><strong>apply</strong>: Intercepts function calls (for function proxies)</li>
+</ul>
 
-Proxies enable:
-- **Validation**: Validate property assignments
-- **Logging**: Log all property access
-- **Default Values**: Return defaults for missing properties
-- **Reactivity**: Vue 3 reactivity system uses Proxies
-- **Virtual Properties**: Create computed properties
-- **Access Control**: Implement private properties
+<p>Proxies enable:</p>
+<ul>
+  <li><strong>Validation</strong>: Validate property assignments</li>
+  <li><strong>Logging</strong>: Log all property access</li>
+  <li><strong>Default Values</strong>: Return defaults for missing properties</li>
+  <li><strong>Reactivity</strong>: Vue 3 reactivity system uses Proxies</li>
+  <li><strong>Virtual Properties</strong>: Create computed properties</li>
+  <li><strong>Access Control</strong>: Implement private properties</li>
+</ul>
 
-## Importance
+<h2>Importance</h2>
 
-Proxy traps are essential for meta-programming because:
+<p>Proxy traps are essential for meta-programming because:</p>
 
-- **Interception**: Intercept and customize any object operation
-- **Validation**: Automatic validation on property access/assignment
-- **Reactivity**: Foundation for reactive frameworks
-- **Debugging**: Logging and monitoring object operations
-- **Security**: Implement access control and validation
-- **Framework Development**: Essential for building frameworks
+<ul>
+  <li><strong>Interception</strong>: Intercept and customize any object operation</li>
+  <li><strong>Validation</strong>: Automatic validation on property access/assignment</li>
+  <li><strong>Reactivity</strong>: Foundation for reactive frameworks</li>
+  <li><strong>Debugging</strong>: Logging and monitoring object operations</li>
+  <li><strong>Security</strong>: Implement access control and validation</li>
+  <li><strong>Framework Development</strong>: Essential for building frameworks</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Proxy traps are used extensively:
+<p>Proxy traps are used extensively:</p>
 
-- **Reactive Frameworks**: Vue 3 reactivity system
-- **Validation Libraries**: Automatic property validation
-- **ORM Libraries**: Lazy loading and virtual properties
-- **Debugging Tools**: Logging object access and mutations
-- **Access Control**: Implementing private properties
-- **API Wrappers**: Intercepting API calls for caching/logging
-- **State Management**: Reactive state management
-- **Mocking/Testing**: Creating test doubles
+<ul>
+  <li><strong>Reactive Frameworks</strong>: Vue 3 reactivity system</li>
+  <li><strong>Validation Libraries</strong>: Automatic property validation</li>
+  <li><strong>ORM Libraries</strong>: Lazy loading and virtual properties</li>
+  <li><strong>Debugging Tools</strong>: Logging object access and mutations</li>
+  <li><strong>Access Control</strong>: Implementing private properties</li>
+  <li><strong>API Wrappers</strong>: Intercepting API calls for caching/logging</li>
+  <li><strong>State Management</strong>: Reactive state management</li>
+  <li><strong>Mocking/Testing</strong>: Creating test doubles</li>
+</ul>
 
-**Challenge:** Create proxies for validation, logging, and default values.`,
+<p><strong>Challenge:</strong> Create proxies for validation, logging, and default values.</p>`,
   examples: [
     {
       input: `new Proxy(obj, { get(target, prop) { ... } })`,

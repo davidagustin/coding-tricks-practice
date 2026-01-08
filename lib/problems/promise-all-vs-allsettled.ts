@@ -24,46 +24,56 @@ export const problem: Problem = {
   title: 'Promise.all vs Promise.allSettled',
   difficulty: 'medium',
   category: 'Async/Promises',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-\`Promise.all()\` and \`Promise.allSettled()\` both handle multiple promises, but with fundamentally different behaviors:
+<p><code>Promise.all()</code> and <code>Promise.allSettled()</code> both handle multiple promises, but with fundamentally different behaviors:</p>
 
-- **Promise.all()**: Returns a promise that resolves when all promises resolve, or rejects immediately when the first promise rejects (fail-fast behavior). All promises must succeed.
-- **Promise.allSettled()**: Returns a promise that always resolves (never rejects) after all promises settle, regardless of individual outcomes. You get results for all promises, both successes and failures.
+<ul>
+  <li><strong>Promise.all()</strong>: Returns a promise that resolves when all promises resolve, or rejects immediately when the first promise rejects (fail-fast behavior). All promises must succeed.</li>
+  <li><strong>Promise.allSettled()</strong>: Returns a promise that always resolves (never rejects) after all promises settle, regardless of individual outcomes. You get results for all promises, both successes and failures.</li>
+</ul>
 
-The choice between them depends on your requirements:
-- Use \`Promise.all()\` when you need all operations to succeed (all-or-nothing)
-- Use \`Promise.allSettled()\` when you want partial results and can handle individual failures
+<p>The choice between them depends on your requirements:</p>
+<ul>
+  <li>Use <code>Promise.all()</code> when you need all operations to succeed (all-or-nothing)</li>
+  <li>Use <code>Promise.allSettled()</code> when you want partial results and can handle individual failures</li>
+</ul>
 
-## Importance
+<h2>Importance</h2>
 
-Choosing the right method is crucial for application behavior:
+<p>Choosing the right method is crucial for application behavior:</p>
 
-- **Error Handling**: Different error handling strategies (fail-fast vs graceful degradation)
-- **User Experience**: \`allSettled\` provides better UX by showing partial results
-- **Data Integrity**: \`all\` ensures data consistency (all or nothing)
-- **Resilience**: \`allSettled\` makes systems more resilient to partial failures
-- **Performance**: \`all\` can be faster (stops early on failure), \`allSettled\` always waits for all
-- **Debugging**: Different methods provide different information about failures
+<ul>
+  <li><strong>Error Handling</strong>: Different error handling strategies (fail-fast vs graceful degradation)</li>
+  <li><strong>User Experience</strong>: <code>allSettled</code> provides better UX by showing partial results</li>
+  <li><strong>Data Integrity</strong>: <code>all</code> ensures data consistency (all or nothing)</li>
+  <li><strong>Resilience</strong>: <code>allSettled</code> makes systems more resilient to partial failures</li>
+  <li><strong>Performance</strong>: <code>all</code> can be faster (stops early on failure), <code>allSettled</code> always waits for all</li>
+  <li><strong>Debugging</strong>: Different methods provide different information about failures</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-These methods are used in different scenarios:
+<p>These methods are used in different scenarios:</p>
 
-**Promise.all()** - When all must succeed:
-- **Transaction Processing**: All database operations must succeed
-- **Form Submission**: All validations must pass
-- **Multi-step Workflows**: All steps must complete successfully
-- **Data Synchronization**: All data sources must be synchronized
+<p><strong>Promise.all()</strong> - When all must succeed:</p>
+<ul>
+  <li><strong>Transaction Processing</strong>: All database operations must succeed</li>
+  <li><strong>Form Submission</strong>: All validations must pass</li>
+  <li><strong>Multi-step Workflows</strong>: All steps must complete successfully</li>
+  <li><strong>Data Synchronization</strong>: All data sources must be synchronized</li>
+</ul>
 
-**Promise.allSettled()** - When partial success is acceptable:
-- **Multi-API Calls**: Fetching from multiple APIs where some may be down
-- **Batch Operations**: Processing multiple items where individual failures are acceptable
-- **Analytics Collection**: Collecting analytics from multiple services
-- **Notification Systems**: Sending notifications through multiple channels
-- **Data Aggregation**: Collecting data from multiple sources
+<p><strong>Promise.allSettled()</strong> - When partial success is acceptable:</p>
+<ul>
+  <li><strong>Multi-API Calls</strong>: Fetching from multiple APIs where some may be down</li>
+  <li><strong>Batch Operations</strong>: Processing multiple items where individual failures are acceptable</li>
+  <li><strong>Analytics Collection</strong>: Collecting analytics from multiple services</li>
+  <li><strong>Notification Systems</strong>: Sending notifications through multiple channels</li>
+  <li><strong>Data Aggregation</strong>: Collecting data from multiple sources</li>
+</ul>
 
-**Challenge:** Use the right method for different scenarios.`,
+<p><strong>Challenge:</strong> Use the right method for different scenarios.</p>`,
   examples: [
     {
       input: `const promises = [fetch('/api/1'), fetch('/api/2'), fetch('/api/3')];`,

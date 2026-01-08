@@ -24,46 +24,54 @@ export const problem: Problem = {
   title: 'Function Memoization',
   difficulty: 'medium',
   category: 'Functional Programming',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Memoization caches function results based on arguments, avoiding redundant calculations. When a memoized function is called with the same arguments, it returns the cached result instead of recalculating.
+<p>Memoization caches function results based on arguments, avoiding redundant calculations. When a memoized function is called with the same arguments, it returns the cached result instead of recalculating.</p>
 
-The pattern:
-1. Check if result exists in cache for given arguments
-2. If yes, return cached result
-3. If no, compute result, store in cache, return result
+<p>The pattern:</p>
+<ol>
+  <li>Check if result exists in cache for given arguments</li>
+  <li>If yes, return cached result</li>
+  <li>If no, compute result, store in cache, return result</li>
+</ol>
 
-Memoization is particularly powerful for:
-- **Recursive Functions**: Dramatically speeds up recursive algorithms (like Fibonacci)
-- **Expensive Calculations**: Caching results of expensive operations
-- **Pure Functions**: Works best with pure functions (same input → same output)
-- **API Calls**: Caching API responses (with expiration)
+<p>Memoization is particularly powerful for:</p>
+<ul>
+  <li><strong>Recursive Functions</strong>: Dramatically speeds up recursive algorithms (like Fibonacci)</li>
+  <li><strong>Expensive Calculations</strong>: Caching results of expensive operations</li>
+  <li><strong>Pure Functions</strong>: Works best with pure functions (same input → same output)</li>
+  <li><strong>API Calls</strong>: Caching API responses (with expiration)</li>
+</ul>
 
-## Importance
+<h2>Importance</h2>
 
-Memoization is essential for performance optimization because:
+<p>Memoization is essential for performance optimization because:</p>
 
-- **Performance**: Dramatically speeds up expensive calculations
-- **Recursive Algorithms**: Essential for efficient recursive functions
-- **Resource Efficiency**: Reduces CPU usage and API calls
-- **User Experience**: Faster response times improve UX
-- **Cost Reduction**: Fewer API calls reduce costs
-- **Scalability**: Enables applications to handle more load
+<ul>
+  <li><strong>Performance</strong>: Dramatically speeds up expensive calculations</li>
+  <li><strong>Recursive Algorithms</strong>: Essential for efficient recursive functions</li>
+  <li><strong>Resource Efficiency</strong>: Reduces CPU usage and API calls</li>
+  <li><strong>User Experience</strong>: Faster response times improve UX</li>
+  <li><strong>Cost Reduction</strong>: Fewer API calls reduce costs</li>
+  <li><strong>Scalability</strong>: Enables applications to handle more load</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Memoization is used extensively:
+<p>Memoization is used extensively:</p>
 
-- **Recursive Algorithms**: Fibonacci, factorial, dynamic programming
-- **API Caching**: Caching API responses to reduce network calls
-- **Expensive Calculations**: Mathematical computations, data processing
-- **React**: React.memo, useMemo for component and value memoization
-- **GraphQL**: Field-level caching in GraphQL resolvers
-- **Image Processing**: Caching processed images
-- **Data Transformation**: Caching transformed data
-- **Search Results**: Caching search results
+<ul>
+  <li><strong>Recursive Algorithms</strong>: Fibonacci, factorial, dynamic programming</li>
+  <li><strong>API Caching</strong>: Caching API responses to reduce network calls</li>
+  <li><strong>Expensive Calculations</strong>: Mathematical computations, data processing</li>
+  <li><strong>React</strong>: React.memo, useMemo for component and value memoization</li>
+  <li><strong>GraphQL</strong>: Field-level caching in GraphQL resolvers</li>
+  <li><strong>Image Processing</strong>: Caching processed images</li>
+  <li><strong>Data Transformation</strong>: Caching transformed data</li>
+  <li><strong>Search Results</strong>: Caching search results</li>
+</ul>
 
-**Challenge:** Implement memoization for expensive calculations.`,
+<p><strong>Challenge:</strong> Implement memoization for expensive calculations.</p>`,
   examples: [
     {
       input: `const memoFib = memoize(fib); memoFib(40)`,

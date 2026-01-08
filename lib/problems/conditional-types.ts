@@ -24,46 +24,54 @@ export const problem: Problem = {
   title: 'TypeScript Conditional Types',
   difficulty: 'hard',
   category: 'TypeScript Advanced',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Conditional types enable type-level conditional logic using the syntax \`T extends U ? X : Y\`. If \`T\` extends \`U\`, the type is \`X\`, otherwise \`Y\`.
+<p>Conditional types enable type-level conditional logic using the syntax <code>T extends U ? X : Y</code>. If <code>T</code> extends <code>U</code>, the type is <code>X</code>, otherwise <code>Y</code>.</p>
 
-Key features:
-- **Type Selection**: Choose types based on conditions
-- **Type Filtering**: Filter union types (remove unwanted types)
-- **Type Extraction**: Extract types from complex structures
-- **Distributive**: Conditional types distribute over union types
+<p>Key features:</p>
+<ul>
+  <li><strong>Type Selection</strong>: Choose types based on conditions</li>
+  <li><strong>Type Filtering</strong>: Filter union types (remove unwanted types)</li>
+  <li><strong>Type Extraction</strong>: Extract types from complex structures</li>
+  <li><strong>Distributive</strong>: Conditional types distribute over union types</li>
+</ul>
 
-Common patterns:
-- **Type Guards**: \`T extends string ? true : false\`
-- **Type Extraction**: \`T extends Promise<infer U> ? U : T\`
-- **Type Filtering**: \`T extends null | undefined ? never : T\` (NonNullable)
+<p>Common patterns:</p>
+<ul>
+  <li><strong>Type Guards</strong>: <code>T extends string ? true : false</code></li>
+  <li><strong>Type Extraction</strong>: <code>T extends Promise&lt;infer U&gt; ? U : T</code></li>
+  <li><strong>Type Filtering</strong>: <code>T extends null | undefined ? never : T</code> (NonNullable)</li>
+</ul>
 
-## Importance
+<h2>Importance</h2>
 
-Conditional types are essential for advanced TypeScript because:
+<p>Conditional types are essential for advanced TypeScript because:</p>
 
-- **Type-Level Logic**: Implement logic at the type level
-- **Type Safety**: Create more precise, conditional types
-- **Utility Types**: Build powerful utility types
-- **Framework Development**: Essential for advanced frameworks
-- **API Design**: Create flexible, conditional APIs
-- **Type Inference**: Extract and infer types from complex structures
+<ul>
+  <li><strong>Type-Level Logic</strong>: Implement logic at the type level</li>
+  <li><strong>Type Safety</strong>: Create more precise, conditional types</li>
+  <li><strong>Utility Types</strong>: Build powerful utility types</li>
+  <li><strong>Framework Development</strong>: Essential for advanced frameworks</li>
+  <li><strong>API Design</strong>: Create flexible, conditional APIs</li>
+  <li><strong>Type Inference</strong>: Extract and infer types from complex structures</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Conditional types are used extensively:
+<p>Conditional types are used extensively:</p>
 
-- **Utility Types**: NonNullable, Extract, Exclude, ReturnType, Parameters
-- **Type Extraction**: Extracting types from Promises, arrays, functions
-- **Type Filtering**: Filtering union types
-- **Framework Types**: React, Vue use conditional types for component types
-- **API Types**: Creating conditional API response types
-- **Generic Constraints**: Creating conditional generic constraints
-- **Type Guards**: Type-level type guards
-- **Library Development**: Building advanced type-safe libraries
+<ul>
+  <li><strong>Utility Types</strong>: NonNullable, Extract, Exclude, ReturnType, Parameters</li>
+  <li><strong>Type Extraction</strong>: Extracting types from Promises, arrays, functions</li>
+  <li><strong>Type Filtering</strong>: Filtering union types</li>
+  <li><strong>Framework Types</strong>: React, Vue use conditional types for component types</li>
+  <li><strong>API Types</strong>: Creating conditional API response types</li>
+  <li><strong>Generic Constraints</strong>: Creating conditional generic constraints</li>
+  <li><strong>Type Guards</strong>: Type-level type guards</li>
+  <li><strong>Library Development</strong>: Building advanced type-safe libraries</li>
+</ul>
 
-**Challenge:** Build conditional types for type selection and filtering.`,
+<p><strong>Challenge:</strong> Build conditional types for type selection and filtering.</p>`,
   examples: [
     {
       input: `type IsString<T> = T extends string ? true : false`,

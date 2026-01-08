@@ -24,46 +24,54 @@ export const problem: Problem = {
   title: 'TypeScript Branded Types',
   difficulty: 'hard',
   category: 'TypeScript Advanced',
-  description: `## In-Depth Explanation
+  description: `<h2>In-Depth Explanation</h2>
 
-Branded types create distinct types from the same underlying type (like \`number\` or \`string\`) by adding a "brand" - a unique property that exists only at the type level. This prevents mixing up values that have the same type but different meanings.
+<p>Branded types create distinct types from the same underlying type (like <code>number</code> or <code>string</code>) by adding a "brand" - a unique property that exists only at the type level. This prevents mixing up values that have the same type but different meanings.</p>
 
-The pattern: \`type UserId = number & { readonly __brand: unique symbol }\`
-- Same underlying type (\`number\`)
-- Different brand (unique symbol)
-- TypeScript treats them as incompatible
+<p>The pattern: <code>type UserId = number & { readonly __brand: unique symbol }</code></p>
+<ul>
+  <li>Same underlying type (<code>number</code>)</li>
+  <li>Different brand (unique symbol)</li>
+  <li>TypeScript treats them as incompatible</li>
+</ul>
 
-This enables:
-- **Type Safety**: Prevent \`UserId\` from being used as \`ProductId\`
-- **Semantic Types**: Create types that represent specific concepts
-- **Validation**: Only validated values can be branded types
-- **API Safety**: Prevent passing wrong IDs to functions
+<p>This enables:</p>
+<ul>
+  <li><strong>Type Safety</strong>: Prevent <code>UserId</code> from being used as <code>ProductId</code></li>
+  <li><strong>Semantic Types</strong>: Create types that represent specific concepts</li>
+  <li><strong>Validation</strong>: Only validated values can be branded types</li>
+  <li><strong>API Safety</strong>: Prevent passing wrong IDs to functions</li>
+</ul>
 
-## Importance
+<h2>Importance</h2>
 
-Branded types are essential for type safety because:
+<p>Branded types are essential for type safety because:</p>
 
-- **Prevent Bugs**: Catch bugs where wrong IDs are passed
-- **Type Safety**: Stronger type safety than primitive types
-- **Semantic Clarity**: Types that clearly represent concepts
-- **API Design**: Create safer APIs that prevent misuse
-- **Validation**: Ensure only validated values are used
-- **Refactoring**: Safer refactoring with distinct types
+<ul>
+  <li><strong>Prevent Bugs</strong>: Catch bugs where wrong IDs are passed</li>
+  <li><strong>Type Safety</strong>: Stronger type safety than primitive types</li>
+  <li><strong>Semantic Clarity</strong>: Types that clearly represent concepts</li>
+  <li><strong>API Design</strong>: Create safer APIs that prevent misuse</li>
+  <li><strong>Validation</strong>: Ensure only validated values are used</li>
+  <li><strong>Refactoring</strong>: Safer refactoring with distinct types</li>
+</ul>
 
-## Usefulness & Practical Applications
+<h2>Usefulness & Practical Applications</h2>
 
-Branded types are used extensively:
+<p>Branded types are used extensively:</p>
 
-- **ID Types**: UserId, ProductId, OrderId - prevent mixing IDs
-- **Validated Types**: Email, URL, PhoneNumber - only validated values
-- **Unit Types**: Meters, Kilograms - prevent unit mixing
-- **API Types**: RequestId, SessionId - prevent API misuse
-- **Database Types**: PrimaryKey, ForeignKey - type-safe database operations
-- **Security**: Token types, API keys - prevent misuse
-- **Domain Modeling**: Domain-specific types in DDD
-- **Library Development**: Building type-safe libraries
+<ul>
+  <li><strong>ID Types</strong>: UserId, ProductId, OrderId - prevent mixing IDs</li>
+  <li><strong>Validated Types</strong>: Email, URL, PhoneNumber - only validated values</li>
+  <li><strong>Unit Types</strong>: Meters, Kilograms - prevent unit mixing</li>
+  <li><strong>API Types</strong>: RequestId, SessionId - prevent API misuse</li>
+  <li><strong>Database Types</strong>: PrimaryKey, ForeignKey - type-safe database operations</li>
+  <li><strong>Security</strong>: Token types, API keys - prevent misuse</li>
+  <li><strong>Domain Modeling</strong>: Domain-specific types in DDD</li>
+  <li><strong>Library Development</strong>: Building type-safe libraries</li>
+</ul>
 
-**Challenge:** Use branded types to prevent mixing up similar values.`,
+<p><strong>Challenge:</strong> Use branded types to prevent mixing up similar values.</p>`,
   examples: [
     {
       input: `type UserId = number & { __brand: 'UserId' }`,
