@@ -58,3 +58,83 @@ html {
     min-width: 44px;
   }
 }
+
+/* Problem Description Typography Improvements */
+.prose h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgb(229 231 235);
+  color: rgb(17 24 39);
+}
+
+.dark .prose h2 {
+  border-bottom-color: rgb(55 65 81);
+  color: rgb(243 244 246);
+}
+
+.prose h2:first-child {
+  margin-top: 0;
+}
+
+.prose p {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+  color: rgb(55 65 75);
+}
+
+.dark .prose p {
+  color: rgb(209 213 219);
+}
+
+.prose ul,
+.prose ol {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.prose ul li,
+.prose ol li {
+  margin-bottom: 0.5rem;
+  line-height: 1.7;
+  color: rgb(55 65 75);
+}
+
+.dark .prose ul li,
+.dark .prose ol li {
+  color: rgb(209 213 219);
+}
+
+.prose ul li::marker {
+  color: rgb(107 114 128);
+}
+
+.dark .prose ul li::marker {
+  color: rgb(156 163 175);
+}
+
+.prose strong {
+  font-weight: 600;
+  color: rgb(17 24 39);
+}
+
+.dark .prose strong {
+  color: rgb(243 244 246);
+}
+
+.prose code {
+  font-size: 0.875rem;
+  background-color: rgb(243 244 246);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  color: rgb(17 24 39);
+}
+
+.dark .prose code {
+  background-color: rgb(31 41 55);
+  color: rgb(243 244 246);
+}
