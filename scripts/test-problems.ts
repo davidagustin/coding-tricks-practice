@@ -1,10 +1,10 @@
 /**
  * Test script for agents to verify their assigned problems
- * Usage:
+ * Usage: 
  *   npm run test:agent 1              # Test all Agent 1 problems
  *   npm run test:agent 1 reduce-grouping  # Test specific problem
  *   npm run test:agent all            # Test all problems
- *
+ * 
  * Or directly:
  *   npx tsx scripts/test-problems.ts 1
  *   npx tsx scripts/test-problems.ts 1 reduce-grouping
@@ -87,19 +87,12 @@ interface TestResult {
   problemTitle: string;
   passed: boolean;
   error?: string;
-  testResults: Array<{
-    passed: boolean;
-    input: unknown;
-    expectedOutput: unknown;
-    actualOutput: unknown;
-    error?: string;
-    description?: string;
-  }>;
+  testResults: any[];
 }
 
 async function testProblem(problemId: string): Promise<TestResult> {
   const problem = getProblemById(problemId);
-
+  
   if (!problem) {
     return {
       problemId,
@@ -112,7 +105,7 @@ async function testProblem(problemId: string): Promise<TestResult> {
 
   try {
     const result = await runTests(problem.solution, problem.testCases);
-
+    
     return {
       problemId,
       problemTitle: problem.title,
@@ -120,13 +113,12 @@ async function testProblem(problemId: string): Promise<TestResult> {
       error: result.error,
       testResults: result.results,
     };
-  } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
+  } catch (error: any) {
     return {
       problemId,
       problemTitle: problem.title,
       passed: false,
-      error: errorMessage,
+      error: error?.message || String(error),
       testResults: [],
     };
   }
@@ -134,9 +126,9 @@ async function testProblem(problemId: string): Promise<TestResult> {
 
 async function testAgentProblems(agentNumber: number | 'all') {
   let problemIds: string[] = [];
-
+  
   if (agentNumber === 'all') {
-    problemIds = problems.map((p) => p.id);
+    problemIds = problems.map(p => p.id);
   } else if (agentNumber >= 1 && agentNumber <= 4) {
     problemIds = AGENT_ASSIGNMENTS[agentNumber as keyof typeof AGENT_ASSIGNMENTS];
   } else {
@@ -144,18 +136,16 @@ async function testAgentProblems(agentNumber: number | 'all') {
     process.exit(1);
   }
 
-  console.log(
-    `\n🧪 Testing ${agentNumber === 'all' ? 'ALL' : `Agent ${agentNumber}`} Problems (${problemIds.length} problems)\n`
-  );
+  console.log(`\n🧪 Testing ${agentNumber === 'all' ? 'ALL' : `Agent ${agentNumber}`} Problems (${problemIds.length} problems)\n`);
   console.log('='.repeat(80));
 
   const results: TestResult[] = [];
-
+  
   for (const problemId of problemIds) {
     console.log(`\n📋 Testing: ${problemId}`);
     const result = await testProblem(problemId);
     results.push(result);
-
+    
     if (result.passed) {
       console.log(`   ✅ ${result.problemTitle} - PASSED`);
     } else {
@@ -164,7 +154,7 @@ async function testAgentProblems(agentNumber: number | 'all') {
         console.log(`   Error: ${result.error}`);
       }
       if (result.testResults.length > 0) {
-        const failedTests = result.testResults.filter((r) => !r.passed);
+        const failedTests = result.testResults.filter(r => !r.passed);
         if (failedTests.length > 0) {
           console.log(`   Failed tests: ${failedTests.length}/${result.testResults.length}`);
           failedTests.forEach((test, idx) => {
@@ -176,30 +166,30 @@ async function testAgentProblems(agentNumber: number | 'all') {
   }
 
   // Summary
-  console.log(`\n${'='.repeat(80)}`);
+  console.log('\n' + '='.repeat(80));
   console.log('\n📊 SUMMARY\n');
-
-  const passed = results.filter((r) => r.passed).length;
-  const failed = results.filter((r) => !r.passed).length;
-
+  
+  const passed = results.filter(r => r.passed).length;
+  const failed = results.filter(r => !r.passed).length;
+  
   console.log(`Total: ${results.length}`);
   console.log(`✅ Passed: ${passed}`);
   console.log(`❌ Failed: ${failed}`);
-
+  
   if (failed > 0) {
     console.log('\n❌ Failed Problems:');
     results
-      .filter((r) => !r.passed)
-      .forEach((r) => {
+      .filter(r => !r.passed)
+      .forEach(r => {
         console.log(`   - ${r.problemId}: ${r.problemTitle}`);
         if (r.error) {
           console.log(`     Error: ${r.error}`);
         }
       });
   }
-
+  
   console.log('\n');
-
+  
   return results;
 }
 
@@ -210,7 +200,7 @@ const problemArg = args[1];
 
 if (problemArg) {
   // Test single problem
-  testProblem(problemArg).then((result) => {
+  testProblem(problemArg).then(result => {
     if (result.passed) {
       console.log(`✅ ${result.problemTitle} - PASSED`);
     } else {
@@ -224,8 +214,8 @@ if (problemArg) {
 } else {
   // Test agent problems
   const agentNumber = agentArg === 'all' ? 'all' : parseInt(agentArg, 10);
-  testAgentProblems(agentNumber).then((results) => {
-    const allPassed = results.every((r) => r.passed);
+  testAgentProblems(agentNumber).then(results => {
+    const allPassed = results.every(r => r.passed);
     process.exit(allPassed ? 0 : 1);
   });
 }
