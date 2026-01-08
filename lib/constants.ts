@@ -103,4 +103,4 @@ export const DOMPURIFY_CONFIG = {
   ],
   ALLOWED_ATTR: ['class', 'href', 'target', 'rel'],
   ALLOW_DATA_ATTR: false,
-} as const;
+};
