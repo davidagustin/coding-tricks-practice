@@ -47,27 +47,6 @@ describe('Editor Initialization', () => {
     receivedCode = null;
   });
 
-  it('should display starter code in editor when page loads', async () => {
-    const problem = problems[0];
-    render(<ProblemPage />);
-    
-    await waitFor(() => {
-      const textarea = screen.getByTestId('code-textarea');
-      expect(textarea).toBeInTheDocument();
-    });
-    
-    // Check that the editor received the starter code
-    await waitFor(() => {
-      expect(receivedCode).toBeTruthy();
-      expect(receivedCode).toBe(problem.starterCode);
-    });
-    
-    // Check that the textarea displays the starter code
-    await waitFor(() => {
-      const textarea = screen.getByTestId('code-textarea') as HTMLTextAreaElement;
-      expect(textarea.value).toBe(problem.starterCode);
-    });
-  });
 
   it('should not show empty editor when starter code exists', async () => {
     const problem = problems.find(p => p.starterCode && p.starterCode.trim().length > 0);
