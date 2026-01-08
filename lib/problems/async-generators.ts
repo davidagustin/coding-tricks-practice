@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'async-generators',
-    title: 'Async Generators',
-    difficulty: 'hard',
-    category: 'Async/Promises',
-    description: `## In-Depth Explanation
+  id: 'async-generators',
+  title: 'Async Generators',
+  difficulty: 'hard',
+  category: 'Async/Promises',
+  description: `## In-Depth Explanation
 
 Async generators combine the power of generators (lazy evaluation, pausable execution) with async/await (handling promises). They use \`async function*\` syntax and can \`yield\` promises or values.
 
@@ -57,14 +57,14 @@ This pattern is crucial for modern applications:
 - **File Processing**: Processing large files line-by-line or chunk-by-chunk
 
 **Challenge:** Create an async generator that fetches pages of data.`,
-    examples: [
-      {
-        input: `async function* fetchPages() { ... }`,
-        output: `Yields pages one at a time`,
-        explanation: 'Process data as it arrives',
-      },
-    ],
-    starterCode: `async function* fetchPages(pageSize = 10) {
+  examples: [
+    {
+      input: `async function* fetchPages() { ... }`,
+      output: `Yields pages one at a time`,
+      explanation: 'Process data as it arrives',
+    },
+  ],
+  starterCode: `async function* fetchPages(pageSize = 10) {
   // TODO: Create async generator that yields pages
   // Start at page 0, increment until no more data
   // Yield each page as it's fetched
@@ -89,7 +89,7 @@ async function fetchPage(page) {
     console.log(page);
   }
 })();`,
-    solution: `async function fetchPage(page) {
+  solution: `async function fetchPage(page) {
   // Simulated API call
   return {
     data: Array.from({ length: 10 }, (_, i) => page * 10 + i),
@@ -118,16 +118,16 @@ async function testFetchPages() {
   }
   return pages.length > 0;
 }`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'testFetchPages',
-      },
-    ],
-    hints: [
-      'Use async function* to create async generator',
-      'yield promises or values',
-      'Consume with for await...of',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'testFetchPages',
+    },
+  ],
+  hints: [
+    'Use async function* to create async generator',
+    'yield promises or values',
+    'Consume with for await...of',
+  ],
+};

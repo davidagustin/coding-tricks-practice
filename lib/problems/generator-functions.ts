@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'generator-functions',
-    title: 'Generator Functions',
-    difficulty: 'hard',
-    category: 'JavaScript Advanced',
-    description: `## In-Depth Explanation
+  id: 'generator-functions',
+  title: 'Generator Functions',
+  difficulty: 'hard',
+  category: 'JavaScript Advanced',
+  description: `## In-Depth Explanation
 
 Generator functions (declared with \`function*\`) create iterators that can pause and resume execution. They use \`yield\` to produce values and pause execution, returning control to the caller.
 
@@ -67,14 +67,14 @@ Generators are used extensively:
 - **Testing**: Generating test data on demand
 
 **Challenge:** Use generators for sequences, pagination, and async iteration.`,
-    examples: [
-      {
-        input: `function* count() { yield 1; yield 2; yield 3; }`,
-        output: `[...count()] → [1, 2, 3]`,
-        explanation: 'Generator produces values on demand',
-      },
-    ],
-    starterCode: `// TODO: Create a generator that yields numbers from start to end
+  examples: [
+    {
+      input: `function* count() { yield 1; yield 2; yield 3; }`,
+      output: `[...count()] → [1, 2, 3]`,
+      explanation: 'Generator produces values on demand',
+    },
+  ],
+  starterCode: `// TODO: Create a generator that yields numbers from start to end
 function* range(start, end) {
   // yield each number from start to end (inclusive)
 }
@@ -107,7 +107,7 @@ const first10Fib = Array.from({ length: 10 }, () => fib.next().value);
 console.log(first10Fib);
 
 console.log([...chunk([1, 2, 3, 4, 5], 2)]);`,
-    solution: `function* range(start, end) {
+  solution: `function* range(start, end) {
   for (let i = start; i <= end; i++) {
     yield i;
   }
@@ -133,21 +133,21 @@ function* chunk(arr, size) {
     yield arr.slice(i, i + size);
   }
 }`,
-    testCases: [
-      {
-        input: [1, 5],
-        expectedOutput: [1, 2, 3, 4, 5],
-        description: 'range generator',
-      },
-      {
-        input: [[1, 2, 3, 4, 5], 2],
-        expectedOutput: [[1, 2], [3, 4], [5]],
-        description: 'chunk generator',
-      },
-    ],
-    hints: [
-      'Use function* to declare a generator',
-      'yield pauses execution and returns value',
-      'while(true) with yield creates infinite generator',
-    ],
-  };
+  testCases: [
+    {
+      input: [1, 5],
+      expectedOutput: [1, 2, 3, 4, 5],
+      description: 'range generator',
+    },
+    {
+      input: [[1, 2, 3, 4, 5], 2],
+      expectedOutput: [[1, 2], [3, 4], [5]],
+      description: 'chunk generator',
+    },
+  ],
+  hints: [
+    'Use function* to declare a generator',
+    'yield pauses execution and returns value',
+    'while(true) with yield creates infinite generator',
+  ],
+};

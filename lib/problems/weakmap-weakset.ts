@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'weakmap-weakset',
-    title: 'WeakMap and WeakSet',
-    difficulty: 'medium',
-    category: 'Object Methods',
-    description: `## In-Depth Explanation
+  id: 'weakmap-weakset',
+  title: 'WeakMap and WeakSet',
+  difficulty: 'medium',
+  category: 'Object Methods',
+  description: `## In-Depth Explanation
 
 \`WeakMap\` and \`WeakSet\` are collections with "weak" references to their keys/elements. Unlike \`Map\` and \`Set\`, they don't prevent garbage collection of their keys/elements. When an object used as a key is garbage collected, the entry is automatically removed.
 
@@ -61,14 +61,14 @@ Weak collections are used in many scenarios:
 - **Memoization**: Memoizing without preventing object collection
 
 **Challenge:** Use WeakMap to store private data and WeakSet to track visited objects.`,
-    examples: [
-      {
-        input: `const privateData = new WeakMap();`,
-        output: `Stores data keyed by objects, allows GC`,
-        explanation: 'WeakMap keys must be objects, allows garbage collection',
-      },
-    ],
-    starterCode: `// TODO: Use WeakMap to store private data
+  examples: [
+    {
+      input: `const privateData = new WeakMap();`,
+      output: `Stores data keyed by objects, allows GC`,
+      explanation: 'WeakMap keys must be objects, allows garbage collection',
+    },
+  ],
+  starterCode: `// TODO: Use WeakMap to store private data
 class User {
   constructor(name) {
     this.name = name;
@@ -108,7 +108,7 @@ const obj2 = {};
 markVisited(obj1, visited);
 console.log(isVisited(obj1, visited)); // true
 console.log(isVisited(obj2, visited)); // false`,
-    solution: `const privateData = new WeakMap();
+  solution: `const privateData = new WeakMap();
 
 class User {
   constructor(name) {
@@ -131,21 +131,21 @@ function markVisited(obj, visited) {
 function isVisited(obj, visited) {
   return visited.has(obj);
 }`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'WeakMap stores private data correctly',
-      },
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'WeakSet tracks visited objects correctly',
-      },
-    ],
-    hints: [
-      'WeakMap keys must be objects (not primitives)',
-      'WeakMap/WeakSet allow garbage collection when key is no longer referenced',
-      'Useful for private data, metadata, or tracking without memory leaks',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'WeakMap stores private data correctly',
+    },
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'WeakSet tracks visited objects correctly',
+    },
+  ],
+  hints: [
+    'WeakMap keys must be objects (not primitives)',
+    'WeakMap/WeakSet allow garbage collection when key is no longer referenced',
+    'Useful for private data, metadata, or tracking without memory leaks',
+  ],
+};

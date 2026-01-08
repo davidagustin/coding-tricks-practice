@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'reflect-api',
-    title: 'Reflect API for Meta-Programming',
-    difficulty: 'hard',
-    category: 'Object Methods',
-    description: `## In-Depth Explanation
+  id: 'reflect-api',
+  title: 'Reflect API for Meta-Programming',
+  difficulty: 'hard',
+  category: 'Object Methods',
+  description: `## In-Depth Explanation
 
 The Reflect API provides methods that mirror Proxy trap operations, offering a programmatic way to perform object operations. Each Reflect method corresponds to a Proxy trap and provides a functional alternative to operators like \`in\`, \`delete\`, and \`new\`.
 
@@ -63,14 +63,14 @@ The Reflect API is used in advanced scenarios:
 - **Serialization**: Custom serialization logic
 
 **Challenge:** Use Reflect for property operations and function calls.`,
-    examples: [
-      {
-        input: `Reflect.get(obj, 'prop'), Reflect.set(obj, 'prop', value)`,
-        output: `Meta-programming operations`,
-        explanation: 'Reflect provides programmatic access to object operations',
-      },
-    ],
-    starterCode: `// TODO: Use Reflect.get to safely get property
+  examples: [
+    {
+      input: `Reflect.get(obj, 'prop'), Reflect.set(obj, 'prop', value)`,
+      output: `Meta-programming operations`,
+      explanation: 'Reflect provides programmatic access to object operations',
+    },
+  ],
+  starterCode: `// TODO: Use Reflect.get to safely get property
 function safeGet(obj, path) {
   // Use Reflect.get to get nested properties
   // Handle cases where property doesn't exist
@@ -107,7 +107,7 @@ class User {
 }
 const user = createInstance(User, ['John']);
 console.log(user.name);`,
-    solution: `function safeGet(obj, path) {
+  solution: `function safeGet(obj, path) {
   const keys = path.split('.');
   let current = obj;
   for (const key of keys) {
@@ -128,17 +128,17 @@ function hasProperty(obj, prop) {
 function createInstance(Constructor, args) {
   return Reflect.construct(Constructor, args);
 }`,
-    testCases: [
-      {
-        input: [{ a: { b: 1 } }, 'a.b'],
-        expectedOutput: 1,
-        description: 'safeGet',
-      },
-    ],
-    hints: [
-      'Reflect.get(target, prop) - get property value',
-      'Reflect.set(target, prop, value) - set property, returns boolean',
-      'Reflect.has(target, prop) - check if property exists',
-      'Reflect.construct(Constructor, args) - create instance',
-    ],
-  };
+  testCases: [
+    {
+      input: [{ a: { b: 1 } }, 'a.b'],
+      expectedOutput: 1,
+      description: 'safeGet',
+    },
+  ],
+  hints: [
+    'Reflect.get(target, prop) - get property value',
+    'Reflect.set(target, prop, value) - set property, returns boolean',
+    'Reflect.has(target, prop) - check if property exists',
+    'Reflect.construct(Constructor, args) - create instance',
+  ],
+};

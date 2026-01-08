@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'retry-pattern',
-    title: 'Retry Pattern with Exponential Backoff',
-    difficulty: 'hard',
-    category: 'Async/Promises',
-    description: `## In-Depth Explanation
+  id: 'retry-pattern',
+  title: 'Retry Pattern with Exponential Backoff',
+  difficulty: 'hard',
+  category: 'Async/Promises',
+  description: `## In-Depth Explanation
 
 The retry pattern with exponential backoff is a resilience strategy for handling transient failures. Instead of retrying immediately, you wait progressively longer between attempts (delay doubles each time: 100ms, 200ms, 400ms, etc.).
 
@@ -65,14 +65,14 @@ This pattern is used extensively in production:
 - **Service Discovery**: Retrying service discovery lookups
 
 **Challenge:** Retry a function with increasing delays.`,
-    examples: [
-      {
-        input: `retryWithBackoff(fetchData, { maxRetries: 3 })`,
-        output: `Retries with delays: 100ms, 200ms, 400ms`,
-        explanation: 'Exponential backoff reduces server load',
-      },
-    ],
-    starterCode: `async function retryWithBackoff(fn, options = {}) {
+  examples: [
+    {
+      input: `retryWithBackoff(fetchData, { maxRetries: 3 })`,
+      output: `Retries with delays: 100ms, 200ms, 400ms`,
+      explanation: 'Exponential backoff reduces server load',
+    },
+  ],
+  starterCode: `async function retryWithBackoff(fn, options = {}) {
   const { maxRetries = 3, initialDelay = 100 } = options;
   
   // TODO: Implement retry with exponential backoff
@@ -94,7 +94,7 @@ async function fetchData() {
 // retryWithBackoff(fetchData, { maxRetries: 3, initialDelay: 100 })
 //   .then(console.log)
 //   .catch(console.error);`,
-    solution: `async function retryWithBackoff(fn, options = {}) {
+  solution: `async function retryWithBackoff(fn, options = {}) {
   const { maxRetries = 3, initialDelay = 100 } = options;
   
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
@@ -126,16 +126,16 @@ async function testRetryWithBackoff() {
     return false;
   }
 }`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'testRetryWithBackoff',
-      },
-    ],
-    hints: [
-      'Loop up to maxRetries times',
-      'Calculate delay: initialDelay * 2^attempt',
-      'Use setTimeout wrapped in Promise for delay',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'testRetryWithBackoff',
+    },
+  ],
+  hints: [
+    'Loop up to maxRetries times',
+    'Calculate delay: initialDelay * 2^attempt',
+    'Use setTimeout wrapped in Promise for delay',
+  ],
+};

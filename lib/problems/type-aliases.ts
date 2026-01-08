@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'type-aliases',
-    title: 'Type Aliases',
-    difficulty: 'easy',
-    category: 'TypeScript Basics',
-    description: `## In-Depth Explanation
+  id: 'type-aliases',
+  title: 'Type Aliases',
+  difficulty: 'easy',
+  category: 'TypeScript Basics',
+  description: `## In-Depth Explanation
 
 Type aliases create names for types, making code more readable and maintainable. Unlike interfaces (which only describe object shapes), type aliases can represent any type: primitives, unions, intersections, tuples, and more.
 
@@ -61,15 +61,15 @@ Type aliases are used extensively:
 - **Discriminated Unions**: Creating type-safe state machines
 
 **Challenge:** Create type aliases for complex types.`,
-    examples: [
-      {
-        input: `type ID = string | number;
+  examples: [
+    {
+      input: `type ID = string | number;
 type Status = 'pending' | 'approved' | 'rejected';`,
-        output: `Custom types`,
-        explanation: 'Type aliases can represent unions and literals',
-      },
-    ],
-    starterCode: `// TODO: Create type aliases
+      output: `Custom types`,
+      explanation: 'Type aliases can represent unions and literals',
+    },
+  ],
+  starterCode: `// TODO: Create type aliases
 // 1. Create a Status type that can be 'loading', 'success', or 'error'
 // 2. Create a ID type that can be string or number
 // 3. Create a Coordinates type for { x: number, y: number }
@@ -87,7 +87,7 @@ const userId: ID = 123;
 const point: Coordinates = { x: 10, y: 20 };
 
 console.log(processStatus('success'));`,
-    solution: `type Status = 'loading' | 'success' | 'error';
+  solution: `type Status = 'loading' | 'success' | 'error';
 type ID = string | number;
 type Coordinates = { x: number; y: number };
 
@@ -99,16 +99,16 @@ const userId: ID = 123;
 const point: Coordinates = { x: 10, y: 20 };
 
 console.log(processStatus('success'));`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Type aliases work correctly',
-      },
-    ],
-    hints: [
-      'Use type keyword for type aliases',
-      'Union types use | syntax',
-      'Type aliases can represent any type',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'Type aliases work correctly',
+    },
+  ],
+  hints: [
+    'Use type keyword for type aliases',
+    'Union types use | syntax',
+    'Type aliases can represent any type',
+  ],
+};

@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'proxy-api',
-    title: 'Proxy API for Interception',
-    difficulty: 'hard',
-    category: 'Object Methods',
-    description: `## In-Depth Explanation
+  id: 'proxy-api',
+  title: 'Proxy API for Interception',
+  difficulty: 'hard',
+  category: 'Object Methods',
+  description: `## In-Depth Explanation
 
 The \`Proxy\` object enables meta-programming by intercepting and customizing operations on objects (property access, assignment, enumeration, function invocation, etc.). It's a powerful tool for creating abstractions and implementing patterns like validation, logging, and reactive programming.
 
@@ -61,14 +61,14 @@ Proxies are used in many advanced scenarios:
 - **Mocking/Testing**: Creating test doubles and mocks
 
 **Challenge:** Create a proxy that logs property access and validates assignments.`,
-    examples: [
-      {
-        input: `const obj = new Proxy(target, handler);`,
-        output: `Intercepts get, set, and other operations`,
-        explanation: 'Proxy enables meta-programming',
-      },
-    ],
-    starterCode: `// TODO: Create a proxy that logs all property access
+  examples: [
+    {
+      input: `const obj = new Proxy(target, handler);`,
+      output: `Intercepts get, set, and other operations`,
+      explanation: 'Proxy enables meta-programming',
+    },
+  ],
+  starterCode: `// TODO: Create a proxy that logs all property access
 function createLoggedObject(target) {
   // Return a Proxy that logs when properties are accessed
   // Use 'get' trap to log property reads
@@ -96,7 +96,7 @@ const validated = createValidatedObject({}, (key, value) => {
 
 validated.age = 25; // OK
 validated.age = 200; // Should throw error`,
-    solution: `function createLoggedObject(target) {
+  solution: `function createLoggedObject(target) {
   return new Proxy(target, {
     get(target, prop) {
       console.log(\`Accessing property: \${String(prop)}\`);
@@ -116,17 +116,17 @@ function createValidatedObject(target, validator) {
     }
   });
 }`,
-    testCases: [
-      {
-        input: [{ name: 'John' }],
-        expectedOutput: 'John',
-        description: 'createLoggedObject - mock test',
-      },
-    ],
-    hints: [
-      'Proxy constructor takes target and handler object',
-      'Use get trap for property access: get(target, prop)',
-      'Use set trap for property assignment: set(target, prop, value)',
-      'Return true from set trap to indicate success',
-    ],
-  };
+  testCases: [
+    {
+      input: [{ name: 'John' }],
+      expectedOutput: 'John',
+      description: 'createLoggedObject - mock test',
+    },
+  ],
+  hints: [
+    'Proxy constructor takes target and handler object',
+    'Use get trap for property access: get(target, prop)',
+    'Use set trap for property assignment: set(target, prop, value)',
+    'Return true from set trap to indicate success',
+  ],
+};

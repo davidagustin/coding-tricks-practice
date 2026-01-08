@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'object-entries',
-    title: 'Object.fromEntries / Object.entries',
-    difficulty: 'medium',
-    category: 'Object Methods',
-    description: `## In-Depth Explanation
+  id: 'object-entries',
+  title: 'Object.fromEntries / Object.entries',
+  difficulty: 'medium',
+  category: 'Object Methods',
+  description: `## In-Depth Explanation
 
 \`Object.entries()\` and \`Object.fromEntries()\` form a powerful pair that allows you to convert objects to arrays and back. This transformation enables you to leverage all array methods (map, filter, reduce, etc.) on object properties, then convert the result back to an object.
 
@@ -57,14 +57,14 @@ This pattern is essential in modern JavaScript/TypeScript development:
 - **React Props Processing**: Transforming props objects before passing to components
 
 **Challenge:** Transform object values and filter properties.`,
-    examples: [
-      {
-        input: `const prices = { apple: 1, banana: 2, cherry: 3 };`,
-        output: `{ apple: 2, banana: 4, cherry: 6 }`,
-        explanation: 'Double all prices',
-      },
-    ],
-    starterCode: `function doublePrices(prices) {
+  examples: [
+    {
+      input: `const prices = { apple: 1, banana: 2, cherry: 3 };`,
+      output: `{ apple: 2, banana: 4, cherry: 6 }`,
+      explanation: 'Double all prices',
+    },
+  ],
+  starterCode: `function doublePrices(prices) {
   // TODO: Use Object.entries and Object.fromEntries
   // to double all values
   
@@ -83,7 +83,7 @@ console.log(doublePrices(prices));
 
 const user = { name: 'John', _internal: 'secret', age: 30, _temp: 'data' };
 console.log(filterPrivateProperties(user));`,
-    solution: `function doublePrices(prices) {
+  solution: `function doublePrices(prices) {
   return Object.fromEntries(
     Object.entries(prices).map(([key, val]) => [key, val * 2])
   );
@@ -94,21 +94,21 @@ function filterPrivateProperties(obj) {
     Object.entries(obj).filter(([key]) => !key.startsWith('_'))
   );
 }`,
-    testCases: [
-      {
-        input: [{ apple: 1, banana: 2, cherry: 3 }],
-        expectedOutput: { apple: 2, banana: 4, cherry: 6 },
-        description: 'doublePrices',
-      },
-      {
-        input: [{ name: 'John', _internal: 'secret', age: 30, _temp: 'data' }],
-        expectedOutput: { name: 'John', age: 30 },
-        description: 'filterPrivateProperties',
-      },
-    ],
-    hints: [
-      'Object.entries(obj) → [[key, value], ...]',
-      'Object.fromEntries([[key, value], ...]) → object',
-      'Use map/filter between entries and fromEntries',
-    ],
-  };
+  testCases: [
+    {
+      input: [{ apple: 1, banana: 2, cherry: 3 }],
+      expectedOutput: { apple: 2, banana: 4, cherry: 6 },
+      description: 'doublePrices',
+    },
+    {
+      input: [{ name: 'John', _internal: 'secret', age: 30, _temp: 'data' }],
+      expectedOutput: { name: 'John', age: 30 },
+      description: 'filterPrivateProperties',
+    },
+  ],
+  hints: [
+    'Object.entries(obj) → [[key, value], ...]',
+    'Object.fromEntries([[key, value], ...]) → object',
+    'Use map/filter between entries and fromEntries',
+  ],
+};

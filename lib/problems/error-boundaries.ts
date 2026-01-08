@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'error-boundaries',
-    title: 'Error Handling Patterns',
-    difficulty: 'medium',
-    category: 'Async/Promises',
-    description: `## In-Depth Explanation
+  id: 'error-boundaries',
+  title: 'Error Handling Patterns',
+  difficulty: 'medium',
+  category: 'Async/Promises',
+  description: `## In-Depth Explanation
 
 Error handling in async code requires understanding when and how to catch errors. \`try/catch\` works with \`async/await\`, while \`.catch()\` works with promise chains. The key is catching errors at the right level and providing appropriate fallbacks or user feedback.
 
@@ -65,14 +65,14 @@ Error handling is essential in all applications:
 - **Async Operations**: Handling errors in async workflows
 
 **Challenge:** Implement comprehensive error handling.`,
-    examples: [
-      {
-        input: `try { await riskyOperation(); } catch (error) { handle(error); }`,
-        output: `Errors are caught and handled`,
-        explanation: 'Prevent unhandled promise rejections',
-      },
-    ],
-    starterCode: `async function safeOperation(operation, fallback) {
+  examples: [
+    {
+      input: `try { await riskyOperation(); } catch (error) { handle(error); }`,
+      output: `Errors are caught and handled`,
+      explanation: 'Prevent unhandled promise rejections',
+    },
+  ],
+  starterCode: `async function safeOperation(operation, fallback) {
   // TODO: Try operation, catch errors, return fallback on error
   
   return operation();
@@ -94,7 +94,7 @@ async function handleMultipleOperations(operations) {
 //
 // handleMultipleOperations([riskyOp, safeOp, riskyOp])
 //   .then(console.log).catch(console.error);`,
-    solution: `async function safeOperation(operation, fallback) {
+  solution: `async function safeOperation(operation, fallback) {
   try {
     return await operation();
   } catch (error) {
@@ -124,16 +124,16 @@ async function testSafeOperation() {
   const result = await safeOperation(riskyOp, 'fallback');
   return result === 'fallback';
 }`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'testSafeOperation',
-      },
-    ],
-    hints: [
-      'Use try/catch for async/await',
-      'Use .catch() for promise chains',
-      'Promise.allSettled never rejects',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'testSafeOperation',
+    },
+  ],
+  hints: [
+    'Use try/catch for async/await',
+    'Use .catch() for promise chains',
+    'Promise.allSettled never rejects',
+  ],
+};

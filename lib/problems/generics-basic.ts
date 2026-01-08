@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'generics-basic',
-    title: 'Generic Functions and Types',
-    difficulty: 'medium',
-    category: 'TypeScript Basics',
-    description: `## In-Depth Explanation
+  id: 'generics-basic',
+  title: 'Generic Functions and Types',
+  difficulty: 'medium',
+  category: 'TypeScript Basics',
+  description: `## In-Depth Explanation
 
 Generics enable writing reusable code that works with multiple types while maintaining type safety. They're like function parameters, but for types. The syntax \`<T>\` introduces a type parameter that can be used throughout the function or type.
 
@@ -61,17 +61,17 @@ Generics are used everywhere in TypeScript:
 - **Database ORMs**: Generic query builders and models
 
 **Challenge:** Create generic functions and types.`,
-    examples: [
-      {
-        input: `function identity<T>(arg: T): T {
+  examples: [
+    {
+      input: `function identity<T>(arg: T): T {
   return arg;
 }
 const num = identity<number>(42);`,
-        output: `42`,
-        explanation: 'Generic function works with any type',
-      },
-    ],
-    starterCode: `// TODO: Create generic functions
+      output: `42`,
+      explanation: 'Generic function works with any type',
+    },
+  ],
+  starterCode: `// TODO: Create generic functions
 // 1. Create a generic identity function
 // 2. Create a generic function to get first element of array
 // 3. Create a generic Pair type
@@ -95,7 +95,7 @@ const first = getFirst([1, 2, 3]);
 const pair: Pair<string, number> = { first: 'age', second: 30 };
 
 console.log(num, str, first, pair);`,
-    solution: `function identity<T>(arg: T): T {
+  solution: `function identity<T>(arg: T): T {
   return arg;
 }
 
@@ -114,16 +114,16 @@ const first = getFirst([1, 2, 3]);
 const pair: Pair<string, number> = { first: 'age', second: 30 };
 
 console.log(num, str, first, pair);`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Generics work correctly',
-      },
-    ],
-    hints: [
-      'Use <T> syntax for generic type parameters',
-      'Multiple generics: <T, U, V>',
-      'TypeScript can often infer generic types',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'Generics work correctly',
+    },
+  ],
+  hints: [
+    'Use <T> syntax for generic type parameters',
+    'Multiple generics: <T, U, V>',
+    'TypeScript can often infer generic types',
+  ],
+};

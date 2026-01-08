@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'async-await-error',
-    title: 'Async/Await Error Handling',
-    difficulty: 'easy',
-    category: 'Async/Promises',
-    description: `## In-Depth Explanation
+  id: 'async-await-error',
+  title: 'Async/Await Error Handling',
+  difficulty: 'easy',
+  category: 'Async/Promises',
+  description: `## In-Depth Explanation
 
 \`async/await\` provides a synchronous-looking syntax for asynchronous code, but error handling requires \`try/catch\` blocks (unlike promise chains which use \`.catch()\`). When an \`await\`ed promise rejects, it throws an exception that must be caught.
 
@@ -62,14 +62,14 @@ Error handling is essential in all async operations:
 - **User Actions**: Catching errors from user-triggered async operations
 
 **Challenge:** Properly catch and handle async errors.`,
-    examples: [
-      {
-        input: `try { const data = await fetchData(); } catch (error) { ... }`,
-        output: `Errors are caught`,
-        explanation: 'Use try/catch with async/await',
-      },
-    ],
-    starterCode: `async function fetchUserData(userId) {
+  examples: [
+    {
+      input: `try { const data = await fetchData(); } catch (error) { ... }`,
+      output: `Errors are caught`,
+      explanation: 'Use try/catch with async/await',
+    },
+  ],
+  starterCode: `async function fetchUserData(userId) {
   // TODO: Fetch user, handle errors
   // If fetch fails, return null
   // If user not found (404), return null
@@ -89,7 +89,7 @@ async function fetchMultipleUsers(userIds) {
 // Test (commented out to prevent immediate execution)
 // fetchUserData(1).then(console.log).catch(console.error);
 // fetchMultipleUsers([1, 2, 3]).then(console.log).catch(console.error);`,
-    solution: `async function fetchUserData(userId) {
+  solution: `async function fetchUserData(userId) {
   try {
     // Mock fetch for testing
     const mockFetch = () => Promise.resolve({ 
@@ -121,16 +121,16 @@ async function testFetchUserData() {
   const result = await fetchUserData(1);
   return result !== null && typeof result === 'object';
 }`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'testFetchUserData',
-      },
-    ],
-    hints: [
-      'Wrap await in try/catch',
-      'Check response.ok for HTTP errors',
-      'Use Promise.allSettled for multiple operations',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'testFetchUserData',
+    },
+  ],
+  hints: [
+    'Wrap await in try/catch',
+    'Check response.ok for HTTP errors',
+    'Use Promise.allSettled for multiple operations',
+  ],
+};

@@ -20,17 +20,17 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'mapped-types',
-    title: 'TypeScript Mapped Types',
-    difficulty: 'hard',
-    category: 'TypeScript Advanced',
-    description: `## In-Depth Explanation
+  id: 'mapped-types',
+  title: 'TypeScript Mapped Types',
+  difficulty: 'hard',
+  category: 'TypeScript Advanced',
+  description: `## In-Depth Explanation
 
 Mapped types transform existing types by iterating over their properties and applying transformations. The syntax \`[K in keyof T]: Transformation\` creates a new type by mapping over each key in \`T\`.
 
 Key modifiers:
-- **?\**: Makes property optional (\`Partial<T>\`)
-- **-?\**: Removes optional modifier (\`Required<T>\`)
+- **?**: Makes property optional (\`Partial<T>\`)
+- **-?**: Removes optional modifier (\`Required<T>\`)
 - **readonly**: Makes property readonly (\`Readonly<T>\`)
 - **-readonly**: Removes readonly modifier
 
@@ -66,14 +66,14 @@ Mapped types are used extensively:
 - **Library Development**: Building type-safe libraries
 
 **Challenge:** Create utility types using mapped type syntax.`,
-    examples: [
-      {
-        input: `type Partial<T> = { [K in keyof T]?: T[K] }`,
-        output: `All properties become optional`,
-        explanation: 'Map over keys and add ? modifier',
-      },
-    ],
-    starterCode: `// TODO: Create MyPartial - make all properties optional
+  examples: [
+    {
+      input: `type Partial<T> = { [K in keyof T]?: T[K] }`,
+      output: `All properties become optional`,
+      explanation: 'Map over keys and add ? modifier',
+    },
+  ],
+  starterCode: `// TODO: Create MyPartial - make all properties optional
 type MyPartial<T> = T; // Fix this
 
 // TODO: Create MyRequired - make all properties required
@@ -100,23 +100,23 @@ type NullableUser = Nullable<User>;
 // Test
 const partialUser: PartialUser = { name: 'John' };
 const requiredUser: RequiredUser = { name: 'John', age: 30, email: 'john@example.com' };`,
-    solution: `type MyPartial<T> = { [K in keyof T]?: T[K] };
+  solution: `type MyPartial<T> = { [K in keyof T]?: T[K] };
 
 type MyRequired<T> = { [K in keyof T]-?: T[K] };
 
 type MyReadonly<T> = { readonly [K in keyof T]: T[K] };
 
 type Nullable<T> = { [K in keyof T]: T[K] | null };`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Type checking only',
-      },
-    ],
-    hints: [
-      '[K in keyof T] iterates over all keys',
-      '? adds optional, -? removes optional',
-      'readonly adds readonly modifier',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'Type checking only',
+    },
+  ],
+  hints: [
+    '[K in keyof T] iterates over all keys',
+    '? adds optional, -? removes optional',
+    'readonly adds readonly modifier',
+  ],
+};

@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'promise-race-first',
-    title: 'Promise.race for First Result',
-    difficulty: 'medium',
-    category: 'Async/Promises',
-    description: `## In-Depth Explanation
+  id: 'promise-race-first',
+  title: 'Promise.race for First Result',
+  difficulty: 'medium',
+  category: 'Async/Promises',
+  description: `## In-Depth Explanation
 
 \`Promise.race()\` returns a promise that settles (resolves or rejects) as soon as the first promise in the array settles. This makes it perfect for scenarios where you want the fastest result from multiple sources.
 
@@ -61,14 +61,14 @@ This pattern is used in many scenarios:
 - **Redundancy**: Multiple replicas, use fastest response
 
 **Challenge:** Fetch from multiple sources and use the fastest response.`,
-    examples: [
-      {
-        input: `Promise.race([fetch('/api1'), fetch('/api2'), fetch('/api3')])`,
-        output: `Returns result from fastest API`,
-        explanation: 'Use fastest available source',
-      },
-    ],
-    starterCode: `async function fetchFromFastest(urls) {
+  examples: [
+    {
+      input: `Promise.race([fetch('/api1'), fetch('/api2'), fetch('/api3')])`,
+      output: `Returns result from fastest API`,
+      explanation: 'Use fastest available source',
+    },
+  ],
+  starterCode: `async function fetchFromFastest(urls) {
   // TODO: Use Promise.race to get result from fastest URL
   // Return the first successful response
   
@@ -90,7 +90,7 @@ async function fetchWithFallback(primaryUrl, fallbackUrls) {
 // fetchWithFallback('/api/primary', ['/api/backup1', '/api/backup2'])
 //   .then(console.log)
 //   .catch(console.error);`,
-    solution: `async function fetchFromFastest(promises) {
+  solution: `async function fetchFromFastest(promises) {
   return Promise.race(promises);
 }
 
@@ -114,16 +114,16 @@ async function testFetchFromFastest() {
   const result = await fetchFromFastest(promises);
   return result === 'fast';
 }`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'testFetchFromFastest',
-      },
-    ],
-    hints: [
-      'Promise.race resolves/rejects with first settled promise',
-      'Useful for timeouts and fastest response',
-      'Be careful - other promises continue running',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'testFetchFromFastest',
+    },
+  ],
+  hints: [
+    'Promise.race resolves/rejects with first settled promise',
+    'Useful for timeouts and fastest response',
+    'Be careful - other promises continue running',
+  ],
+};

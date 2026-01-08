@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'some-every',
-    title: 'Some and Every for Validation',
-    difficulty: 'easy',
-    category: 'Array Methods',
-    description: `## In-Depth Explanation
+  id: 'some-every',
+  title: 'Some and Every for Validation',
+  difficulty: 'easy',
+  category: 'Array Methods',
+  description: `## In-Depth Explanation
 
 \`some()\` and \`every()\` are boolean array methods that test whether elements in an array satisfy a condition. \`some()\` returns \`true\` if at least one element passes the test (short-circuits on first match), while \`every()\` returns \`true\` only if all elements pass the test (short-circuits on first failure).
 
@@ -58,14 +58,14 @@ These methods are used extensively in real applications:
 - **API Validation**: Validating request payloads before processing
 
 **Challenge:** Validate arrays using some and every.`,
-    examples: [
-      {
-        input: `const scores = [85, 90, 78, 92];`,
-        output: `some > 90: true, every > 70: true`,
-        explanation: 'Check if any score is high, or all scores pass threshold',
-      },
-    ],
-    starterCode: `function hasHighScore(scores) {
+  examples: [
+    {
+      input: `const scores = [85, 90, 78, 92];`,
+      output: `some > 90: true, every > 70: true`,
+      explanation: 'Check if any score is high, or all scores pass threshold',
+    },
+  ],
+  starterCode: `function hasHighScore(scores) {
   // TODO: Use some() to check if any score >= 90
   return false;
 }
@@ -81,33 +81,33 @@ const scores2 = [65, 70, 68, 72];
 console.log('Has high score:', hasHighScore(scores1));
 console.log('All passing:', allPassing(scores1));
 console.log('All passing (scores2):', allPassing(scores2));`,
-    solution: `function hasHighScore(scores) {
+  solution: `function hasHighScore(scores) {
   return scores.some(score => score >= 90);
 }
 
 function allPassing(scores) {
   return scores.every(score => score >= 70);
 }`,
-    testCases: [
-      {
-        input: [[85, 90, 78, 92]],
-        expectedOutput: true,
-        description: 'hasHighScore',
-      },
-      {
-        input: [[85, 90, 78, 92]],
-        expectedOutput: true,
-        description: 'allPassing',
-      },
-      {
-        input: [[65, 70, 68, 72]],
-        expectedOutput: false,
-        description: 'allPassing with low scores',
-      },
-    ],
-    hints: [
-      'some() returns true if at least one element matches',
-      'every() returns true only if ALL elements match',
-      'Both short-circuit: some stops at first match, every stops at first non-match',
-    ],
-  };
+  testCases: [
+    {
+      input: [[85, 90, 78, 92]],
+      expectedOutput: true,
+      description: 'hasHighScore',
+    },
+    {
+      input: [[85, 90, 78, 92]],
+      expectedOutput: true,
+      description: 'allPassing',
+    },
+    {
+      input: [[65, 70, 68, 72]],
+      expectedOutput: false,
+      description: 'allPassing with low scores',
+    },
+  ],
+  hints: [
+    'some() returns true if at least one element matches',
+    'every() returns true only if ALL elements match',
+    'Both short-circuit: some stops at first match, every stops at first non-match',
+  ],
+};

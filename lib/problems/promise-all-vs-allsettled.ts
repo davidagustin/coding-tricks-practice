@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'promise-all-vs-allsettled',
-    title: 'Promise.all vs Promise.allSettled',
-    difficulty: 'medium',
-    category: 'Async/Promises',
-    description: `## In-Depth Explanation
+  id: 'promise-all-vs-allsettled',
+  title: 'Promise.all vs Promise.allSettled',
+  difficulty: 'medium',
+  category: 'Async/Promises',
+  description: `## In-Depth Explanation
 
 \`Promise.all()\` and \`Promise.allSettled()\` both handle multiple promises, but with fundamentally different behaviors:
 
@@ -64,14 +64,14 @@ These methods are used in different scenarios:
 - **Data Aggregation**: Collecting data from multiple sources
 
 **Challenge:** Use the right method for different scenarios.`,
-    examples: [
-      {
-        input: `const promises = [fetch('/api/1'), fetch('/api/2'), fetch('/api/3')];`,
-        output: `all: fails if any fail, allSettled: always resolves`,
-        explanation: 'Choose based on whether you need all or can tolerate failures',
-      },
-    ],
-    starterCode: `async function fetchAllOrFail(urls) {
+  examples: [
+    {
+      input: `const promises = [fetch('/api/1'), fetch('/api/2'), fetch('/api/3')];`,
+      output: `all: fails if any fail, allSettled: always resolves`,
+      explanation: 'Choose based on whether you need all or can tolerate failures',
+    },
+  ],
+  starterCode: `async function fetchAllOrFail(urls) {
   // TODO: Use Promise.all - should fail if ANY request fails
   // Return array of responses
   
@@ -89,7 +89,7 @@ async function fetchAllWithFailures(urls) {
 // const urls = ['/api/1', '/api/2', '/api/3'];
 // fetchAllOrFail(urls).then(console.log).catch(console.error);
 // fetchAllWithFailures(urls).then(console.log).catch(console.error);`,
-    solution: `async function fetchAllOrFail(promises) {
+  solution: `async function fetchAllOrFail(promises) {
   return Promise.all(promises);
 }
 
@@ -103,16 +103,16 @@ async function testFetchAllOrFail() {
   const result = await fetchAllOrFail(promises);
   return result;
 }`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: ['success1', 'success2'],
-        description: 'testFetchAllOrFail',
-      },
-    ],
-    hints: [
-      'Promise.all rejects if any promise rejects',
-      'Promise.allSettled always resolves with status for each',
-      'Use all when you need all; allSettled when some can fail',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: ['success1', 'success2'],
+      description: 'testFetchAllOrFail',
+    },
+  ],
+  hints: [
+    'Promise.all rejects if any promise rejects',
+    'Promise.allSettled always resolves with status for each',
+    'Use all when you need all; allSettled when some can fail',
+  ],
+};

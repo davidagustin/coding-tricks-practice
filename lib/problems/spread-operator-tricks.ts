@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'spread-operator-tricks',
-    title: 'Spread Operator Tricks',
-    difficulty: 'easy',
-    category: 'JavaScript Basics',
-    description: `## In-Depth Explanation
+  id: 'spread-operator-tricks',
+  title: 'Spread Operator Tricks',
+  difficulty: 'easy',
+  category: 'JavaScript Basics',
+  description: `## In-Depth Explanation
 
 The spread operator (\`...\`) is one of the most versatile features in modern JavaScript. It works with arrays, objects, strings, and any iterable, enabling concise and powerful operations.
 
@@ -72,14 +72,14 @@ Spread operator is used everywhere:
 - Merging objects (last wins)
 - Converting iterables to arrays
 - Rest parameters vs spread`,
-    examples: [
-      {
-        input: `const obj1 = { a: 1 }; const obj2 = { b: 2 };`,
-        output: `{ a: 1, b: 2 }`,
-        explanation: 'Merge objects using spread',
-      },
-    ],
-    starterCode: `function mergeObjects(obj1, obj2) {
+  examples: [
+    {
+      input: `const obj1 = { a: 1 }; const obj2 = { b: 2 };`,
+      output: `{ a: 1, b: 2 }`,
+      explanation: 'Merge objects using spread',
+    },
+  ],
+  starterCode: `function mergeObjects(obj1, obj2) {
   // TODO: Merge two objects, obj2 properties override obj1
   return obj1;
 }
@@ -99,7 +99,7 @@ function uniqueValues(arr) {
 console.log(mergeObjects({ a: 1, b: 2 }, { b: 3, c: 4 }));
 console.log(cloneAndPush([1, 2, 3], 4));
 console.log(uniqueValues([1, 2, 2, 3, 3, 3]));`,
-    solution: `function mergeObjects(obj1, obj2) {
+  solution: `function mergeObjects(obj1, obj2) {
   return { ...obj1, ...obj2 };
 }
 
@@ -110,29 +110,29 @@ function cloneAndPush(arr, newItem) {
 function uniqueValues(arr) {
   return [...new Set(arr)];
 }`,
-    testCases: [
-      {
-        input: [
-          { a: 1, b: 2 },
-          { b: 3, c: 4 },
-        ],
-        expectedOutput: { a: 1, b: 3, c: 4 },
-        description: 'mergeObjects',
-      },
-      {
-        input: [[1, 2, 3], 4],
-        expectedOutput: [1, 2, 3, 4],
-        description: 'cloneAndPush',
-      },
-      {
-        input: [[1, 2, 2, 3, 3, 3]],
-        expectedOutput: [1, 2, 3],
-        description: 'uniqueValues',
-      },
-    ],
-    hints: [
-      'Use {...obj1, ...obj2} to merge objects',
-      'Use [...arr] to clone an array',
-      'new Set(arr) removes duplicates, spread converts back to array',
-    ],
-  };
+  testCases: [
+    {
+      input: [
+        { a: 1, b: 2 },
+        { b: 3, c: 4 },
+      ],
+      expectedOutput: { a: 1, b: 3, c: 4 },
+      description: 'mergeObjects',
+    },
+    {
+      input: [[1, 2, 3], 4],
+      expectedOutput: [1, 2, 3, 4],
+      description: 'cloneAndPush',
+    },
+    {
+      input: [[1, 2, 2, 3, 3, 3]],
+      expectedOutput: [1, 2, 3],
+      description: 'uniqueValues',
+    },
+  ],
+  hints: [
+    'Use {...obj1, ...obj2} to merge objects',
+    'Use [...arr] to clone an array',
+    'new Set(arr) removes duplicates, spread converts back to array',
+  ],
+};

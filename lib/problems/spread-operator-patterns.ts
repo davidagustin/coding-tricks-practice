@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'spread-operator-patterns',
-    title: 'Advanced Spread Operator Patterns',
-    difficulty: 'medium',
-    category: 'Object Methods',
-    description: `## In-Depth Explanation
+  id: 'spread-operator-patterns',
+  title: 'Advanced Spread Operator Patterns',
+  difficulty: 'medium',
+  category: 'Object Methods',
+  description: `## In-Depth Explanation
 
 The spread operator (\`...\`) is a powerful tool for working with objects and arrays. It "spreads" or expands an iterable into individual elements. For objects, it creates shallow copies and enables immutable updates.
 
@@ -62,14 +62,14 @@ Spread patterns are used everywhere:
 - **API Requests**: Merging request parameters
 
 **Challenge:** Master spread operator for common patterns.`,
-    examples: [
-      {
-        input: `const merged = { ...obj1, ...obj2 };`,
-        output: `Merged object with later properties overriding`,
-        explanation: 'Spread operator creates shallow copies',
-      },
-    ],
-    starterCode: `// TODO: Deep clone an object (shallow clone with spread)
+  examples: [
+    {
+      input: `const merged = { ...obj1, ...obj2 };`,
+      output: `Merged object with later properties overriding`,
+      explanation: 'Spread operator creates shallow copies',
+    },
+  ],
+  starterCode: `// TODO: Deep clone an object (shallow clone with spread)
 function shallowClone(obj) {
   // Use spread operator to clone object
   return obj;
@@ -109,7 +109,7 @@ console.log(updated); // { a: { b: 2 } }
 
 const omitted = omitProperty({ a: 1, b: 2, c: 3 }, 'b');
 console.log(omitted); // { a: 1, c: 3 }`,
-    solution: `function shallowClone(obj) {
+  solution: `function shallowClone(obj) {
   return { ...obj };
 }
 
@@ -133,27 +133,27 @@ function omitProperty(obj, key) {
   const { [key]: omitted, ...rest } = obj;
   return rest;
 }`,
-    testCases: [
-      {
-        input: [{ a: 1, b: 2 }],
-        expectedOutput: { a: 1, b: 2 },
-        description: 'shallowClone',
-      },
-      {
-        input: [{ a: 1 }, { b: 2 }, { a: 3 }],
-        expectedOutput: { a: 3, b: 2 },
-        description: 'mergeObjects',
-      },
-      {
-        input: [{ a: 1, b: 2, c: 3 }, 'b'],
-        expectedOutput: { a: 1, c: 3 },
-        description: 'omitProperty',
-      },
-    ],
-    hints: [
-      'Spread creates shallow copy: { ...obj }',
-      'Later properties override: { ...obj1, ...obj2 }',
-      'Use destructuring to omit: const { key, ...rest } = obj',
-      'For deep updates, spread at each level',
-    ],
-  };
+  testCases: [
+    {
+      input: [{ a: 1, b: 2 }],
+      expectedOutput: { a: 1, b: 2 },
+      description: 'shallowClone',
+    },
+    {
+      input: [{ a: 1 }, { b: 2 }, { a: 3 }],
+      expectedOutput: { a: 3, b: 2 },
+      description: 'mergeObjects',
+    },
+    {
+      input: [{ a: 1, b: 2, c: 3 }, 'b'],
+      expectedOutput: { a: 1, c: 3 },
+      description: 'omitProperty',
+    },
+  ],
+  hints: [
+    'Spread creates shallow copy: { ...obj }',
+    'Later properties override: { ...obj1, ...obj2 }',
+    'Use destructuring to omit: const { key, ...rest } = obj',
+    'For deep updates, spread at each level',
+  ],
+};

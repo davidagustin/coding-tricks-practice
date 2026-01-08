@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'object-freeze-seal',
-    title: 'Object.freeze, seal, and preventExtensions',
-    difficulty: 'medium',
-    category: 'Object Methods',
-    description: `## In-Depth Explanation
+  id: 'object-freeze-seal',
+  title: 'Object.freeze, seal, and preventExtensions',
+  difficulty: 'medium',
+  category: 'Object Methods',
+  description: `## In-Depth Explanation
 
 JavaScript provides three levels of object immutability protection:
 
@@ -64,14 +64,14 @@ These methods are used extensively:
 - **Security**: Protecting sensitive data from modification
 
 **Challenge:** Understand the differences and use cases for each.`,
-    examples: [
-      {
-        input: `Object.freeze(obj), Object.seal(obj), Object.preventExtensions(obj)`,
-        output: `Different levels of immutability`,
-        explanation: 'freeze > seal > preventExtensions in restrictiveness',
-      },
-    ],
-    starterCode: `// TODO: Create immutable object with Object.freeze
+  examples: [
+    {
+      input: `Object.freeze(obj), Object.seal(obj), Object.preventExtensions(obj)`,
+      output: `Different levels of immutability`,
+      explanation: 'freeze > seal > preventExtensions in restrictiveness',
+    },
+  ],
+  starterCode: `// TODO: Create immutable object with Object.freeze
 function createImmutableObject(data) {
   // Freeze the object (no changes allowed)
   return data;
@@ -106,7 +106,7 @@ sealed.x = 2; // Should work
 
 const deep = deepFreeze({ a: { b: { c: 1 } } });
 // deep.a.b.c = 2; // Should fail`,
-    solution: `function createImmutableObject(data) {
+  solution: `function createImmutableObject(data) {
   return Object.freeze(data);
 }
 
@@ -127,17 +127,17 @@ function deepFreeze(obj) {
   }
   return obj;
 }`,
-    testCases: [
-      {
-        input: [{ a: 1 }],
-        expectedOutput: true,
-        description: 'isFrozen check',
-      },
-    ],
-    hints: [
-      'Object.freeze: no changes, additions, or deletions',
-      'Object.seal: can modify, cannot add or delete',
-      'Object.preventExtensions: can modify/delete, cannot add',
-      'Deep freeze requires recursive freezing of nested objects',
-    ],
-  };
+  testCases: [
+    {
+      input: [{ a: 1 }],
+      expectedOutput: true,
+      description: 'isFrozen check',
+    },
+  ],
+  hints: [
+    'Object.freeze: no changes, additions, or deletions',
+    'Object.seal: can modify, cannot add or delete',
+    'Object.preventExtensions: can modify/delete, cannot add',
+    'Deep freeze requires recursive freezing of nested objects',
+  ],
+};

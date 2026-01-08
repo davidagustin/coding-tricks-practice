@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'optional-readonly',
-    title: 'Optional and Readonly Properties',
-    difficulty: 'easy',
-    category: 'TypeScript Basics',
-    description: `## In-Depth Explanation
+  id: 'optional-readonly',
+  title: 'Optional and Readonly Properties',
+  difficulty: 'easy',
+  category: 'TypeScript Basics',
+  description: `## In-Depth Explanation
 
 TypeScript provides property modifiers to control object property behavior:
 - **Optional (\`?\`)**: Property may not exist - \`prop?: type\`
@@ -66,17 +66,17 @@ These modifiers are used everywhere:
 - **DTOs**: Data transfer objects with optional fields
 
 **Challenge:** Use optional and readonly modifiers correctly.`,
-    examples: [
-      {
-        input: `interface Config {
+  examples: [
+    {
+      input: `interface Config {
   readonly apiKey: string;
   timeout?: number;
 }`,
-        output: `Type-safe config`,
-        explanation: 'readonly prevents reassignment, ? makes optional',
-      },
-    ],
-    starterCode: `// TODO: Use optional and readonly modifiers
+      output: `Type-safe config`,
+      explanation: 'readonly prevents reassignment, ? makes optional',
+    },
+  ],
+  starterCode: `// TODO: Use optional and readonly modifiers
 // 1. Create an interface with readonly and optional properties
 // 2. Create a function that handles optional properties
 
@@ -95,7 +95,7 @@ function createUser(data: Partial<User>): User {
 const user = createUser({ id: '123', name: 'Alice' });
 // user.id = '456'; // Should cause error (readonly)
 console.log(user);`,
-    solution: `interface User {
+  solution: `interface User {
   readonly id: string;
   name: string;
   email?: string;
@@ -112,16 +112,16 @@ function createUser(data: Partial<User>): User {
 const user = createUser({ id: '123', name: 'Alice' });
 // user.id = '456'; // Error: Cannot assign to 'id' because it is a read-only property
 console.log(user);`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Optional and readonly work correctly',
-      },
-    ],
-    hints: [
-      'Use ? for optional properties: prop?: type',
-      'Use readonly for immutable properties: readonly prop: type',
-      'Partial<T> makes all properties optional',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'Optional and readonly work correctly',
+    },
+  ],
+  hints: [
+    'Use ? for optional properties: prop?: type',
+    'Use readonly for immutable properties: readonly prop: type',
+    'Partial<T> makes all properties optional',
+  ],
+};

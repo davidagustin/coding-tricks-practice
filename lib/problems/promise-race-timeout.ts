@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'promise-race-timeout',
-    title: 'Promise.race for Timeouts',
-    difficulty: 'medium',
-    category: 'Async/Promises',
-    description: `## In-Depth Explanation
+  id: 'promise-race-timeout',
+  title: 'Promise.race for Timeouts',
+  difficulty: 'medium',
+  category: 'Async/Promises',
+  description: `## In-Depth Explanation
 
 \`Promise.race()\` is a powerful method that takes an array of promises and returns a new promise that settles (resolves or rejects) as soon as the first promise in the array settles. This behavior makes it perfect for implementing timeouts.
 
@@ -57,14 +57,14 @@ This pattern is essential in production applications:
 - **Data Fetching**: Timeout for data loading in React/Vue applications
 
 **Challenge:** Create a withTimeout function that rejects if the promise takes too long.`,
-    examples: [
-      {
-        input: `await withTimeout(fetch('/api/data'), 5000)`,
-        output: `Resolves with data or rejects with timeout error`,
-        explanation: 'Promise resolves if fetch completes in time, otherwise times out',
-      },
-    ],
-    starterCode: `function withTimeout(promise, ms) {
+  examples: [
+    {
+      input: `await withTimeout(fetch('/api/data'), 5000)`,
+      output: `Resolves with data or rejects with timeout error`,
+      explanation: 'Promise resolves if fetch completes in time, otherwise times out',
+    },
+  ],
+  starterCode: `function withTimeout(promise, ms) {
   // TODO: Use Promise.race to race the promise against a timeout
   // Create a timeout promise that rejects after ms milliseconds
   // Return Promise.race([promise, timeoutPromise])
@@ -83,7 +83,7 @@ This pattern is essential in production applications:
 // withTimeout(slowPromise, 500)
 //   .then(console.log)
 //   .catch(console.error);`,
-    solution: `function withTimeout(promise, ms) {
+  solution: `function withTimeout(promise, ms) {
   return Promise.race([
     promise,
     new Promise((_, reject) =>
@@ -91,21 +91,21 @@ This pattern is essential in production applications:
     )
   ]);
 }`,
-    testCases: [
-      {
-        input: [Promise.resolve('success'), 1000],
-        expectedOutput: 'success',
-        description: 'Promise resolves before timeout',
-      },
-      {
-        input: [Promise.resolve('fast'), 5000],
-        expectedOutput: 'fast',
-        description: 'Fast promise resolves quickly',
-      },
-    ],
-    hints: [
-      'Promise.race returns the first settled promise',
-      'Create a timeout promise that rejects after ms',
-      'Use setTimeout in the timeout promise',
-    ],
-  };
+  testCases: [
+    {
+      input: [Promise.resolve('success'), 1000],
+      expectedOutput: 'success',
+      description: 'Promise resolves before timeout',
+    },
+    {
+      input: [Promise.resolve('fast'), 5000],
+      expectedOutput: 'fast',
+      description: 'Fast promise resolves quickly',
+    },
+  ],
+  hints: [
+    'Promise.race returns the first settled promise',
+    'Create a timeout promise that rejects after ms',
+    'Use setTimeout in the timeout promise',
+  ],
+};

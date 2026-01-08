@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'chunk-arrays',
-    title: 'Chunking Arrays into Groups',
-    difficulty: 'medium',
-    category: 'Array Methods',
-    description: `## In-Depth Explanation
+  id: 'chunk-arrays',
+  title: 'Chunking Arrays into Groups',
+  difficulty: 'medium',
+  category: 'Array Methods',
+  description: `## In-Depth Explanation
 
 Chunking splits an array into smaller arrays of a specified size. This is useful for processing large datasets in batches, implementing pagination, or displaying data in grids.
 
@@ -60,14 +60,14 @@ This pattern is used extensively in production applications:
 - **Grid Layouts**: Organizing items into grid layouts
 
 **Challenge:** Create a function to chunk arrays into smaller arrays.`,
-    examples: [
-      {
-        input: `chunk([1, 2, 3, 4, 5], 2)`,
-        output: `[[1, 2], [3, 4], [5]]`,
-        explanation: 'Split array into chunks of size 2',
-      },
-    ],
-    starterCode: `function chunk(array, size) {
+  examples: [
+    {
+      input: `chunk([1, 2, 3, 4, 5], 2)`,
+      output: `[[1, 2], [3, 4], [5]]`,
+      explanation: 'Split array into chunks of size 2',
+    },
+  ],
+  starterCode: `function chunk(array, size) {
   // TODO: Split array into chunks of given size
   // Use Array.from or reduce
   // chunk([1, 2, 3, 4, 5], 2) => [[1, 2], [3, 4], [5]]
@@ -77,24 +77,24 @@ This pattern is used extensively in production applications:
 
 console.log(chunk([1, 2, 3, 4, 5, 6, 7], 3));
 console.log(chunk(['a', 'b', 'c', 'd'], 2));`,
-    solution: `function chunk(array, size) {
+  solution: `function chunk(array, size) {
   return Array.from({ length: Math.ceil(array.length / size) }, (_, i) =>
     array.slice(i * size, i * size + size)
   );
 }`,
-    testCases: [
-      {
-        input: [[1, 2, 3, 4, 5], 2],
-        expectedOutput: [[1, 2], [3, 4], [5]],
-      },
-      {
-        input: [[1, 2, 3, 4, 5, 6, 7], 3],
-        expectedOutput: [[1, 2, 3], [4, 5, 6], [7]],
-      },
-    ],
-    hints: [
-      'Calculate number of chunks: Math.ceil(array.length / size)',
-      'Use slice() to extract chunks: array.slice(start, start + size)',
-      'Array.from can create the chunks array with mapping',
-    ],
-  };
+  testCases: [
+    {
+      input: [[1, 2, 3, 4, 5], 2],
+      expectedOutput: [[1, 2], [3, 4], [5]],
+    },
+    {
+      input: [[1, 2, 3, 4, 5, 6, 7], 3],
+      expectedOutput: [[1, 2, 3], [4, 5, 6], [7]],
+    },
+  ],
+  hints: [
+    'Calculate number of chunks: Math.ceil(array.length / size)',
+    'Use slice() to extract chunks: array.slice(start, start + size)',
+    'Array.from can create the chunks array with mapping',
+  ],
+};

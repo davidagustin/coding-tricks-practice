@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'array-from-tricks',
-    title: 'Array.from Magic',
-    difficulty: 'easy',
-    category: 'Array Methods',
-    description: `## In-Depth Explanation
+  id: 'array-from-tricks',
+  title: 'Array.from Magic',
+  difficulty: 'easy',
+  category: 'Array Methods',
+  description: `## In-Depth Explanation
 
 \`Array.from()\` is a versatile method for creating arrays from iterables or array-like objects. When combined with a mapping function, it becomes a powerful tool for generating sequences and transforming data.
 
@@ -61,14 +61,14 @@ These tricks are used extensively:
 - **Algorithm Implementation**: Creating arrays for algorithms that need indexed sequences
 
 **Challenge:** Generate sequences, convert NodeLists, and create 2D arrays.`,
-    examples: [
-      {
-        input: `Array.from({ length: 5 }, (_, i) => i)`,
-        output: `[0, 1, 2, 3, 4]`,
-        explanation: 'Generate sequence of numbers',
-      },
-    ],
-    starterCode: `function range(start, end) {
+  examples: [
+    {
+      input: `Array.from({ length: 5 }, (_, i) => i)`,
+      output: `[0, 1, 2, 3, 4]`,
+      explanation: 'Generate sequence of numbers',
+    },
+  ],
+  starterCode: `function range(start, end) {
   // TODO: Generate array from start to end (inclusive)
   // range(1, 5) → [1, 2, 3, 4, 5]
 
@@ -93,7 +93,7 @@ function toArray(arrayLike) {
 console.log(range(1, 5));
 console.log(createGrid(2, 3, 0));
 console.log(toArray('hello'));`,
-    solution: `function range(start, end) {
+  solution: `function range(start, end) {
   return Array.from({ length: end - start + 1 }, (_, i) => start + i);
 }
 
@@ -106,29 +106,29 @@ function createGrid(rows, cols, defaultValue) {
 function toArray(arrayLike) {
   return Array.from(arrayLike);
 }`,
-    testCases: [
-      {
-        input: [1, 5],
-        expectedOutput: [1, 2, 3, 4, 5],
-        description: 'range',
-      },
-      {
-        input: [2, 3, 0],
-        expectedOutput: [
-          [0, 0, 0],
-          [0, 0, 0],
-        ],
-        description: 'createGrid',
-      },
-      {
-        input: ['hello'],
-        expectedOutput: ['h', 'e', 'l', 'l', 'o'],
-        description: 'toArray string',
-      },
-    ],
-    hints: [
-      'Array.from({ length: n }) creates array of n undefined elements',
-      'Second argument (_, index) => value maps each element',
-      'For 2D arrays, nest Array.from calls',
-    ],
-  };
+  testCases: [
+    {
+      input: [1, 5],
+      expectedOutput: [1, 2, 3, 4, 5],
+      description: 'range',
+    },
+    {
+      input: [2, 3, 0],
+      expectedOutput: [
+        [0, 0, 0],
+        [0, 0, 0],
+      ],
+      description: 'createGrid',
+    },
+    {
+      input: ['hello'],
+      expectedOutput: ['h', 'e', 'l', 'l', 'o'],
+      description: 'toArray string',
+    },
+  ],
+  hints: [
+    'Array.from({ length: n }) creates array of n undefined elements',
+    'Second argument (_, index) => value maps each element',
+    'For 2D arrays, nest Array.from calls',
+  ],
+};

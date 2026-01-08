@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'sort-comparators',
-    title: 'Custom Sort Comparators',
-    difficulty: 'medium',
-    category: 'Array Methods',
-    description: `## In-Depth Explanation
+  id: 'sort-comparators',
+  title: 'Custom Sort Comparators',
+  difficulty: 'medium',
+  category: 'Array Methods',
+  description: `## In-Depth Explanation
 
 Custom sort comparators allow you to define how elements are ordered. A comparator function takes two elements (\`a\` and \`b\`) and returns:
 - **Negative number**: \`a\` comes before \`b\`
@@ -65,14 +65,14 @@ Custom comparators are used everywhere:
 - **UI Components**: Sortable lists, tables, grids
 
 **Challenge:** Sort by multiple criteria, handle nulls, and sort objects.`,
-    examples: [
-      {
-        input: `users.sort((a, b) => a.age - b.age)`,
-        output: `Users sorted by age ascending`,
-        explanation: 'Numeric sort with subtraction',
-      },
-    ],
-    starterCode: `function sortByProperty(arr, property, order = 'asc') {
+  examples: [
+    {
+      input: `users.sort((a, b) => a.age - b.age)`,
+      output: `Users sorted by age ascending`,
+      explanation: 'Numeric sort with subtraction',
+    },
+  ],
+  starterCode: `function sortByProperty(arr, property, order = 'asc') {
   // TODO: Sort array of objects by property
   // order can be 'asc' or 'desc'
 
@@ -104,7 +104,7 @@ console.log(sortByMultiple([...users], [
   { key: 'name', order: 'asc' }
 ]));
 console.log(sortWithNulls([3, null, 1, null, 2], true));`,
-    solution: `function sortByProperty(arr, property, order = 'asc') {
+  solution: `function sortByProperty(arr, property, order = 'asc') {
   return [...arr].sort((a, b) => {
     if (a[property] < b[property]) return order === 'asc' ? -1 : 1;
     if (a[property] > b[property]) return order === 'asc' ? 1 : -1;
@@ -130,36 +130,36 @@ function sortWithNulls(arr, nullsFirst = true) {
     return a - b;
   });
 }`,
-    testCases: [
-      {
-        input: [
-          [
-            { name: 'John', age: 30 },
-            { name: 'Jane', age: 25 },
-          ],
-          'age',
-          'asc',
-        ],
-        expectedOutput: [
-          { name: 'Jane', age: 25 },
+  testCases: [
+    {
+      input: [
+        [
           { name: 'John', age: 30 },
+          { name: 'Jane', age: 25 },
         ],
-        description: 'sortByProperty age asc',
-      },
-      {
-        input: [[3, null, 1, null, 2], true],
-        expectedOutput: [null, null, 1, 2, 3],
-        description: 'sortWithNulls nullsFirst',
-      },
-      {
-        input: [[3, null, 1, null, 2], false],
-        expectedOutput: [1, 2, 3, null, null],
-        description: 'sortWithNulls nullsLast',
-      },
-    ],
-    hints: [
-      'Return negative if a < b, positive if a > b, 0 if equal',
-      'For descending order, reverse the comparison',
-      'Handle null/undefined before comparing values',
-    ],
-  };
+        'age',
+        'asc',
+      ],
+      expectedOutput: [
+        { name: 'Jane', age: 25 },
+        { name: 'John', age: 30 },
+      ],
+      description: 'sortByProperty age asc',
+    },
+    {
+      input: [[3, null, 1, null, 2], true],
+      expectedOutput: [null, null, 1, 2, 3],
+      description: 'sortWithNulls nullsFirst',
+    },
+    {
+      input: [[3, null, 1, null, 2], false],
+      expectedOutput: [1, 2, 3, null, null],
+      description: 'sortWithNulls nullsLast',
+    },
+  ],
+  hints: [
+    'Return negative if a < b, positive if a > b, 0 if equal',
+    'For descending order, reverse the comparison',
+    'Handle null/undefined before comparing values',
+  ],
+};

@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'conditional-types',
-    title: 'TypeScript Conditional Types',
-    difficulty: 'hard',
-    category: 'TypeScript Advanced',
-    description: `## In-Depth Explanation
+  id: 'conditional-types',
+  title: 'TypeScript Conditional Types',
+  difficulty: 'hard',
+  category: 'TypeScript Advanced',
+  description: `## In-Depth Explanation
 
 Conditional types enable type-level conditional logic using the syntax \`T extends U ? X : Y\`. If \`T\` extends \`U\`, the type is \`X\`, otherwise \`Y\`.
 
@@ -64,14 +64,14 @@ Conditional types are used extensively:
 - **Library Development**: Building advanced type-safe libraries
 
 **Challenge:** Build conditional types for type selection and filtering.`,
-    examples: [
-      {
-        input: `type IsString<T> = T extends string ? true : false`,
-        output: `IsString<'hello'> = true`,
-        explanation: 'Type-level conditional logic',
-      },
-    ],
-    starterCode: `// TODO: Create IsArray type - returns true if T is an array
+  examples: [
+    {
+      input: `type IsString<T> = T extends string ? true : false`,
+      output: `IsString<'hello'> = true`,
+      explanation: 'Type-level conditional logic',
+    },
+  ],
+  starterCode: `// TODO: Create IsArray type - returns true if T is an array
 type IsArray<T> = false; // Fix this
 
 // TODO: Create ExtractArrayType - get element type from array
@@ -90,23 +90,23 @@ type Test2 = IsArray<string>; // should be false
 type Test3 = ExtractArrayType<number[]>; // should be number
 type Test4 = MyNonNullable<string | null | undefined>; // should be string
 type Test5 = FunctionReturnType<() => string>; // should be string`,
-    solution: `type IsArray<T> = T extends any[] ? true : false;
+  solution: `type IsArray<T> = T extends any[] ? true : false;
 
 type ExtractArrayType<T> = T extends (infer U)[] ? U : never;
 
 type MyNonNullable<T> = T extends null | undefined ? never : T;
 
 type FunctionReturnType<T> = T extends (...args: any[]) => infer R ? R : never;`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Type checking only',
-      },
-    ],
-    hints: [
-      'T extends U ? X : Y is the conditional syntax',
-      'Use infer to extract types: T extends (infer U)[] ? U : never',
-      'never in unions is removed (filtering)',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'Type checking only',
+    },
+  ],
+  hints: [
+    'T extends U ? X : Y is the conditional syntax',
+    'Use infer to extract types: T extends (infer U)[] ? U : never',
+    'never in unions is removed (filtering)',
+  ],
+};

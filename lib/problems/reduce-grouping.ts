@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'reduce-grouping',
-    title: 'Reduce for Grouping',
-    difficulty: 'medium',
-    category: 'Array Methods',
-    description: `## In-Depth Explanation
+  id: 'reduce-grouping',
+  title: 'Reduce for Grouping',
+  difficulty: 'medium',
+  category: 'Array Methods',
+  description: `## In-Depth Explanation
 
 The \`reduce\` method is one of the most powerful array methods in JavaScript. When used for grouping, it transforms an array into an object or Map where keys represent categories and values are arrays of items belonging to that category. The accumulator pattern in \`reduce\` allows you to build up a data structure incrementally as you iterate through the array.
 
@@ -51,18 +51,18 @@ This pattern is essential in real-world applications:
 - **Database Queries**: Mimicking SQL GROUP BY functionality in JavaScript
 
 **Challenge:** Group users by their role using reduce.`,
-    examples: [
-      {
-        input: `const users = [
+  examples: [
+    {
+      input: `const users = [
   { id: 1, name: 'John', role: 'admin' },
   { id: 2, name: 'Jane', role: 'user' },
   { id: 3, name: 'Bob', role: 'admin' }
 ];`,
-        output: `{ admin: [...], user: [...] }`,
-        explanation: 'Group users by role property',
-      },
-    ],
-    starterCode: `function groupByRole(users) {
+      output: `{ admin: [...], user: [...] }`,
+      explanation: 'Group users by role property',
+    },
+  ],
+  starterCode: `function groupByRole(users) {
   // TODO: Use reduce to group users by role
   // Return an object where keys are roles and values are arrays of users
   
@@ -77,7 +77,7 @@ const users = [
 ];
 
 console.log(groupByRole(users));`,
-    solution: `function groupByRole(users) {
+  solution: `function groupByRole(users) {
   return users.reduce((acc, user) => {
     const role = user.role;
     if (!acc[role]) {
@@ -87,28 +87,28 @@ console.log(groupByRole(users));`,
     return acc;
   }, {});
 }`,
-    testCases: [
-      {
-        input: [
-          [
-            { id: 1, name: 'John', role: 'admin' },
-            { id: 2, name: 'Jane', role: 'user' },
-            { id: 3, name: 'Bob', role: 'admin' },
-          ],
+  testCases: [
+    {
+      input: [
+        [
+          { id: 1, name: 'John', role: 'admin' },
+          { id: 2, name: 'Jane', role: 'user' },
+          { id: 3, name: 'Bob', role: 'admin' },
         ],
-        expectedOutput: {
-          admin: [
-            { id: 1, name: 'John', role: 'admin' },
-            { id: 3, name: 'Bob', role: 'admin' },
-          ],
-          user: [{ id: 2, name: 'Jane', role: 'user' }],
-        },
+      ],
+      expectedOutput: {
+        admin: [
+          { id: 1, name: 'John', role: 'admin' },
+          { id: 3, name: 'Bob', role: 'admin' },
+        ],
+        user: [{ id: 2, name: 'Jane', role: 'user' }],
       },
-    ],
-    hints: [
-      'Initialize reduce with an empty object {}',
-      'For each user, check if acc[user.role] exists',
-      'If not, create it as an empty array, then push the user',
-      'Return the accumulator after processing all users',
-    ],
-  };
+    },
+  ],
+  hints: [
+    'Initialize reduce with an empty object {}',
+    'For each user, check if acc[user.role] exists',
+    'If not, create it as an empty array, then push the user',
+    'Return the accumulator after processing all users',
+  ],
+};

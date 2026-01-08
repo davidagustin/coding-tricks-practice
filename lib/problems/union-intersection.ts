@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'union-intersection',
-    title: 'Union and Intersection Types',
-    difficulty: 'medium',
-    category: 'TypeScript Basics',
-    description: `## In-Depth Explanation
+  id: 'union-intersection',
+  title: 'Union and Intersection Types',
+  difficulty: 'medium',
+  category: 'TypeScript Basics',
+  description: `## In-Depth Explanation
 
 Union types (\`|\`) represent values that can be one of several types: \`string | number\` means "either string or number". Intersection types (\`&\`) combine multiple types: \`A & B\` means "both A and B".
 
@@ -61,17 +61,17 @@ These types are used extensively:
 - **Database Queries**: Results that can be different shapes
 
 **Challenge:** Use union and intersection types effectively.`,
-    examples: [
-      {
-        input: `type StringOrNumber = string | number;
+  examples: [
+    {
+      input: `type StringOrNumber = string | number;
 type A = { a: number };
 type B = { b: string };
 type AB = A & B; // { a: number, b: string }`,
-        output: `Combined types`,
-        explanation: 'Union = one of, Intersection = both',
-      },
-    ],
-    starterCode: `// TODO: Use union and intersection types
+      output: `Combined types`,
+      explanation: 'Union = one of, Intersection = both',
+    },
+  ],
+  starterCode: `// TODO: Use union and intersection types
 // 1. Create a function that accepts string | number
 // 2. Create intersection types
 // 3. Use type narrowing with typeof
@@ -96,7 +96,7 @@ function displayPerson(person: Person) {
 console.log(processValue('hello'));
 console.log(processValue(42));
 displayPerson({ name: 'Alice', age: 30 });`,
-    solution: `type StringOrNumber = string | number;
+  solution: `type StringOrNumber = string | number;
 
 function processValue(value: StringOrNumber) {
   if (typeof value === 'string') {
@@ -117,16 +117,16 @@ function displayPerson(person: Person) {
 console.log(processValue('hello'));
 console.log(processValue(42));
 displayPerson({ name: 'Alice', age: 30 });`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Union and intersection types work correctly',
-      },
-    ],
-    hints: [
-      'Union: A | B means A or B',
-      'Intersection: A & B means both A and B',
-      'Use typeof or type guards to narrow union types',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'Union and intersection types work correctly',
+    },
+  ],
+  hints: [
+    'Union: A | B means A or B',
+    'Intersection: A & B means both A and B',
+    'Use typeof or type guards to narrow union types',
+  ],
+};

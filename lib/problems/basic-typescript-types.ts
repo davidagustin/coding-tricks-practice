@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'basic-typescript-types',
-    title: 'Basic TypeScript Types',
-    difficulty: 'easy',
-    category: 'TypeScript Basics',
-    description: `## In-Depth Explanation
+  id: 'basic-typescript-types',
+  title: 'Basic TypeScript Types',
+  difficulty: 'easy',
+  category: 'TypeScript Basics',
+  description: `## In-Depth Explanation
 
 TypeScript adds static type checking to JavaScript, catching errors at compile-time rather than runtime. Basic types include primitives (\`string\`, \`number\`, \`boolean\`) and special types (\`null\`, \`undefined\`, \`void\`).
 
@@ -61,16 +61,16 @@ Type annotations are used everywhere in TypeScript:
 - **Component Props**: Typing React/Vue component props
 
 **Challenge:** Add proper type annotations to functions and variables.`,
-    examples: [
-      {
-        input: `const name: string = 'John';
+  examples: [
+    {
+      input: `const name: string = 'John';
 const age: number = 30;
 const isActive: boolean = true;`,
-        output: `Type-safe variables`,
-        explanation: 'Type annotations provide compile-time type checking',
-      },
-    ],
-    starterCode: `// TODO: Add type annotations
+      output: `Type-safe variables`,
+      explanation: 'Type annotations provide compile-time type checking',
+    },
+  ],
+  starterCode: `// TODO: Add type annotations
 // Fix the type errors by adding proper types
 
 function greet(name) {
@@ -92,7 +92,7 @@ const names: string[] = ['Alice', 'Bob'];
 console.log(greet('John'));
 console.log(calculateArea(10, 5));
 console.log(isEven(4));`,
-    solution: `function greet(name: string): string {
+  solution: `function greet(name: string): string {
   return \`Hello, \${name}!\`;
 }
 
@@ -110,16 +110,16 @@ const names: string[] = ['Alice', 'Bob'];
 console.log(greet('John'));
 console.log(calculateArea(10, 5));
 console.log(isEven(4));`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Type annotations work correctly',
-      },
-    ],
-    hints: [
-      'Use : type syntax for type annotations',
-      'Function parameters and return types need annotations',
-      'Arrays can be typed as Type[] or Array<Type>',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'Type annotations work correctly',
+    },
+  ],
+  hints: [
+    'Use : type syntax for type annotations',
+    'Function parameters and return types need annotations',
+    'Arrays can be typed as Type[] or Array<Type>',
+  ],
+};

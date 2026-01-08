@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'symbol-usage',
-    title: 'Symbols for Unique Keys',
-    difficulty: 'medium',
-    category: 'Object Methods',
-    description: `## In-Depth Explanation
+  id: 'symbol-usage',
+  title: 'Symbols for Unique Keys',
+  difficulty: 'medium',
+  category: 'Object Methods',
+  description: `## In-Depth Explanation
 
 Symbols are unique, immutable primitive values that can be used as property keys. Every Symbol is unique, even if created with the same description. This makes them perfect for creating "private" properties that won't conflict with other code.
 
@@ -64,14 +64,14 @@ Symbols are used extensively:
 - **Serialization**: Controlling JSON.stringify behavior with Symbol.toPrimitive
 
 **Challenge:** Use Symbols for private properties and well-known symbols.`,
-    examples: [
-      {
-        input: `const ID = Symbol('id');`,
-        output: `Unique symbol that won't conflict`,
-        explanation: 'Symbols are always unique, even with same description',
-      },
-    ],
-    starterCode: `// TODO: Create a private property using Symbol
+  examples: [
+    {
+      input: `const ID = Symbol('id');`,
+      output: `Unique symbol that won't conflict`,
+      explanation: 'Symbols are always unique, even with same description',
+    },
+  ],
+  starterCode: `// TODO: Create a private property using Symbol
 const ID = Symbol('id');
 
 class User {
@@ -106,7 +106,7 @@ const range = new NumberRange(1, 5);
 for (const num of range) {
   console.log(num); // Should iterate 1, 2, 3, 4, 5
 }`,
-    solution: `const ID = Symbol('id');
+  solution: `const ID = Symbol('id');
 
 class User {
   constructor(name) {
@@ -138,17 +138,16 @@ class NumberRange {
     };
   }
 }`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Symbol usage works',
-      },
-    ],
-    hints: [
-      'Use Symbol() to create unique property keys',
-      'Symbol properties: obj[symbol] = value',
-      'Symbol.iterator enables for...of iteration',
-    ],
-  };
-
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'Symbol usage works',
+    },
+  ],
+  hints: [
+    'Use Symbol() to create unique property keys',
+    'Symbol properties: obj[symbol] = value',
+    'Symbol.iterator enables for...of iteration',
+  ],
+};

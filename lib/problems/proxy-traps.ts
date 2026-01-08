@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'proxy-traps',
-    title: 'JavaScript Proxy',
-    difficulty: 'hard',
-    category: 'JavaScript Advanced',
-    description: `## In-Depth Explanation
+  id: 'proxy-traps',
+  title: 'JavaScript Proxy',
+  difficulty: 'hard',
+  category: 'JavaScript Advanced',
+  description: `## In-Depth Explanation
 
 Proxy traps are methods in a Proxy handler that intercept operations on the target object. Each trap corresponds to a JavaScript operation and allows you to customize behavior.
 
@@ -69,14 +69,14 @@ Proxy traps are used extensively:
 - **Mocking/Testing**: Creating test doubles
 
 **Challenge:** Create proxies for validation, logging, and default values.`,
-    examples: [
-      {
-        input: `new Proxy(obj, { get(target, prop) { ... } })`,
-        output: `Intercept property access`,
-        explanation: 'Custom behavior for getting properties',
-      },
-    ],
-    starterCode: `// TODO: Create a proxy that logs all property access
+  examples: [
+    {
+      input: `new Proxy(obj, { get(target, prop) { ... } })`,
+      output: `Intercept property access`,
+      explanation: 'Custom behavior for getting properties',
+    },
+  ],
+  starterCode: `// TODO: Create a proxy that logs all property access
 function createLoggingProxy(obj) {
   // Return a Proxy that logs get and set operations
   return obj;
@@ -106,7 +106,7 @@ console.log(withDefaults.missing); // 'N/A'
 const user = createValidatingProxy({ name: 'John', age: 30 });
 user.name = 'Jane'; // OK
 // user.age = -5; // Should throw error`,
-    solution: `function createLoggingProxy(obj) {
+  solution: `function createLoggingProxy(obj) {
   return new Proxy(obj, {
     get(target, prop) {
       console.log('Getting ' + String(prop));
@@ -142,21 +142,21 @@ function createValidatingProxy(obj) {
     }
   });
 }`,
-    testCases: [
-      {
-        input: [{ x: 1 }],
-        expectedOutput: 1,
-        description: 'logging proxy get',
-      },
-      {
-        input: [{}, 'N/A'],
-        expectedOutput: 'N/A',
-        description: 'default proxy missing prop',
-      },
-    ],
-    hints: [
-      'new Proxy(target, handler) creates proxy',
-      'get(target, prop) intercepts property access',
-      'set(target, prop, value) must return true',
-    ],
-  };
+  testCases: [
+    {
+      input: [{ x: 1 }],
+      expectedOutput: 1,
+      description: 'logging proxy get',
+    },
+    {
+      input: [{}, 'N/A'],
+      expectedOutput: 'N/A',
+      description: 'default proxy missing prop',
+    },
+  ],
+  hints: [
+    'new Proxy(target, handler) creates proxy',
+    'get(target, prop) intercepts property access',
+    'set(target, prop, value) must return true',
+  ],
+};

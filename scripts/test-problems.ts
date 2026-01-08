@@ -176,7 +176,7 @@ async function testAgentProblems(agentNumber: number | 'all') {
   }
 
   // Summary
-  console.log('\n' + '='.repeat(80));
+  console.log(`\n${'='.repeat(80)}`);
   console.log('\n📊 SUMMARY\n');
 
   const passed = results.filter((r) => r.passed).length;

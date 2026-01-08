@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'tagged-template-literals',
-    title: 'Tagged Template Literals',
-    difficulty: 'medium',
-    category: 'JavaScript Basics',
-    description: `## In-Depth Explanation
+  id: 'tagged-template-literals',
+  title: 'Tagged Template Literals',
+  difficulty: 'medium',
+  category: 'JavaScript Basics',
+  description: `## In-Depth Explanation
 
 Tagged template literals allow you to process template strings with a custom function (the "tag"). When you write \`tag\`string\`, JavaScript calls the tag function with:
 1. An array of string literals (the static parts)
@@ -67,14 +67,14 @@ Tagged templates are used extensively:
 - **Markdown**: Processing markdown templates
 
 **Challenge:** Build a simple HTML escaping tag and a highlight tag.`,
-    examples: [
-      {
-        input: 'html`<div>${userInput}</div>`',
-        output: `'<div>&lt;script&gt;</div>'`,
-        explanation: 'Escape HTML entities in interpolated values',
-      },
-    ],
-    starterCode: `function html(strings, ...values) {
+  examples: [
+    {
+      input: 'html`<div>${userInput}</div>`',
+      output: `'<div>&lt;script&gt;</div>'`,
+      explanation: 'Escape HTML entities in interpolated values',
+    },
+  ],
+  starterCode: `function html(strings, ...values) {
   // TODO: Escape HTML entities in interpolated values
   // Replace < > & " with their HTML entities
   // Combine strings and escaped values
@@ -94,7 +94,7 @@ console.log(html\`<div>\${userInput}</div>\`);
 
 const name = 'John & Jane';
 console.log(html\`<span>Hello, \${name}!</span>\`);`,
-    solution: `function escapeHtml(str) {
+  solution: `function escapeHtml(str) {
   return String(str)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -108,21 +108,21 @@ function html(strings, ...values) {
     return result + str + value;
   }, '');
 }`,
-    testCases: [
-      {
-        input: ['<script>alert("xss")</script>'],
-        expectedOutput: '<div>&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;</div>',
-        description: 'html tag escapes script',
-      },
-      {
-        input: ['John & Jane'],
-        expectedOutput: '<span>Hello, John &amp; Jane!</span>',
-        description: 'html tag escapes ampersand',
-      },
-    ],
-    hints: [
-      'Tag function receives (strings[], ...values)',
-      'strings.length === values.length + 1',
-      'Use reduce to interleave strings and processed values',
-    ],
-  };
+  testCases: [
+    {
+      input: ['<script>alert("xss")</script>'],
+      expectedOutput: '<div>&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;</div>',
+      description: 'html tag escapes script',
+    },
+    {
+      input: ['John & Jane'],
+      expectedOutput: '<span>Hello, John &amp; Jane!</span>',
+      description: 'html tag escapes ampersand',
+    },
+  ],
+  hints: [
+    'Tag function receives (strings[], ...values)',
+    'strings.length === values.length + 1',
+    'Use reduce to interleave strings and processed values',
+  ],
+};

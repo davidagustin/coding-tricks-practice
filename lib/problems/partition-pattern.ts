@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'partition-pattern',
-    title: 'Partition Pattern with Reduce',
-    difficulty: 'medium',
-    category: 'Array Methods',
-    description: `## In-Depth Explanation
+  id: 'partition-pattern',
+  title: 'Partition Pattern with Reduce',
+  difficulty: 'medium',
+  category: 'Array Methods',
+  description: `## In-Depth Explanation
 
 The partition pattern splits an array into two groups based on a boolean condition. Items that pass the condition go into one group, items that fail go into another. This is a common operation in data processing.
 
@@ -57,17 +57,17 @@ This pattern is essential in many scenarios:
 - **API Processing**: Partitioning API responses into success/failure groups
 
 **Challenge:** Partition users into active and inactive groups.`,
-    examples: [
-      {
-        input: `const users = [
+  examples: [
+    {
+      input: `const users = [
   { name: 'John', active: true },
   { name: 'Jane', active: false }
 ];`,
-        output: `{ active: [...], inactive: [...] }`,
-        explanation: 'Split array into two groups',
-      },
-    ],
-    starterCode: `function partitionUsers(users) {
+      output: `{ active: [...], inactive: [...] }`,
+      explanation: 'Split array into two groups',
+    },
+  ],
+  starterCode: `function partitionUsers(users) {
   // TODO: Use reduce to partition users into active and inactive
   // Return { active: [...], inactive: [...] }
   
@@ -82,7 +82,7 @@ const users = [
 ];
 
 console.log(partitionUsers(users));`,
-    solution: `function partitionUsers(users) {
+  solution: `function partitionUsers(users) {
   return users.reduce((acc, user) => {
     if (user.active) {
       acc.active.push(user);
@@ -92,27 +92,27 @@ console.log(partitionUsers(users));`,
     return acc;
   }, { active: [], inactive: [] });
 }`,
-    testCases: [
-      {
-        input: [
-          [
-            { id: 1, name: 'John', active: true },
-            { id: 2, name: 'Jane', active: false },
-            { id: 3, name: 'Bob', active: true },
-          ],
+  testCases: [
+    {
+      input: [
+        [
+          { id: 1, name: 'John', active: true },
+          { id: 2, name: 'Jane', active: false },
+          { id: 3, name: 'Bob', active: true },
         ],
-        expectedOutput: {
-          active: [
-            { id: 1, name: 'John', active: true },
-            { id: 3, name: 'Bob', active: true },
-          ],
-          inactive: [{ id: 2, name: 'Jane', active: false }],
-        },
+      ],
+      expectedOutput: {
+        active: [
+          { id: 1, name: 'John', active: true },
+          { id: 3, name: 'Bob', active: true },
+        ],
+        inactive: [{ id: 2, name: 'Jane', active: false }],
       },
-    ],
-    hints: [
-      'Initialize accumulator with both groups: { active: [], inactive: [] }',
-      'Push to appropriate group based on condition',
-      'More efficient than two separate filter() calls',
-    ],
-  };
+    },
+  ],
+  hints: [
+    'Initialize accumulator with both groups: { active: [], inactive: [] }',
+    'Push to appropriate group based on condition',
+    'More efficient than two separate filter() calls',
+  ],
+};

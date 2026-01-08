@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'type-guards',
-    title: 'Type Guards',
-    difficulty: 'medium',
-    category: 'TypeScript Basics',
-    description: `## In-Depth Explanation
+  id: 'type-guards',
+  title: 'Type Guards',
+  difficulty: 'medium',
+  category: 'TypeScript Basics',
+  description: `## In-Depth Explanation
 
 Type guards narrow (refine) types within conditional blocks, allowing TypeScript to know the specific type after a check. Built-in guards include \`typeof\`, \`instanceof\`, and \`in\` operator.
 
@@ -57,19 +57,19 @@ Type guards are used extensively:
 - **Discriminated Unions**: Narrowing discriminated union types
 
 **Challenge:** Create and use type guards to narrow types.`,
-    examples: [
-      {
-        input: `function isString(value: unknown): value is string {
+  examples: [
+    {
+      input: `function isString(value: unknown): value is string {
   return typeof value === 'string';
 }
 if (isString(value)) {
   value.toUpperCase(); // TypeScript knows value is string
 }`,
-        output: `Narrowed type`,
-        explanation: 'Type guard narrows type in if block',
-      },
-    ],
-    starterCode: `// TODO: Create type guards
+      output: `Narrowed type`,
+      explanation: 'Type guard narrows type in if block',
+    },
+  ],
+  starterCode: `// TODO: Create type guards
 // 1. Create a type guard for User type
 // 2. Use type guards to narrow types
 
@@ -96,7 +96,7 @@ function processData(data: unknown) {
 // Test
 processData({ name: 'Alice', age: 30 });
 processData('not a user');`,
-    solution: `interface User {
+  solution: `interface User {
   name: string;
   age: number;
 }
@@ -122,16 +122,16 @@ function processData(data: unknown) {
 
 processData({ name: 'Alice', age: 30 });
 processData('not a user');`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Type guards work correctly',
-      },
-    ],
-    hints: [
-      'Type guard syntax: value is Type',
-      'Use typeof, instanceof, or property checks',
-      'Type guards narrow types in conditional blocks',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'Type guards work correctly',
+    },
+  ],
+  hints: [
+    'Type guard syntax: value is Type',
+    'Use typeof, instanceof, or property checks',
+    'Type guards narrow types in conditional blocks',
+  ],
+};

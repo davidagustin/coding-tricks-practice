@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'promise-constructor',
-    title: 'Promise Constructor Pattern',
-    difficulty: 'medium',
-    category: 'Async/Promises',
-    description: `## In-Depth Explanation
+  id: 'promise-constructor',
+  title: 'Promise Constructor Pattern',
+  difficulty: 'medium',
+  category: 'Async/Promises',
+  description: `## In-Depth Explanation
 
 The \`Promise\` constructor allows you to create promises from scratch, wrapping callback-based APIs or creating custom async operations. The constructor takes a function (executor) with two parameters: \`resolve\` and \`reject\`.
 
@@ -61,14 +61,14 @@ This pattern is used extensively:
 - **Legacy Libraries**: Wrapping old callback-based libraries
 
 **Challenge:** Convert setTimeout and event listeners to promises.`,
-    examples: [
-      {
-        input: `delay(1000).then(() => console.log('Done'))`,
-        output: `Logs after 1 second`,
-        explanation: 'Promise-based delay',
-      },
-    ],
-    starterCode: `function delay(ms) {
+  examples: [
+    {
+      input: `delay(1000).then(() => console.log('Done'))`,
+      output: `Logs after 1 second`,
+      explanation: 'Promise-based delay',
+    },
+  ],
+  starterCode: `function delay(ms) {
   // TODO: Return a Promise that resolves after ms milliseconds
   
   return Promise.resolve();
@@ -86,7 +86,7 @@ delay(1000).then(() => console.log('1 second passed'));
 
 const button = document.createElement('button');
 waitForEvent(button, 'click').then(() => console.log('Button clicked'));`,
-    solution: `function delay(ms) {
+  solution: `function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
@@ -107,16 +107,16 @@ async function testDelay() {
   const elapsed = Date.now() - start;
   return elapsed >= 10;
 }`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'testDelay',
-      },
-    ],
-    hints: [
-      'new Promise((resolve, reject) => { ... })',
-      'Call resolve() when operation succeeds',
-      'Call reject() when operation fails',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'testDelay',
+    },
+  ],
+  hints: [
+    'new Promise((resolve, reject) => { ... })',
+    'Call resolve() when operation succeeds',
+    'Call reject() when operation fails',
+  ],
+};

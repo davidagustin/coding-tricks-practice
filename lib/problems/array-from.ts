@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'array-from',
-    title: 'Array.from with Mapping',
-    difficulty: 'medium',
-    category: 'Array Methods',
-    description: `## In-Depth Explanation
+  id: 'array-from',
+  title: 'Array.from with Mapping',
+  difficulty: 'medium',
+  category: 'Array Methods',
+  description: `## In-Depth Explanation
 
 \`Array.from()\` is a versatile method that creates a new array from an iterable or array-like object. When combined with a mapping function as the second argument, it becomes a powerful tool for generating sequences and transforming data.
 
@@ -57,14 +57,14 @@ This method is used extensively in modern JavaScript:
 - **Algorithm Implementation**: Creating arrays for algorithms that need indexed sequences
 
 **Challenge:** Create arrays from various sources using Array.from.`,
-    examples: [
-      {
-        input: `Array.from({ length: 5 }, (_, i) => i * 2)`,
-        output: `[0, 2, 4, 6, 8]`,
-        explanation: 'Create array of even numbers',
-      },
-    ],
-    starterCode: `function createNumberSequence(length, start = 0, step = 1) {
+  examples: [
+    {
+      input: `Array.from({ length: 5 }, (_, i) => i * 2)`,
+      output: `[0, 2, 4, 6, 8]`,
+      explanation: 'Create array of even numbers',
+    },
+  ],
+  starterCode: `function createNumberSequence(length, start = 0, step = 1) {
   // TODO: Use Array.from to create sequence
   // Array.from({ length: n }, (_, i) => ...)
   return [];
@@ -78,55 +78,55 @@ function createAlphabet() {
 
 console.log('Sequence:', createNumberSequence(5, 0, 2));
 console.log('Alphabet:', createAlphabet());`,
-    solution: `function createNumberSequence(length, start = 0, step = 1) {
+  solution: `function createNumberSequence(length, start = 0, step = 1) {
   return Array.from({ length }, (_, i) => start + i * step);
 }
 
 function createAlphabet() {
   return Array.from({ length: 26 }, (_, i) => String.fromCharCode(97 + i));
 }`,
-    testCases: [
-      {
-        input: [5, 0, 2],
-        expectedOutput: [0, 2, 4, 6, 8],
-        description: 'createNumberSequence',
-      },
-      {
-        input: [],
-        expectedOutput: [
-          'a',
-          'b',
-          'c',
-          'd',
-          'e',
-          'f',
-          'g',
-          'h',
-          'i',
-          'j',
-          'k',
-          'l',
-          'm',
-          'n',
-          'o',
-          'p',
-          'q',
-          'r',
-          's',
-          't',
-          'u',
-          'v',
-          'w',
-          'x',
-          'y',
-          'z',
-        ],
-        description: 'createAlphabet',
-      },
-    ],
-    hints: [
-      'Array.from({ length: n }, mapFn) creates array with n elements',
-      'Second parameter is mapping function: (_, index) => value',
-      'Useful for creating sequences, ranges, or transforming iterables',
-    ],
-  };
+  testCases: [
+    {
+      input: [5, 0, 2],
+      expectedOutput: [0, 2, 4, 6, 8],
+      description: 'createNumberSequence',
+    },
+    {
+      input: [],
+      expectedOutput: [
+        'a',
+        'b',
+        'c',
+        'd',
+        'e',
+        'f',
+        'g',
+        'h',
+        'i',
+        'j',
+        'k',
+        'l',
+        'm',
+        'n',
+        'o',
+        'p',
+        'q',
+        'r',
+        's',
+        't',
+        'u',
+        'v',
+        'w',
+        'x',
+        'y',
+        'z',
+      ],
+      description: 'createAlphabet',
+    },
+  ],
+  hints: [
+    'Array.from({ length: n }, mapFn) creates array with n elements',
+    'Second parameter is mapping function: (_, index) => value',
+    'Useful for creating sequences, ranges, or transforming iterables',
+  ],
+};

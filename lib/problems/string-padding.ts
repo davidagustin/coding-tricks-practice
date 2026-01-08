@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'string-padding',
-    title: 'String Padding and Formatting',
-    difficulty: 'easy',
-    category: 'String Methods',
-    description: `## In-Depth Explanation
+  id: 'string-padding',
+  title: 'String Padding and Formatting',
+  difficulty: 'easy',
+  category: 'String Methods',
+  description: `## In-Depth Explanation
 
 \`padStart()\` and \`padEnd()\` add padding characters to strings to reach a specified length. \`padStart()\` adds padding at the beginning (left), \`padEnd()\` adds padding at the end (right).
 
@@ -64,14 +64,14 @@ String padding is used extensively:
 - **Reports**: Format report data with consistent alignment
 
 **Challenge:** Format numbers, create aligned output, and mask strings.`,
-    examples: [
-      {
-        input: `'5'.padStart(2, '0')`,
-        output: `'05'`,
-        explanation: 'Pad single digit with leading zero',
-      },
-    ],
-    starterCode: `function formatTime(hours, minutes, seconds) {
+  examples: [
+    {
+      input: `'5'.padStart(2, '0')`,
+      output: `'05'`,
+      explanation: 'Pad single digit with leading zero',
+    },
+  ],
+  starterCode: `function formatTime(hours, minutes, seconds) {
   // TODO: Format as HH:MM:SS with leading zeros
   // formatTime(9, 5, 3) → '09:05:03'
 
@@ -96,7 +96,7 @@ function formatCurrency(amount, width = 10) {
 console.log(formatTime(9, 5, 3));
 console.log(maskCardNumber('1234567890123456'));
 console.log(formatCurrency(42.5, 10));`,
-    solution: `function formatTime(hours, minutes, seconds) {
+  solution: `function formatTime(hours, minutes, seconds) {
   return [hours, minutes, seconds]
     .map(n => String(n).padStart(2, '0'))
     .join(':');
@@ -111,26 +111,26 @@ function formatCurrency(amount, width = 10) {
   const formatted = '$' + amount.toFixed(2);
   return formatted.padStart(width, ' ');
 }`,
-    testCases: [
-      {
-        input: [9, 5, 3],
-        expectedOutput: '09:05:03',
-        description: 'formatTime',
-      },
-      {
-        input: ['1234567890123456'],
-        expectedOutput: '************3456',
-        description: 'maskCardNumber',
-      },
-      {
-        input: [42.5, 10],
-        expectedOutput: '    $42.50',
-        description: 'formatCurrency',
-      },
-    ],
-    hints: [
-      'String(num).padStart(2, "0") for leading zeros',
-      'slice(-4) gets last 4 characters',
-      'toFixed(2) formats decimals, then padStart for alignment',
-    ],
-  };
+  testCases: [
+    {
+      input: [9, 5, 3],
+      expectedOutput: '09:05:03',
+      description: 'formatTime',
+    },
+    {
+      input: ['1234567890123456'],
+      expectedOutput: '************3456',
+      description: 'maskCardNumber',
+    },
+    {
+      input: [42.5, 10],
+      expectedOutput: '    $42.50',
+      description: 'formatCurrency',
+    },
+  ],
+  hints: [
+    'String(num).padStart(2, "0") for leading zeros',
+    'slice(-4) gets last 4 characters',
+    'toFixed(2) formats decimals, then padStart for alignment',
+  ],
+};

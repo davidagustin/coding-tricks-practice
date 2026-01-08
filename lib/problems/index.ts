@@ -21,8 +21,8 @@ export interface Problem {
 
 import { problem as abort_controller } from './abort-controller';
 import { problem as array_chaining } from './array-chaining';
-import { problem as array_from_tricks } from './array-from-tricks';
 import { problem as array_from } from './array-from';
+import { problem as array_from_tricks } from './array-from-tricks';
 import { problem as async_await_error } from './async-await-error';
 import { problem as async_generators } from './async-generators';
 import { problem as basic_typescript_types } from './basic-typescript-types';
@@ -132,7 +132,7 @@ export const problems: Problem[] = [
   type_guards,
   union_intersection,
   weak_collections,
-  weakmap_weakset
+  weakmap_weakset,
 ];
 
 export function getProblemById(id: string): Problem | undefined {

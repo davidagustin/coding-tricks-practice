@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'enums',
-    title: 'Enums',
-    difficulty: 'easy',
-    category: 'TypeScript Basics',
-    description: `## In-Depth Explanation
+  id: 'enums',
+  title: 'Enums',
+  difficulty: 'easy',
+  category: 'TypeScript Basics',
+  description: `## In-Depth Explanation
 
 Enums define a set of named constants, making code more readable and maintainable. TypeScript supports numeric enums (default, auto-incrementing) and string enums (explicit string values).
 
@@ -61,19 +61,19 @@ Enums are used extensively:
 - **Event Types**: Type-safe event type constants
 
 **Challenge:** Create and use enums effectively.`,
-    examples: [
-      {
-        input: `enum Status {
+  examples: [
+    {
+      input: `enum Status {
   Pending,
   Approved,
   Rejected
 }
 const status: Status = Status.Pending;`,
-        output: `Type-safe constants`,
-        explanation: 'Enums provide named constants',
-      },
-    ],
-    starterCode: `// TODO: Create enums
+      output: `Type-safe constants`,
+      explanation: 'Enums provide named constants',
+    },
+  ],
+  starterCode: `// TODO: Create enums
 // 1. Create a numeric enum for Status
 // 2. Create a string enum for Direction
 // 3. Use enums in functions
@@ -94,7 +94,7 @@ function processStatus(status: Status) {
 // Test
 console.log(processStatus(Status.Pending));
 console.log(Direction.Up);`,
-    solution: `enum Status {
+  solution: `enum Status {
   Pending,
   Approved,
   Rejected
@@ -122,16 +122,16 @@ function processStatus(status: Status) {
 
 console.log(processStatus(Status.Pending));
 console.log(Direction.Up);`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Enums work correctly',
-      },
-    ],
-    hints: [
-      'Numeric enums auto-increment from 0',
-      'String enums must have explicit values',
-      'Enums compile to JavaScript objects',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'Enums work correctly',
+    },
+  ],
+  hints: [
+    'Numeric enums auto-increment from 0',
+    'String enums must have explicit values',
+    'Enums compile to JavaScript objects',
+  ],
+};

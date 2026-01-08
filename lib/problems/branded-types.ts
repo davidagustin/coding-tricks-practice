@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'branded-types',
-    title: 'TypeScript Branded Types',
-    difficulty: 'hard',
-    category: 'TypeScript Advanced',
-    description: `## In-Depth Explanation
+  id: 'branded-types',
+  title: 'TypeScript Branded Types',
+  difficulty: 'hard',
+  category: 'TypeScript Advanced',
+  description: `## In-Depth Explanation
 
 Branded types create distinct types from the same underlying type (like \`number\` or \`string\`) by adding a "brand" - a unique property that exists only at the type level. This prevents mixing up values that have the same type but different meanings.
 
@@ -64,14 +64,14 @@ Branded types are used extensively:
 - **Library Development**: Building type-safe libraries
 
 **Challenge:** Use branded types to prevent mixing up similar values.`,
-    examples: [
-      {
-        input: `type UserId = number & { __brand: 'UserId' }`,
-        output: `UserId and ProductId are incompatible`,
-        explanation: 'Same underlying type, but different brands',
-      },
-    ],
-    starterCode: `// TODO: Create branded types for UserId and ProductId
+  examples: [
+    {
+      input: `type UserId = number & { __brand: 'UserId' }`,
+      output: `UserId and ProductId are incompatible`,
+      explanation: 'Same underlying type, but different brands',
+    },
+  ],
+  starterCode: `// TODO: Create branded types for UserId and ProductId
 // Both are numbers but should not be interchangeable
 type UserId = number; // Fix this
 type ProductId = number; // Fix this
@@ -104,7 +104,7 @@ console.log(getProduct(productId));
 // This should cause type error (uncomment to test):
 // getUser(productId); // Error!
 // getProduct(userId); // Error!`,
-    solution: `type UserId = number & { readonly __brand: unique symbol };
+  solution: `type UserId = number & { readonly __brand: unique symbol };
 type ProductId = number & { readonly __brand: unique symbol };
 
 function createUserId(id: number): UserId {
@@ -122,21 +122,21 @@ function getUser(id: UserId): string {
 function getProduct(id: ProductId): string {
   return 'Product ' + id;
 }`,
-    testCases: [
-      {
-        input: [1],
-        expectedOutput: 'User 1',
-        description: 'getUser with UserId',
-      },
-      {
-        input: [1],
-        expectedOutput: 'Product 1',
-        description: 'getProduct with ProductId',
-      },
-    ],
-    hints: [
-      'Add a phantom property: number & { __brand: "UserId" }',
-      'Use unique symbol for true uniqueness',
-      'Cast with "as" in factory functions',
-    ],
-  };
+  testCases: [
+    {
+      input: [1],
+      expectedOutput: 'User 1',
+      description: 'getUser with UserId',
+    },
+    {
+      input: [1],
+      expectedOutput: 'Product 1',
+      description: 'getProduct with ProductId',
+    },
+  ],
+  hints: [
+    'Add a phantom property: number & { __brand: "UserId" }',
+    'Use unique symbol for true uniqueness',
+    'Cast with "as" in factory functions',
+  ],
+};

@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'short-circuit-evaluation',
-    title: 'Short-Circuit Evaluation',
-    difficulty: 'easy',
-    category: 'JavaScript Basics',
-    description: `## In-Depth Explanation
+  id: 'short-circuit-evaluation',
+  title: 'Short-Circuit Evaluation',
+  difficulty: 'easy',
+  category: 'JavaScript Basics',
+  description: `## In-Depth Explanation
 
 Short-circuit evaluation is a feature where logical operators (\`&&\` and \`||\`) don't evaluate the right operand if the result can be determined from the left operand alone.
 
@@ -63,14 +63,14 @@ Short-circuit evaluation is used everywhere:
 - **Error Handling**: \`error && console.error(error)\`
 
 **Challenge:** Replace if statements with short-circuit patterns.`,
-    examples: [
-      {
-        input: `const name = user && user.name;`,
-        output: `'John' or undefined`,
-        explanation: '&& short-circuits on falsy values',
-      },
-    ],
-    starterCode: `function greetUser(user) {
+  examples: [
+    {
+      input: `const name = user && user.name;`,
+      output: `'John' or undefined`,
+      explanation: '&& short-circuits on falsy values',
+    },
+  ],
+  starterCode: `function greetUser(user) {
   // TODO: Use && to only call user.getName() if user exists
   // Return greeting or 'Hello, Guest!'
   let name;
@@ -95,7 +95,7 @@ console.log(greetUser(user));
 console.log(greetUser(null));
 console.log(getConfigValue({ timeout: 5000 }, 'timeout', 3000));
 console.log(getConfigValue({}, 'timeout', 3000));`,
-    solution: `function greetUser(user) {
+  solution: `function greetUser(user) {
   const name = user && user.getName();
   return 'Hello, ' + (name || 'Guest') + '!';
 }
@@ -103,31 +103,31 @@ console.log(getConfigValue({}, 'timeout', 3000));`,
 function getConfigValue(config, key, defaultValue) {
   return (config && config[key]) || defaultValue;
 }`,
-    testCases: [
-      {
-        input: [{ getName: () => 'John' }],
-        expectedOutput: 'Hello, John!',
-        description: 'greetUser with user',
-      },
-      {
-        input: [null],
-        expectedOutput: 'Hello, Guest!',
-        description: 'greetUser without user',
-      },
-      {
-        input: [{ timeout: 5000 }, 'timeout', 3000],
-        expectedOutput: 5000,
-        description: 'getConfigValue existing',
-      },
-      {
-        input: [{}, 'timeout', 3000],
-        expectedOutput: 3000,
-        description: 'getConfigValue default',
-      },
-    ],
-    hints: [
-      '&& evaluates right side only if left is truthy',
-      '|| returns first truthy value or last value',
-      'Be careful: 0 and "" are falsy!',
-    ],
-  };
+  testCases: [
+    {
+      input: [{ getName: () => 'John' }],
+      expectedOutput: 'Hello, John!',
+      description: 'greetUser with user',
+    },
+    {
+      input: [null],
+      expectedOutput: 'Hello, Guest!',
+      description: 'greetUser without user',
+    },
+    {
+      input: [{ timeout: 5000 }, 'timeout', 3000],
+      expectedOutput: 5000,
+      description: 'getConfigValue existing',
+    },
+    {
+      input: [{}, 'timeout', 3000],
+      expectedOutput: 3000,
+      description: 'getConfigValue default',
+    },
+  ],
+  hints: [
+    '&& evaluates right side only if left is truthy',
+    '|| returns first truthy value or last value',
+    'Be careful: 0 and "" are falsy!',
+  ],
+};

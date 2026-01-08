@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'map-deduplication',
-    title: 'Map for Deduplication',
-    difficulty: 'medium',
-    category: 'Array Methods',
-    description: `## In-Depth Explanation
+  id: 'map-deduplication',
+  title: 'Map for Deduplication',
+  difficulty: 'medium',
+  category: 'Array Methods',
+  description: `## In-Depth Explanation
 
 The \`Map\` constructor has a powerful feature: when you pass an iterable of [key, value] pairs, it automatically handles duplicate keys by keeping only the last value for each key. This behavior makes \`Map\` perfect for deduplication scenarios where you want the most recent occurrence to win.
 
@@ -58,18 +58,18 @@ This pattern is invaluable in many real-world scenarios:
 - **User Session Management**: Keeping only the most recent session data per user
 
 **Challenge:** Remove duplicate users by ID, keeping the last occurrence.`,
-    examples: [
-      {
-        input: `const users = [
+  examples: [
+    {
+      input: `const users = [
   { id: 1, name: 'John' },
   { id: 2, name: 'Jane' },
   { id: 1, name: 'John Updated' }
 ];`,
-        output: `[{ id: 2, name: 'Jane' }, { id: 1, name: 'John Updated' }]`,
-        explanation: 'Last occurrence of id:1 wins',
-      },
-    ],
-    starterCode: `function deduplicateUsers(users) {
+      output: `[{ id: 2, name: 'Jane' }, { id: 1, name: 'John Updated' }]`,
+      explanation: 'Last occurrence of id:1 wins',
+    },
+  ],
+  starterCode: `function deduplicateUsers(users) {
   // TODO: Use Map to deduplicate by id (last wins)
   // Hint: new Map(users.map(u => [u.id, u]))
   // Then convert back to array with [...map.values()]
@@ -86,37 +86,37 @@ const users = [
 ];
 
 console.log(deduplicateUsers(users));`,
-    solution: `function deduplicateUsers(users) {
+  solution: `function deduplicateUsers(users) {
   return [...new Map(users.map(u => [u.id, u])).values()];
 }`,
-    testCases: [
-      {
-        input: [
-          [
-            { id: 1, name: 'John' },
-            { id: 2, name: 'Jane' },
-            { id: 1, name: 'John Updated' },
-          ],
-        ],
-        expectedOutput: [
+  testCases: [
+    {
+      input: [
+        [
+          { id: 1, name: 'John' },
           { id: 2, name: 'Jane' },
           { id: 1, name: 'John Updated' },
         ],
-      },
-      {
-        input: [
-          [
-            { id: 1, name: 'A' },
-            { id: 1, name: 'B' },
-            { id: 1, name: 'C' },
-          ],
+      ],
+      expectedOutput: [
+        { id: 2, name: 'Jane' },
+        { id: 1, name: 'John Updated' },
+      ],
+    },
+    {
+      input: [
+        [
+          { id: 1, name: 'A' },
+          { id: 1, name: 'B' },
+          { id: 1, name: 'C' },
         ],
-        expectedOutput: [{ id: 1, name: 'C' }],
-      },
-    ],
-    hints: [
-      'Map constructor accepts [key, value] pairs',
-      'Map overwrites duplicate keys (last wins)',
-      'Use [...map.values()] to convert back to array',
-    ],
-  };
+      ],
+      expectedOutput: [{ id: 1, name: 'C' }],
+    },
+  ],
+  hints: [
+    'Map constructor accepts [key, value] pairs',
+    'Map overwrites duplicate keys (last wins)',
+    'Use [...map.values()] to convert back to array',
+  ],
+};

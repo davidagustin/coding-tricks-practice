@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'interfaces',
-    title: 'Interfaces',
-    difficulty: 'easy',
-    category: 'TypeScript Basics',
-    description: `## In-Depth Explanation
+  id: 'interfaces',
+  title: 'Interfaces',
+  difficulty: 'easy',
+  category: 'TypeScript Basics',
+  description: `## In-Depth Explanation
 
 Interfaces define the shape (structure) of objects in TypeScript. They act as contracts that objects must satisfy - specifying which properties are required, their types, and which are optional (marked with \`?\`).
 
@@ -62,18 +62,18 @@ Interfaces are used extensively in TypeScript applications:
 - **Library APIs**: Defining public APIs for libraries
 
 **Challenge:** Create and use interfaces to type objects.`,
-    examples: [
-      {
-        input: `interface User {
+  examples: [
+    {
+      input: `interface User {
   name: string;
   age: number;
 }
 const user: User = { name: 'John', age: 30 };`,
-        output: `Type-safe user object`,
-        explanation: 'Interface ensures object has required properties',
-      },
-    ],
-    starterCode: `// TODO: Create interfaces
+      output: `Type-safe user object`,
+      explanation: 'Interface ensures object has required properties',
+    },
+  ],
+  starterCode: `// TODO: Create interfaces
 // 1. Create a Person interface with name, age, and email
 // 2. Create a Product interface with id, name, price, and optional description
 // 3. Use these interfaces to type variables
@@ -101,7 +101,7 @@ function displayPerson(p: Person) {
 }
 
 displayPerson(person);`,
-    solution: `interface Person {
+  solution: `interface Person {
   name: string;
   age: number;
   email: string;
@@ -132,16 +132,16 @@ function displayPerson(p: Person) {
 }
 
 displayPerson(person);`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Interfaces work correctly',
-      },
-    ],
-    hints: [
-      'Use interface keyword to define object shapes',
-      'Optional properties use ?: syntax',
-      'Interfaces can extend other interfaces',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'Interfaces work correctly',
+    },
+  ],
+  hints: [
+    'Use interface keyword to define object shapes',
+    'Optional properties use ?: syntax',
+    'Interfaces can extend other interfaces',
+  ],
+};

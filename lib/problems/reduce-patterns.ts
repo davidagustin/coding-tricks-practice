@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'reduce-patterns',
-    title: 'Advanced Reduce Patterns',
-    difficulty: 'medium',
-    category: 'Array Methods',
-    description: `## In-Depth Explanation
+  id: 'reduce-patterns',
+  title: 'Advanced Reduce Patterns',
+  difficulty: 'medium',
+  category: 'Array Methods',
+  description: `## In-Depth Explanation
 
 \`reduce\` is the most powerful array method, capable of implementing any array transformation. Advanced patterns include:
 
@@ -61,14 +61,14 @@ These patterns are used extensively:
 - **Database Queries**: Mimicking SQL GROUP BY, COUNT operations
 
 **Challenge:** Use reduce for grouping, counting occurrences, and running totals.`,
-    examples: [
-      {
-        input: `['apple', 'banana', 'apple', 'cherry', 'banana', 'apple']`,
-        output: `{ apple: 3, banana: 2, cherry: 1 }`,
-        explanation: 'Count occurrences of each item',
-      },
-    ],
-    starterCode: `function countOccurrences(arr) {
+  examples: [
+    {
+      input: `['apple', 'banana', 'apple', 'cherry', 'banana', 'apple']`,
+      output: `{ apple: 3, banana: 2, cherry: 1 }`,
+      explanation: 'Count occurrences of each item',
+    },
+  ],
+  starterCode: `function countOccurrences(arr) {
   // TODO: Count occurrences of each item
   // Return object like { item: count }
 
@@ -97,7 +97,7 @@ console.log(groupBy([
   { type: 'fruit', name: 'banana' }
 ], 'type'));
 console.log(runningTotal([1, 2, 3, 4, 5]));`,
-    solution: `function countOccurrences(arr) {
+  solution: `function countOccurrences(arr) {
   return arr.reduce((acc, item) => {
     acc[item] = (acc[item] || 0) + 1;
     return acc;
@@ -121,39 +121,39 @@ function runningTotal(numbers) {
     return acc;
   }, []);
 }`,
-    testCases: [
-      {
-        input: [['a', 'b', 'a', 'c', 'b', 'a']],
-        expectedOutput: { a: 3, b: 2, c: 1 },
-        description: 'countOccurrences',
-      },
-      {
-        input: [
-          [
-            { type: 'fruit', name: 'apple' },
-            { type: 'vegetable', name: 'carrot' },
-            { type: 'fruit', name: 'banana' },
-          ],
-          'type',
+  testCases: [
+    {
+      input: [['a', 'b', 'a', 'c', 'b', 'a']],
+      expectedOutput: { a: 3, b: 2, c: 1 },
+      description: 'countOccurrences',
+    },
+    {
+      input: [
+        [
+          { type: 'fruit', name: 'apple' },
+          { type: 'vegetable', name: 'carrot' },
+          { type: 'fruit', name: 'banana' },
         ],
-        expectedOutput: {
-          fruit: [
-            { type: 'fruit', name: 'apple' },
-            { type: 'fruit', name: 'banana' },
-          ],
-          vegetable: [{ type: 'vegetable', name: 'carrot' }],
-        },
-        description: 'groupBy',
+        'type',
+      ],
+      expectedOutput: {
+        fruit: [
+          { type: 'fruit', name: 'apple' },
+          { type: 'fruit', name: 'banana' },
+        ],
+        vegetable: [{ type: 'vegetable', name: 'carrot' }],
       },
-      {
-        input: [[1, 2, 3, 4, 5]],
-        expectedOutput: [1, 3, 6, 10, 15],
-        description: 'runningTotal',
-      },
-    ],
-    hints: [
-      'reduce(callback, initialValue) - start with {} or []',
-      'acc[key] = (acc[key] || 0) + 1 for counting',
-      'acc[key] = acc[key] || [] for grouping',
-    ],
-  };
+      description: 'groupBy',
+    },
+    {
+      input: [[1, 2, 3, 4, 5]],
+      expectedOutput: [1, 3, 6, 10, 15],
+      description: 'runningTotal',
+    },
+  ],
+  hints: [
+    'reduce(callback, initialValue) - start with {} or []',
+    'acc[key] = (acc[key] || 0) + 1 for counting',
+    'acc[key] = acc[key] || [] for grouping',
+  ],
+};

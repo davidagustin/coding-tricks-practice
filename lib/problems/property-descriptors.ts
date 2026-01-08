@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'property-descriptors',
-    title: 'Property Descriptors',
-    difficulty: 'medium',
-    category: 'Object Methods',
-    description: `## In-Depth Explanation
+  id: 'property-descriptors',
+  title: 'Property Descriptors',
+  difficulty: 'medium',
+  category: 'Object Methods',
+  description: `## In-Depth Explanation
 
 Property descriptors control how properties behave in JavaScript. Each property has a descriptor with attributes:
 - **enumerable**: Whether property appears in \`for...in\` loops and \`Object.keys()\`
@@ -66,14 +66,14 @@ Property descriptors are used extensively:
 - **Observables**: Creating observable properties with getters/setters
 
 **Challenge:** Create properties with specific descriptors.`,
-    examples: [
-      {
-        input: `Object.defineProperty(obj, 'prop', { enumerable: false })`,
-        output: `Property with custom descriptor`,
-        explanation: 'Control property visibility and mutability',
-      },
-    ],
-    starterCode: `// TODO: Create a non-enumerable property
+  examples: [
+    {
+      input: `Object.defineProperty(obj, 'prop', { enumerable: false })`,
+      output: `Property with custom descriptor`,
+      explanation: 'Control property visibility and mutability',
+    },
+  ],
+  starterCode: `// TODO: Create a non-enumerable property
 function addHiddenProperty(obj, key, value) {
   // Use Object.defineProperty with enumerable: false
   return obj;
@@ -107,7 +107,7 @@ console.log(Object.keys(obj)); // Should not include 'hidden'
 
 const descriptors = getDescriptors(obj);
 console.log(descriptors);`,
-    solution: `function addHiddenProperty(obj, key, value) {
+  solution: `function addHiddenProperty(obj, key, value) {
   Object.defineProperty(obj, key, {
     value,
     enumerable: false,
@@ -136,17 +136,17 @@ function copyDescriptors(source, target) {
   Object.defineProperties(target, descriptors);
   return target;
 }`,
-    testCases: [
-      {
-        input: [{ a: 1 }, 'hidden', 'secret'],
-        expectedOutput: { a: 1 },
-        description: 'addHiddenProperty - check enumerable',
-      },
-    ],
-    hints: [
-      'enumerable: false - hidden from Object.keys, for...in',
-      'writable: false - cannot be reassigned',
-      'configurable: false - cannot be deleted or reconfigured',
-      'Object.getOwnPropertyDescriptors gets all descriptors',
-    ],
-  };
+  testCases: [
+    {
+      input: [{ a: 1 }, 'hidden', 'secret'],
+      expectedOutput: { a: 1 },
+      description: 'addHiddenProperty - check enumerable',
+    },
+  ],
+  hints: [
+    'enumerable: false - hidden from Object.keys, for...in',
+    'writable: false - cannot be reassigned',
+    'configurable: false - cannot be deleted or reconfigured',
+    'Object.getOwnPropertyDescriptors gets all descriptors',
+  ],
+};

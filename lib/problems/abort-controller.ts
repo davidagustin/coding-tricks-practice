@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'abort-controller',
-    title: 'AbortController for Cancellation',
-    difficulty: 'hard',
-    category: 'Async/Promises',
-    description: `## In-Depth Explanation
+  id: 'abort-controller',
+  title: 'AbortController for Cancellation',
+  difficulty: 'hard',
+  category: 'Async/Promises',
+  description: `## In-Depth Explanation
 
 \`AbortController\` provides a way to cancel fetch requests and other async operations. It works by creating a controller with a \`signal\` that can be passed to fetch (and other APIs), and then calling \`abort()\` when you want to cancel.
 
@@ -61,15 +61,15 @@ This pattern is essential in production applications:
 - **WebSocket Cleanup**: Properly cleaning up WebSocket connections
 
 **Challenge:** Create a cancellable fetch function.`,
-    examples: [
-      {
-        input: `const controller = new AbortController();
+  examples: [
+    {
+      input: `const controller = new AbortController();
 fetchWithCancel('/api/data', controller.signal);`,
-        output: `Request can be cancelled with controller.abort()`,
-        explanation: 'Cancel long-running requests',
-      },
-    ],
-    starterCode: `async function fetchWithCancel(url, signal) {
+      output: `Request can be cancelled with controller.abort()`,
+      explanation: 'Cancel long-running requests',
+    },
+  ],
+  starterCode: `async function fetchWithCancel(url, signal) {
   // TODO: Pass signal to fetch options
   // Handle AbortError when cancelled
   
@@ -91,7 +91,7 @@ function createCancellableFetch(url, timeout = 5000) {
 // Test
 const { promise, cancel } = createCancellableFetch('/api/data', 1000);
 setTimeout(() => cancel(), 500); // Cancel after 500ms`,
-    solution: `async function fetchWithCancel(url, signal) {
+  solution: `async function fetchWithCancel(url, signal) {
   try {
     // Mock fetch for testing
     const mockFetch = () => Promise.resolve({ json: () => Promise.resolve({ data: 'test' }) });
@@ -130,16 +130,16 @@ function testAbortController() {
     return false;
   }
 }`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'testAbortController',
-      },
-    ],
-    hints: [
-      'Pass signal to fetch options: { signal }',
-      'AbortError is thrown when aborted',
-      'Clear timeouts in finally block',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'testAbortController',
+    },
+  ],
+  hints: [
+    'Pass signal to fetch options: { signal }',
+    'AbortError is thrown when aborted',
+    'Clear timeouts in finally block',
+  ],
+};

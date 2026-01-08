@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'memoization',
-    title: 'Function Memoization',
-    difficulty: 'medium',
-    category: 'Functional Programming',
-    description: `## In-Depth Explanation
+  id: 'memoization',
+  title: 'Function Memoization',
+  difficulty: 'medium',
+  category: 'Functional Programming',
+  description: `## In-Depth Explanation
 
 Memoization caches function results based on arguments, avoiding redundant calculations. When a memoized function is called with the same arguments, it returns the cached result instead of recalculating.
 
@@ -64,14 +64,14 @@ Memoization is used extensively:
 - **Search Results**: Caching search results
 
 **Challenge:** Implement memoization for expensive calculations.`,
-    examples: [
-      {
-        input: `const memoFib = memoize(fib); memoFib(40)`,
-        output: `Fast result (cached)`,
-        explanation: 'Subsequent calls use cached value',
-      },
-    ],
-    starterCode: `// TODO: Create a memoize function that caches results
+  examples: [
+    {
+      input: `const memoFib = memoize(fib); memoFib(40)`,
+      output: `Fast result (cached)`,
+      explanation: 'Subsequent calls use cached value',
+    },
+  ],
+  starterCode: `// TODO: Create a memoize function that caches results
 // Only works for single-argument functions for simplicity
 function memoize(fn) {
   // Create cache (Map or object)
@@ -101,7 +101,7 @@ const memoizedFib = memoize(n => {
 
 console.log(memoizedFib(10));
 console.log(fastFib(10));`,
-    solution: `function memoize(fn) {
+  solution: `function memoize(fn) {
   const cache = new Map();
   return function(arg) {
     if (cache.has(arg)) {
@@ -119,26 +119,26 @@ function fastFib(n, memo = {}) {
   memo[n] = fastFib(n - 1, memo) + fastFib(n - 2, memo);
   return memo[n];
 }`,
-    testCases: [
-      {
-        input: [10],
-        expectedOutput: 55,
-        description: 'memoizedFib(10)',
-      },
-      {
-        input: [10],
-        expectedOutput: 55,
-        description: 'fastFib(10)',
-      },
-      {
-        input: [20],
-        expectedOutput: 6765,
-        description: 'fastFib(20)',
-      },
-    ],
-    hints: [
-      'Use Map for cache: cache.has(key), cache.get(key), cache.set(key, value)',
-      'Check cache before computing',
-      'For recursive functions, pass memo object as parameter',
-    ],
-  };
+  testCases: [
+    {
+      input: [10],
+      expectedOutput: 55,
+      description: 'memoizedFib(10)',
+    },
+    {
+      input: [10],
+      expectedOutput: 55,
+      description: 'fastFib(10)',
+    },
+    {
+      input: [20],
+      expectedOutput: 6765,
+      description: 'fastFib(20)',
+    },
+  ],
+  hints: [
+    'Use Map for cache: cache.has(key), cache.get(key), cache.set(key, value)',
+    'Check cache before computing',
+    'For recursive functions, pass memo object as parameter',
+  ],
+};

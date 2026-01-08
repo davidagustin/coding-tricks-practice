@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'reduce-right',
-    title: 'ReduceRight for Right-to-Left Operations',
-    difficulty: 'medium',
-    category: 'Array Methods',
-    description: `## In-Depth Explanation
+  id: 'reduce-right',
+  title: 'ReduceRight for Right-to-Left Operations',
+  difficulty: 'medium',
+  category: 'Array Methods',
+  description: `## In-Depth Explanation
 
 \`reduceRight()\` is similar to \`reduce()\`, but processes the array from right to left (last element to first). This is essential when the order of operations matters, particularly in function composition where you want to apply functions in a specific sequence.
 
@@ -56,14 +56,14 @@ This method is essential in functional programming:
 - **Pipeline Construction**: Building data processing pipelines
 
 **Challenge:** Build a function composition pipeline using reduceRight.`,
-    examples: [
-      {
-        input: `const functions = [x => x * 2, x => x + 1, x => x - 5];`,
-        output: `Composed function: (x - 5) + 1) * 2`,
-        explanation: 'Apply functions from right to left',
-      },
-    ],
-    starterCode: `function compose(...functions) {
+  examples: [
+    {
+      input: `const functions = [x => x * 2, x => x + 1, x => x - 5];`,
+      output: `Composed function: (x - 5) + 1) * 2`,
+      explanation: 'Apply functions from right to left',
+    },
+  ],
+  starterCode: `function compose(...functions) {
   // TODO: Use reduceRight to compose functions
   // compose(f, g, h)(x) should be f(g(h(x)))
   // Process from right to left
@@ -78,7 +78,7 @@ const subtractFive = x => x - 5;
 
 const composed = compose(multiplyByTwo, addOne, subtractFive);
 console.log(composed(10)); // Should be: ((10 - 5) + 1) * 2 = 12`,
-    solution: `function compose(...functions) {
+  solution: `function compose(...functions) {
   return (x) => functions.reduceRight((acc, fn) => fn(acc), x);
 }
 
@@ -92,16 +92,16 @@ function testCompose() {
   const composed = compose(multiplyByTwo, addOne, subtractFive);
   return composed(10);
 }`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: 12,
-        description: 'testCompose',
-      },
-    ],
-    hints: [
-      'reduceRight processes array from last to first element',
-      'Useful for function composition: f(g(h(x)))',
-      'Accumulator starts with initial value, then each function is applied',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: 12,
+      description: 'testCompose',
+    },
+  ],
+  hints: [
+    'reduceRight processes array from last to first element',
+    'Useful for function composition: f(g(h(x)))',
+    'Accumulator starts with initial value, then each function is applied',
+  ],
+};

@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'debounce-throttle',
-    title: 'Debounce and Throttle',
-    difficulty: 'hard',
-    category: 'Functional Programming',
-    description: `## In-Depth Explanation
+  id: 'debounce-throttle',
+  title: 'Debounce and Throttle',
+  difficulty: 'hard',
+  category: 'Functional Programming',
+  description: `## In-Depth Explanation
 
 Debounce and throttle are techniques to control how often a function executes, essential for performance optimization.
 
@@ -64,14 +64,14 @@ These patterns are used extensively:
 
 **Challenge:** Implement debounce and throttle utilities.
 - Essential for scroll, resize, input handlers`,
-    examples: [
-      {
-        input: `const debouncedSearch = debounce(search, 300)`,
-        output: `Search executes 300ms after last keystroke`,
-        explanation: 'Prevents excessive API calls while typing',
-      },
-    ],
-    starterCode: `// TODO: Implement debounce
+  examples: [
+    {
+      input: `const debouncedSearch = debounce(search, 300)`,
+      output: `Search executes 300ms after last keystroke`,
+      explanation: 'Prevents excessive API calls while typing',
+    },
+  ],
+  starterCode: `// TODO: Implement debounce
 // Delays execution until no calls for 'delay' ms
 function debounce(fn, delay) {
   // Store timeout ID
@@ -102,7 +102,7 @@ for (let i = 0; i < 5; i++) {
   debouncedIncrement();
   throttledIncrement();
 }`,
-    solution: `function debounce(fn, delay) {
+  solution: `function debounce(fn, delay) {
   let timeoutId;
   return function(...args) {
     clearTimeout(timeoutId);
@@ -120,21 +120,21 @@ function throttle(fn, interval) {
     }
   };
 }`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'debounce delays execution',
-      },
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'throttle limits execution rate',
-      },
-    ],
-    hints: [
-      'debounce: clearTimeout + setTimeout pattern',
-      'throttle: track lastTime, compare with Date.now()',
-      'Use fn.apply(this, args) to preserve context',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'debounce delays execution',
+    },
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'throttle limits execution rate',
+    },
+  ],
+  hints: [
+    'debounce: clearTimeout + setTimeout pattern',
+    'throttle: track lastTime, compare with Date.now()',
+    'Use fn.apply(this, args) to preserve context',
+  ],
+};

@@ -86,12 +86,12 @@ export async function runTests(
               .join(' ')
           );
         },
-      error: (...args: unknown[]) => {
-        consoleOutput.push(`ERROR: ${args.map(String).join(' ')}`);
-      },
-      warn: (...args: unknown[]) => {
-        consoleOutput.push(`WARN: ${args.map(String).join(' ')}`);
-      },
+        error: (...args: unknown[]) => {
+          consoleOutput.push(`ERROR: ${args.map(String).join(' ')}`);
+        },
+        warn: (...args: unknown[]) => {
+          consoleOutput.push(`WARN: ${args.map(String).join(' ')}`);
+        },
       };
 
       // Transpile TypeScript to JavaScript if needed

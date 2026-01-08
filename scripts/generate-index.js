@@ -2,18 +2,23 @@ const fs = require('fs');
 const path = require('path');
 
 const problemsDir = path.join(__dirname, '..', 'lib', 'problems');
-const files = fs.readdirSync(problemsDir).filter(f => f.endsWith('.ts') && f !== 'index.ts').sort();
+const files = fs
+  .readdirSync(problemsDir)
+  .filter((f) => f.endsWith('.ts') && f !== 'index.ts')
+  .sort();
 
 // Generate imports
-const imports = files.map(file => {
-  const problemId = file.replace('.ts', '');
-  const varName = problemId.replace(/-/g, '_');
-  return `import { problem as ${varName} } from './${problemId}';`;
-}).join('\n');
+const imports = files
+  .map((file) => {
+    const problemId = file.replace('.ts', '');
+    const varName = problemId.replace(/-/g, '_');
+    return `import { problem as ${varName} } from './${problemId}';`;
+  })
+  .join('\n');
 
 // Generate problems array
-const problemIds = files.map(file => file.replace('.ts', '').replace(/-/g, '_'));
-const problemsArray = `export const problems: Problem[] = [\n  ${problemIds.map(id => `${id}.problem`).join(',\n  ')}\n];`;
+const problemIds = files.map((file) => file.replace('.ts', '').replace(/-/g, '_'));
+const problemsArray = `export const problems: Problem[] = [\n  ${problemIds.map((id) => `${id}.problem`).join(',\n  ')}\n];`;
 
 // Read interface from first file
 const firstFile = fs.readFileSync(path.join(problemsDir, files[0]), 'utf8');

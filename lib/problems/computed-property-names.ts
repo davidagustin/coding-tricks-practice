@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'computed-property-names',
-    title: 'Computed Property Names',
-    difficulty: 'easy',
-    category: 'Object Methods',
-    description: `## In-Depth Explanation
+  id: 'computed-property-names',
+  title: 'Computed Property Names',
+  difficulty: 'easy',
+  category: 'Object Methods',
+  description: `## In-Depth Explanation
 
 Computed property names allow you to use expressions (variables, template literals, function calls) as property keys in object literals. The syntax uses square brackets: \`{ [expression]: value }\`.
 
@@ -61,14 +61,14 @@ Computed property names are used extensively:
 - **Key Mapping**: Mapping data with transformed keys
 
 **Challenge:** Create objects with dynamic property names.`,
-    examples: [
-      {
-        input: `const key = 'name'; const obj = { [key]: 'John' };`,
-        output: `{ name: 'John' }`,
-        explanation: 'Computed property names use bracket notation',
-      },
-    ],
-    starterCode: `// TODO: Create object with computed property names
+  examples: [
+    {
+      input: `const key = 'name'; const obj = { [key]: 'John' };`,
+      output: `{ name: 'John' }`,
+      explanation: 'Computed property names use bracket notation',
+    },
+  ],
+  starterCode: `// TODO: Create object with computed property names
 function createConfig(env) {
   // Return object with properties: [env + 'ApiUrl'], [env + 'ApiKey']
   // Example: { devApiUrl: '...', devApiKey: '...' }
@@ -93,7 +93,7 @@ function mergeWithPrefix(obj1, obj2, prefix) {
 console.log(createConfig('prod')); // { prodApiUrl: '...', prodApiKey: '...' }
 console.log(fromEntries([['name', 'John'], ['age', 30]]));
 console.log(mergeWithPrefix({ a: 1 }, { b: 2, c: 3 }, 'prefix'));`,
-    solution: `function createConfig(env) {
+  solution: `function createConfig(env) {
   return {
     [\`\${env}ApiUrl\`]: \`https://api.\${env}.com\`,
     [\`\${env}ApiKey\`]: \`key-\${env}\`
@@ -115,26 +115,26 @@ function mergeWithPrefix(obj1, obj2, prefix) {
     )
   };
 }`,
-    testCases: [
-      {
-        input: ['prod'],
-        expectedOutput: { prodApiUrl: 'https://api.prod.com', prodApiKey: 'key-prod' },
-        description: 'createConfig',
-      },
-      {
-        input: [
-          [
-            ['a', 1],
-            ['b', 2],
-          ],
+  testCases: [
+    {
+      input: ['prod'],
+      expectedOutput: { prodApiUrl: 'https://api.prod.com', prodApiKey: 'key-prod' },
+      description: 'createConfig',
+    },
+    {
+      input: [
+        [
+          ['a', 1],
+          ['b', 2],
         ],
-        expectedOutput: { a: 1, b: 2 },
-        description: 'fromEntries',
-      },
-    ],
-    hints: [
-      'Use brackets in object literals: { [expression]: value }',
-      'Can use template literals: { [`key${suffix}`]: value }',
-      'Useful for dynamic property names based on variables',
-    ],
-  };
+      ],
+      expectedOutput: { a: 1, b: 2 },
+      description: 'fromEntries',
+    },
+  ],
+  hints: [
+    'Use brackets in object literals: { [expression]: value }',
+    'Can use template literals: { [`key${suffix}`]: value }',
+    'Useful for dynamic property names based on variables',
+  ],
+};

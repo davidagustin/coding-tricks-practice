@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'promise-chaining',
-    title: 'Promise Chaining Patterns',
-    difficulty: 'medium',
-    category: 'Async/Promises',
-    description: `## In-Depth Explanation
+  id: 'promise-chaining',
+  title: 'Promise Chaining Patterns',
+  difficulty: 'medium',
+  category: 'Async/Promises',
+  description: `## In-Depth Explanation
 
 Promise chaining allows you to transform data through a series of asynchronous operations. Each \`.then()\` receives the result of the previous promise and returns a new promise, creating a pipeline of transformations.
 
@@ -59,14 +59,14 @@ This pattern is used everywhere in async code:
 - **Data Pipelines**: ETL (Extract, Transform, Load) operations
 
 **Challenge:** Process data through a pipeline of async transformations.`,
-    examples: [
-      {
-        input: `fetchUser(id).then(validate).then(enrich).then(save)`,
-        output: `Data flows through each step`,
-        explanation: 'Each then returns a promise for the next step',
-      },
-    ],
-    starterCode: `async function processUser(userId) {
+  examples: [
+    {
+      input: `fetchUser(id).then(validate).then(enrich).then(save)`,
+      output: `Data flows through each step`,
+      explanation: 'Each then returns a promise for the next step',
+    },
+  ],
+  starterCode: `async function processUser(userId) {
   // TODO: Chain promises to:
   // 1. Fetch user data
   // 2. Validate user (throw if invalid)
@@ -97,7 +97,7 @@ async function saveUser(user) {
 
 // Test (commented out to prevent immediate execution)
 // processUser(1).then(console.log).catch(console.error);`,
-    solution: `async function fetchUser(id) {
+  solution: `async function fetchUser(id) {
   return { id, name: 'John', email: 'john@example.com' };
 }
 
@@ -126,16 +126,16 @@ async function testProcessUser() {
   const result = await processUser(1);
   return result && result.id === 1 && result.saved === true;
 }`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'testProcessUser',
-      },
-    ],
-    hints: [
-      'Chain .then() calls for sequential async operations',
-      'Return value from one becomes input to next',
-      'Use .catch() at end to handle errors',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'testProcessUser',
+    },
+  ],
+  hints: [
+    'Chain .then() calls for sequential async operations',
+    'Return value from one becomes input to next',
+    'Use .catch() at end to handle errors',
+  ],
+};

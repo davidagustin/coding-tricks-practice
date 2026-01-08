@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'weak-collections',
-    title: 'WeakMap and WeakSet',
-    difficulty: 'medium',
-    category: 'JavaScript Advanced',
-    description: `## In-Depth Explanation
+  id: 'weak-collections',
+  title: 'WeakMap and WeakSet',
+  difficulty: 'medium',
+  category: 'JavaScript Advanced',
+  description: `## In-Depth Explanation
 
 WeakMap and WeakSet are collections with "weak" references to their keys/elements. Unlike Map and Set, they don't prevent garbage collection of their keys/elements. When an object used as a key is garbage collected, the entry is automatically removed.
 
@@ -65,14 +65,14 @@ Weak collections are used extensively:
 - **Memoization**: Memoizing without preventing object collection
 
 **Challenge:** Implement private data and caching with WeakMap.`,
-    examples: [
-      {
-        input: `const privateData = new WeakMap();`,
-        output: `Store private data associated with objects`,
-        explanation: "Data is GC'd when object is GC'd",
-      },
-    ],
-    starterCode: `// TODO: Implement private data storage using WeakMap
+  examples: [
+    {
+      input: `const privateData = new WeakMap();`,
+      output: `Store private data associated with objects`,
+      explanation: "Data is GC'd when object is GC'd",
+    },
+  ],
+  starterCode: `// TODO: Implement private data storage using WeakMap
 const privateData = new WeakMap();
 
 class User {
@@ -103,7 +103,7 @@ console.log(user.name); // 'John'
 console.log(user.password); // Should be undefined (private)
 console.log(user.checkPassword('secret123')); // true
 console.log(user.checkPassword('wrong')); // false`,
-    solution: `const privateData = new WeakMap();
+  solution: `const privateData = new WeakMap();
 
 class User {
   constructor(name, password) {
@@ -128,21 +128,21 @@ function memoizeByObject(fn) {
     return result;
   };
 }`,
-    testCases: [
-      {
-        input: ['secret123'],
-        expectedOutput: true,
-        description: 'checkPassword correct',
-      },
-      {
-        input: ['wrong'],
-        expectedOutput: false,
-        description: 'checkPassword wrong',
-      },
-    ],
-    hints: [
-      'WeakMap.set(key, value), .get(key), .has(key)',
-      'Keys must be objects, not primitives',
-      'Perfect for associating private data with instances',
-    ],
-  };
+  testCases: [
+    {
+      input: ['secret123'],
+      expectedOutput: true,
+      description: 'checkPassword correct',
+    },
+    {
+      input: ['wrong'],
+      expectedOutput: false,
+      description: 'checkPassword wrong',
+    },
+  ],
+  hints: [
+    'WeakMap.set(key, value), .get(key), .has(key)',
+    'Keys must be objects, not primitives',
+    'Perfect for associating private data with instances',
+  ],
+};

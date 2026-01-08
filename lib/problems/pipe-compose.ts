@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'pipe-compose',
-    title: 'Pipe and Compose',
-    difficulty: 'medium',
-    category: 'Functional Programming',
-    description: `## In-Depth Explanation
+  id: 'pipe-compose',
+  title: 'Pipe and Compose',
+  difficulty: 'medium',
+  category: 'Functional Programming',
+  description: `## In-Depth Explanation
 
 \`pipe\` and \`compose\` are utilities for function composition - chaining functions together to create transformation pipelines. \`pipe\` applies functions left-to-right (top-to-bottom), while \`compose\` applies them right-to-left (bottom-to-top).
 
@@ -62,14 +62,14 @@ These utilities are used extensively:
 - **Utility Functions**: Creating reusable utility pipelines
 
 **Challenge:** Implement pipe (left-to-right) and compose (right-to-left).`,
-    examples: [
-      {
-        input: `pipe(addOne, double, square)(2)`,
-        output: `36`,
-        explanation: '2 → 3 → 6 → 36',
-      },
-    ],
-    starterCode: `// TODO: Implement pipe - left to right function composition
+  examples: [
+    {
+      input: `pipe(addOne, double, square)(2)`,
+      output: `36`,
+      explanation: '2 → 3 → 6 → 36',
+    },
+  ],
+  starterCode: `// TODO: Implement pipe - left to right function composition
 // pipe(f, g, h)(x) = h(g(f(x)))
 function pipe(...fns) {
   return function(x) {
@@ -96,7 +96,7 @@ console.log(pipeline(2)); // 2 → 3 → 6 → 36
 
 const composed = compose(square, double, addOne);
 console.log(composed(2)); // 2 → 3 → 6 → 36`,
-    solution: `function pipe(...fns) {
+  solution: `function pipe(...fns) {
   return function(x) {
     return fns.reduce((acc, fn) => fn(acc), x);
   };
@@ -107,36 +107,36 @@ function compose(...fns) {
     return fns.reduceRight((acc, fn) => fn(acc), x);
   };
 }`,
-    testCases: [
-      {
-        input: [2],
-        expectedOutput: 36,
-        description: 'pipe(addOne, double, square)(2) → 36',
-      },
-      {
-        input: [2],
-        expectedOutput: 36,
-        description: 'compose(square, double, addOne)(2) → 36',
-      },
-      {
-        input: [0],
-        expectedOutput: 4,
-        description: 'pipe(addOne, double, square)(0) → 4',
-      },
-      {
-        input: [5],
-        expectedOutput: 144,
-        description: 'pipe(addOne, double, square)(5) → 144',
-      },
-      {
-        input: [0],
-        expectedOutput: 4,
-        description: 'pipe(addOne, double, square)(0)',
-      },
-    ],
-    hints: [
-      'Use reduce for pipe: fns.reduce((acc, fn) => fn(acc), x)',
-      'Use reduceRight for compose',
-      'Each function receives the result of the previous',
-    ],
-  };
+  testCases: [
+    {
+      input: [2],
+      expectedOutput: 36,
+      description: 'pipe(addOne, double, square)(2) → 36',
+    },
+    {
+      input: [2],
+      expectedOutput: 36,
+      description: 'compose(square, double, addOne)(2) → 36',
+    },
+    {
+      input: [0],
+      expectedOutput: 4,
+      description: 'pipe(addOne, double, square)(0) → 4',
+    },
+    {
+      input: [5],
+      expectedOutput: 144,
+      description: 'pipe(addOne, double, square)(5) → 144',
+    },
+    {
+      input: [0],
+      expectedOutput: 4,
+      description: 'pipe(addOne, double, square)(0)',
+    },
+  ],
+  hints: [
+    'Use reduce for pipe: fns.reduce((acc, fn) => fn(acc), x)',
+    'Use reduceRight for compose',
+    'Each function receives the result of the previous',
+  ],
+};

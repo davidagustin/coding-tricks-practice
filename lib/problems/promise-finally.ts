@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'promise-finally',
-    title: 'Promise.finally for Cleanup',
-    difficulty: 'easy',
-    category: 'Async/Promises',
-    description: `## In-Depth Explanation
+  id: 'promise-finally',
+  title: 'Promise.finally for Cleanup',
+  difficulty: 'easy',
+  category: 'Async/Promises',
+  description: `## In-Depth Explanation
 
 \`.finally()\` is a promise method that executes code regardless of whether the promise resolves or rejects. It's similar to \`finally\` blocks in \`try/catch\` statements - the cleanup code always runs.
 
@@ -62,14 +62,14 @@ This pattern is essential in production code:
 - **Event Listeners**: Remove event listeners
 
 **Challenge:** Always clean up resources.`,
-    examples: [
-      {
-        input: `fetch('/api').finally(() => cleanup())`,
-        output: `cleanup() always runs`,
-        explanation: 'Finally runs whether promise resolves or rejects',
-      },
-    ],
-    starterCode: `async function fetchWithCleanup(url) {
+  examples: [
+    {
+      input: `fetch('/api').finally(() => cleanup())`,
+      output: `cleanup() always runs`,
+      explanation: 'Finally runs whether promise resolves or rejects',
+    },
+  ],
+  starterCode: `async function fetchWithCleanup(url) {
   let loading = true;
   
   // TODO: Fetch data, set loading = false in finally
@@ -92,7 +92,7 @@ async function processWithLock(resource, operation) {
 // fetchWithCleanup('/api/data').then(console.log).catch(console.error);
 // processWithLock('resource', () => Promise.resolve('done'))
 //   .then(console.log).catch(console.error);`,
-    solution: `async function fetchWithCleanup(url) {
+  solution: `async function fetchWithCleanup(url) {
   let loading = true;
   try {
     const response = await fetch(url);
@@ -111,17 +111,17 @@ async function processWithLock(resource, operation) {
     locked = false;
   }
 }`,
-    testCases: [
-      {
-        input: ['/api/data'],
-        expectedOutput: (expect: unknown) => {
-          return expect !== undefined;
-        },
+  testCases: [
+    {
+      input: ['/api/data'],
+      expectedOutput: (expect: unknown) => {
+        return expect !== undefined;
       },
-    ],
-    hints: [
-      '.finally() always runs after promise settles',
-      'Useful for cleanup, logging, state updates',
-      'Runs even if promise rejects',
-    ],
-  };
+    },
+  ],
+  hints: [
+    '.finally() always runs after promise settles',
+    'Useful for cleanup, logging, state updates',
+    'Runs even if promise rejects',
+  ],
+};

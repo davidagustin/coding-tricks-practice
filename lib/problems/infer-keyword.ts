@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'infer-keyword',
-    title: 'TypeScript Infer Keyword',
-    difficulty: 'hard',
-    category: 'TypeScript Advanced',
-    description: `## In-Depth Explanation
+  id: 'infer-keyword',
+  title: 'TypeScript Infer Keyword',
+  difficulty: 'hard',
+  category: 'TypeScript Advanced',
+  description: `## In-Depth Explanation
 
 The \`infer\` keyword allows you to extract types from complex type structures within conditional types. It creates a type variable that captures the type at a specific position.
 
@@ -64,14 +64,14 @@ The infer keyword is used extensively:
 - **Framework Internals**: Used internally by TypeScript and frameworks
 
 **Challenge:** Use infer to extract types from functions, promises, and more.`,
-    examples: [
-      {
-        input: `type Unwrap<T> = T extends Promise<infer U> ? U : T`,
-        output: `Unwrap<Promise<string>> = string`,
-        explanation: 'Extract inner type from Promise',
-      },
-    ],
-    starterCode: `// TODO: Create UnwrapPromise - extract type from Promise
+  examples: [
+    {
+      input: `type Unwrap<T> = T extends Promise<infer U> ? U : T`,
+      output: `Unwrap<Promise<string>> = string`,
+      explanation: 'Extract inner type from Promise',
+    },
+  ],
+  starterCode: `// TODO: Create UnwrapPromise - extract type from Promise
 // UnwrapPromise<Promise<string>> → string
 type UnwrapPromise<T> = T; // Fix this
 
@@ -96,23 +96,23 @@ class MyClass {
   constructor(name: string, age: number) {}
 }
 type Test4 = MyConstructorParameters<typeof MyClass>; // [string, number]`,
-    solution: `type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
+  solution: `type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
 
 type FirstParameter<T> = T extends (first: infer F, ...args: any[]) => any ? F : never;
 
 type LastParameter<T> = T extends (...args: [...any[], infer L]) => any ? L : never;
 
 type MyConstructorParameters<T> = T extends new (...args: infer P) => any ? P : never;`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Type checking only',
-      },
-    ],
-    hints: [
-      'infer U captures the type in that position',
-      'Use pattern matching: Promise<infer U>, (infer P) => R',
-      'For constructors: new (...args: infer P) => any',
-    ],
-  };
+  testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'Type checking only',
+    },
+  ],
+  hints: [
+    'infer U captures the type in that position',
+    'Use pattern matching: Promise<infer U>, (infer P) => R',
+    'For constructors: new (...args: infer P) => any',
+  ],
+};

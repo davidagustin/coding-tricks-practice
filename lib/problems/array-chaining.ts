@@ -20,11 +20,11 @@ export interface Problem {
 }
 
 export const problem: Problem = {
-    id: 'array-chaining',
-    title: 'Method Chaining with Arrays',
-    difficulty: 'medium',
-    category: 'Array Methods',
-    description: `## In-Depth Explanation
+  id: 'array-chaining',
+  title: 'Method Chaining with Arrays',
+  difficulty: 'medium',
+  category: 'Array Methods',
+  description: `## In-Depth Explanation
 
 Method chaining is a powerful pattern where you call multiple array methods in sequence, with each method operating on the result of the previous one. This creates a pipeline of transformations that reads like a sentence: "filter, then map, then map again."
 
@@ -60,17 +60,17 @@ This pattern is ubiquitous in modern JavaScript development:
 - **Report Generation**: Building reports through chains of filters and aggregations
 
 **Challenge:** Transform data through a chain of operations.`,
-    examples: [
-      {
-        input: `const products = [
+  examples: [
+    {
+      input: `const products = [
   { name: 'Laptop', price: 1000, category: 'electronics' },
   { name: 'Book', price: 20, category: 'books' }
 ];`,
-        output: `['LAPTOP', 'BOOK']`,
-        explanation: 'Filter expensive items, get names, uppercase them',
-      },
-    ],
-    starterCode: `function getExpensiveProductNames(products) {
+      output: `['LAPTOP', 'BOOK']`,
+      explanation: 'Filter expensive items, get names, uppercase them',
+    },
+  ],
+  starterCode: `function getExpensiveProductNames(products) {
   // TODO: Chain methods to:
   // 1. Filter products where price > 100
   // 2. Map to get just the name
@@ -87,27 +87,27 @@ const products = [
 ];
 
 console.log(getExpensiveProductNames(products));`,
-    solution: `function getExpensiveProductNames(products) {
+  solution: `function getExpensiveProductNames(products) {
   return products
     .filter(p => p.price > 100)
     .map(p => p.name)
     .map(name => name.toUpperCase());
 }`,
-    testCases: [
-      {
-        input: [
-          [
-            { name: 'Laptop', price: 1000, category: 'electronics' },
-            { name: 'Book', price: 20, category: 'books' },
-            { name: 'Phone', price: 800, category: 'electronics' },
-          ],
+  testCases: [
+    {
+      input: [
+        [
+          { name: 'Laptop', price: 1000, category: 'electronics' },
+          { name: 'Book', price: 20, category: 'books' },
+          { name: 'Phone', price: 800, category: 'electronics' },
         ],
-        expectedOutput: ['LAPTOP', 'PHONE'],
-      },
-    ],
-    hints: [
-      'Each method returns an array, so you can chain them',
-      'Order matters: filter first to reduce items, then transform',
-      'You can combine map operations: .map(p => p.name.toUpperCase())',
-    ],
-  };
+      ],
+      expectedOutput: ['LAPTOP', 'PHONE'],
+    },
+  ],
+  hints: [
+    'Each method returns an array, so you can chain them',
+    'Order matters: filter first to reduce items, then transform',
+    'You can combine map operations: .map(p => p.name.toUpperCase())',
+  ],
+};
