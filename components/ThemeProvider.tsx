@@ -12,24 +12,42 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+// Helper function to get initial theme (works on both client and server)
+function getInitialTheme(): Theme {
+  if (typeof window === 'undefined') {
+    return 'dark'; // Default for SSR
+  }
+  
+  // Check localStorage first (inline script should have set this)
+  const stored = localStorage.getItem('theme') as Theme | null;
+  if (stored && (stored === 'light' || stored === 'dark')) {
+    return stored;
+  }
+  
+  // Fall back to what the inline script set (check DOM class)
+  const hasDarkClass = document.documentElement.classList.contains('dark');
+  if (hasDarkClass) {
+    return 'dark';
+  }
+  
+  // Final fallback to system preference
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  return prefersDark ? 'dark' : 'light';
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>('dark');
+  const [theme, setThemeState] = useState<Theme>(getInitialTheme);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    // Check localStorage first, then system preference
-    const stored = localStorage.getItem('theme') as Theme | null;
-    if (stored && (stored === 'light' || stored === 'dark')) {
-      setThemeState(stored);
-    } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setThemeState(prefersDark ? 'dark' : 'light');
-    }
+    // Sync with the theme that was set by the inline script
+    const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+    setThemeState(currentTheme);
   }, []);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (typeof window === 'undefined') return;
     
     const root = document.documentElement;
     if (theme === 'dark') {
@@ -38,7 +56,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       root.classList.remove('dark');
     }
     localStorage.setItem('theme', theme);
-  }, [theme, mounted]);
+  }, [theme]);
 
   const toggleTheme = () => {
     setThemeState((prev) => (prev === 'light' ? 'dark' : 'light'));
@@ -49,10 +67,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   };
 
   // Always provide context, even during SSR
-  // Use default 'dark' theme during SSR to prevent errors
   const contextValue = mounted 
     ? { theme, toggleTheme, setTheme }
-    : { theme: 'dark' as Theme, toggleTheme: () => {}, setTheme: () => {} };
+    : { theme, toggleTheme: () => {}, setTheme: () => {} };
 
   return (
     <ThemeContext.Provider value={contextValue}>
