@@ -21,7 +21,7 @@ export interface Problem {
 
 export const problems: Problem[] = [
   {
-    id: 'basic-types',
+    id: 'conditional-types',
     title: 'Basic TypeScript Types',
     difficulty: 'easy',
     category: 'TypeScript Basics',
