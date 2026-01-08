@@ -21,533 +21,691 @@ export interface Problem {
 
 export const problems: Problem[] = [
   {
-    id: 'conditional-types-basic',
-    title: 'Basic Conditional Types',
-    difficulty: 'medium',
-    category: 'Conditional Types',
-    description: `Use conditional types to create type transformations based on conditions.
-
-**Challenge:** Create a type that extracts the return type of a function, or returns never if not a function.
-
-**Key Concepts:**
-- Conditional types: T extends U ? X : Y
-- Type inference with infer keyword
-- Useful for type transformations`,
-    examples: [
-      {
-        input: `type ReturnType<T> = T extends (...args: any[]) => infer R ? R : never;
-type A = ReturnType<() => string>; // string
-type B = ReturnType<number>; // never`,
-        output: `Conditional type extracts return type`,
-        explanation: 'Conditional types check if T extends a pattern'
-      }
-    ],
-    starterCode: `// TODO: Create a conditional type that extracts return type
-// If T is a function, extract its return type
-// Otherwise, return never
-
-type MyReturnType<T> = any; // Fix this
-
-// TODO: Create a type that checks if T is a function
-type IsFunction<T> = any; // Fix this
-
-// Test
-type A = MyReturnType<() => string>; // Should be: string
-type B = MyReturnType<(x: number) => boolean>; // Should be: boolean
-type C = MyReturnType<string>; // Should be: never
-
-type D = IsFunction<() => void>; // Should be: true
-type E = IsFunction<string>; // Should be: false`,
-    solution: `type MyReturnType<T> = T extends (...args: any[]) => infer R ? R : never;
-
-type IsFunction<T> = T extends (...args: any[]) => any ? true : false;`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Conditional types work correctly'
-      }
-    ],
-    hints: [
-      'Use T extends U ? X : Y syntax',
-      'Use infer keyword to capture return type: infer R',
-      'Check if T extends function signature pattern'
-    ]
-  },
-  {
-    id: 'conditional-types-infer',
-    title: 'Conditional Types with Multiple Inference',
+    id: 'proxy-api',
+    title: 'Proxy API for Interception',
     difficulty: 'hard',
-    category: 'Conditional Types',
-    description: `Use infer to extract multiple type parameters from complex types.
+    category: 'Object Methods',
+    description: `Use Proxy to intercept and customize operations on objects.
 
-**Challenge:** Extract parameter types and return type from function types.`,
+**Challenge:** Create a proxy that logs property access and validates assignments.`,
     examples: [
       {
-        input: `type Parameters<T> = T extends (...args: infer P) => any ? P : never;
-type FirstParam<T> = T extends (first: infer F, ...args: any[]) => any ? F : never;`,
-        output: `Extracts function parameters`,
-        explanation: 'infer can capture parameter types'
+        input: `const obj = new Proxy(target, handler);`,
+        output: `Intercepts get, set, and other operations`,
+        explanation: 'Proxy enables meta-programming'
       }
     ],
-    starterCode: `// TODO: Extract all parameters from function type
-type MyParameters<T> = any; // Fix this
-
-// TODO: Extract first parameter type
-type FirstParameter<T> = any; // Fix this
-
-// TODO: Extract last parameter type
-type LastParameter<T> = any; // Fix this
-
-// Test
-type Fn1 = (a: string, b: number) => void;
-type Params1 = MyParameters<Fn1>; // Should be: [string, number]
-type First1 = FirstParameter<Fn1>; // Should be: string
-type Last1 = LastParameter<Fn1>; // Should be: number`,
-    solution: `type MyParameters<T> = T extends (...args: infer P) => any ? P : never;
-
-type FirstParameter<T> = T extends (first: infer F, ...args: any[]) => any ? F : never;
-
-type LastParameter<T> = T extends (...args: infer P) => any 
-  ? P extends [...any[], infer L] 
-    ? L 
-    : never 
-  : never;`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Parameter extraction works correctly'
-      }
-    ],
-    hints: [
-      'Use infer P to capture all parameters as tuple',
-      'Use rest parameters: ...args: infer P',
-      'For last parameter, use tuple destructuring: [...any[], infer L]'
-    ]
-  },
-  {
-    id: 'mapped-types-basic',
-    title: 'Basic Mapped Types',
-    difficulty: 'medium',
-    category: 'Mapped Types',
-    description: `Create new types by transforming properties of existing types.
-
-**Challenge:** Create mapped types that make all properties optional, readonly, or nullable.`,
-    examples: [
-      {
-        input: `type Partial<T> = { [P in keyof T]?: T[P] };
-type Readonly<T> = { readonly [P in keyof T]: T[P] };`,
-        output: `Transforms all properties of type T`,
-        explanation: 'Mapped types iterate over keys and transform values'
-      }
-    ],
-    starterCode: `// TODO: Create a mapped type that makes all properties optional
-type MyPartial<T> = any; // Fix this
-
-// TODO: Create a mapped type that makes all properties readonly
-type MyReadonly<T> = any; // Fix this
-
-// TODO: Create a mapped type that makes all properties nullable
-type Nullable<T> = any; // Fix this
-
-// Test
-interface User {
-  name: string;
-  age: number;
+    starterCode: `// TODO: Create a proxy that logs all property access
+function createLoggedObject(target) {
+  // Return a Proxy that logs when properties are accessed
+  // Use 'get' trap to log property reads
+  return target;
 }
 
-type PartialUser = MyPartial<User>; // { name?: string; age?: number; }
-type ReadonlyUser = MyReadonly<User>; // { readonly name: string; readonly age: number; }
-type NullableUser = Nullable<User>; // { name: string | null; age: number | null; }`,
-    solution: `type MyPartial<T> = { [P in keyof T]?: T[P] };
-
-type MyReadonly<T> = { readonly [P in keyof T]: T[P] };
-
-type Nullable<T> = { [P in keyof T]: T[P] | null };`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Mapped types work correctly'
-      }
-    ],
-    hints: [
-      'Use [P in keyof T] to iterate over keys',
-      'Add ? for optional: [P in keyof T]?: T[P]',
-      'Add readonly modifier: readonly [P in keyof T]: T[P]'
-    ]
-  },
-  {
-    id: 'mapped-types-filter',
-    title: 'Mapped Types with Key Filtering',
-    difficulty: 'hard',
-    category: 'Mapped Types',
-    description: `Filter keys in mapped types using conditional types.
-
-**Challenge:** Create Pick, Omit, and ExtractKeys utilities.`,
-    examples: [
-      {
-        input: `type Pick<T, K extends keyof T> = { [P in K]: T[P] };
-type Omit<T, K extends keyof T> = { [P in Exclude<keyof T, K>]: T[P] };`,
-        output: `Selects or excludes specific keys`,
-        explanation: 'Combine mapped types with conditional types'
-      }
-    ],
-    starterCode: `// TODO: Create Pick type that selects specific keys
-type MyPick<T, K extends keyof T> = any; // Fix this
-
-// TODO: Create Omit type that excludes specific keys
-type MyOmit<T, K extends keyof T> = any; // Fix this
-
-// TODO: Create type that extracts keys of a specific type
-type KeysOfType<T, U> = any; // Fix this
-
-// Test
-interface User {
-  name: string;
-  age: number;
-  email: string;
+// TODO: Create a proxy that validates property assignments
+function createValidatedObject(target, validator) {
+  // Return a Proxy that validates before setting properties
+  // Use 'set' trap to validate and set values
+  // Throw error if validation fails
+  return target;
 }
 
-type NameAndAge = MyPick<User, 'name' | 'age'>; // { name: string; age: number; }
-type WithoutAge = MyOmit<User, 'age'>; // { name: string; email: string; }
-type StringKeys = KeysOfType<User, string>; // 'name' | 'email'`,
-    solution: `type MyPick<T, K extends keyof T> = { [P in K]: T[P] };
+// Test
+const logged = createLoggedObject({ name: 'John', age: 30 });
+console.log(logged.name); // Should log: "Accessing property: name"
 
-type MyOmit<T, K extends keyof T> = { [P in Exclude<keyof T, K>]: T[P] };
+const validated = createValidatedObject({}, (key, value) => {
+  if (key === 'age' && (value < 0 || value > 150)) {
+    throw new Error('Invalid age');
+  }
+  return true;
+});
 
-type KeysOfType<T, U> = { [K in keyof T]: T[K] extends U ? K : never }[keyof T];`,
+validated.age = 25; // OK
+validated.age = 200; // Should throw error`,
+    solution: `function createLoggedObject(target) {
+  return new Proxy(target, {
+    get(target, prop) {
+      console.log(\`Accessing property: \${String(prop)}\`);
+      return target[prop];
+    }
+  });
+}
+
+function createValidatedObject(target, validator) {
+  return new Proxy(target, {
+    set(target, prop, value) {
+      if (validator(prop, value)) {
+        target[prop] = value;
+        return true;
+      }
+      throw new Error(\`Invalid value for \${String(prop)}\`);
+    }
+  });
+}`,
     testCases: [
       {
-        input: [],
-        expectedOutput: true,
-        description: 'Key filtering works correctly'
+        input: [{ name: 'John' }],
+        expectedOutput: 'John',
+        description: 'createLoggedObject - mock test'
       }
     ],
     hints: [
-      'Pick: iterate over K keys: [P in K]',
-      'Omit: use Exclude to remove keys: Exclude<keyof T, K>',
-      'KeysOfType: map to K or never, then index with [keyof T]'
+      'Proxy constructor takes target and handler object',
+      'Use get trap for property access: get(target, prop)',
+      'Use set trap for property assignment: set(target, prop, value)',
+      'Return true from set trap to indicate success'
     ]
   },
   {
-    id: 'utility-types-record',
-    title: 'Record and Utility Types',
+    id: 'weakmap-weakset',
+    title: 'WeakMap and WeakSet',
     difficulty: 'medium',
-    category: 'Utility Types',
-    description: `Understand and create utility types like Record, Required, NonNullable.
+    category: 'Object Methods',
+    description: `Use WeakMap and WeakSet for memory-efficient associations that don't prevent garbage collection.
 
-**Challenge:** Implement common utility types from scratch.`,
+**Challenge:** Use WeakMap to store private data and WeakSet to track visited objects.`,
     examples: [
       {
-        input: `type Record<K extends keyof any, T> = { [P in K]: T };
-type Required<T> = { [P in keyof T]-?: T[P] };`,
-        output: `Utility types for common transformations`,
-        explanation: 'Utility types solve common type problems'
+        input: `const privateData = new WeakMap();`,
+        output: `Stores data keyed by objects, allows GC`,
+        explanation: 'WeakMap keys must be objects, allows garbage collection'
       }
     ],
-    starterCode: `// TODO: Create Record type
-// Record<K, T> creates object with keys K and values T
-type MyRecord<K extends keyof any, T> = any; // Fix this
-
-// TODO: Create Required type (opposite of Partial)
-// Removes optional modifier from all properties
-type MyRequired<T> = any; // Fix this
-
-// TODO: Create NonNullable type
-// Removes null and undefined from union
-type MyNonNullable<T> = any; // Fix this
-
-// Test
-type UserRecord = MyRecord<'name' | 'email', string>; // { name: string; email: string; }
-
-interface PartialUser {
-  name?: string;
-  age?: number;
+    starterCode: `// TODO: Use WeakMap to store private data
+class User {
+  constructor(name) {
+    this.name = name;
+    // Store private data in WeakMap
+    // Use 'this' as the key
+  }
+  
+  getPrivateId() {
+    // Retrieve private data from WeakMap
+    return null;
+  }
+  
+  setPrivateId(id) {
+    // Store private data in WeakMap
+  }
 }
-type RequiredUser = MyRequired<PartialUser>; // { name: string; age: number; }
 
-type MaybeString = string | null | undefined;
-type DefiniteString = MyNonNullable<MaybeString>; // string`,
-    solution: `type MyRecord<K extends keyof any, T> = { [P in K]: T };
+// TODO: Use WeakSet to track visited objects
+function markVisited(obj, visited) {
+  // Add object to WeakSet
+}
 
-type MyRequired<T> = { [P in keyof T]-?: T[P] };
+function isVisited(obj, visited) {
+  // Check if object is in WeakSet
+  return false;
+}
 
-type MyNonNullable<T> = T extends null | undefined ? never : T;`,
+// Test
+const user = new User('John');
+user.setPrivateId('secret-123');
+console.log(user.getPrivateId());
+
+const visited = new WeakSet();
+const obj1 = {};
+const obj2 = {};
+
+markVisited(obj1, visited);
+console.log(isVisited(obj1, visited)); // true
+console.log(isVisited(obj2, visited)); // false`,
+    solution: `const privateData = new WeakMap();
+
+class User {
+  constructor(name) {
+    this.name = name;
+  }
+  
+  getPrivateId() {
+    return privateData.get(this);
+  }
+  
+  setPrivateId(id) {
+    privateData.set(this, id);
+  }
+}
+
+function markVisited(obj, visited) {
+  visited.add(obj);
+}
+
+function isVisited(obj, visited) {
+  return visited.has(obj);
+}`,
     testCases: [
       {
-        input: [],
-        expectedOutput: true,
-        description: 'Utility types work correctly'
+        input: ['John'],
+        expectedOutput: 'secret-123',
+        description: 'User with private data'
       }
     ],
     hints: [
-      'Record: map over K keys with value type T',
-      'Required: use -? to remove optional modifier',
-      'NonNullable: use conditional type to exclude null | undefined'
+      'WeakMap keys must be objects (not primitives)',
+      'WeakMap/WeakSet allow garbage collection when key is no longer referenced',
+      'Useful for private data, metadata, or tracking without memory leaks'
     ]
   },
   {
-    id: 'conditional-distributive',
-    title: 'Distributive Conditional Types',
-    difficulty: 'hard',
-    category: 'Conditional Types',
-    description: `Understand how conditional types distribute over union types.
+    id: 'symbol-usage',
+    title: 'Symbols for Unique Keys',
+    difficulty: 'medium',
+    category: 'Object Methods',
+    description: `Use Symbols to create unique property keys that won't conflict with other properties.
 
-**Challenge:** Create types that work with union types correctly.`,
+**Challenge:** Use Symbols for private properties and well-known symbols.`,
     examples: [
       {
-        input: `type ToArray<T> = T extends any ? T[] : never;
-type A = ToArray<string | number>; // string[] | number[] (distributed)`,
-        output: `Conditional types distribute over unions`,
-        explanation: 'Each union member is processed separately'
+        input: `const ID = Symbol('id');`,
+        output: `Unique symbol that won't conflict`,
+        explanation: 'Symbols are always unique, even with same description'
       }
     ],
-    starterCode: `// TODO: Create type that converts union to array of each type
-type ToArray<T> = any; // Fix this
+    starterCode: `// TODO: Create a Symbol for a private property
+const PRIVATE_ID = Symbol('privateId'); // Fix: Create symbol
 
-// TODO: Create type that extracts string from union
-type ExtractString<T> = any; // Fix this
-
-// TODO: Create type that excludes function types
-type ExcludeFunctions<T> = any; // Fix this
-
-// Test
-type A = ToArray<string | number>; // Should be: string[] | number[]
-type B = ExtractString<string | number | boolean>; // Should be: string
-type C = ExcludeFunctions<string | number | (() => void)>; // Should be: string | number`,
-    solution: `type ToArray<T> = T extends any ? T[] : never;
-
-type ExtractString<T> = T extends string ? T : never;
-
-type ExcludeFunctions<T> = T extends Function ? never : T;`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Distributive conditional types work correctly'
-      }
-    ],
-    hints: [
-      'Conditional types automatically distribute over unions',
-      'T extends any ? X : Y distributes over union members',
-      'To prevent distribution, wrap in tuple: [T] extends [any] ? ...'
-    ]
-  },
-  {
-    id: 'template-literal-mapped',
-    title: 'Template Literal Types with Mapped Types',
-    difficulty: 'hard',
-    category: 'Template Literal Types',
-    description: `Combine template literal types with mapped types for powerful transformations.
-
-**Challenge:** Create type-safe event system and CSS class builders.`,
-    examples: [
-      {
-        input: `type EventMap = {
-  click: MouseEvent;
-  keydown: KeyboardEvent;
+// TODO: Use Symbol in an object
+const user = {
+  name: 'John',
+  // Add privateId property using PRIVATE_ID symbol
 };
 
-type EventHandlers = {
-  [K in keyof EventMap as \`on\${Capitalize<K>}\`]: (e: EventMap[K]) => void;
-};`,
-        output: `Transforms keys using template literals`,
-        explanation: 'Mapped types can transform keys with template literals'
-      }
-    ],
-    starterCode: `// TODO: Create event handler types from event map
-type EventMap = {
-  click: MouseEvent;
-  keydown: KeyboardEvent;
-  focus: FocusEvent;
+// TODO: Create a well-known symbol (iterator)
+const iterable = {
+  data: [1, 2, 3],
+  // Add Symbol.iterator method to make it iterable
 };
 
-type EventHandlers<T> = any; // Fix this
-// Should be: { onClick: (e: MouseEvent) => void; onKeydown: (e: KeyboardEvent) => void; ... }
-
-// TODO: Create CSS class builder type
-type Size = 'sm' | 'md' | 'lg';
-type Color = 'red' | 'blue' | 'green';
-
-type ButtonClass = any; // Fix this
-// Should be: 'btn-sm-red' | 'btn-sm-blue' | 'btn-sm-green' | 'btn-md-red' | ...
-
 // Test
-type Handlers = EventHandlers<EventMap>;
-// Should have: onClick, onKeydown, onFocus
+user[PRIVATE_ID] = 'secret-123';
+console.log(user[PRIVATE_ID]);
 
-type Btn = ButtonClass; // All combinations of size and color`,
-    solution: `type EventHandlers<T extends Record<string, any>> = {
-  [K in keyof T as \`on\${Capitalize<string & K>}\`]: (e: T[K]) => void;
+// Should work with for...of
+for (const item of iterable) {
+  console.log(item);
+}`,
+    solution: `const PRIVATE_ID = Symbol('privateId');
+
+const user = {
+  name: 'John',
+  [PRIVATE_ID]: 'secret-123'
 };
 
-type ButtonClass = \`btn-\${Size}-\${Color}\`;`,
-    testCases: [
-      {
-        input: [],
-        expectedOutput: true,
-        description: 'Template literal mapped types work correctly'
-      }
-    ],
-    hints: [
-      'Use "as" clause to transform keys: [K in keyof T as NewKey]',
-      'Template literal in "as": as `on${Capitalize<K>}`',
-      'Use Capitalize utility type for string transformation'
-    ]
-  },
-  {
-    id: 'recursive-types',
-    title: 'Recursive and Deep Utility Types',
-    difficulty: 'hard',
-    category: 'Utility Types',
-    description: `Create utility types that work recursively on nested structures.
-
-**Challenge:** Implement DeepPartial, DeepReadonly, and DeepRequired.`,
-    examples: [
-      {
-        input: `type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
-};`,
-        output: `Recursively transforms nested properties`,
-        explanation: 'Recursive types handle nested structures'
-      }
-    ],
-    starterCode: `// TODO: Create DeepPartial that makes all nested properties optional
-type DeepPartial<T> = any; // Fix this
-
-// TODO: Create DeepReadonly that makes all nested properties readonly
-type DeepReadonly<T> = any; // Fix this
-
-// TODO: Create DeepRequired that makes all nested properties required
-type DeepRequired<T> = any; // Fix this
-
-// Test
-interface Nested {
-  user: {
-    name: string;
-    profile: {
-      age: number;
+const iterable = {
+  data: [1, 2, 3],
+  [Symbol.iterator]() {
+    let index = 0;
+    return {
+      next: () => {
+        if (index < this.data.length) {
+          return { value: this.data[index++], done: false };
+        }
+        return { done: true };
+      }.bind(this)
     };
+  }
+};`,
+    testCases: [
+      {
+        input: [],
+        expectedOutput: true,
+        description: 'Symbol usage - type check'
+      }
+    ],
+    hints: [
+      'Symbol() creates unique symbol, Symbol.for() creates shared symbol',
+      'Use computed property names: [SYMBOL]: value',
+      'Well-known symbols: Symbol.iterator, Symbol.toStringTag, etc.',
+      'Symbols are not enumerable in Object.keys() or for...in'
+    ]
+  },
+  {
+    id: 'reflect-api',
+    title: 'Reflect API for Meta-Programming',
+    difficulty: 'hard',
+    category: 'Object Methods',
+    description: `Use Reflect methods for operations that mirror Proxy traps.
+
+**Challenge:** Use Reflect for property operations and function calls.`,
+    examples: [
+      {
+        input: `Reflect.get(obj, 'prop'), Reflect.set(obj, 'prop', value)`,
+        output: `Meta-programming operations`,
+        explanation: 'Reflect provides programmatic access to object operations'
+      }
+    ],
+    starterCode: `// TODO: Use Reflect.get to safely get property
+function safeGet(obj, path) {
+  // Use Reflect.get to get nested properties
+  // Handle cases where property doesn't exist
+  return undefined;
+}
+
+// TODO: Use Reflect.set to set property
+function safeSet(obj, prop, value) {
+  // Use Reflect.set to set property
+  // Return boolean indicating success
+  return false;
+}
+
+// TODO: Use Reflect.has to check property
+function hasProperty(obj, prop) {
+  // Use Reflect.has instead of 'prop' in obj
+  return false;
+}
+
+// TODO: Use Reflect.construct to create instance
+function createInstance(Constructor, args) {
+  // Use Reflect.construct instead of new Constructor(...args)
+  return null;
+}
+
+// Test
+const obj = { a: { b: { c: 1 } } };
+console.log(safeGet(obj, 'a.b.c')); // Should work
+console.log(safeSet(obj, 'x', 2)); // Should return true
+console.log(hasProperty(obj, 'x')); // Should return true
+
+class User {
+  constructor(name) { this.name = name; }
+}
+const user = createInstance(User, ['John']);
+console.log(user.name);`,
+    solution: `function safeGet(obj, path) {
+  const keys = path.split('.');
+  let current = obj;
+  for (const key of keys) {
+    if (current == null) return undefined;
+    current = Reflect.get(current, key);
+  }
+  return current;
+}
+
+function safeSet(obj, prop, value) {
+  return Reflect.set(obj, prop, value);
+}
+
+function hasProperty(obj, prop) {
+  return Reflect.has(obj, prop);
+}
+
+function createInstance(Constructor, args) {
+  return Reflect.construct(Constructor, args);
+}`,
+    testCases: [
+      {
+        input: [{ a: { b: 1 } }, 'a.b'],
+        expectedOutput: 1,
+        description: 'safeGet'
+      }
+    ],
+    hints: [
+      'Reflect.get(target, prop) - get property value',
+      'Reflect.set(target, prop, value) - set property, returns boolean',
+      'Reflect.has(target, prop) - check if property exists',
+      'Reflect.construct(Constructor, args) - create instance'
+    ]
+  },
+  {
+    id: 'object-freeze-seal',
+    title: 'Object.freeze, seal, and preventExtensions',
+    difficulty: 'medium',
+    category: 'Object Methods',
+    description: `Control mutability with Object.freeze, Object.seal, and Object.preventExtensions.
+
+**Challenge:** Understand the differences and use cases for each.`,
+    examples: [
+      {
+        input: `Object.freeze(obj), Object.seal(obj), Object.preventExtensions(obj)`,
+        output: `Different levels of immutability`,
+        explanation: 'freeze > seal > preventExtensions in restrictiveness'
+      }
+    ],
+    starterCode: `// TODO: Create immutable object with Object.freeze
+function createImmutableObject(data) {
+  // Freeze the object (no changes allowed)
+  return data;
+}
+
+// TODO: Create sealed object (can modify, can't add/remove)
+function createSealedObject(data) {
+  // Seal the object
+  return data;
+}
+
+// TODO: Check if object is frozen
+function isFrozen(obj) {
+  // Use Object.isFrozen
+  return false;
+}
+
+// TODO: Deep freeze nested objects
+function deepFreeze(obj) {
+  // Freeze object and recursively freeze all properties
+  // Return the frozen object
+  return obj;
+}
+
+// Test
+const immutable = createImmutableObject({ a: 1, b: { c: 2 } });
+// immutable.a = 2; // Should fail silently or throw in strict mode
+
+const sealed = createSealedObject({ x: 1 });
+sealed.x = 2; // Should work
+// sealed.y = 3; // Should fail
+
+const deep = deepFreeze({ a: { b: { c: 1 } } });
+// deep.a.b.c = 2; // Should fail`,
+    solution: `function createImmutableObject(data) {
+  return Object.freeze(data);
+}
+
+function createSealedObject(data) {
+  return Object.seal(data);
+}
+
+function isFrozen(obj) {
+  return Object.isFrozen(obj);
+}
+
+function deepFreeze(obj) {
+  Object.freeze(obj);
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key) && typeof obj[key] === 'object' && obj[key] !== null) {
+      deepFreeze(obj[key]);
+    }
+  }
+  return obj;
+}`,
+    testCases: [
+      {
+        input: [{ a: 1 }],
+        expectedOutput: true,
+        description: 'isFrozen check'
+      }
+    ],
+    hints: [
+      'Object.freeze: no changes, additions, or deletions',
+      'Object.seal: can modify, cannot add or delete',
+      'Object.preventExtensions: can modify/delete, cannot add',
+      'Deep freeze requires recursive freezing of nested objects'
+    ]
+  },
+  {
+    id: 'property-descriptors',
+    title: 'Property Descriptors',
+    difficulty: 'medium',
+    category: 'Object Methods',
+    description: `Use property descriptors to control property behavior (enumerable, writable, configurable).
+
+**Challenge:** Create properties with specific descriptors.`,
+    examples: [
+      {
+        input: `Object.defineProperty(obj, 'prop', { enumerable: false })`,
+        output: `Property with custom descriptor`,
+        explanation: 'Control property visibility and mutability'
+      }
+    ],
+    starterCode: `// TODO: Create a non-enumerable property
+function addHiddenProperty(obj, key, value) {
+  // Use Object.defineProperty with enumerable: false
+  return obj;
+}
+
+// TODO: Create a read-only property
+function addReadOnlyProperty(obj, key, value) {
+  // Use Object.defineProperty with writable: false
+  return obj;
+}
+
+// TODO: Get all property descriptors
+function getDescriptors(obj) {
+  // Use Object.getOwnPropertyDescriptors
+  return {};
+}
+
+// TODO: Copy descriptors from one object to another
+function copyDescriptors(source, target) {
+  // Use Object.defineProperties with descriptors from source
+  return target;
+}
+
+// Test
+const obj = { visible: 1 };
+addHiddenProperty(obj, 'hidden', 'secret');
+addReadOnlyProperty(obj, 'readonly', 'immutable');
+
+console.log(Object.keys(obj)); // Should not include 'hidden'
+// obj.readonly = 'changed'; // Should fail in strict mode
+
+const descriptors = getDescriptors(obj);
+console.log(descriptors);`,
+    solution: `function addHiddenProperty(obj, key, value) {
+  Object.defineProperty(obj, key, {
+    value,
+    enumerable: false,
+    writable: true,
+    configurable: true
+  });
+  return obj;
+}
+
+function addReadOnlyProperty(obj, key, value) {
+  Object.defineProperty(obj, key, {
+    value,
+    enumerable: true,
+    writable: false,
+    configurable: true
+  });
+  return obj;
+}
+
+function getDescriptors(obj) {
+  return Object.getOwnPropertyDescriptors(obj);
+}
+
+function copyDescriptors(source, target) {
+  const descriptors = Object.getOwnPropertyDescriptors(source);
+  Object.defineProperties(target, descriptors);
+  return target;
+}`,
+    testCases: [
+      {
+        input: [{ a: 1 }, 'hidden', 'secret'],
+        expectedOutput: { a: 1 },
+        description: 'addHiddenProperty - check enumerable'
+      }
+    ],
+    hints: [
+      'enumerable: false - hidden from Object.keys, for...in',
+      'writable: false - cannot be reassigned',
+      'configurable: false - cannot be deleted or reconfigured',
+      'Object.getOwnPropertyDescriptors gets all descriptors'
+    ]
+  },
+  {
+    id: 'computed-property-names',
+    title: 'Computed Property Names',
+    difficulty: 'easy',
+    category: 'Object Methods',
+    description: `Use computed property names in object literals for dynamic keys.
+
+**Challenge:** Create objects with dynamic property names.`,
+    examples: [
+      {
+        input: `const key = 'name'; const obj = { [key]: 'John' };`,
+        output: `{ name: 'John' }`,
+        explanation: 'Computed property names use bracket notation'
+      }
+    ],
+    starterCode: `// TODO: Create object with computed property names
+function createConfig(env) {
+  // Return object with properties: [env + 'ApiUrl'], [env + 'ApiKey']
+  // Example: { devApiUrl: '...', devApiKey: '...' }
+  return {};
+}
+
+// TODO: Create object from array of key-value pairs
+function fromEntries(entries) {
+  // Use computed property names to create object
+  // fromEntries([['a', 1], ['b', 2]]) => { a: 1, b: 2 }
+  return {};
+}
+
+// TODO: Merge objects with prefix
+function mergeWithPrefix(obj1, obj2, prefix) {
+  // Merge obj2 properties into obj1 with prefix
+  // mergeWithPrefix({ a: 1 }, { b: 2 }, 'x') => { a: 1, xb: 2 }
+  return {};
+}
+
+// Test
+console.log(createConfig('prod')); // { prodApiUrl: '...', prodApiKey: '...' }
+console.log(fromEntries([['name', 'John'], ['age', 30]]));
+console.log(mergeWithPrefix({ a: 1 }, { b: 2, c: 3 }, 'prefix'));`,
+    solution: `function createConfig(env) {
+  return {
+    [\`\${env}ApiUrl\`]: \`https://api.\${env}.com\`,
+    [\`\${env}ApiKey\`]: \`key-\${env}\`
   };
 }
 
-type PartialNested = DeepPartial<Nested>;
-// Should be: { user?: { name?: string; profile?: { age?: number; }; }; }
+function fromEntries(entries) {
+  return entries.reduce((obj, [key, value]) => {
+    obj[key] = value;
+    return obj;
+  }, {});
+}
 
-type ReadonlyNested = DeepReadonly<Nested>;
-// Should be: { readonly user: { readonly name: string; readonly profile: { readonly age: number; }; }; }`,
-    solution: `type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
-};
-
-type DeepReadonly<T> = {
-  readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P];
-};
-
-type DeepRequired<T> = {
-  [P in keyof T]-?: T[P] extends object ? DeepRequired<T[P]> : T[P];
-};`,
+function mergeWithPrefix(obj1, obj2, prefix) {
+  return {
+    ...obj1,
+    ...Object.fromEntries(
+      Object.entries(obj2).map(([key, value]) => [\`\${prefix}\${key}\`, value])
+    )
+  };
+}`,
     testCases: [
       {
-        input: [],
-        expectedOutput: true,
-        description: 'Recursive utility types work correctly'
+        input: ['prod'],
+        expectedOutput: { prodApiUrl: 'https://api.prod.com', prodApiKey: 'key-prod' },
+        description: 'createConfig'
+      },
+      {
+        input: [[['a', 1], ['b', 2]]],
+        expectedOutput: { a: 1, b: 2 },
+        description: 'fromEntries'
       }
     ],
     hints: [
-      'Check if property is object: T[P] extends object',
-      'Recursively apply transformation: DeepPartial<T[P]>',
-      'Use -? to remove optional modifier in DeepRequired'
+      'Use brackets in object literals: { [expression]: value }',
+      'Can use template literals: { [`key${suffix}`]: value }',
+      'Useful for dynamic property names based on variables'
     ]
   },
   {
-    id: 'type-guards-advanced',
-    title: 'Advanced Type Guards and Assertions',
-    difficulty: 'hard',
-    category: 'Type Guards',
-    description: `Create custom type guards and type assertion functions.
+    id: 'spread-operator-patterns',
+    title: 'Advanced Spread Operator Patterns',
+    difficulty: 'medium',
+    category: 'Object Methods',
+    description: `Use spread operator for cloning, merging, and transforming objects and arrays.
 
-**Challenge:** Implement type-safe validation and narrowing functions.`,
+**Challenge:** Master spread operator for common patterns.`,
     examples: [
       {
-        input: `function isString(value: unknown): value is string {
-  return typeof value === 'string';
-}
-
-function assertIsNumber(value: unknown): asserts value is number {
-  if (typeof value !== 'number') throw new Error();
-}`,
-        output: `Type guards narrow types, assertions throw on failure`,
-        explanation: 'Type guards and assertions provide runtime type safety'
+        input: `const merged = { ...obj1, ...obj2 };`,
+        output: `Merged object with later properties overriding`,
+        explanation: 'Spread operator creates shallow copies'
       }
     ],
-    starterCode: `// TODO: Create type guard for User object
-interface User {
-  name: string;
-  age: number;
+    starterCode: `// TODO: Deep clone an object (shallow clone with spread)
+function shallowClone(obj) {
+  // Use spread operator to clone object
+  return obj;
 }
 
-function isUser(value: unknown): value is User {
-  // Your code here
-  return false;
+// TODO: Merge objects with override
+function mergeObjects(...objects) {
+  // Merge all objects, later ones override earlier ones
+  return {};
 }
 
-// TODO: Create assertion function
-function assertIsUser(value: unknown): asserts value is User {
-  // Your code here
-  // Should throw if value is not User
+// TODO: Update nested property immutably
+function updateNested(obj, path, value) {
+  // Update nested property without mutating original
+  // updateNested({ a: { b: 1 } }, 'a.b', 2) => { a: { b: 2 } }
+  return obj;
 }
 
-// TODO: Create type guard for array of strings
-function isStringArray(value: unknown): value is string[] {
-  // Your code here
-  return false;
+// TODO: Remove property immutably
+function omitProperty(obj, key) {
+  // Return new object without the specified key
+  // Use destructuring and rest
+  return obj;
 }
 
 // Test
-function processUser(data: unknown) {
-  if (isUser(data)) {
-    // data is now User type
-    console.log(data.name);
-  }
-  
-  assertIsUser(data);
-  // data is now User type (or exception thrown)
-  console.log(data.age);
-}`,
-    solution: `function isUser(value: unknown): value is User {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'name' in value &&
-    'age' in value &&
-    typeof (value as any).name === 'string' &&
-    typeof (value as any).age === 'number'
-  );
+const original = { a: 1, b: { c: 2 } };
+const cloned = shallowClone(original);
+cloned.b.c = 3;
+console.log(original.b.c); // Should still be 2 (shallow clone)
+
+const merged = mergeObjects({ a: 1 }, { b: 2 }, { a: 3 });
+console.log(merged); // { a: 3, b: 2 }
+
+const updated = updateNested({ a: { b: 1 } }, 'a.b', 2);
+console.log(updated); // { a: { b: 2 } }
+
+const omitted = omitProperty({ a: 1, b: 2, c: 3 }, 'b');
+console.log(omitted); // { a: 1, c: 3 }`,
+    solution: `function shallowClone(obj) {
+  return { ...obj };
 }
 
-function assertIsUser(value: unknown): asserts value is User {
-  if (!isUser(value)) {
-    throw new Error('Value is not a User');
-  }
+function mergeObjects(...objects) {
+  return objects.reduce((acc, obj) => ({ ...acc, ...obj }), {});
 }
 
-function isStringArray(value: unknown): value is string[] {
-  return Array.isArray(value) && value.every(item => typeof item === 'string');
+function updateNested(obj, path, value) {
+  const keys = path.split('.');
+  const lastKey = keys.pop();
+  const target = keys.reduce((acc, key) => acc[key], obj);
+  return {
+    ...obj,
+    [keys[0]]: keys.length > 1 
+      ? updateNested(obj[keys[0]], keys.slice(1).join('.'), value)
+      : { ...target, [lastKey]: value }
+  };
+}
+
+function omitProperty(obj, key) {
+  const { [key]: omitted, ...rest } = obj;
+  return rest;
 }`,
     testCases: [
       {
-        input: [],
-        expectedOutput: true,
-        description: 'Type guards and assertions work correctly'
+        input: [{ a: 1, b: 2 }],
+        expectedOutput: { a: 1, b: 2 },
+        description: 'shallowClone'
+      },
+      {
+        input: [{ a: 1 }, { b: 2 }, { a: 3 }],
+        expectedOutput: { a: 3, b: 2 },
+        description: 'mergeObjects'
+      },
+      {
+        input: [{ a: 1, b: 2, c: 3 }, 'b'],
+        expectedOutput: { a: 1, c: 3 },
+        description: 'omitProperty'
       }
     ],
     hints: [
-      'Type guard returns: value is Type',
-      'Assertion function: asserts value is Type',
-      'Check all required properties and their types'
+      'Spread creates shallow copy: { ...obj }',
+      'Later properties override: { ...obj1, ...obj2 }',
+      'Use destructuring to omit: const { key, ...rest } = obj',
+      'For deep updates, spread at each level'
     ]
   }
 ];
