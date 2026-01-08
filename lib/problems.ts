@@ -20,7 +20,7 @@ export interface Problem {
 }
 
 export const problems: Problem[] = [
-  {
+{
     id: 'reduce-grouping',
     title: 'Reduce for Grouping',
     difficulty: 'medium',
@@ -493,7 +493,7 @@ console.log(chunk(['a', 'b', 'c', 'd'], 2));`,
       'Array.from can create the chunks array with mapping'
     ]
   },
-  {
+{
     id: 'promise-all-vs-allsettled',
     title: 'Promise.all vs Promise.allSettled',
     difficulty: 'medium',
@@ -806,8 +806,9 @@ processUser(1).then(console.log).catch(console.error);`,
     testCases: [
       {
         input: [1],
-        expectedOutput: { id: 1, saved: true },
-        description: 'User is processed and saved'
+        expectedOutput: expect => {
+          return expect && expect.id === 1 && expect.saved === true;
+        }
       }
     ],
     hints: [
@@ -937,8 +938,9 @@ function waitForEvent(element, eventName) {
     testCases: [
       {
         input: [100],
-        expectedOutput: true,
-        description: 'Function returns a Promise'
+        expectedOutput: expect => {
+          return expect instanceof Promise;
+        }
       }
     ],
     hints: [
@@ -1006,8 +1008,9 @@ async function fetchMultipleUsers(userIds) {
     testCases: [
       {
         input: [1],
-        expectedOutput: {},
-        description: 'Returns an object or null'
+        expectedOutput: expect => {
+          return expect === null || typeof expect === 'object';
+        }
       }
     ],
     hints: [
@@ -1141,8 +1144,9 @@ async function processWithLock(resource, operation) {
     testCases: [
       {
         input: ['/api/data'],
-        expectedOutput: {},
-        description: 'Returns a value (not undefined)'
+        expectedOutput: expect => {
+          return expect !== undefined;
+        }
       }
     ],
     hints: [
@@ -1151,8 +1155,8 @@ async function processWithLock(resource, operation) {
       'Runs even if promise rejects'
     ]
   },
-  {
-    id: 'basic-types',
+{
+    id: 'conditional-types',
     title: 'Basic TypeScript Types',
     difficulty: 'easy',
     category: 'TypeScript Basics',
@@ -1757,7 +1761,7 @@ console.log(Direction.Up);`,
       'Enums compile to JavaScript objects'
     ]
   },
-  {
+{
     id: 'proxy-api',
     title: 'Proxy API for Interception',
     difficulty: 'hard',
@@ -2458,3 +2462,4 @@ export function getProblemsByCategory(category: string): Problem[] {
 export function getProblemsByDifficulty(difficulty: Problem['difficulty']): Problem[] {
   return problems.filter(p => p.difficulty === difficulty);
 }
+
