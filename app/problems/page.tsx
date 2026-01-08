@@ -293,7 +293,7 @@ export default function ProblemsPage() {
                       </span>
                     </div>
                     <p className="text-gray-700 dark:text-gray-300 line-clamp-2 text-sm">
-                      {problem.description.split('\n')[0]}
+                      {problem.description.replace(/<[^>]*>/g, '').split('\n')[0]}
                     </p>
                   </div>
                   <svg

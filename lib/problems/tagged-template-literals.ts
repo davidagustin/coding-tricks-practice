@@ -26,10 +26,10 @@ export const problem: Problem = {
   category: 'JavaScript Basics',
   description: `<h2>In-Depth Explanation</h2>
 
-<p>Tagged template literals allow you to process template strings with a custom function (the "tag"). When you write <code>tag followed by a template literal</code>, JavaScript calls the tag function with:</p>
+<p>Tagged template literals allow you to process template strings with a custom function (the "tag"). When you write <code>tag</code> followed by a template literal, JavaScript calls the tag function with:</p>
 <ol>
   <li>An array of string literals (the static parts)</li>
-  <li>The interpolated values (the <code>expression</code> parts)</li>
+  <li>The interpolated values (the expression parts)</li>
 </ol>
 
 <p>The tag function receives: <code>tag(strings, ...values)</code> where:</p>
@@ -66,12 +66,12 @@ export const problem: Problem = {
 <p>Tagged templates are used extensively:</p>
 
 <ul>
-  <li><strong>HTML Escaping</strong>: <code>html followed by template literal</code> - escape HTML entities</li>
-  <li><strong>Styled Components</strong>: <code>styled.div followed by template literal</code> - CSS-in-JS</li>
-  <li><strong>Internationalization</strong>: <code>i18n followed by template literal</code> - translate strings</li>
-  <li><strong>SQL Queries</strong>: <code>sql followed by template literal</code> - parameterized queries</li>
-  <li><strong>String Formatting</strong>: <code>format followed by template literal</code> - format currency, dates</li>
-  <li><strong>Logging</strong>: <code>log followed by template literal</code> - structured logging</li>
+  <li><strong>HTML Escaping</strong>: <code>html</code> followed by template literal - escape HTML entities</li>
+  <li><strong>Styled Components</strong>: <code>styled.div</code> followed by template literal - CSS-in-JS</li>
+  <li><strong>Internationalization</strong>: <code>i18n</code> followed by template literal - translate strings</li>
+  <li><strong>SQL Queries</strong>: <code>sql</code> followed by template literal - parameterized queries</li>
+  <li><strong>String Formatting</strong>: <code>format</code> followed by template literal - format currency, dates</li>
+  <li><strong>Logging</strong>: <code>log</code> followed by template literal - structured logging</li>
   <li><strong>GraphQL</strong>: Building GraphQL queries safely</li>
   <li><strong>Markdown</strong>: Processing markdown templates</li>
 </ul>
@@ -79,7 +79,7 @@ export const problem: Problem = {
 <p><strong>Challenge:</strong> Build a simple HTML escaping tag and a highlight tag.</p>`,
   examples: [
     {
-      input: 'html followed by template literal',
+      input: 'html`<div>${userInput}</div>`',
       output: `'<div>&lt;script&gt;</div>'`,
       explanation: 'Escape HTML entities in interpolated values',
     },
