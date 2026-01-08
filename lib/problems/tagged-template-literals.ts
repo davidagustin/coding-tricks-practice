@@ -61,8 +61,8 @@ Tagged templates are used extensively:
 - **Styled Components**: \`styled.div\`color: \${color}\`\` - CSS-in-JS
 - **Internationalization**: \`i18n\`Hello \${name}\`\` - translate strings
 - **SQL Queries**: \`sql\`SELECT * FROM users WHERE id = \${id}\`\` - parameterized queries
-- **String Formatting**: \`format\`Price: ${amount}\`\` - format currency, dates
-- **Logging**: \`log\`User ${id} logged in\`\` - structured logging
+- **String Formatting**: \`format\`Price: \${amount}\`\` - format currency, dates
+- **Logging**: \`log\`User \${id} logged in\`\` - structured logging
 - **GraphQL**: Building GraphQL queries safely
 - **Markdown**: Processing markdown templates
 
