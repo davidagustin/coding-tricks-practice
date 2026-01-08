@@ -1,5 +1,5 @@
-import { runTests } from '@/lib/test-runner';
 import { problems } from '@/lib/problems';
+import { runTests } from '@/lib/test-runner';
 
 describe('Test Runner', () => {
   describe('TypeScript Transpilation', () => {
@@ -9,11 +9,9 @@ describe('Test Runner', () => {
           return a + b;
         }
       `;
-      
-      const result = await runTests(code, [
-        { input: [1, 2], expectedOutput: 3 }
-      ]);
-      
+
+      const result = await runTests(code, [{ input: [1, 2], expectedOutput: 3 }]);
+
       expect(result.error).toBeUndefined();
       expect(result.results.length).toBe(1);
       expect(result.results[0].passed).toBe(true);
@@ -31,11 +29,11 @@ describe('Test Runner', () => {
           return Status.Pending;
         }
       `;
-      
+
       const result = await runTests(code, [
-        { input: [], expectedOutput: 0 } // Numeric enum starts at 0
+        { input: [], expectedOutput: 0 }, // Numeric enum starts at 0
       ]);
-      
+
       expect(result.error).toBeUndefined();
       expect(result.results.length).toBe(1);
     });
@@ -51,11 +49,9 @@ describe('Test Runner', () => {
           return Direction.Up;
         }
       `;
-      
-      const result = await runTests(code, [
-        { input: [], expectedOutput: 'UP' }
-      ]);
-      
+
+      const result = await runTests(code, [{ input: [], expectedOutput: 'UP' }]);
+
       expect(result.error).toBeUndefined();
       expect(result.results.length).toBe(1);
     });
@@ -71,11 +67,11 @@ describe('Test Runner', () => {
           return { id, name };
         }
       `;
-      
+
       const result = await runTests(code, [
-        { input: [1, 'John'], expectedOutput: { id: 1, name: 'John' } }
+        { input: [1, 'John'], expectedOutput: { id: 1, name: 'John' } },
       ]);
-      
+
       expect(result.error).toBeUndefined();
       expect(result.results[0].passed).toBe(true);
     });
@@ -88,11 +84,9 @@ describe('Test Runner', () => {
           return a * b;
         }
       `;
-      
-      const result = await runTests(code, [
-        { input: [2, 3], expectedOutput: 6 }
-      ]);
-      
+
+      const result = await runTests(code, [{ input: [2, 3], expectedOutput: 6 }]);
+
       expect(result.allPassed).toBe(true);
       expect(result.results[0].passed).toBe(true);
     });
@@ -103,16 +97,14 @@ describe('Test Runner', () => {
           return Promise.resolve('data');
         }
       `;
-      
-      const result = await runTests(code, [
-        { input: [], expectedOutput: 'data' }
-      ]);
-      
+
+      const result = await runTests(code, [{ input: [], expectedOutput: 'data' }]);
+
       // Async functions should work - either pass tests or have a meaningful error
       // (not a syntax/transpilation error)
       if (result.error) {
         // If there's an error, it should not be a syntax error
-        const isSyntaxError = 
+        const isSyntaxError =
           result.error.includes('TypeScript compilation error') ||
           result.error.includes('syntax') ||
           result.error.includes('Parsing');
@@ -129,13 +121,13 @@ describe('Test Runner', () => {
           return first;
         }
       `;
-      
+
       const result = await runTests(code, [
         { input: [[1, 2, 3]], expectedOutput: 1 },
         { input: [[]], expectedOutput: 0 },
-        { input: [null], expectedOutput: 0 }
+        { input: [null], expectedOutput: 0 },
       ]);
-      
+
       expect(result.allPassed).toBe(true);
     });
 
@@ -146,13 +138,13 @@ describe('Test Runner', () => {
           return name;
         }
       `;
-      
+
       const result = await runTests(code, [
         { input: [{ name: 'John' }], expectedOutput: 'John' },
         { input: [{}], expectedOutput: 'Anonymous' },
-        { input: [null], expectedOutput: 'Anonymous' }
+        { input: [null], expectedOutput: 'Anonymous' },
       ]);
-      
+
       expect(result.allPassed).toBe(true);
     });
   });
@@ -160,18 +152,16 @@ describe('Test Runner', () => {
   describe('Error Handling', () => {
     it('should handle syntax errors gracefully', async () => {
       const code = `function broken() { return `; // Missing closing brace
-      
-      const result = await runTests(code, [
-        { input: [], expectedOutput: null }
-      ]);
-      
+
+      const result = await runTests(code, [{ input: [], expectedOutput: null }]);
+
       expect(result.allPassed).toBe(false);
       // Should either have an error message or no function found
       if (result.error) {
         expect(
           result.error.includes('TypeScript compilation error') ||
-          result.error.includes('syntax') ||
-          result.error.includes('function')
+            result.error.includes('syntax') ||
+            result.error.includes('function')
         ).toBe(true);
       } else {
         // If no error, should have failed test results
@@ -185,31 +175,25 @@ describe('Test Runner', () => {
           throw new Error('Test error');
         }
       `;
-      
-      const result = await runTests(code, [
-        { input: [], expectedOutput: null }
-      ]);
-      
+
+      const result = await runTests(code, [{ input: [], expectedOutput: null }]);
+
       expect(result.allPassed).toBe(false);
       expect(result.results[0].error).toBeDefined();
     });
 
     it('should handle missing functions', async () => {
       const code = `const x = 5;`; // No function defined
-      
-      const result = await runTests(code, [
-        { input: [], expectedOutput: null }
-      ]);
-      
+
+      const result = await runTests(code, [{ input: [], expectedOutput: null }]);
+
       expect(result.allPassed).toBe(false);
       expect(result.error).toContain('function');
     });
 
     it('should handle empty code', async () => {
-      const result = await runTests('', [
-        { input: [], expectedOutput: null }
-      ]);
-      
+      const result = await runTests('', [{ input: [], expectedOutput: null }]);
+
       expect(result.allPassed).toBe(false);
       expect(result.error).toContain('No code provided');
     });
@@ -222,13 +206,13 @@ describe('Test Runner', () => {
           return n % 2 === 0;
         }
       `;
-      
+
       const result = await runTests(code, [
         { input: [2], expectedOutput: true },
         { input: [3], expectedOutput: false },
-        { input: [0], expectedOutput: true }
+        { input: [0], expectedOutput: true },
       ]);
-      
+
       expect(result.allPassed).toBe(true);
       expect(result.results.length).toBe(3);
     });
@@ -239,12 +223,12 @@ describe('Test Runner', () => {
           return arr.reduce((a, b) => a + b, 0);
         }
       `;
-      
+
       const result = await runTests(code, [
         { input: [[1, 2, 3]], expectedOutput: 6 },
-        { input: [[10, 20]], expectedOutput: 30 }
+        { input: [[10, 20]], expectedOutput: 30 },
       ]);
-      
+
       expect(result.allPassed).toBe(true);
     });
 
@@ -254,11 +238,11 @@ describe('Test Runner', () => {
           return { name: user.name, age: user.age };
         }
       `;
-      
+
       const result = await runTests(code, [
-        { input: [{ name: 'John', age: 30 }], expectedOutput: { name: 'John', age: 30 } }
+        { input: [{ name: 'John', age: 30 }], expectedOutput: { name: 'John', age: 30 } },
       ]);
-      
+
       expect(result.allPassed).toBe(true);
     });
   });
@@ -266,7 +250,7 @@ describe('Test Runner', () => {
 
 describe('Problems Data Validation', () => {
   it('should have all required fields for each problem', () => {
-    problems.forEach(problem => {
+    problems.forEach((problem) => {
       expect(problem).toHaveProperty('id');
       expect(problem).toHaveProperty('title');
       expect(problem).toHaveProperty('difficulty');
@@ -277,7 +261,7 @@ describe('Problems Data Validation', () => {
       expect(problem).toHaveProperty('solution');
       expect(problem).toHaveProperty('testCases');
       expect(problem).toHaveProperty('hints');
-      
+
       // Validate types
       expect(typeof problem.id).toBe('string');
       expect(typeof problem.title).toBe('string');
@@ -293,14 +277,14 @@ describe('Problems Data Validation', () => {
   });
 
   it('should have valid test cases with proper structure', () => {
-    problems.forEach(problem => {
-      problem.testCases.forEach((testCase, index) => {
+    problems.forEach((problem) => {
+      problem.testCases.forEach((testCase) => {
         expect(testCase).toHaveProperty('input');
         expect(testCase).toHaveProperty('expectedOutput');
-        
+
         // expectedOutput should not be a function
         expect(typeof testCase.expectedOutput).not.toBe('function');
-        
+
         // If description exists, it should be a string
         if (testCase.description) {
           expect(typeof testCase.description).toBe('string');
@@ -310,8 +294,8 @@ describe('Problems Data Validation', () => {
   });
 
   it('should have valid examples with proper structure', () => {
-    problems.forEach(problem => {
-      problem.examples.forEach(example => {
+    problems.forEach((problem) => {
+      problem.examples.forEach((example) => {
         expect(example).toHaveProperty('input');
         expect(example).toHaveProperty('output');
         expect(typeof example.input).toBe('string');
@@ -321,13 +305,13 @@ describe('Problems Data Validation', () => {
   });
 
   it('should have unique problem IDs', () => {
-    const ids = problems.map(p => p.id);
+    const ids = problems.map((p) => p.id);
     const uniqueIds = new Set(ids);
     expect(uniqueIds.size).toBe(ids.length);
   });
 
   it('should have non-empty required fields', () => {
-    problems.forEach(problem => {
+    problems.forEach((problem) => {
       expect(problem.id.trim().length).toBeGreaterThan(0);
       expect(problem.title.trim().length).toBeGreaterThan(0);
       expect(problem.description.trim().length).toBeGreaterThan(0);
@@ -342,10 +326,10 @@ describe('Problems Data Validation', () => {
     for (const problem of problems) {
       // Validate basic structure without executing
       expect(problem.starterCode.trim().length).toBeGreaterThan(0);
-      
+
       // Check that it doesn't have obvious syntax errors like function as expectedOutput
       expect(problem.starterCode).not.toMatch(/expectedOutput:\s*expect\s*=>/);
-      
+
       // Check for common TypeScript syntax that should be valid
       // (enums, interfaces, type annotations, etc. are all valid)
     }
@@ -355,12 +339,12 @@ describe('Problems Data Validation', () => {
     for (const problem of problems) {
       // Validate basic structure without executing
       expect(problem.solution.trim().length).toBeGreaterThan(0);
-      
+
       // Check that it doesn't have obvious syntax errors
       expect(problem.solution).not.toMatch(/expectedOutput:\s*expect\s*=>/);
-      
+
       // Solutions should not have functions as expectedOutput in test cases
-      problem.testCases.forEach(testCase => {
+      problem.testCases.forEach((testCase) => {
         expect(typeof testCase.expectedOutput).not.toBe('function');
       });
     }

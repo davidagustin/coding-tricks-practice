@@ -12,20 +12,44 @@ export interface Problem {
   starterCode: string;
   solution: string;
   testCases: Array<{
-    input: any;
-    expectedOutput: any;
+    input: unknown;
+    expectedOutput: unknown;
     description?: string;
   }>;
   hints: string[];
 }
 
 export const problems: Problem[] = [
-{
+  {
     id: 'reduce-grouping',
     title: 'Reduce for Grouping',
     difficulty: 'medium',
     category: 'Array Methods',
-    description: `Use reduce to group array items by a key, creating an object or Map.
+    description: `## In-Depth Explanation
+
+The \`reduce\` method is one of the most powerful array methods in JavaScript. When used for grouping, it transforms an array into an object or Map where keys represent categories and values are arrays of items belonging to that category. The accumulator pattern in \`reduce\` allows you to build up a data structure incrementally as you iterate through the array.
+
+The key insight is that \`reduce\` takes an initial value (the accumulator) and a reducer function that combines each element with the accumulator. For grouping, you initialize with an empty object \`{}\` and for each element, you check if a group exists for that element's key. If not, create it; then add the element to that group.
+
+## Importance
+
+Grouping data is a fundamental operation in data processing. Whether you're organizing user data, categorizing products, or analyzing datasets, grouping allows you to transform flat lists into structured, hierarchical data. The \`reduce\` approach is particularly valuable because:
+
+- **Single Pass**: Groups data in a single iteration, making it O(n) time complexity
+- **Flexible**: Can group by any property or computed value
+- **Functional Style**: Avoids imperative loops and mutations, leading to more predictable code
+- **Composable**: Can be easily combined with other array methods
+
+## Usefulness & Practical Applications
+
+This pattern is essential in real-world applications:
+
+- **Data Analytics**: Grouping sales by region, products by category, or events by date
+- **UI Development**: Organizing list items by status (pending, completed, archived)
+- **API Response Processing**: Transforming flat API responses into grouped structures for display
+- **Report Generation**: Creating summary reports with data organized by various dimensions
+- **State Management**: Grouping items in Redux or other state management libraries
+- **Database Queries**: Mimicking SQL GROUP BY functionality in JavaScript
 
 **Challenge:** Group users by their role using reduce.`,
     examples: [
@@ -36,8 +60,8 @@ export const problems: Problem[] = [
   { id: 3, name: 'Bob', role: 'admin' }
 ];`,
         output: `{ admin: [...], user: [...] }`,
-        explanation: 'Group users by role property'
-      }
+        explanation: 'Group users by role property',
+      },
     ],
     starterCode: `function groupByRole(users) {
   // TODO: Use reduce to group users by role
@@ -66,34 +90,66 @@ console.log(groupByRole(users));`,
 }`,
     testCases: [
       {
-        input: [[
-          { id: 1, name: 'John', role: 'admin' },
-          { id: 2, name: 'Jane', role: 'user' },
-          { id: 3, name: 'Bob', role: 'admin' }
-        ]],
+        input: [
+          [
+            { id: 1, name: 'John', role: 'admin' },
+            { id: 2, name: 'Jane', role: 'user' },
+            { id: 3, name: 'Bob', role: 'admin' },
+          ],
+        ],
         expectedOutput: {
           admin: [
             { id: 1, name: 'John', role: 'admin' },
-            { id: 3, name: 'Bob', role: 'admin' }
+            { id: 3, name: 'Bob', role: 'admin' },
           ],
-          user: [
-            { id: 2, name: 'Jane', role: 'user' }
-          ]
-        }
-      }
+          user: [{ id: 2, name: 'Jane', role: 'user' }],
+        },
+      },
     ],
     hints: [
-      'flatMap returns an array - return [item] to include, [] to exclude',
-      'Single iteration is more efficient than filter + map',
-      'Can produce 0, 1, or multiple items per input element'
-    ]
+      'Initialize reduce with an empty object {}',
+      'For each user, check if acc[user.role] exists',
+      'If not, create it as an empty array, then push the user',
+      'Return the accumulator after processing all users',
+    ],
   },
   {
     id: 'map-deduplication',
     title: 'Map for Deduplication',
     difficulty: 'medium',
     category: 'Array Methods',
-    description: `Use Map to deduplicate by a key, where the last occurrence wins.
+    description: `## In-Depth Explanation
+
+The \`Map\` constructor has a powerful feature: when you pass an iterable of [key, value] pairs, it automatically handles duplicate keys by keeping only the last value for each key. This behavior makes \`Map\` perfect for deduplication scenarios where you want the most recent occurrence to win.
+
+The trick works by:
+1. Transforming the array into [key, value] pairs using \`map\`
+2. Passing these pairs to the \`Map\` constructor, which automatically deduplicates by key
+3. Converting the Map's values back to an array using the spread operator
+
+This is more elegant than using \`reduce\` or \`filter\` because Map handles the deduplication logic internally.
+
+## Importance
+
+Deduplication is a common data cleaning operation. The Map approach is superior to alternatives because:
+
+- **Automatic Deduplication**: Map's built-in behavior handles duplicates without explicit logic
+- **Performance**: O(n) time complexity, more efficient than nested loops or filter-based approaches
+- **Key Flexibility**: Works with any key type (not just primitives like Set)
+- **Last-Wins Semantics**: Perfect for scenarios where newer data should override older data
+- **Concise Code**: One-liner solution that's both readable and performant
+
+## Usefulness & Practical Applications
+
+This pattern is invaluable in many real-world scenarios:
+
+- **Data Merging**: Combining datasets where the latest record should override older ones
+- **Cache Updates**: Updating cached items where newer values replace stale ones
+- **API Response Processing**: Handling duplicate entries in API responses
+- **State Synchronization**: Merging state updates where the most recent change wins
+- **Database Record Deduplication**: Cleaning imported data before database insertion
+- **Event Processing**: Processing event streams where duplicate events should be collapsed
+- **User Session Management**: Keeping only the most recent session data per user
 
 **Challenge:** Remove duplicate users by ID, keeping the last occurrence.`,
     examples: [
@@ -104,8 +160,8 @@ console.log(groupByRole(users));`,
   { id: 1, name: 'John Updated' }
 ];`,
         output: `[{ id: 2, name: 'Jane' }, { id: 1, name: 'John Updated' }]`,
-        explanation: 'Last occurrence of id:1 wins'
-      }
+        explanation: 'Last occurrence of id:1 wins',
+      },
     ],
     starterCode: `function deduplicateUsers(users) {
   // TODO: Use Map to deduplicate by id (last wins)
@@ -129,45 +185,79 @@ console.log(deduplicateUsers(users));`,
 }`,
     testCases: [
       {
-        input: [[
-          { id: 1, name: 'John' },
-          { id: 2, name: 'Jane' },
-          { id: 1, name: 'John Updated' }
-        ]],
+        input: [
+          [
+            { id: 1, name: 'John' },
+            { id: 2, name: 'Jane' },
+            { id: 1, name: 'John Updated' },
+          ],
+        ],
         expectedOutput: [
           { id: 2, name: 'Jane' },
-          { id: 1, name: 'John Updated' }
-        ]
+          { id: 1, name: 'John Updated' },
+        ],
       },
       {
-        input: [[
-          { id: 1, name: 'A' },
-          { id: 1, name: 'B' },
-          { id: 1, name: 'C' }
-        ]],
-        expectedOutput: [{ id: 1, name: 'C' }]
-      }
+        input: [
+          [
+            { id: 1, name: 'A' },
+            { id: 1, name: 'B' },
+            { id: 1, name: 'C' },
+          ],
+        ],
+        expectedOutput: [{ id: 1, name: 'C' }],
+      },
     ],
     hints: [
       'Map constructor accepts [key, value] pairs',
       'Map overwrites duplicate keys (last wins)',
-      'Use [...map.values()] to convert back to array'
-    ]
+      'Use [...map.values()] to convert back to array',
+    ],
   },
   {
     id: 'object-entries',
     title: 'Object.fromEntries / Object.entries',
     difficulty: 'medium',
     category: 'Object Methods',
-    description: `Convert between objects and [key, value] arrays for transformation.
+    description: `## In-Depth Explanation
+
+\`Object.entries()\` and \`Object.fromEntries()\` form a powerful pair that allows you to convert objects to arrays and back. This transformation enables you to leverage all array methods (map, filter, reduce, etc.) on object properties, then convert the result back to an object.
+
+\`Object.entries(obj)\` converts an object into an array of [key, value] pairs: \`[['key1', value1], ['key2', value2], ...]\`. Once in array form, you can use any array method to transform, filter, or manipulate the entries. \`Object.fromEntries()\` does the reverse - it takes an array of [key, value] pairs and reconstructs an object.
+
+This pattern is particularly powerful because it bridges the gap between object-oriented and functional programming paradigms, allowing you to apply functional transformations to objects.
+
+## Importance
+
+This technique is crucial for object manipulation because:
+
+- **Array Method Access**: Unlocks the full power of array methods (map, filter, reduce) for objects
+- **Immutable Transformations**: Creates new objects without mutating originals
+- **Functional Style**: Enables functional programming patterns with objects
+- **Type Safety**: Works well with TypeScript's type system
+- **Composability**: Can chain multiple transformations together
+- **Standard API**: Uses built-in methods, no dependencies required
+
+## Usefulness & Practical Applications
+
+This pattern is essential in modern JavaScript/TypeScript development:
+
+- **Data Transformation**: Transforming API responses, normalizing data structures
+- **Configuration Processing**: Filtering, mapping, or validating configuration objects
+- **State Management**: Transforming Redux state, Vuex mutations, or MobX observables
+- **Form Data Processing**: Converting form objects, validating and sanitizing inputs
+- **API Request Building**: Transforming objects before sending to APIs
+- **Data Validation**: Filtering invalid properties, transforming values
+- **Object Utilities**: Creating reusable utility functions for object manipulation
+- **React Props Processing**: Transforming props objects before passing to components
 
 **Challenge:** Transform object values and filter properties.`,
     examples: [
       {
         input: `const prices = { apple: 1, banana: 2, cherry: 3 };`,
         output: `{ apple: 2, banana: 4, cherry: 6 }`,
-        explanation: 'Double all prices'
-      }
+        explanation: 'Double all prices',
+      },
     ],
     starterCode: `function doublePrices(prices) {
   // TODO: Use Object.entries and Object.fromEntries
@@ -203,19 +293,19 @@ function filterPrivateProperties(obj) {
       {
         input: [{ apple: 1, banana: 2, cherry: 3 }],
         expectedOutput: { apple: 2, banana: 4, cherry: 6 },
-        description: 'doublePrices'
+        description: 'doublePrices',
       },
       {
         input: [{ name: 'John', _internal: 'secret', age: 30, _temp: 'data' }],
         expectedOutput: { name: 'John', age: 30 },
-        description: 'filterPrivateProperties'
-      }
+        description: 'filterPrivateProperties',
+      },
     ],
     hints: [
       'Object.entries(obj) → [[key, value], ...]',
       'Object.fromEntries([[key, value], ...]) → object',
-      'Use map/filter between entries and fromEntries'
-    ]
+      'Use map/filter between entries and fromEntries',
+    ],
   },
   {
     id: 'promise-race-timeout',
@@ -229,8 +319,8 @@ function filterPrivateProperties(obj) {
       {
         input: `await withTimeout(fetch('/api/data'), 5000)`,
         output: `Resolves with data or rejects with timeout error`,
-        explanation: 'Promise resolves if fetch completes in time, otherwise times out'
-      }
+        explanation: 'Promise resolves if fetch completes in time, otherwise times out',
+      },
     ],
     starterCode: `function withTimeout(promise, ms) {
   // TODO: Use Promise.race to race the promise against a timeout
@@ -263,19 +353,19 @@ function filterPrivateProperties(obj) {
       {
         input: [Promise.resolve('success'), 1000],
         expectedOutput: 'success',
-        description: 'Promise resolves before timeout'
+        description: 'Promise resolves before timeout',
       },
       {
         input: [Promise.resolve('fast'), 5000],
         expectedOutput: 'fast',
-        description: 'Fast promise resolves quickly'
-      }
+        description: 'Fast promise resolves quickly',
+      },
     ],
     hints: [
       'Promise.race returns the first settled promise',
       'Create a timeout promise that rejects after ms',
-      'Use setTimeout in the timeout promise'
-    ]
+      'Use setTimeout in the timeout promise',
+    ],
   },
   {
     id: 'promise-allsettled',
@@ -289,8 +379,8 @@ function filterPrivateProperties(obj) {
       {
         input: `[fetch('/api/1'), fetch('/api/2'), fetch('/api/3')]`,
         output: `{ successes: [...], failures: [...] }`,
-        explanation: 'Get all results even if some fail'
-      }
+        explanation: 'Get all results even if some fail',
+      },
     ],
     starterCode: `async function processMultipleRequests(requests) {
   // TODO: Use Promise.allSettled to handle all promises
@@ -334,43 +424,34 @@ function isFulfilled(result) {
 }`,
     testCases: [
       {
-        input: [[
-          Promise.resolve('Success 1'),
-          Promise.reject('Error 1'),
-          Promise.resolve('Success 2')
-        ]],
+        input: [
+          [Promise.resolve('Success 1'), Promise.reject('Error 1'), Promise.resolve('Success 2')],
+        ],
         expectedOutput: {
           successes: ['Success 1', 'Success 2'],
-          failures: ['Error 1']
-        }
+          failures: ['Error 1'],
+        },
       },
       {
-        input: [[
-          Promise.resolve('A'),
-          Promise.resolve('B'),
-          Promise.resolve('C')
-        ]],
+        input: [[Promise.resolve('A'), Promise.resolve('B'), Promise.resolve('C')]],
         expectedOutput: {
           successes: ['A', 'B', 'C'],
-          failures: []
-        }
+          failures: [],
+        },
       },
       {
-        input: [[
-          Promise.reject('Error 1'),
-          Promise.reject('Error 2')
-        ]],
+        input: [[Promise.reject('Error 1'), Promise.reject('Error 2')]],
         expectedOutput: {
           successes: [],
-          failures: ['Error 1', 'Error 2']
-        }
-      }
+          failures: ['Error 1', 'Error 2'],
+        },
+      },
     ],
     hints: [
       'Initialize accumulator as empty object: reduce((acc, item) => ..., {})',
       'Check if key exists, create array if not: if (!acc[key]) acc[key] = []',
-      'Push item to appropriate group: acc[key].push(item)'
-    ]
+      'Push item to appropriate group: acc[key].push(item)',
+    ],
   },
   {
     id: 'find-vs-filter',
@@ -388,8 +469,8 @@ function isFulfilled(result) {
   { id: 3, active: true }
 ];`,
         output: `find: first active user, filter: all active users`,
-        explanation: 'find returns one item, filter returns array'
-      }
+        explanation: 'find returns one item, filter returns array',
+      },
     ],
     starterCode: `function getFirstActiveUser(users) {
   // TODO: Use find() to get the first user where active === true
@@ -419,32 +500,36 @@ function getAllActiveUsers(users) {
 }`,
     testCases: [
       {
-        input: [[
-          { id: 1, name: 'John', active: true },
-          { id: 2, name: 'Jane', active: false },
-          { id: 3, name: 'Bob', active: true }
-        ]],
+        input: [
+          [
+            { id: 1, name: 'John', active: true },
+            { id: 2, name: 'Jane', active: false },
+            { id: 3, name: 'Bob', active: true },
+          ],
+        ],
         expectedOutput: { id: 1, name: 'John', active: true },
-        description: 'getFirstActiveUser'
+        description: 'getFirstActiveUser',
       },
       {
-        input: [[
-          { id: 1, name: 'John', active: true },
-          { id: 2, name: 'Jane', active: false },
-          { id: 3, name: 'Bob', active: true }
-        ]],
+        input: [
+          [
+            { id: 1, name: 'John', active: true },
+            { id: 2, name: 'Jane', active: false },
+            { id: 3, name: 'Bob', active: true },
+          ],
+        ],
         expectedOutput: [
           { id: 1, name: 'John', active: true },
-          { id: 3, name: 'Bob', active: true }
+          { id: 3, name: 'Bob', active: true },
         ],
-        description: 'getAllActiveUsers'
-      }
+        description: 'getAllActiveUsers',
+      },
     ],
     hints: [
       'find() returns the first element that matches, or undefined',
       'filter() returns an array of all matching elements',
-      'Use find when you need one item, filter when you need multiple'
-    ]
+      'Use find when you need one item, filter when you need multiple',
+    ],
   },
   {
     id: 'array-chaining',
@@ -461,8 +546,8 @@ function getAllActiveUsers(users) {
   { name: 'Book', price: 20, category: 'books' }
 ];`,
         output: `['LAPTOP', 'BOOK']`,
-        explanation: 'Filter expensive items, get names, uppercase them'
-      }
+        explanation: 'Filter expensive items, get names, uppercase them',
+      },
     ],
     starterCode: `function getExpensiveProductNames(products) {
   // TODO: Chain methods to:
@@ -489,19 +574,21 @@ console.log(getExpensiveProductNames(products));`,
 }`,
     testCases: [
       {
-        input: [[
-          { name: 'Laptop', price: 1000, category: 'electronics' },
-          { name: 'Book', price: 20, category: 'books' },
-          { name: 'Phone', price: 800, category: 'electronics' }
-        ]],
-        expectedOutput: ['LAPTOP', 'PHONE']
-      }
+        input: [
+          [
+            { name: 'Laptop', price: 1000, category: 'electronics' },
+            { name: 'Book', price: 20, category: 'books' },
+            { name: 'Phone', price: 800, category: 'electronics' },
+          ],
+        ],
+        expectedOutput: ['LAPTOP', 'PHONE'],
+      },
     ],
     hints: [
       'Each method returns an array, so you can chain them',
       'Order matters: filter first to reduce items, then transform',
-      'You can combine map operations: .map(p => p.name.toUpperCase())'
-    ]
+      'You can combine map operations: .map(p => p.name.toUpperCase())',
+    ],
   },
   {
     id: 'reduce-right',
@@ -515,8 +602,8 @@ console.log(getExpensiveProductNames(products));`,
       {
         input: `const functions = [x => x * 2, x => x + 1, x => x - 5];`,
         output: `Composed function: (x - 5) + 1) * 2`,
-        explanation: 'Apply functions from right to left'
-      }
+        explanation: 'Apply functions from right to left',
+      },
     ],
     starterCode: `function compose(...functions) {
   // TODO: Use reduceRight to compose functions
@@ -551,14 +638,14 @@ function testCompose() {
       {
         input: [],
         expectedOutput: 12,
-        description: 'testCompose'
-      }
+        description: 'testCompose',
+      },
     ],
     hints: [
       'reduceRight processes array from last to first element',
       'Useful for function composition: f(g(h(x)))',
-      'Accumulator starts with initial value, then each function is applied'
-    ]
+      'Accumulator starts with initial value, then each function is applied',
+    ],
   },
   {
     id: 'some-every',
@@ -572,8 +659,8 @@ function testCompose() {
       {
         input: `const scores = [85, 90, 78, 92];`,
         output: `some > 90: true, every > 70: true`,
-        explanation: 'Check if any score is high, or all scores pass threshold'
-      }
+        explanation: 'Check if any score is high, or all scores pass threshold',
+      },
     ],
     starterCode: `function hasHighScore(scores) {
   // TODO: Use some() to check if any score >= 90
@@ -602,24 +689,24 @@ function allPassing(scores) {
       {
         input: [[85, 90, 78, 92]],
         expectedOutput: true,
-        description: 'hasHighScore'
+        description: 'hasHighScore',
       },
       {
         input: [[85, 90, 78, 92]],
         expectedOutput: true,
-        description: 'allPassing'
+        description: 'allPassing',
       },
       {
         input: [[65, 70, 68, 72]],
         expectedOutput: false,
-        description: 'allPassing with low scores'
-      }
+        description: 'allPassing with low scores',
+      },
     ],
     hints: [
       'some() returns true if at least one element matches',
       'every() returns true only if ALL elements match',
-      'Both short-circuit: some stops at first match, every stops at first non-match'
-    ]
+      'Both short-circuit: some stops at first match, every stops at first non-match',
+    ],
   },
   {
     id: 'array-from',
@@ -633,8 +720,8 @@ function allPassing(scores) {
       {
         input: `Array.from({ length: 5 }, (_, i) => i * 2)`,
         output: `[0, 2, 4, 6, 8]`,
-        explanation: 'Create array of even numbers'
-      }
+        explanation: 'Create array of even numbers',
+      },
     ],
     starterCode: `function createNumberSequence(length, start = 0, step = 1) {
   // TODO: Use Array.from to create sequence
@@ -661,19 +748,46 @@ function createAlphabet() {
       {
         input: [5, 0, 2],
         expectedOutput: [0, 2, 4, 6, 8],
-        description: 'createNumberSequence'
+        description: 'createNumberSequence',
       },
       {
         input: [],
-        expectedOutput: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
-        description: 'createAlphabet'
-      }
+        expectedOutput: [
+          'a',
+          'b',
+          'c',
+          'd',
+          'e',
+          'f',
+          'g',
+          'h',
+          'i',
+          'j',
+          'k',
+          'l',
+          'm',
+          'n',
+          'o',
+          'p',
+          'q',
+          'r',
+          's',
+          't',
+          'u',
+          'v',
+          'w',
+          'x',
+          'y',
+          'z',
+        ],
+        description: 'createAlphabet',
+      },
     ],
     hints: [
       'Array.from({ length: n }, mapFn) creates array with n elements',
       'Second parameter is mapping function: (_, index) => value',
-      'Useful for creating sequences, ranges, or transforming iterables'
-    ]
+      'Useful for creating sequences, ranges, or transforming iterables',
+    ],
   },
   {
     id: 'partition-pattern',
@@ -690,8 +804,8 @@ function createAlphabet() {
   { name: 'Jane', active: false }
 ];`,
         output: `{ active: [...], inactive: [...] }`,
-        explanation: 'Split array into two groups'
-      }
+        explanation: 'Split array into two groups',
+      },
     ],
     starterCode: `function partitionUsers(users) {
   // TODO: Use reduce to partition users into active and inactive
@@ -720,27 +834,27 @@ console.log(partitionUsers(users));`,
 }`,
     testCases: [
       {
-        input: [[
-          { id: 1, name: 'John', active: true },
-          { id: 2, name: 'Jane', active: false },
-          { id: 3, name: 'Bob', active: true }
-        ]],
+        input: [
+          [
+            { id: 1, name: 'John', active: true },
+            { id: 2, name: 'Jane', active: false },
+            { id: 3, name: 'Bob', active: true },
+          ],
+        ],
         expectedOutput: {
           active: [
             { id: 1, name: 'John', active: true },
-            { id: 3, name: 'Bob', active: true }
+            { id: 3, name: 'Bob', active: true },
           ],
-          inactive: [
-            { id: 2, name: 'Jane', active: false }
-          ]
-        }
-      }
+          inactive: [{ id: 2, name: 'Jane', active: false }],
+        },
+      },
     ],
     hints: [
       'Initialize accumulator with both groups: { active: [], inactive: [] }',
       'Push to appropriate group based on condition',
-      'More efficient than two separate filter() calls'
-    ]
+      'More efficient than two separate filter() calls',
+    ],
   },
   {
     id: 'chunk-arrays',
@@ -754,8 +868,8 @@ console.log(partitionUsers(users));`,
       {
         input: `chunk([1, 2, 3, 4, 5], 2)`,
         output: `[[1, 2], [3, 4], [5]]`,
-        explanation: 'Split array into chunks of size 2'
-      }
+        explanation: 'Split array into chunks of size 2',
+      },
     ],
     starterCode: `function chunk(array, size) {
   // TODO: Split array into chunks of given size
@@ -775,20 +889,20 @@ console.log(chunk(['a', 'b', 'c', 'd'], 2));`,
     testCases: [
       {
         input: [[1, 2, 3, 4, 5], 2],
-        expectedOutput: [[1, 2], [3, 4], [5]]
+        expectedOutput: [[1, 2], [3, 4], [5]],
       },
       {
         input: [[1, 2, 3, 4, 5, 6, 7], 3],
-        expectedOutput: [[1, 2, 3], [4, 5, 6], [7]]
-      }
+        expectedOutput: [[1, 2, 3], [4, 5, 6], [7]],
+      },
     ],
     hints: [
       'Calculate number of chunks: Math.ceil(array.length / size)',
       'Use slice() to extract chunks: array.slice(start, start + size)',
-      'Array.from can create the chunks array with mapping'
-    ]
+      'Array.from can create the chunks array with mapping',
+    ],
   },
-{
+  {
     id: 'promise-all-vs-allsettled',
     title: 'Promise.all vs Promise.allSettled',
     difficulty: 'medium',
@@ -800,8 +914,8 @@ console.log(chunk(['a', 'b', 'c', 'd'], 2));`,
       {
         input: `const promises = [fetch('/api/1'), fetch('/api/2'), fetch('/api/3')];`,
         output: `all: fails if any fail, allSettled: always resolves`,
-        explanation: 'Choose based on whether you need all or can tolerate failures'
-      }
+        explanation: 'Choose based on whether you need all or can tolerate failures',
+      },
     ],
     starterCode: `async function fetchAllOrFail(urls) {
   // TODO: Use Promise.all - should fail if ANY request fails
@@ -839,14 +953,14 @@ async function testFetchAllOrFail() {
       {
         input: [],
         expectedOutput: ['success1', 'success2'],
-        description: 'testFetchAllOrFail'
-      }
+        description: 'testFetchAllOrFail',
+      },
     ],
     hints: [
       'Promise.all rejects if any promise rejects',
       'Promise.allSettled always resolves with status for each',
-      'Use all when you need all; allSettled when some can fail'
-    ]
+      'Use all when you need all; allSettled when some can fail',
+    ],
   },
   {
     id: 'async-generators',
@@ -860,8 +974,8 @@ async function testFetchAllOrFail() {
       {
         input: `async function* fetchPages() { ... }`,
         output: `Yields pages one at a time`,
-        explanation: 'Process data as it arrives'
-      }
+        explanation: 'Process data as it arrives',
+      },
     ],
     starterCode: `async function* fetchPages(pageSize = 10) {
   // TODO: Create async generator that yields pages
@@ -921,14 +1035,14 @@ async function testFetchPages() {
       {
         input: [],
         expectedOutput: true,
-        description: 'testFetchPages'
-      }
+        description: 'testFetchPages',
+      },
     ],
     hints: [
       'Use async function* to create async generator',
       'yield promises or values',
-      'Consume with for await...of'
-    ]
+      'Consume with for await...of',
+    ],
   },
   {
     id: 'abort-controller',
@@ -943,8 +1057,8 @@ async function testFetchPages() {
         input: `const controller = new AbortController();
 fetchWithCancel('/api/data', controller.signal);`,
         output: `Request can be cancelled with controller.abort()`,
-        explanation: 'Cancel long-running requests'
-      }
+        explanation: 'Cancel long-running requests',
+      },
     ],
     starterCode: `async function fetchWithCancel(url, signal) {
   // TODO: Pass signal to fetch options
@@ -1011,14 +1125,14 @@ function testAbortController() {
       {
         input: [],
         expectedOutput: true,
-        description: 'testAbortController'
-      }
+        description: 'testAbortController',
+      },
     ],
     hints: [
       'Pass signal to fetch options: { signal }',
       'AbortError is thrown when aborted',
-      'Clear timeouts in finally block'
-    ]
+      'Clear timeouts in finally block',
+    ],
   },
   {
     id: 'retry-pattern',
@@ -1032,8 +1146,8 @@ function testAbortController() {
       {
         input: `retryWithBackoff(fetchData, { maxRetries: 3 })`,
         output: `Retries with delays: 100ms, 200ms, 400ms`,
-        explanation: 'Exponential backoff reduces server load'
-      }
+        explanation: 'Exponential backoff reduces server load',
+      },
     ],
     starterCode: `async function retryWithBackoff(fn, options = {}) {
   const { maxRetries = 3, initialDelay = 100 } = options;
@@ -1093,14 +1207,14 @@ async function testRetryWithBackoff() {
       {
         input: [],
         expectedOutput: true,
-        description: 'testRetryWithBackoff'
-      }
+        description: 'testRetryWithBackoff',
+      },
     ],
     hints: [
       'Loop up to maxRetries times',
       'Calculate delay: initialDelay * 2^attempt',
-      'Use setTimeout wrapped in Promise for delay'
-    ]
+      'Use setTimeout wrapped in Promise for delay',
+    ],
   },
   {
     id: 'promise-chaining',
@@ -1114,8 +1228,8 @@ async function testRetryWithBackoff() {
       {
         input: `fetchUser(id).then(validate).then(enrich).then(save)`,
         output: `Data flows through each step`,
-        explanation: 'Each then returns a promise for the next step'
-      }
+        explanation: 'Each then returns a promise for the next step',
+      },
     ],
     starterCode: `async function processUser(userId) {
   // TODO: Chain promises to:
@@ -1181,14 +1295,14 @@ async function testProcessUser() {
       {
         input: [],
         expectedOutput: true,
-        description: 'testProcessUser'
-      }
+        description: 'testProcessUser',
+      },
     ],
     hints: [
       'Chain .then() calls for sequential async operations',
       'Return value from one becomes input to next',
-      'Use .catch() at end to handle errors'
-    ]
+      'Use .catch() at end to handle errors',
+    ],
   },
   {
     id: 'error-boundaries',
@@ -1202,8 +1316,8 @@ async function testProcessUser() {
       {
         input: `try { await riskyOperation(); } catch (error) { handle(error); }`,
         output: `Errors are caught and handled`,
-        explanation: 'Prevent unhandled promise rejections'
-      }
+        explanation: 'Prevent unhandled promise rejections',
+      },
     ],
     starterCode: `async function safeOperation(operation, fallback) {
   // TODO: Try operation, catch errors, return fallback on error
@@ -1261,14 +1375,14 @@ async function testSafeOperation() {
       {
         input: [],
         expectedOutput: true,
-        description: 'testSafeOperation'
-      }
+        description: 'testSafeOperation',
+      },
     ],
     hints: [
       'Use try/catch for async/await',
       'Use .catch() for promise chains',
-      'Promise.allSettled never rejects'
-    ]
+      'Promise.allSettled never rejects',
+    ],
   },
   {
     id: 'promise-constructor',
@@ -1282,8 +1396,8 @@ async function testSafeOperation() {
       {
         input: `delay(1000).then(() => console.log('Done'))`,
         output: `Logs after 1 second`,
-        explanation: 'Promise-based delay'
-      }
+        explanation: 'Promise-based delay',
+      },
     ],
     starterCode: `function delay(ms) {
   // TODO: Return a Promise that resolves after ms milliseconds
@@ -1328,14 +1442,14 @@ async function testDelay() {
       {
         input: [],
         expectedOutput: true,
-        description: 'testDelay'
-      }
+        description: 'testDelay',
+      },
     ],
     hints: [
       'new Promise((resolve, reject) => { ... })',
       'Call resolve() when operation succeeds',
-      'Call reject() when operation fails'
-    ]
+      'Call reject() when operation fails',
+    ],
   },
   {
     id: 'async-await-error',
@@ -1349,8 +1463,8 @@ async function testDelay() {
       {
         input: `try { const data = await fetchData(); } catch (error) { ... }`,
         output: `Errors are caught`,
-        explanation: 'Use try/catch with async/await'
-      }
+        explanation: 'Use try/catch with async/await',
+      },
     ],
     starterCode: `async function fetchUserData(userId) {
   // TODO: Fetch user, handle errors
@@ -1408,14 +1522,14 @@ async function testFetchUserData() {
       {
         input: [],
         expectedOutput: true,
-        description: 'testFetchUserData'
-      }
+        description: 'testFetchUserData',
+      },
     ],
     hints: [
       'Wrap await in try/catch',
       'Check response.ok for HTTP errors',
-      'Use Promise.allSettled for multiple operations'
-    ]
+      'Use Promise.allSettled for multiple operations',
+    ],
   },
   {
     id: 'promise-race-first',
@@ -1429,8 +1543,8 @@ async function testFetchUserData() {
       {
         input: `Promise.race([fetch('/api1'), fetch('/api2'), fetch('/api3')])`,
         output: `Returns result from fastest API`,
-        explanation: 'Use fastest available source'
-      }
+        explanation: 'Use fastest available source',
+      },
     ],
     starterCode: `async function fetchFromFastest(urls) {
   // TODO: Use Promise.race to get result from fastest URL
@@ -1482,14 +1596,14 @@ async function testFetchFromFastest() {
       {
         input: [],
         expectedOutput: true,
-        description: 'testFetchFromFastest'
-      }
+        description: 'testFetchFromFastest',
+      },
     ],
     hints: [
       'Promise.race resolves/rejects with first settled promise',
       'Useful for timeouts and fastest response',
-      'Be careful - other promises continue running'
-    ]
+      'Be careful - other promises continue running',
+    ],
   },
   {
     id: 'promise-finally',
@@ -1503,8 +1617,8 @@ async function testFetchFromFastest() {
       {
         input: `fetch('/api').finally(() => cleanup())`,
         output: `cleanup() always runs`,
-        explanation: 'Finally runs whether promise resolves or rejects'
-      }
+        explanation: 'Finally runs whether promise resolves or rejects',
+      },
     ],
     starterCode: `async function fetchWithCleanup(url) {
   let loading = true;
@@ -1551,18 +1665,18 @@ async function processWithLock(resource, operation) {
     testCases: [
       {
         input: ['/api/data'],
-        expectedOutput: (expect: any) => {
+        expectedOutput: (expect: unknown) => {
           return expect !== undefined;
-        }
-      }
+        },
+      },
     ],
     hints: [
       '.finally() always runs after promise settles',
       'Useful for cleanup, logging, state updates',
-      'Runs even if promise rejects'
-    ]
+      'Runs even if promise rejects',
+    ],
   },
-{
+  {
     id: 'basic-typescript-types',
     title: 'Basic TypeScript Types',
     difficulty: 'easy',
@@ -1576,8 +1690,8 @@ async function processWithLock(resource, operation) {
 const age: number = 30;
 const isActive: boolean = true;`,
         output: `Type-safe variables`,
-        explanation: 'Type annotations provide compile-time type checking'
-      }
+        explanation: 'Type annotations provide compile-time type checking',
+      },
     ],
     starterCode: `// TODO: Add type annotations
 // Fix the type errors by adding proper types
@@ -1623,14 +1737,14 @@ console.log(isEven(4));`,
       {
         input: [],
         expectedOutput: true,
-        description: 'Type annotations work correctly'
-      }
+        description: 'Type annotations work correctly',
+      },
     ],
     hints: [
       'Use : type syntax for type annotations',
       'Function parameters and return types need annotations',
-      'Arrays can be typed as Type[] or Array<Type>'
-    ]
+      'Arrays can be typed as Type[] or Array<Type>',
+    ],
   },
   {
     id: 'interfaces',
@@ -1648,8 +1762,8 @@ console.log(isEven(4));`,
 }
 const user: User = { name: 'John', age: 30 };`,
         output: `Type-safe user object`,
-        explanation: 'Interface ensures object has required properties'
-      }
+        explanation: 'Interface ensures object has required properties',
+      },
     ],
     starterCode: `// TODO: Create interfaces
 // 1. Create a Person interface with name, age, and email
@@ -1714,14 +1828,14 @@ displayPerson(person);`,
       {
         input: [],
         expectedOutput: true,
-        description: 'Interfaces work correctly'
-      }
+        description: 'Interfaces work correctly',
+      },
     ],
     hints: [
       'Use interface keyword to define object shapes',
       'Optional properties use ?: syntax',
-      'Interfaces can extend other interfaces'
-    ]
+      'Interfaces can extend other interfaces',
+    ],
   },
   {
     id: 'type-aliases',
@@ -1736,8 +1850,8 @@ displayPerson(person);`,
         input: `type ID = string | number;
 type Status = 'pending' | 'approved' | 'rejected';`,
         output: `Custom types`,
-        explanation: 'Type aliases can represent unions and literals'
-      }
+        explanation: 'Type aliases can represent unions and literals',
+      },
     ],
     starterCode: `// TODO: Create type aliases
 // 1. Create a Status type that can be 'loading', 'success', or 'error'
@@ -1773,14 +1887,14 @@ console.log(processStatus('success'));`,
       {
         input: [],
         expectedOutput: true,
-        description: 'Type aliases work correctly'
-      }
+        description: 'Type aliases work correctly',
+      },
     ],
     hints: [
       'Use type keyword for type aliases',
       'Union types use | syntax',
-      'Type aliases can represent any type'
-    ]
+      'Type aliases can represent any type',
+    ],
   },
   {
     id: 'generics-basic',
@@ -1797,8 +1911,8 @@ console.log(processStatus('success'));`,
 }
 const num = identity<number>(42);`,
         output: `42`,
-        explanation: 'Generic function works with any type'
-      }
+        explanation: 'Generic function works with any type',
+      },
     ],
     starterCode: `// TODO: Create generic functions
 // 1. Create a generic identity function
@@ -1847,14 +1961,14 @@ console.log(num, str, first, pair);`,
       {
         input: [],
         expectedOutput: true,
-        description: 'Generics work correctly'
-      }
+        description: 'Generics work correctly',
+      },
     ],
     hints: [
       'Use <T> syntax for generic type parameters',
       'Multiple generics: <T, U, V>',
-      'TypeScript can often infer generic types'
-    ]
+      'TypeScript can often infer generic types',
+    ],
   },
   {
     id: 'union-intersection',
@@ -1871,8 +1985,8 @@ type A = { a: number };
 type B = { b: string };
 type AB = A & B; // { a: number, b: string }`,
         output: `Combined types`,
-        explanation: 'Union = one of, Intersection = both'
-      }
+        explanation: 'Union = one of, Intersection = both',
+      },
     ],
     starterCode: `// TODO: Use union and intersection types
 // 1. Create a function that accepts string | number
@@ -1924,14 +2038,14 @@ displayPerson({ name: 'Alice', age: 30 });`,
       {
         input: [],
         expectedOutput: true,
-        description: 'Union and intersection types work correctly'
-      }
+        description: 'Union and intersection types work correctly',
+      },
     ],
     hints: [
       'Union: A | B means A or B',
       'Intersection: A & B means both A and B',
-      'Use typeof or type guards to narrow union types'
-    ]
+      'Use typeof or type guards to narrow union types',
+    ],
   },
   {
     id: 'optional-readonly',
@@ -1948,8 +2062,8 @@ displayPerson({ name: 'Alice', age: 30 });`,
   timeout?: number;
 }`,
         output: `Type-safe config`,
-        explanation: 'readonly prevents reassignment, ? makes optional'
-      }
+        explanation: 'readonly prevents reassignment, ? makes optional',
+      },
     ],
     starterCode: `// TODO: Use optional and readonly modifiers
 // 1. Create an interface with readonly and optional properties
@@ -1991,14 +2105,14 @@ console.log(user);`,
       {
         input: [],
         expectedOutput: true,
-        description: 'Optional and readonly work correctly'
-      }
+        description: 'Optional and readonly work correctly',
+      },
     ],
     hints: [
       'Use ? for optional properties: prop?: type',
       'Use readonly for immutable properties: readonly prop: type',
-      'Partial<T> makes all properties optional'
-    ]
+      'Partial<T> makes all properties optional',
+    ],
   },
   {
     id: 'type-guards',
@@ -2017,8 +2131,8 @@ if (isString(value)) {
   value.toUpperCase(); // TypeScript knows value is string
 }`,
         output: `Narrowed type`,
-        explanation: 'Type guard narrows type in if block'
-      }
+        explanation: 'Type guard narrows type in if block',
+      },
     ],
     starterCode: `// TODO: Create type guards
 // 1. Create a type guard for User type
@@ -2077,14 +2191,14 @@ processData('not a user');`,
       {
         input: [],
         expectedOutput: true,
-        description: 'Type guards work correctly'
-      }
+        description: 'Type guards work correctly',
+      },
     ],
     hints: [
       'Type guard syntax: value is Type',
       'Use typeof, instanceof, or property checks',
-      'Type guards narrow types in conditional blocks'
-    ]
+      'Type guards narrow types in conditional blocks',
+    ],
   },
   {
     id: 'enums',
@@ -2103,8 +2217,8 @@ processData('not a user');`,
 }
 const status: Status = Status.Pending;`,
         output: `Type-safe constants`,
-        explanation: 'Enums provide named constants'
-      }
+        explanation: 'Enums provide named constants',
+      },
     ],
     starterCode: `// TODO: Create enums
 // 1. Create a numeric enum for Status
@@ -2159,16 +2273,16 @@ console.log(Direction.Up);`,
       {
         input: [],
         expectedOutput: true,
-        description: 'Enums work correctly'
-      }
+        description: 'Enums work correctly',
+      },
     ],
     hints: [
       'Numeric enums auto-increment from 0',
       'String enums must have explicit values',
-      'Enums compile to JavaScript objects'
-    ]
+      'Enums compile to JavaScript objects',
+    ],
   },
-{
+  {
     id: 'proxy-api',
     title: 'Proxy API for Interception',
     difficulty: 'hard',
@@ -2180,8 +2294,8 @@ console.log(Direction.Up);`,
       {
         input: `const obj = new Proxy(target, handler);`,
         output: `Intercepts get, set, and other operations`,
-        explanation: 'Proxy enables meta-programming'
-      }
+        explanation: 'Proxy enables meta-programming',
+      },
     ],
     starterCode: `// TODO: Create a proxy that logs all property access
 function createLoggedObject(target) {
@@ -2235,15 +2349,15 @@ function createValidatedObject(target, validator) {
       {
         input: [{ name: 'John' }],
         expectedOutput: 'John',
-        description: 'createLoggedObject - mock test'
-      }
+        description: 'createLoggedObject - mock test',
+      },
     ],
     hints: [
       'Proxy constructor takes target and handler object',
       'Use get trap for property access: get(target, prop)',
       'Use set trap for property assignment: set(target, prop, value)',
-      'Return true from set trap to indicate success'
-    ]
+      'Return true from set trap to indicate success',
+    ],
   },
   {
     id: 'weakmap-weakset',
@@ -2257,8 +2371,8 @@ function createValidatedObject(target, validator) {
       {
         input: `const privateData = new WeakMap();`,
         output: `Stores data keyed by objects, allows GC`,
-        explanation: 'WeakMap keys must be objects, allows garbage collection'
-      }
+        explanation: 'WeakMap keys must be objects, allows garbage collection',
+      },
     ],
     starterCode: `// TODO: Use WeakMap to store private data
 class User {
@@ -2327,14 +2441,14 @@ function isVisited(obj, visited) {
       {
         input: ['John'],
         expectedOutput: 'secret-123',
-        description: 'User with private data'
-      }
+        description: 'User with private data',
+      },
     ],
     hints: [
       'WeakMap keys must be objects (not primitives)',
       'WeakMap/WeakSet allow garbage collection when key is no longer referenced',
-      'Useful for private data, metadata, or tracking without memory leaks'
-    ]
+      'Useful for private data, metadata, or tracking without memory leaks',
+    ],
   },
   {
     id: 'symbol-usage',
@@ -2348,8 +2462,8 @@ function isVisited(obj, visited) {
       {
         input: `const ID = Symbol('id');`,
         output: `Unique symbol that won't conflict`,
-        explanation: 'Symbols are always unique, even with same description'
-      }
+        explanation: 'Symbols are always unique, even with same description',
+      },
     ],
     starterCode: `// TODO: Create a Symbol for a private property
 const PRIVATE_ID = Symbol('privateId'); // Fix: Create symbol
@@ -2399,15 +2513,15 @@ const iterable = {
       {
         input: [],
         expectedOutput: true,
-        description: 'Symbol usage - type check'
-      }
+        description: 'Symbol usage - type check',
+      },
     ],
     hints: [
       'Symbol() creates unique symbol, Symbol.for() creates shared symbol',
       'Use computed property names: [SYMBOL]: value',
       'Well-known symbols: Symbol.iterator, Symbol.toStringTag, etc.',
-      'Symbols are not enumerable in Object.keys() or for...in'
-    ]
+      'Symbols are not enumerable in Object.keys() or for...in',
+    ],
   },
   {
     id: 'reflect-api',
@@ -2421,8 +2535,8 @@ const iterable = {
       {
         input: `Reflect.get(obj, 'prop'), Reflect.set(obj, 'prop', value)`,
         output: `Meta-programming operations`,
-        explanation: 'Reflect provides programmatic access to object operations'
-      }
+        explanation: 'Reflect provides programmatic access to object operations',
+      },
     ],
     starterCode: `// TODO: Use Reflect.get to safely get property
 function safeGet(obj, path) {
@@ -2486,15 +2600,15 @@ function createInstance(Constructor, args) {
       {
         input: [{ a: { b: 1 } }, 'a.b'],
         expectedOutput: 1,
-        description: 'safeGet'
-      }
+        description: 'safeGet',
+      },
     ],
     hints: [
       'Reflect.get(target, prop) - get property value',
       'Reflect.set(target, prop, value) - set property, returns boolean',
       'Reflect.has(target, prop) - check if property exists',
-      'Reflect.construct(Constructor, args) - create instance'
-    ]
+      'Reflect.construct(Constructor, args) - create instance',
+    ],
   },
   {
     id: 'object-freeze-seal',
@@ -2508,8 +2622,8 @@ function createInstance(Constructor, args) {
       {
         input: `Object.freeze(obj), Object.seal(obj), Object.preventExtensions(obj)`,
         output: `Different levels of immutability`,
-        explanation: 'freeze > seal > preventExtensions in restrictiveness'
-      }
+        explanation: 'freeze > seal > preventExtensions in restrictiveness',
+      },
     ],
     starterCode: `// TODO: Create immutable object with Object.freeze
 function createImmutableObject(data) {
@@ -2571,15 +2685,15 @@ function deepFreeze(obj) {
       {
         input: [{ a: 1 }],
         expectedOutput: true,
-        description: 'isFrozen check'
-      }
+        description: 'isFrozen check',
+      },
     ],
     hints: [
       'Object.freeze: no changes, additions, or deletions',
       'Object.seal: can modify, cannot add or delete',
       'Object.preventExtensions: can modify/delete, cannot add',
-      'Deep freeze requires recursive freezing of nested objects'
-    ]
+      'Deep freeze requires recursive freezing of nested objects',
+    ],
   },
   {
     id: 'property-descriptors',
@@ -2593,8 +2707,8 @@ function deepFreeze(obj) {
       {
         input: `Object.defineProperty(obj, 'prop', { enumerable: false })`,
         output: `Property with custom descriptor`,
-        explanation: 'Control property visibility and mutability'
-      }
+        explanation: 'Control property visibility and mutability',
+      },
     ],
     starterCode: `// TODO: Create a non-enumerable property
 function addHiddenProperty(obj, key, value) {
@@ -2663,15 +2777,15 @@ function copyDescriptors(source, target) {
       {
         input: [{ a: 1 }, 'hidden', 'secret'],
         expectedOutput: { a: 1 },
-        description: 'addHiddenProperty - check enumerable'
-      }
+        description: 'addHiddenProperty - check enumerable',
+      },
     ],
     hints: [
       'enumerable: false - hidden from Object.keys, for...in',
       'writable: false - cannot be reassigned',
       'configurable: false - cannot be deleted or reconfigured',
-      'Object.getOwnPropertyDescriptors gets all descriptors'
-    ]
+      'Object.getOwnPropertyDescriptors gets all descriptors',
+    ],
   },
   {
     id: 'computed-property-names',
@@ -2685,8 +2799,8 @@ function copyDescriptors(source, target) {
       {
         input: `const key = 'name'; const obj = { [key]: 'John' };`,
         output: `{ name: 'John' }`,
-        explanation: 'Computed property names use bracket notation'
-      }
+        explanation: 'Computed property names use bracket notation',
+      },
     ],
     starterCode: `// TODO: Create object with computed property names
 function createConfig(env) {
@@ -2739,19 +2853,24 @@ function mergeWithPrefix(obj1, obj2, prefix) {
       {
         input: ['prod'],
         expectedOutput: { prodApiUrl: 'https://api.prod.com', prodApiKey: 'key-prod' },
-        description: 'createConfig'
+        description: 'createConfig',
       },
       {
-        input: [[['a', 1], ['b', 2]]],
+        input: [
+          [
+            ['a', 1],
+            ['b', 2],
+          ],
+        ],
         expectedOutput: { a: 1, b: 2 },
-        description: 'fromEntries'
-      }
+        description: 'fromEntries',
+      },
     ],
     hints: [
       'Use brackets in object literals: { [expression]: value }',
       'Can use template literals: { [`key${suffix}`]: value }',
-      'Useful for dynamic property names based on variables'
-    ]
+      'Useful for dynamic property names based on variables',
+    ],
   },
   {
     id: 'spread-operator-patterns',
@@ -2765,8 +2884,8 @@ function mergeWithPrefix(obj1, obj2, prefix) {
       {
         input: `const merged = { ...obj1, ...obj2 };`,
         output: `Merged object with later properties overriding`,
-        explanation: 'Spread operator creates shallow copies'
-      }
+        explanation: 'Spread operator creates shallow copies',
+      },
     ],
     starterCode: `// TODO: Deep clone an object (shallow clone with spread)
 function shallowClone(obj) {
@@ -2836,25 +2955,25 @@ function omitProperty(obj, key) {
       {
         input: [{ a: 1, b: 2 }],
         expectedOutput: { a: 1, b: 2 },
-        description: 'shallowClone'
+        description: 'shallowClone',
       },
       {
         input: [{ a: 1 }, { b: 2 }, { a: 3 }],
         expectedOutput: { a: 3, b: 2 },
-        description: 'mergeObjects'
+        description: 'mergeObjects',
       },
       {
         input: [{ a: 1, b: 2, c: 3 }, 'b'],
         expectedOutput: { a: 1, c: 3 },
-        description: 'omitProperty'
-      }
+        description: 'omitProperty',
+      },
     ],
     hints: [
       'Spread creates shallow copy: { ...obj }',
       'Later properties override: { ...obj1, ...obj2 }',
       'Use destructuring to omit: const { key, ...rest } = obj',
-      'For deep updates, spread at each level'
-    ]
+      'For deep updates, spread at each level',
+    ],
   },
   {
     id: 'spread-operator-tricks',
@@ -2874,8 +2993,8 @@ function omitProperty(obj, key) {
       {
         input: `const obj1 = { a: 1 }; const obj2 = { b: 2 };`,
         output: `{ a: 1, b: 2 }`,
-        explanation: 'Merge objects using spread'
-      }
+        explanation: 'Merge objects using spread',
+      },
     ],
     starterCode: `function mergeObjects(obj1, obj2) {
   // TODO: Merge two objects, obj2 properties override obj1
@@ -2910,26 +3029,29 @@ function uniqueValues(arr) {
 }`,
     testCases: [
       {
-        input: [{ a: 1, b: 2 }, { b: 3, c: 4 }],
+        input: [
+          { a: 1, b: 2 },
+          { b: 3, c: 4 },
+        ],
         expectedOutput: { a: 1, b: 3, c: 4 },
-        description: 'mergeObjects'
+        description: 'mergeObjects',
       },
       {
         input: [[1, 2, 3], 4],
         expectedOutput: [1, 2, 3, 4],
-        description: 'cloneAndPush'
+        description: 'cloneAndPush',
       },
       {
         input: [[1, 2, 2, 3, 3, 3]],
         expectedOutput: [1, 2, 3],
-        description: 'uniqueValues'
-      }
+        description: 'uniqueValues',
+      },
     ],
     hints: [
       'Use {...obj1, ...obj2} to merge objects',
       'Use [...arr] to clone an array',
-      'new Set(arr) removes duplicates, spread converts back to array'
-    ]
+      'new Set(arr) removes duplicates, spread converts back to array',
+    ],
   },
   {
     id: 'short-circuit-evaluation',
@@ -2948,8 +3070,8 @@ function uniqueValues(arr) {
       {
         input: `const name = user && user.name;`,
         output: `'John' or undefined`,
-        explanation: '&& short-circuits on falsy values'
-      }
+        explanation: '&& short-circuits on falsy values',
+      },
     ],
     starterCode: `function greetUser(user) {
   // TODO: Use && to only call user.getName() if user exists
@@ -2988,29 +3110,29 @@ function getConfigValue(config, key, defaultValue) {
       {
         input: [{ getName: () => 'John' }],
         expectedOutput: 'Hello, John!',
-        description: 'greetUser with user'
+        description: 'greetUser with user',
       },
       {
         input: [null],
         expectedOutput: 'Hello, Guest!',
-        description: 'greetUser without user'
+        description: 'greetUser without user',
       },
       {
         input: [{ timeout: 5000 }, 'timeout', 3000],
         expectedOutput: 5000,
-        description: 'getConfigValue existing'
+        description: 'getConfigValue existing',
       },
       {
         input: [{}, 'timeout', 3000],
         expectedOutput: 3000,
-        description: 'getConfigValue default'
-      }
+        description: 'getConfigValue default',
+      },
     ],
     hints: [
       '&& evaluates right side only if left is truthy',
       '|| returns first truthy value or last value',
-      'Be careful: 0 and "" are falsy!'
-    ]
+      'Be careful: 0 and "" are falsy!',
+    ],
   },
   {
     id: 'tagged-template-literals',
@@ -3027,10 +3149,10 @@ function getConfigValue(config, key, defaultValue) {
 - Common uses: i18n, sanitization, styling`,
     examples: [
       {
-        input: "html`<div>${userInput}</div>`",
+        input: 'html`<div>${userInput}</div>`',
         output: `'<div>&lt;script&gt;</div>'`,
-        explanation: 'Escape HTML entities in interpolated values'
-      }
+        explanation: 'Escape HTML entities in interpolated values',
+      },
     ],
     starterCode: `function html(strings, ...values) {
   // TODO: Escape HTML entities in interpolated values
@@ -3070,19 +3192,19 @@ function html(strings, ...values) {
       {
         input: ['<script>alert("xss")</script>'],
         expectedOutput: '<div>&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;</div>',
-        description: 'html tag escapes script'
+        description: 'html tag escapes script',
       },
       {
         input: ['John & Jane'],
         expectedOutput: '<span>Hello, John &amp; Jane!</span>',
-        description: 'html tag escapes ampersand'
-      }
+        description: 'html tag escapes ampersand',
+      },
     ],
     hints: [
       'Tag function receives (strings[], ...values)',
       'strings.length === values.length + 1',
-      'Use reduce to interleave strings and processed values'
-    ]
+      'Use reduce to interleave strings and processed values',
+    ],
   },
   {
     id: 'reduce-patterns',
@@ -3101,8 +3223,8 @@ function html(strings, ...values) {
       {
         input: `['apple', 'banana', 'apple', 'cherry', 'banana', 'apple']`,
         output: `{ apple: 3, banana: 2, cherry: 1 }`,
-        explanation: 'Count occurrences of each item'
-      }
+        explanation: 'Count occurrences of each item',
+      },
     ],
     starterCode: `function countOccurrences(arr) {
   // TODO: Count occurrences of each item
@@ -3161,31 +3283,37 @@ function runningTotal(numbers) {
       {
         input: [['a', 'b', 'a', 'c', 'b', 'a']],
         expectedOutput: { a: 3, b: 2, c: 1 },
-        description: 'countOccurrences'
+        description: 'countOccurrences',
       },
       {
-        input: [[
-          { type: 'fruit', name: 'apple' },
-          { type: 'vegetable', name: 'carrot' },
-          { type: 'fruit', name: 'banana' }
-        ], 'type'],
+        input: [
+          [
+            { type: 'fruit', name: 'apple' },
+            { type: 'vegetable', name: 'carrot' },
+            { type: 'fruit', name: 'banana' },
+          ],
+          'type',
+        ],
         expectedOutput: {
-          fruit: [{ type: 'fruit', name: 'apple' }, { type: 'fruit', name: 'banana' }],
-          vegetable: [{ type: 'vegetable', name: 'carrot' }]
+          fruit: [
+            { type: 'fruit', name: 'apple' },
+            { type: 'fruit', name: 'banana' },
+          ],
+          vegetable: [{ type: 'vegetable', name: 'carrot' }],
         },
-        description: 'groupBy'
+        description: 'groupBy',
       },
       {
         input: [[1, 2, 3, 4, 5]],
         expectedOutput: [1, 3, 6, 10, 15],
-        description: 'runningTotal'
-      }
+        description: 'runningTotal',
+      },
     ],
     hints: [
       'reduce(callback, initialValue) - start with {} or []',
       'acc[key] = (acc[key] || 0) + 1 for counting',
-      'acc[key] = acc[key] || [] for grouping'
-    ]
+      'acc[key] = acc[key] || [] for grouping',
+    ],
   },
   {
     id: 'array-from-tricks',
@@ -3204,8 +3332,8 @@ function runningTotal(numbers) {
       {
         input: `Array.from({ length: 5 }, (_, i) => i)`,
         output: `[0, 1, 2, 3, 4]`,
-        explanation: 'Generate sequence of numbers'
-      }
+        explanation: 'Generate sequence of numbers',
+      },
     ],
     starterCode: `function range(start, end) {
   // TODO: Generate array from start to end (inclusive)
@@ -3249,24 +3377,27 @@ function toArray(arrayLike) {
       {
         input: [1, 5],
         expectedOutput: [1, 2, 3, 4, 5],
-        description: 'range'
+        description: 'range',
       },
       {
         input: [2, 3, 0],
-        expectedOutput: [[0, 0, 0], [0, 0, 0]],
-        description: 'createGrid'
+        expectedOutput: [
+          [0, 0, 0],
+          [0, 0, 0],
+        ],
+        description: 'createGrid',
       },
       {
         input: ['hello'],
         expectedOutput: ['h', 'e', 'l', 'l', 'o'],
-        description: 'toArray string'
-      }
+        description: 'toArray string',
+      },
     ],
     hints: [
       'Array.from({ length: n }) creates array of n undefined elements',
       'Second argument (_, index) => value maps each element',
-      'For 2D arrays, nest Array.from calls'
-    ]
+      'For 2D arrays, nest Array.from calls',
+    ],
   },
   {
     id: 'sort-comparators',
@@ -3285,8 +3416,8 @@ function toArray(arrayLike) {
       {
         input: `users.sort((a, b) => a.age - b.age)`,
         output: `Users sorted by age ascending`,
-        explanation: 'Numeric sort with subtraction'
-      }
+        explanation: 'Numeric sort with subtraction',
+      },
     ],
     starterCode: `function sortByProperty(arr, property, order = 'asc') {
   // TODO: Sort array of objects by property
@@ -3348,26 +3479,36 @@ function sortWithNulls(arr, nullsFirst = true) {
 }`,
     testCases: [
       {
-        input: [[{ name: 'John', age: 30 }, { name: 'Jane', age: 25 }], 'age', 'asc'],
-        expectedOutput: [{ name: 'Jane', age: 25 }, { name: 'John', age: 30 }],
-        description: 'sortByProperty age asc'
+        input: [
+          [
+            { name: 'John', age: 30 },
+            { name: 'Jane', age: 25 },
+          ],
+          'age',
+          'asc',
+        ],
+        expectedOutput: [
+          { name: 'Jane', age: 25 },
+          { name: 'John', age: 30 },
+        ],
+        description: 'sortByProperty age asc',
       },
       {
         input: [[3, null, 1, null, 2], true],
         expectedOutput: [null, null, 1, 2, 3],
-        description: 'sortWithNulls nullsFirst'
+        description: 'sortWithNulls nullsFirst',
       },
       {
         input: [[3, null, 1, null, 2], false],
         expectedOutput: [1, 2, 3, null, null],
-        description: 'sortWithNulls nullsLast'
-      }
+        description: 'sortWithNulls nullsLast',
+      },
     ],
     hints: [
       'Return negative if a < b, positive if a > b, 0 if equal',
       'For descending order, reverse the comparison',
-      'Handle null/undefined before comparing values'
-    ]
+      'Handle null/undefined before comparing values',
+    ],
   },
   {
     id: 'string-padding',
@@ -3386,8 +3527,8 @@ function sortWithNulls(arr, nullsFirst = true) {
       {
         input: `'5'.padStart(2, '0')`,
         output: `'05'`,
-        explanation: 'Pad single digit with leading zero'
-      }
+        explanation: 'Pad single digit with leading zero',
+      },
     ],
     starterCode: `function formatTime(hours, minutes, seconds) {
   // TODO: Format as HH:MM:SS with leading zeros
@@ -3433,24 +3574,24 @@ function formatCurrency(amount, width = 10) {
       {
         input: [9, 5, 3],
         expectedOutput: '09:05:03',
-        description: 'formatTime'
+        description: 'formatTime',
       },
       {
         input: ['1234567890123456'],
         expectedOutput: '************3456',
-        description: 'maskCardNumber'
+        description: 'maskCardNumber',
       },
       {
         input: [42.5, 10],
         expectedOutput: '    $42.50',
-        description: 'formatCurrency'
-      }
+        description: 'formatCurrency',
+      },
     ],
     hints: [
       'String(num).padStart(2, "0") for leading zeros',
       'slice(-4) gets last 4 characters',
-      'toFixed(2) formats decimals, then padStart for alignment'
-    ]
+      'toFixed(2) formats decimals, then padStart for alignment',
+    ],
   },
   {
     id: 'currying',
@@ -3469,8 +3610,8 @@ function formatCurrency(amount, width = 10) {
       {
         input: `const add = a => b => a + b; add(2)(3)`,
         output: `5`,
-        explanation: 'Curried add function'
-      }
+        explanation: 'Curried add function',
+      },
     ],
     starterCode: `// TODO: Create a curried multiply function
 // multiply(2)(3)(4) should return 24
@@ -3521,24 +3662,24 @@ function curry2(fn) {
       {
         input: [],
         expectedOutput: 24,
-        description: 'multiply(2)(3)(4)'
+        description: 'multiply(2)(3)(4)',
       },
       {
         input: [],
         expectedOutput: 'Hello, World!',
-        description: 'greet(Hello)(World)'
+        description: 'greet(Hello)(World)',
       },
       {
         input: [],
         expectedOutput: 5,
-        description: 'curry2 add'
-      }
+        description: 'curry2 add',
+      },
     ],
     hints: [
       'Return a function that returns a function',
       'Each returned function captures the previous argument',
-      'Arrow functions make this concise: a => b => a + b'
-    ]
+      'Arrow functions make this concise: a => b => a + b',
+    ],
   },
   {
     id: 'memoization',
@@ -3557,8 +3698,8 @@ function curry2(fn) {
       {
         input: `const memoFib = memoize(fib); memoFib(40)`,
         output: `Fast result (cached)`,
-        explanation: 'Subsequent calls use cached value'
-      }
+        explanation: 'Subsequent calls use cached value',
+      },
     ],
     starterCode: `// TODO: Create a memoize function that caches results
 // Only works for single-argument functions for simplicity
@@ -3612,24 +3753,24 @@ function fastFib(n, memo = {}) {
       {
         input: [10],
         expectedOutput: 55,
-        description: 'memoizedFib(10)'
+        description: 'memoizedFib(10)',
       },
       {
         input: [10],
         expectedOutput: 55,
-        description: 'fastFib(10)'
+        description: 'fastFib(10)',
       },
       {
         input: [20],
         expectedOutput: 6765,
-        description: 'fastFib(20)'
-      }
+        description: 'fastFib(20)',
+      },
     ],
     hints: [
       'Use Map for cache: cache.has(key), cache.get(key), cache.set(key, value)',
       'Check cache before computing',
-      'For recursive functions, pass memo object as parameter'
-    ]
+      'For recursive functions, pass memo object as parameter',
+    ],
   },
   {
     id: 'pipe-compose',
@@ -3648,8 +3789,8 @@ function fastFib(n, memo = {}) {
       {
         input: `pipe(addOne, double, square)(2)`,
         output: `36`,
-        explanation: '2 → 3 → 6 → 36'
-      }
+        explanation: '2 → 3 → 6 → 36',
+      },
     ],
     starterCode: `// TODO: Implement pipe - left to right function composition
 // pipe(f, g, h)(x) = h(g(f(x)))
@@ -3693,24 +3834,24 @@ function compose(...fns) {
       {
         input: [2],
         expectedOutput: 36,
-        description: 'pipe(addOne, double, square)(2)'
+        description: 'pipe(addOne, double, square)(2)',
       },
       {
         input: [2],
         expectedOutput: 36,
-        description: 'compose(square, double, addOne)(2)'
+        description: 'compose(square, double, addOne)(2)',
       },
       {
         input: [0],
         expectedOutput: 4,
-        description: 'pipe(addOne, double, square)(0)'
-      }
+        description: 'pipe(addOne, double, square)(0)',
+      },
     ],
     hints: [
       'Use reduce for pipe: fns.reduce((acc, fn) => fn(acc), x)',
       'Use reduceRight for compose',
-      'Each function receives the result of the previous'
-    ]
+      'Each function receives the result of the previous',
+    ],
   },
   {
     id: 'debounce-throttle',
@@ -3729,8 +3870,8 @@ function compose(...fns) {
       {
         input: `const debouncedSearch = debounce(search, 300)`,
         output: `Search executes 300ms after last keystroke`,
-        explanation: 'Prevents excessive API calls while typing'
-      }
+        explanation: 'Prevents excessive API calls while typing',
+      },
     ],
     starterCode: `// TODO: Implement debounce
 // Delays execution until no calls for 'delay' ms
@@ -3785,19 +3926,19 @@ function throttle(fn, interval) {
       {
         input: [],
         expectedOutput: true,
-        description: 'debounce delays execution'
+        description: 'debounce delays execution',
       },
       {
         input: [],
         expectedOutput: true,
-        description: 'throttle limits execution rate'
-      }
+        description: 'throttle limits execution rate',
+      },
     ],
     hints: [
       'debounce: clearTimeout + setTimeout pattern',
       'throttle: track lastTime, compare with Date.now()',
-      'Use fn.apply(this, args) to preserve context'
-    ]
+      'Use fn.apply(this, args) to preserve context',
+    ],
   },
   {
     id: 'mapped-types',
@@ -3816,8 +3957,8 @@ function throttle(fn, interval) {
       {
         input: `type Partial<T> = { [K in keyof T]?: T[K] }`,
         output: `All properties become optional`,
-        explanation: 'Map over keys and add ? modifier'
-      }
+        explanation: 'Map over keys and add ? modifier',
+      },
     ],
     starterCode: `// TODO: Create MyPartial - make all properties optional
 type MyPartial<T> = T; // Fix this
@@ -3857,14 +3998,14 @@ type Nullable<T> = { [K in keyof T]: T[K] | null };`,
       {
         input: [],
         expectedOutput: true,
-        description: 'Type checking only'
-      }
+        description: 'Type checking only',
+      },
     ],
     hints: [
       '[K in keyof T] iterates over all keys',
       '? adds optional, -? removes optional',
-      'readonly adds readonly modifier'
-    ]
+      'readonly adds readonly modifier',
+    ],
   },
   {
     id: 'conditional-types',
@@ -3883,8 +4024,8 @@ type Nullable<T> = { [K in keyof T]: T[K] | null };`,
       {
         input: `type IsString<T> = T extends string ? true : false`,
         output: `IsString<'hello'> = true`,
-        explanation: 'Type-level conditional logic'
-      }
+        explanation: 'Type-level conditional logic',
+      },
     ],
     starterCode: `// TODO: Create IsArray type - returns true if T is an array
 type IsArray<T> = false; // Fix this
@@ -3916,14 +4057,14 @@ type FunctionReturnType<T> = T extends (...args: any[]) => infer R ? R : never;`
       {
         input: [],
         expectedOutput: true,
-        description: 'Type checking only'
-      }
+        description: 'Type checking only',
+      },
     ],
     hints: [
       'T extends U ? X : Y is the conditional syntax',
       'Use infer to extract types: T extends (infer U)[] ? U : never',
-      'never in unions is removed (filtering)'
-    ]
+      'never in unions is removed (filtering)',
+    ],
   },
   {
     id: 'infer-keyword',
@@ -3942,8 +4083,8 @@ type FunctionReturnType<T> = T extends (...args: any[]) => infer R ? R : never;`
       {
         input: `type Unwrap<T> = T extends Promise<infer U> ? U : T`,
         output: `Unwrap<Promise<string>> = string`,
-        explanation: 'Extract inner type from Promise'
-      }
+        explanation: 'Extract inner type from Promise',
+      },
     ],
     starterCode: `// TODO: Create UnwrapPromise - extract type from Promise
 // UnwrapPromise<Promise<string>> → string
@@ -3981,14 +4122,14 @@ type MyConstructorParameters<T> = T extends new (...args: infer P) => any ? P : 
       {
         input: [],
         expectedOutput: true,
-        description: 'Type checking only'
-      }
+        description: 'Type checking only',
+      },
     ],
     hints: [
       'infer U captures the type in that position',
       'Use pattern matching: Promise<infer U>, (infer P) => R',
-      'For constructors: new (...args: infer P) => any'
-    ]
+      'For constructors: new (...args: infer P) => any',
+    ],
   },
   {
     id: 'branded-types',
@@ -4007,8 +4148,8 @@ type MyConstructorParameters<T> = T extends new (...args: infer P) => any ? P : 
       {
         input: `type UserId = number & { __brand: 'UserId' }`,
         output: `UserId and ProductId are incompatible`,
-        explanation: 'Same underlying type, but different brands'
-      }
+        explanation: 'Same underlying type, but different brands',
+      },
     ],
     starterCode: `// TODO: Create branded types for UserId and ProductId
 // Both are numbers but should not be interchangeable
@@ -4065,19 +4206,19 @@ function getProduct(id: ProductId): string {
       {
         input: [1],
         expectedOutput: 'User 1',
-        description: 'getUser with UserId'
+        description: 'getUser with UserId',
       },
       {
         input: [1],
         expectedOutput: 'Product 1',
-        description: 'getProduct with ProductId'
-      }
+        description: 'getProduct with ProductId',
+      },
     ],
     hints: [
       'Add a phantom property: number & { __brand: "UserId" }',
       'Use unique symbol for true uniqueness',
-      'Cast with "as" in factory functions'
-    ]
+      'Cast with "as" in factory functions',
+    ],
   },
   {
     id: 'proxy-traps',
@@ -4096,8 +4237,8 @@ function getProduct(id: ProductId): string {
       {
         input: `new Proxy(obj, { get(target, prop) { ... } })`,
         output: `Intercept property access`,
-        explanation: 'Custom behavior for getting properties'
-      }
+        explanation: 'Custom behavior for getting properties',
+      },
     ],
     starterCode: `// TODO: Create a proxy that logs all property access
 function createLoggingProxy(obj) {
@@ -4169,19 +4310,19 @@ function createValidatingProxy(obj) {
       {
         input: [{ x: 1 }],
         expectedOutput: 1,
-        description: 'logging proxy get'
+        description: 'logging proxy get',
       },
       {
         input: [{}, 'N/A'],
         expectedOutput: 'N/A',
-        description: 'default proxy missing prop'
-      }
+        description: 'default proxy missing prop',
+      },
     ],
     hints: [
       'new Proxy(target, handler) creates proxy',
       'get(target, prop) intercepts property access',
-      'set(target, prop, value) must return true'
-    ]
+      'set(target, prop, value) must return true',
+    ],
   },
   {
     id: 'generator-functions',
@@ -4200,8 +4341,8 @@ function createValidatingProxy(obj) {
       {
         input: `function* count() { yield 1; yield 2; yield 3; }`,
         output: `[...count()] → [1, 2, 3]`,
-        explanation: 'Generator produces values on demand'
-      }
+        explanation: 'Generator produces values on demand',
+      },
     ],
     starterCode: `// TODO: Create a generator that yields numbers from start to end
 function* range(start, end) {
@@ -4266,19 +4407,19 @@ function* chunk(arr, size) {
       {
         input: [1, 5],
         expectedOutput: [1, 2, 3, 4, 5],
-        description: 'range generator'
+        description: 'range generator',
       },
       {
         input: [[1, 2, 3, 4, 5], 2],
         expectedOutput: [[1, 2], [3, 4], [5]],
-        description: 'chunk generator'
-      }
+        description: 'chunk generator',
+      },
     ],
     hints: [
       'Use function* to declare a generator',
       'yield pauses execution and returns value',
-      'while(true) with yield creates infinite generator'
-    ]
+      'while(true) with yield creates infinite generator',
+    ],
   },
   {
     id: 'weak-collections',
@@ -4297,8 +4438,8 @@ function* chunk(arr, size) {
       {
         input: `const privateData = new WeakMap();`,
         output: `Store private data associated with objects`,
-        explanation: 'Data is GC\'d when object is GC\'d'
-      }
+        explanation: "Data is GC'd when object is GC'd",
+      },
     ],
     starterCode: `// TODO: Implement private data storage using WeakMap
 const privateData = new WeakMap();
@@ -4360,31 +4501,30 @@ function memoizeByObject(fn) {
       {
         input: ['secret123'],
         expectedOutput: true,
-        description: 'checkPassword correct'
+        description: 'checkPassword correct',
       },
       {
         input: ['wrong'],
         expectedOutput: false,
-        description: 'checkPassword wrong'
-      }
+        description: 'checkPassword wrong',
+      },
     ],
     hints: [
       'WeakMap.set(key, value), .get(key), .has(key)',
       'Keys must be objects, not primitives',
-      'Perfect for associating private data with instances'
-    ]
-  }
+      'Perfect for associating private data with instances',
+    ],
+  },
 ];
 
 export function getProblemById(id: string): Problem | undefined {
-  return problems.find(p => p.id === id);
+  return problems.find((p) => p.id === id);
 }
 
 export function getProblemsByCategory(category: string): Problem[] {
-  return problems.filter(p => p.category === category);
+  return problems.filter((p) => p.category === category);
 }
 
 export function getProblemsByDifficulty(difficulty: Problem['difficulty']): Problem[] {
-  return problems.filter(p => p.difficulty === difficulty);
+  return problems.filter((p) => p.difficulty === difficulty);
 }
-

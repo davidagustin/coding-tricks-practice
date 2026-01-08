@@ -1,6 +1,6 @@
 'use client';
 
-import { TestResult } from '@/lib/test-runner';
+import type { TestResult } from '@/lib/test-runner';
 
 interface TestResultsProps {
   results: TestResult[];
@@ -35,23 +35,35 @@ export default function TestResults({ results, allPassed, error, isRunning }: Te
   if (results.length === 0) {
     return (
       <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg text-center text-gray-500">
-        No test results yet. Click "Run Tests" to execute your code.
+        No test results yet. Click &quot;Run Tests&quot; to execute your code.
       </div>
     );
   }
 
   return (
     <div className="space-y-3">
-      <div className={`p-3 rounded-lg border-2 ${
-        allPassed 
-          ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' 
-          : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
-      }`}>
+      <div
+        className={`p-3 rounded-lg border-2 ${
+          allPassed
+            ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
+            : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
+        }`}
+      >
         <div className="flex items-center gap-2">
           {allPassed ? (
             <>
-              <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="w-5 h-5 text-green-600 dark:text-green-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
               <span className="font-semibold text-green-800 dark:text-green-200">
                 All tests passed! 🎉
@@ -59,8 +71,18 @@ export default function TestResults({ results, allPassed, error, isRunning }: Te
             </>
           ) : (
             <>
-              <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-5 h-5 text-red-600 dark:text-red-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
               <span className="font-semibold text-red-800 dark:text-red-200">
                 Some tests failed
@@ -82,12 +104,32 @@ export default function TestResults({ results, allPassed, error, isRunning }: Te
           >
             <div className="flex items-start gap-2 mb-2">
               {result.passed ? (
-                <svg className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                <svg
+                  className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
               ) : (
-                <svg className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               )}
               <div className="flex-1">
@@ -99,7 +141,7 @@ export default function TestResults({ results, allPassed, error, isRunning }: Te
                     </span>
                   )}
                 </div>
-                
+
                 {result.error ? (
                   <div className="text-sm text-red-700 dark:text-red-300 font-mono bg-red-100 dark:bg-red-900/30 p-2 rounded">
                     Error: {result.error}
@@ -120,11 +162,13 @@ export default function TestResults({ results, allPassed, error, isRunning }: Te
                     </div>
                     <div>
                       <span className="text-gray-600 dark:text-gray-400">Got:</span>
-                      <pre className={`mt-1 p-2 rounded font-mono text-xs overflow-x-auto ${
-                        result.passed 
-                          ? 'bg-green-100 dark:bg-green-900/30' 
-                          : 'bg-red-100 dark:bg-red-900/30'
-                      }`}>
+                      <pre
+                        className={`mt-1 p-2 rounded font-mono text-xs overflow-x-auto ${
+                          result.passed
+                            ? 'bg-green-100 dark:bg-green-900/30'
+                            : 'bg-red-100 dark:bg-red-900/30'
+                        }`}
+                      >
                         {formatValue(result.actualOutput)}
                       </pre>
                     </div>
@@ -148,7 +192,7 @@ export default function TestResults({ results, allPassed, error, isRunning }: Te
   );
 }
 
-function formatValue(value: any): string {
+function formatValue(value: unknown): string {
   if (value === undefined) return 'undefined';
   if (value === null) return 'null';
   if (typeof value === 'function') return value.toString();

@@ -1,5 +1,10 @@
-import { problems, getProblemById, getProblemsByCategory, getProblemsByDifficulty } from '@/lib/problems';
 import type { Problem } from '@/lib/problems';
+import {
+  getProblemById,
+  getProblemsByCategory,
+  getProblemsByDifficulty,
+  problems,
+} from '@/lib/problems';
 
 describe('Problems Data', () => {
   describe('Data Structure', () => {
@@ -26,13 +31,13 @@ describe('Problems Data', () => {
 
     it('should have valid difficulty values', () => {
       const validDifficulties = ['easy', 'medium', 'hard'];
-      problems.forEach(problem => {
+      problems.forEach((problem) => {
         expect(validDifficulties).toContain(problem.difficulty);
       });
     });
 
     it('should have non-empty categories', () => {
-      problems.forEach(problem => {
+      problems.forEach((problem) => {
         expect(problem.category.trim().length).toBeGreaterThan(0);
       });
     });
@@ -42,7 +47,7 @@ describe('Problems Data', () => {
     it('should find problem by ID', () => {
       const firstProblem = problems[0];
       const found = getProblemById(firstProblem.id);
-      
+
       expect(found).toBeDefined();
       expect(found?.id).toBe(firstProblem.id);
     });
@@ -53,12 +58,12 @@ describe('Problems Data', () => {
     });
 
     it('should filter problems by category', () => {
-      const categories = Array.from(new Set(problems.map(p => p.category)));
-      
-      categories.forEach(category => {
+      const categories = Array.from(new Set(problems.map((p) => p.category)));
+
+      categories.forEach((category) => {
         const filtered = getProblemsByCategory(category);
         expect(filtered.length).toBeGreaterThan(0);
-        filtered.forEach(problem => {
+        filtered.forEach((problem) => {
           expect(problem.category).toBe(category);
         });
       });
@@ -66,10 +71,10 @@ describe('Problems Data', () => {
 
     it('should filter problems by difficulty', () => {
       const difficulties: Array<'easy' | 'medium' | 'hard'> = ['easy', 'medium', 'hard'];
-      
-      difficulties.forEach(difficulty => {
+
+      difficulties.forEach((difficulty) => {
         const filtered = getProblemsByDifficulty(difficulty);
-        filtered.forEach(problem => {
+        filtered.forEach((problem) => {
           expect(problem.difficulty).toBe(difficulty);
         });
       });
@@ -78,28 +83,28 @@ describe('Problems Data', () => {
 
   describe('Code Validation', () => {
     it('should have starter code that is valid TypeScript/JavaScript', () => {
-      problems.forEach(problem => {
+      problems.forEach((problem) => {
         // Check that starter code is not empty
         expect(problem.starterCode.trim().length).toBeGreaterThan(0);
-        
+
         // Check for common syntax issues
         expect(problem.starterCode).not.toMatch(/expectedOutput:\s*expect\s*=>/);
       });
     });
 
     it('should have solutions that are valid TypeScript/JavaScript', () => {
-      problems.forEach(problem => {
+      problems.forEach((problem) => {
         // Check that solution is not empty
         expect(problem.solution.trim().length).toBeGreaterThan(0);
-        
+
         // Check for common syntax issues
         expect(problem.solution).not.toMatch(/expectedOutput:\s*expect\s*=>/);
       });
     });
 
     it('should not have functions as expectedOutput in test cases', () => {
-      problems.forEach(problem => {
-        problem.testCases.forEach((testCase, index) => {
+      problems.forEach((problem) => {
+        problem.testCases.forEach((testCase) => {
           expect(typeof testCase.expectedOutput).not.toBe('function');
         });
       });
@@ -108,32 +113,32 @@ describe('Problems Data', () => {
 
   describe('Content Quality', () => {
     it('should have meaningful descriptions', () => {
-      problems.forEach(problem => {
+      problems.forEach((problem) => {
         expect(problem.description.length).toBeGreaterThan(20);
       });
     });
 
     it('should have at least one example', () => {
-      problems.forEach(problem => {
+      problems.forEach((problem) => {
         expect(problem.examples.length).toBeGreaterThan(0);
       });
     });
 
     it('should have at least one test case', () => {
-      problems.forEach(problem => {
+      problems.forEach((problem) => {
         expect(problem.testCases.length).toBeGreaterThan(0);
       });
     });
 
     it('should have at least one hint', () => {
-      problems.forEach(problem => {
+      problems.forEach((problem) => {
         expect(problem.hints.length).toBeGreaterThan(0);
       });
     });
 
     it('should have examples with input and output', () => {
-      problems.forEach(problem => {
-        problem.examples.forEach(example => {
+      problems.forEach((problem) => {
+        problem.examples.forEach((example) => {
           expect(example.input.trim().length).toBeGreaterThan(0);
           expect(example.output.trim().length).toBeGreaterThan(0);
         });

@@ -1,19 +1,18 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { getProblemById, problems } from '@/lib/problems';
-import { runTests, TestRunnerResult } from '@/lib/test-runner';
-import CodeEditor from '@/components/CodeEditor';
-import TestResults from '@/components/TestResults';
-import ProblemDescription from '@/components/ProblemDescription';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+import CodeEditor from '@/components/CodeEditor';
+import ProblemDescription from '@/components/ProblemDescription';
+import TestResults from '@/components/TestResults';
+import { getProblemById, problems } from '@/lib/problems';
+import { runTests, type TestRunnerResult } from '@/lib/test-runner';
 
 export default function ProblemPage() {
   const params = useParams();
-  const router = useRouter();
   const problemId = params.id as string;
-  
+
   const problem = getProblemById(problemId);
   const [code, setCode] = useState('');
   const [userCode, setUserCode] = useState(''); // Store user's code separately
@@ -32,6 +31,11 @@ export default function ProblemPage() {
     }
   }, [problem]);
 
+  // Keep ref in sync with code state
+  useEffect(() => {
+    codeRef.current = code;
+  }, [code]);
+
   if (!problem) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
@@ -39,10 +43,7 @@ export default function ProblemPage() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
             Problem not found
           </h1>
-          <Link
-            href="/problems"
-            className="text-blue-600 dark:text-blue-400 hover:underline"
-          >
+          <Link href="/problems" className="text-blue-600 dark:text-blue-400 hover:underline">
             ← Back to Problems
           </Link>
         </div>
@@ -53,38 +54,46 @@ export default function ProblemPage() {
   const handleRunTests = async () => {
     setIsRunning(true);
     setTestResults(null);
-    
+
     // Use userCode for tests, not the displayed code (which might be solution)
     const codeToTest = showSolution ? userCode : code;
-    
+
     try {
       if (!codeToTest || !codeToTest.trim()) {
         setTestResults({
           allPassed: false,
           results: [],
-          error: 'No code to test. Please write your solution first.'
+          error: 'No code to test. Please write your solution first.',
         });
         setIsRunning(false);
         return;
       }
 
       // Wrap in Promise.resolve to ensure we catch all errors
-      const results = await Promise.resolve(runTests(codeToTest, problem.testCases)).catch((err) => {
-        console.error('Test execution error:', err);
-        return {
-          allPassed: false,
-          results: [],
-          error: `Error running tests: ${err?.message || err?.toString() || 'Unknown error'}. Please check your code.`
-        };
-      });
-      
+      const results = await Promise.resolve(runTests(codeToTest, problem.testCases)).catch(
+        (err) => {
+          console.error('Test execution error:', err);
+          return {
+            allPassed: false,
+            results: [],
+            error: `Error running tests: ${err?.message || err?.toString() || 'Unknown error'}. Please check your code.`,
+          };
+        }
+      );
+
       setTestResults(results);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Unexpected test execution error:', error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : typeof error === 'string'
+            ? error
+            : 'An unexpected error occurred while running tests. Please check your code syntax.';
       setTestResults({
         allPassed: false,
         results: [],
-        error: `Unexpected error: ${error?.message || error?.toString() || 'An unexpected error occurred while running tests. Please check your code syntax.'}`
+        error: `Unexpected error: ${errorMessage}`,
       });
     } finally {
       setIsRunning(false);
@@ -120,12 +129,7 @@ export default function ProblemPage() {
     setUserCode(newCode);
   };
 
-  // Keep ref in sync with code state
-  useEffect(() => {
-    codeRef.current = code;
-  }, [code]);
-
-  const currentIndex = problems.findIndex(p => p.id === problemId);
+  const currentIndex = problems.findIndex((p) => p.id === problemId);
   const prevProblem = currentIndex > 0 ? problems[currentIndex - 1] : null;
   const nextProblem = currentIndex < problems.length - 1 ? problems[currentIndex + 1] : null;
 
@@ -133,10 +137,7 @@ export default function ProblemPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
-          <Link 
-            href="/problems" 
-            className="text-blue-600 dark:text-blue-400 hover:underline"
-          >
+          <Link href="/problems" className="text-blue-600 dark:text-blue-400 hover:underline">
             ← Back to Problems
           </Link>
         </div>
@@ -241,11 +242,7 @@ export default function ProblemPage() {
                   isRunning={false}
                 />
               ) : (
-                <TestResults
-                  results={[]}
-                  allPassed={false}
-                  isRunning={isRunning}
-                />
+                <TestResults results={[]} allPassed={false} isRunning={isRunning} />
               )}
             </div>
           </div>

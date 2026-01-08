@@ -1,6 +1,6 @@
 'use client';
 
-import { Problem } from '@/lib/problems';
+import type { Problem } from '@/lib/problems';
 
 interface ProblemDescriptionProps {
   problem: Problem;
@@ -17,10 +17,10 @@ export default function ProblemDescription({ problem }: ProblemDescriptionProps)
     <div className="space-y-6">
       <div>
         <div className="flex items-center gap-3 mb-2">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            {problem.title}
-          </h1>
-          <span className={`px-2 py-1 rounded text-xs font-semibold ${difficultyColors[problem.difficulty]}`}>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{problem.title}</h1>
+          <span
+            className={`px-2 py-1 rounded text-xs font-semibold ${difficultyColors[problem.difficulty]}`}
+          >
             {problem.difficulty.toUpperCase()}
           </span>
         </div>
@@ -43,17 +43,23 @@ export default function ProblemDescription({ problem }: ProblemDescriptionProps)
                 className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-800"
               >
                 <div className="mb-2">
-                  <span className="text-sm font-semibold text-gray-600 dark:text-gray-400">Example {index + 1}:</span>
+                  <span className="text-sm font-semibold text-gray-600 dark:text-gray-400">
+                    Example {index + 1}:
+                  </span>
                 </div>
                 <div className="space-y-2">
                   <div>
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Input:</span>
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Input:
+                    </span>
                     <pre className="mt-1 p-2 bg-gray-100 dark:bg-gray-800 rounded font-mono text-xs overflow-x-auto">
                       {example.input}
                     </pre>
                   </div>
                   <div>
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Output:</span>
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Output:
+                    </span>
                     <pre className="mt-1 p-2 bg-gray-100 dark:bg-gray-800 rounded font-mono text-xs overflow-x-auto">
                       {example.output}
                     </pre>

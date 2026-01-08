@@ -1,34 +1,39 @@
-import { runTests } from '@/lib/test-runner';
 import { problems } from '@/lib/problems';
+import { runTests } from '@/lib/test-runner';
 
 describe('Enum Error Prevention', () => {
   it('should check all problems with enums for the error', async () => {
     // Find all problems that use enums
-    const problemsWithEnums = problems.filter(p => 
-      p.starterCode.includes('enum ') || 
-      p.solution.includes('enum ')
+    const problemsWithEnums = problems.filter(
+      (p) => p.starterCode.includes('enum ') || p.solution.includes('enum ')
     );
-    
+
     expect(problemsWithEnums.length).toBeGreaterThan(0);
-    
+
     for (const problem of problemsWithEnums) {
       // Test starter code
       if (problem.starterCode.includes('enum ')) {
         const result = await runTests(problem.starterCode, []);
         if (result.error) {
-          expect(result.error).not.toContain('enum declarations can only be used in TypeScript files');
+          expect(result.error).not.toContain(
+            'enum declarations can only be used in TypeScript files'
+          );
           expect(result.error).not.toContain('8006');
           expect(result.error).not.toMatch(/enum.*can only be used/i);
         }
       }
-      
+
       // Test solution (skip if uses browser APIs)
-      if (problem.solution.includes('enum ') && 
-          !problem.solution.includes('fetch(') &&
-          !problem.solution.includes('window.')) {
+      if (
+        problem.solution.includes('enum ') &&
+        !problem.solution.includes('fetch(') &&
+        !problem.solution.includes('window.')
+      ) {
         const result = await runTests(problem.solution, []);
         if (result.error) {
-          expect(result.error).not.toContain('enum declarations can only be used in TypeScript files');
+          expect(result.error).not.toContain(
+            'enum declarations can only be used in TypeScript files'
+          );
           expect(result.error).not.toContain('8006');
           expect(result.error).not.toMatch(/enum.*can only be used/i);
         }
@@ -47,11 +52,9 @@ describe('Enum Error Prevention', () => {
         return Status.Pending;
       }
     `;
-    
-    const result = await runTests(codeWithEnum, [
-      { input: [], expectedOutput: 0 }
-    ]);
-    
+
+    const result = await runTests(codeWithEnum, [{ input: [], expectedOutput: 0 }]);
+
     // Should transpile successfully without the enum error
     if (result.error) {
       expect(result.error).not.toContain('enum declarations can only be used in TypeScript files');
@@ -74,11 +77,9 @@ describe('Enum Error Prevention', () => {
         return Direction.Up;
       }
     `;
-    
-    const result = await runTests(codeWithStringEnum, [
-      { input: [], expectedOutput: 'UP' }
-    ]);
-    
+
+    const result = await runTests(codeWithStringEnum, [{ input: [], expectedOutput: 'UP' }]);
+
     // Should not have the enum error
     if (result.error) {
       expect(result.error).not.toContain('enum declarations can only be used in TypeScript files');
@@ -99,11 +100,9 @@ describe('Enum Error Prevention', () => {
         return status;
       }
     `;
-    
-    const result = await runTests(starterCodeWithEnum, [
-      { input: [0], expectedOutput: 0 }
-    ]);
-    
+
+    const result = await runTests(starterCodeWithEnum, [{ input: [0], expectedOutput: 0 }]);
+
     // Should not have the enum error
     if (result.error) {
       expect(result.error).not.toContain('enum declarations can only be used in TypeScript files');
@@ -133,11 +132,9 @@ describe('Enum Error Prevention', () => {
         }
       }
     `;
-    
-    const result = await runTests(solutionWithEnum, [
-      { input: [0], expectedOutput: 'Pending' }
-    ]);
-    
+
+    const result = await runTests(solutionWithEnum, [{ input: [0], expectedOutput: 'Pending' }]);
+
     // Should not have the enum error
     if (result.error) {
       expect(result.error).not.toContain('enum declarations can only be used in TypeScript files');

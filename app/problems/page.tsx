@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
 import Link from 'next/link';
+import { useMemo, useState } from 'react';
 import { problems } from '@/lib/problems';
 
 type Difficulty = 'easy' | 'medium' | 'hard';
@@ -13,7 +13,7 @@ export default function ProblemsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [sortBy, setSortBy] = useState<SortOption>('default');
 
-  const categories = Array.from(new Set(problems.map(p => p.category)));
+  const categories = Array.from(new Set(problems.map((p) => p.category)));
 
   const difficultyColors = {
     easy: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
@@ -28,7 +28,7 @@ export default function ProblemsPage() {
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
-        problem =>
+        (problem) =>
           problem.title.toLowerCase().includes(query) ||
           problem.description.toLowerCase().includes(query) ||
           problem.category.toLowerCase().includes(query) ||
@@ -38,21 +38,22 @@ export default function ProblemsPage() {
 
     // Filter by difficulty
     if (selectedDifficulty !== 'all') {
-      filtered = filtered.filter(p => p.difficulty === selectedDifficulty);
+      filtered = filtered.filter((p) => p.difficulty === selectedDifficulty);
     }
 
     // Filter by category
     if (selectedCategory !== 'all') {
-      filtered = filtered.filter(p => p.category === selectedCategory);
+      filtered = filtered.filter((p) => p.category === selectedCategory);
     }
 
     // Sort
     const sorted = [...filtered];
     switch (sortBy) {
-      case 'difficulty':
+      case 'difficulty': {
         const difficultyOrder: Record<Difficulty, number> = { easy: 1, medium: 2, hard: 3 };
         sorted.sort((a, b) => difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty]);
         break;
+      }
       case 'category':
         sorted.sort((a, b) => a.category.localeCompare(b.category));
         break;
@@ -67,7 +68,8 @@ export default function ProblemsPage() {
     return sorted;
   }, [searchQuery, selectedDifficulty, selectedCategory, sortBy]);
 
-  const hasActiveFilters = searchQuery.trim() !== '' || selectedDifficulty !== 'all' || selectedCategory !== 'all';
+  const hasActiveFilters =
+    searchQuery.trim() !== '' || selectedDifficulty !== 'all' || selectedCategory !== 'all';
 
   const clearFilters = () => {
     setSearchQuery('');
@@ -78,17 +80,17 @@ export default function ProblemsPage() {
 
   const stats = {
     total: problems.length,
-    easy: problems.filter(p => p.difficulty === 'easy').length,
-    medium: problems.filter(p => p.difficulty === 'medium').length,
-    hard: problems.filter(p => p.difficulty === 'hard').length,
+    easy: problems.filter((p) => p.difficulty === 'easy').length,
+    medium: problems.filter((p) => p.difficulty === 'medium').length,
+    hard: problems.filter((p) => p.difficulty === 'hard').length,
   };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="text-blue-600 dark:text-blue-400 hover:underline mb-4 inline-block"
           >
             ← Back to Home
@@ -134,7 +136,10 @@ export default function ProblemsPage() {
           <div className="space-y-4">
             {/* Search Bar */}
             <div>
-              <label htmlFor="search" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="search"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Search Problems
               </label>
               <div className="relative">
@@ -152,7 +157,12 @@ export default function ProblemsPage() {
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
                 </svg>
                 {searchQuery && (
                   <button
@@ -160,7 +170,12 @@ export default function ProblemsPage() {
                     className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                   >
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </button>
                 )}
@@ -171,7 +186,10 @@ export default function ProblemsPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Difficulty Filter */}
               <div>
-                <label htmlFor="difficulty" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  htmlFor="difficulty"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Difficulty
                 </label>
                 <select
@@ -189,7 +207,10 @@ export default function ProblemsPage() {
 
               {/* Category Filter */}
               <div>
-                <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  htmlFor="category"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Category
                 </label>
                 <select
@@ -199,7 +220,7 @@ export default function ProblemsPage() {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="all">All Categories</option>
-                  {categories.map(category => (
+                  {categories.map((category) => (
                     <option key={category} value={category}>
                       {category}
                     </option>
@@ -209,7 +230,10 @@ export default function ProblemsPage() {
 
               {/* Sort By */}
               <div>
-                <label htmlFor="sort" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  htmlFor="sort"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Sort By
                 </label>
                 <select
@@ -246,7 +270,7 @@ export default function ProblemsPage() {
         {/* Problems List */}
         {filteredAndSortedProblems.length > 0 ? (
           <div className="space-y-4">
-            {filteredAndSortedProblems.map(problem => (
+            {filteredAndSortedProblems.map((problem) => (
               <Link
                 key={problem.id}
                 href={`/problems/${problem.id}`}
@@ -258,7 +282,9 @@ export default function ProblemsPage() {
                       <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                         {problem.title}
                       </h3>
-                      <span className={`px-2 py-1 rounded text-xs font-semibold whitespace-nowrap ${difficultyColors[problem.difficulty]}`}>
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-semibold whitespace-nowrap ${difficultyColors[problem.difficulty]}`}
+                      >
                         {problem.difficulty.toUpperCase()}
                       </span>
                       <span className="px-2 py-1 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 whitespace-nowrap">
@@ -294,13 +320,18 @@ export default function ProblemsPage() {
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
               No problems found
             </h3>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Try adjusting your search or filters to find what you're looking for.
+              Try adjusting your search or filters to find what you&apos;re looking for.
             </p>
             {hasActiveFilters && (
               <button
@@ -319,8 +350,8 @@ export default function ProblemsPage() {
             Browse by Category
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {categories.map(category => {
-              const categoryProblems = problems.filter(p => p.category === category);
+            {categories.map((category) => {
+              const categoryProblems = problems.filter((p) => p.category === category);
               const categoryCount = categoryProblems.length;
               return (
                 <button
@@ -350,9 +381,10 @@ export default function ProblemsPage() {
             About This Practice Platform
           </h2>
           <p className="text-sm text-blue-800 dark:text-blue-300">
-            This platform helps you master advanced JavaScript and TypeScript patterns through hands-on practice. 
-            Each problem focuses on a specific technique or pattern, with test cases to verify your solution.
-            Use the search and filters above to find problems that match your learning goals.
+            This platform helps you master advanced JavaScript and TypeScript patterns through
+            hands-on practice. Each problem focuses on a specific technique or pattern, with test
+            cases to verify your solution. Use the search and filters above to find problems that
+            match your learning goals.
           </p>
         </div>
       </div>
