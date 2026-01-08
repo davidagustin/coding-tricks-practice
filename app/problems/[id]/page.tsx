@@ -206,7 +206,7 @@ export default function ProblemPage() {
               </div>
               <div className="h-96">
                 <CodeEditor
-                  code={code}
+                  code={code || problem.starterCode}
                   onChange={handleCodeChange}
                   language="typescript"
                   readOnly={false}

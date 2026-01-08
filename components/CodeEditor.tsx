@@ -26,7 +26,8 @@ export default function CodeEditor({ code, onChange, language = 'typescript', re
       modelUriRef.current = uniqueId;
       
       // Create a new model with the unique URI to isolate it from other editors
-      const model = monaco.editor.createModel(code, language, monaco.Uri.parse(uniqueId));
+      // Use the current code value (which should be set by the time editor mounts)
+      const model = monaco.editor.createModel(code || '', language, monaco.Uri.parse(uniqueId));
       editor.setModel(model);
     }
 
@@ -110,21 +111,39 @@ export default function CodeEditor({ code, onChange, language = 'typescript', re
     }
   };
 
-  // Format code when it changes externally (e.g., when showing solution)
+  // Update code when it changes externally (e.g., when starter code loads or showing solution)
   useEffect(() => {
     if (editorRef.current) {
       const model = editorRef.current.getModel();
-      if (model && code !== model.getValue()) {
-        isSettingValueRef.current = true; // Mark that we're setting value programmatically
-        model.setValue(code);
-        // Reset flag after a brief delay to allow Monaco to process the change
-        setTimeout(() => {
-          isSettingValueRef.current = false;
-          // Auto-format after setting value (only if not read-only)
-          if (!readOnly) {
-            editorRef.current?.getAction('editor.action.formatDocument')?.run();
+      if (model) {
+        const currentValue = model.getValue();
+        // Only update if the code has actually changed
+        if (code !== currentValue) {
+          isSettingValueRef.current = true; // Mark that we're setting value programmatically
+          model.setValue(code || '');
+          // Reset flag after a brief delay to allow Monaco to process the change
+          setTimeout(() => {
+            isSettingValueRef.current = false;
+            // Auto-format after setting value (only if not read-only)
+            if (!readOnly && code && code.trim()) {
+              editorRef.current?.getAction('editor.action.formatDocument')?.run();
+            }
+          }, 50);
+        }
+      } else if (code) {
+        // If model doesn't exist yet but we have code, wait a bit and try again
+        // This handles the case where code is set before editor mounts
+        const timeoutId = setTimeout(() => {
+          const model = editorRef.current?.getModel();
+          if (model && model.getValue() !== code) {
+            isSettingValueRef.current = true;
+            model.setValue(code);
+            setTimeout(() => {
+              isSettingValueRef.current = false;
+            }, 50);
           }
-        }, 50);
+        }, 100);
+        return () => clearTimeout(timeoutId);
       }
     }
   }, [code, readOnly]);
