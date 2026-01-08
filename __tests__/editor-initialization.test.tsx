@@ -49,21 +49,7 @@ describe('Editor Initialization', () => {
 
 
   it('should not show empty editor when starter code exists', async () => {
-    const problem = problems.find(p => p.starterCode && p.starterCode.trim().length > 0);
-    if (!problem) {
-      // Skip if no problem with starter code
-      return;
-    }
-
-    // Mock useParams to return the problem ID
-    jest.doMock('next/navigation', () => ({
-      useParams: () => ({ id: problem.id }),
-      useRouter: () => ({
-        push: jest.fn(),
-        replace: jest.fn(),
-      }),
-    }));
-
+    const problem = problems[0];
     render(<ProblemPage />);
     
     await waitFor(() => {
@@ -71,11 +57,12 @@ describe('Editor Initialization', () => {
       expect(textarea).toBeInTheDocument();
     });
     
-    // Wait for starter code to be set
+    // Wait for starter code to be set - should not be empty
     await waitFor(() => {
       const textarea = screen.getByTestId('code-textarea') as HTMLTextAreaElement;
       expect(textarea.value).not.toBe('');
       expect(textarea.value.length).toBeGreaterThan(0);
+      expect(textarea.value).toBe(problem.starterCode);
     }, { timeout: 2000 });
   });
 
