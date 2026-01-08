@@ -1,18 +1,33 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { problems } from '@/lib/problems';
 import ThemeToggle from '@/components/ThemeToggle';
 
 type Difficulty = 'easy' | 'medium' | 'hard';
 type SortOption = 'default' | 'difficulty' | 'category' | 'title';
 
-export default function ProblemsPage() {
+function ProblemsPageContent() {
+  const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | 'all'>('all');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [sortBy, setSortBy] = useState<SortOption>('default');
+
+  // Read category from URL params on mount
+  useEffect(() => {
+    const categoryParam = searchParams.get('category');
+    if (categoryParam) {
+      const decodedCategory = decodeURIComponent(categoryParam);
+      // Verify the category exists in our categories list
+      const categories = Array.from(new Set(problems.map((p) => p.category)));
+      if (categories.includes(decodedCategory)) {
+        setSelectedCategory(decodedCategory);
+      }
+    }
+  }, [searchParams]);
 
   const categories = Array.from(new Set(problems.map((p) => p.category)));
 
@@ -394,5 +409,13 @@ export default function ProblemsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ProblemsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center">Loading...</div>}>
+      <ProblemsPageContent />
+    </Suspense>
   );
 }

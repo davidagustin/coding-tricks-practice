@@ -68,19 +68,23 @@ export default function Home() {
             Topics Covered
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {categories.map((category) => (
-              <div
-                key={category}
-                className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
-              >
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                  {category}
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {problems.filter((p) => p.category === category).length} problems
-                </p>
-              </div>
-            ))}
+            {categories.map((category) => {
+              const categoryCount = problems.filter((p) => p.category === category).length;
+              return (
+                <Link
+                  key={category}
+                  href={`/problems?category=${encodeURIComponent(category)}`}
+                  className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg transition-all duration-200 cursor-pointer border border-transparent hover:border-blue-200 dark:hover:border-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800 active:scale-[0.98]"
+                >
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    {category}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {categoryCount} {categoryCount === 1 ? 'problem' : 'problems'}
+                  </p>
+                </Link>
+              );
+            })}
           </div>
         </div>
 
