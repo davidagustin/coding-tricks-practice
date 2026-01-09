@@ -109,7 +109,36 @@ const memoizedFib = memoize(n => {
 
 console.log(memoizedFib(10));
 console.log(fastFib(10));`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a memoize function that caches results
+// Only works for single-argument functions for simplicity
+function memoize(fn) {
+  // Create cache (Map or object)
+  // Return function that checks cache before calling fn
+  const cache = new Map();
+  return function(arg) {
+    if (cache.has(arg)) {
+      return cache.get(arg);
+    }
+    const result = fn(arg);
+    cache.set(arg, result);
+    return result;
+  };
+}
+
+// Test with fibonacci
+function slowFib(n) {
+  if (n <= 1) return n;
+  return slowFib(n - 1) + slowFib(n - 2);
+}
+
+// Create memoized fibonacci that's actually fast
+function fastFib(n, memo = {}) {
+  // Use memo object to cache results
+  if (n in memo) return memo[n];
+  if (n <= 1) return n;
+  memo[n] = fastFib(n - 1, memo) + fastFib(n - 2, memo);
+  return memo[n];
+}`,
   testCases: [
     {
       input: [],

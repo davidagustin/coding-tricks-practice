@@ -126,7 +126,51 @@ function scheduleAfterMicrotasks(callback) {
 // Test
 console.log('Order 1:', predictOrder1());
 console.log('Order 2:', predictOrder2());`,
-  solution: `function test() { return true; }`,
+  solution: `function predictOrder1() {
+  // What order will these log?
+  // console.log('1');
+  // setTimeout(() => console.log('2'), 0);
+  // Promise.resolve().then(() => console.log('3'));
+  // console.log('4');
+  
+  // Return the order as an array, e.g., [1, 4, 3, 2]
+  // Synchronous: 1, 4
+  // Microtask (Promise): 3
+  // Macrotask (setTimeout): 2
+  return [1, 4, 3, 2];
+}
+
+function predictOrder2() {
+  // What order will these log?
+  // console.log('a');
+  // setTimeout(() => console.log('b'), 0);
+  // Promise.resolve().then(() => {
+  //   console.log('c');
+  //   Promise.resolve().then(() => console.log('d'));
+  // });
+  // setTimeout(() => console.log('e'), 0);
+  // console.log('f');
+  
+  // Return the order as an array, e.g., ['a', 'f', 'c', 'd', 'b', 'e']
+  // Synchronous: a, f
+  // Microtasks: c, d (nested Promise.then runs before next macrotask)
+  // Macrotasks: b, e
+  return ['a', 'f', 'c', 'd', 'b', 'e'];
+}
+
+// Create a function that uses queueMicrotask to defer execution
+// but still runs before any setTimeout callbacks
+function deferMicrotask(callback) {
+  // Implement using queueMicrotask
+  queueMicrotask(callback);
+}
+
+// Create a function that schedules work after all microtasks complete
+// Hint: Use setTimeout with 0 delay
+function scheduleAfterMicrotasks(callback) {
+  // Implement using setTimeout
+  setTimeout(callback, 0);
+}`,
   testCases: [
     {
       input: [],

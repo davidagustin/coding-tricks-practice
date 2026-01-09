@@ -92,7 +92,13 @@ const users = [
 ];
 
 console.log(deduplicateUsers(users));`,
-  solution: `function test() { return true; }`,
+  solution: `function deduplicateUsers(users) {
+  // Use Map to deduplicate by id (last wins)
+  // Hint: new Map(users.map(u => [u.id, u]))
+  // Then convert back to array with [...map.values()]
+  const map = new Map(users.map(u => [u.id, u]));
+  return [...map.values()];
+}`,
   testCases: [
     {
       input: [],

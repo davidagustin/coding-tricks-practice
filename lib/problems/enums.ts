@@ -100,7 +100,37 @@ function processStatus(status: Status) {
 // Test
 console.log(processStatus(Status.Pending));
 console.log(Direction.Up);`,
-  solution: `function test() { return true; }`,
+  solution: `// Create enums
+// 1. Create a numeric enum for Status
+// 2. Create a string enum for Direction
+// 3. Use enums in functions
+
+enum Status {
+  Pending,
+  Approved,
+  Rejected
+}
+
+enum Direction {
+  Up = 'UP',
+  Down = 'DOWN',
+  Left = 'LEFT',
+  Right = 'RIGHT'
+}
+
+function processStatus(status: Status) {
+  // Use enum in switch statement
+  switch (status) {
+    case Status.Pending:
+      return 'Processing...';
+    case Status.Approved:
+      return 'Approved!';
+    case Status.Rejected:
+      return 'Rejected';
+    default:
+      return 'Unknown';
+  }
+}`,
   testCases: [
     {
       input: [],

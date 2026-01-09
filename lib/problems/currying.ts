@@ -98,7 +98,34 @@ console.log(multiply(2)(3)(4));
 console.log(greet('Hello')('World'));
 const curriedAdd = curry2((a, b) => a + b);
 console.log(curriedAdd(2)(3));`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a curried multiply function
+// multiply(2)(3)(4) should return 24
+function multiply(a) {
+  return function(b) {
+    return function(c) {
+      return a * b * c;
+    };
+  };
+}
+
+// Create a curried function to create greeting messages
+// greet('Hello')('World') → 'Hello, World!'
+function greet(greeting) {
+  return function(name) {
+    return \`\${greeting}, \${name}!\`;
+  };
+}
+
+// Create a generic curry function for 2-argument functions
+// const curriedAdd = curry2((a, b) => a + b);
+// curriedAdd(2)(3) → 5
+function curry2(fn) {
+  return function(a) {
+    return function(b) {
+      return fn(a, b);
+    };
+  };
+}`,
   testCases: [
     {
       input: [],

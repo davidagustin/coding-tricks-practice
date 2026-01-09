@@ -160,7 +160,70 @@ async function collectAsyncIterable(asyncIterable) {
 // Test (commented out)
 // const iterable = createAsyncIterable([1, 2, 3], 100);
 // for await (const value of iterable) console.log(value);`,
-  solution: `function test() { return true; }`,
+  solution: `// Create an async iterable that yields values with delays
+function createAsyncIterable(values, delayMs) {
+  // Return an object with [Symbol.asyncIterator]
+  // Each next() should return a promise that resolves after delayMs
+  // with the next value from the values array
+  let index = 0;
+  return {
+    [Symbol.asyncIterator]() {
+      return {
+        async next() {
+          if (index >= values.length) {
+            return { done: true };
+          }
+          const value = values[index++];
+          await new Promise(resolve => setTimeout(resolve, delayMs));
+          return { value, done: false };
+        }
+      };
+    }
+  };
+}
+
+// Process paginated API data
+async function processPaginatedData(fetchPage) {
+  // fetchPage(pageNum) returns { data: [], hasMore: boolean }
+  // Use async iteration to process all pages
+  // Return array of all items from all pages
+  const allItems = [];
+  let page = 0;
+  let hasMore = true;
+  
+  while (hasMore) {
+    const result = await fetchPage(page);
+    allItems.push(...result.data);
+    hasMore = result.hasMore;
+    page++;
+  }
+  
+  return allItems;
+}
+
+// Create an async generator that fetches data in batches
+async function* batchFetcher(ids, batchSize, fetchBatch) {
+  // Split ids into batches of batchSize
+  // For each batch, call fetchBatch(batchIds)
+  // Yield each result individually
+  for (let i = 0; i < ids.length; i += batchSize) {
+    const batch = ids.slice(i, i + batchSize);
+    const results = await fetchBatch(batch);
+    for (const result of results) {
+      yield result;
+    }
+  }
+}
+
+// Collect all values from an async iterable
+async function collectAsyncIterable(asyncIterable) {
+  // Use for-await-of to collect all values into an array
+  const results = [];
+  for await (const value of asyncIterable) {
+    results.push(value);
+  }
+  return results;
+}`,
   testCases: [
     {
       input: [],

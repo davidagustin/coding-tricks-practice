@@ -107,7 +107,42 @@ function displayPerson(p: Person): string {
 }
 
 console.log(displayPerson(person));`,
-  solution: `function test() { return true; }`,
+  solution: `// Create interfaces
+// 1. Create a Person interface with name, age, and email
+// 2. Create a Product interface with id, name, price, and optional description
+// 3. Use these interfaces to type variables
+
+interface Person {
+  name: string;
+  age: number;
+  email: string;
+}
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  description?: string;
+}
+
+// Create objects that conform to these interfaces
+const person: Person = {
+  name: 'John',
+  age: 30,
+  email: 'john@example.com'
+};
+
+const product: Product = {
+  id: 1,
+  name: 'Widget',
+  price: 19.99,
+  description: 'A useful widget'
+};
+
+// Test
+function displayPerson(p: Person): string {
+  return \`\${p.name}, \${p.age} years old\`;
+}`,
   testCases: [
     {
       input: [],

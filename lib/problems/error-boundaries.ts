@@ -103,7 +103,40 @@ function handleMultipleOperations(shouldFailArray) {
 console.log(safeOperation(true, 'fallback'));
 console.log(safeOperation(false, 'fallback'));
 console.log(handleMultipleOperations([true, false, true]));`,
-  solution: `function test() { return true; }`,
+  solution: `// Synchronous version for testing
+function safeOperation(shouldFail, fallback) {
+  // Try operation, catch errors, return fallback on error
+  // If shouldFail is true, throw an error and return fallback
+  // If shouldFail is false, return 'success'
+  try {
+    if (shouldFail) {
+      throw new Error('Operation failed');
+    }
+    return 'success';
+  } catch (error) {
+    return fallback;
+  }
+}
+
+function handleMultipleOperations(shouldFailArray) {
+  // Process each item, count successes and errors
+  // Return { successCount: number, errorCount: number }
+  let successCount = 0;
+  let errorCount = 0;
+  
+  for (const shouldFail of shouldFailArray) {
+    try {
+      if (shouldFail) {
+        throw new Error('Operation failed');
+      }
+      successCount++;
+    } catch (error) {
+      errorCount++;
+    }
+  }
+  
+  return { successCount, errorCount };
+}`,
   testCases: [
     {
       input: [],

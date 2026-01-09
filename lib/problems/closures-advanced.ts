@@ -154,7 +154,68 @@ console.log(expensiveOperation(5)); // 10 (cached, no "Computing...")
 const account = createBankAccount(100);
 console.log(account.deposit(50)); // 150
 console.log(account.withdraw(30)); // 120`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a counter factory that returns an object with:
+// - increment(): increases count and returns new value
+// - decrement(): decreases count and returns new value
+// - getCount(): returns current count
+// - reset(): resets count to initial value
+// The count should be PRIVATE (not accessible directly)
+
+function createCounter(initialValue = 0) {
+  // Implement private count variable and return object with methods
+  let count = initialValue;
+  const initial = initialValue;
+  
+  return {
+    increment: () => ++count,
+    decrement: () => --count,
+    getCount: () => count,
+    reset: () => { count = initial; }
+  };
+}
+
+// Create a memoize function that caches results
+// If the same argument is passed again, return cached result
+// Assume single argument functions for simplicity
+
+function memoize(fn) {
+  // Implement memoization using closure to store cache
+  const cache = new Map();
+  return function(arg) {
+    if (cache.has(arg)) {
+      return cache.get(arg);
+    }
+    const result = fn(arg);
+    cache.set(arg, result);
+    return result;
+  };
+}
+
+// Create a createBankAccount function using module pattern
+// - deposit(amount): adds to balance, returns new balance
+// - withdraw(amount): subtracts from balance if sufficient funds, returns new balance or throws error
+// - getBalance(): returns current balance
+// Balance should be PRIVATE
+
+function createBankAccount(initialBalance = 0) {
+  // Implement private balance and return public API
+  let balance = initialBalance;
+  
+  return {
+    deposit: (amount) => {
+      balance += amount;
+      return balance;
+    },
+    withdraw: (amount) => {
+      if (amount > balance) {
+        throw new Error('Insufficient funds');
+      }
+      balance -= amount;
+      return balance;
+    },
+    getBalance: () => balance
+  };
+}`,
   testCases: [
     {
       input: [],
