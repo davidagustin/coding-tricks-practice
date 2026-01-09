@@ -17,22 +17,21 @@ function getInitialTheme(): Theme {
   if (typeof window === 'undefined') {
     return 'dark'; // Default for SSR
   }
-  
+
   // Check localStorage first (inline script should have set this)
   const stored = localStorage.getItem('theme') as Theme | null;
   if (stored && (stored === 'light' || stored === 'dark')) {
     return stored;
   }
-  
+
   // Fall back to what the inline script set (check DOM class)
   const hasDarkClass = document.documentElement.classList.contains('dark');
   if (hasDarkClass) {
     return 'dark';
   }
-  
-  // Final fallback to system preference
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  return prefersDark ? 'dark' : 'light';
+
+  // Default to dark mode for new users
+  return 'dark';
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {

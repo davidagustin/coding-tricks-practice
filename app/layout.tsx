@@ -39,9 +39,9 @@ export default function RootLayout({
                   if (theme === 'light' || theme === 'dark') {
                     document.documentElement.classList.toggle('dark', theme === 'dark');
                   } else {
-                    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    document.documentElement.classList.toggle('dark', prefersDark);
-                    localStorage.setItem('theme', prefersDark ? 'dark' : 'light');
+                    // Default to dark mode for new users
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
                   }
                 } catch (e) {
                   // Fallback to dark if localStorage is not available
