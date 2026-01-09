@@ -93,7 +93,26 @@ const userId: ID = 123;
 const point: Coordinates = { x: 10, y: 20 };
 
 console.log(processStatus('success'));`,
-  solution: `function test() { return true; }`,
+  solution: `// Create type aliases
+// 1. Create a Status type that can be 'loading', 'success', or 'error'
+// 2. Create a ID type that can be string or number
+// 3. Create a Coordinates type for { x: number, y: number }
+
+type Status = 'loading' | 'success' | 'error';
+type ID = string | number;
+type Coordinates = { x: number; y: number };
+
+// Use these types
+function processStatus(status: Status) {
+  switch (status) {
+    case 'loading':
+      return 'Processing...';
+    case 'success':
+      return 'Done!';
+    case 'error':
+      return 'Failed!';
+  }
+}`,
   testCases: [
     {
       input: [],

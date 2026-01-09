@@ -104,7 +104,26 @@ console.log(html\`<div>\${userInput}</div>\`);
 
 const name = 'John & Jane';
 console.log(html\`<span>Hello, \${name}!</span>\`);`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a tagged template function for safe HTML
+function html(strings, ...values) {
+  // Escape HTML in values, then combine with strings
+  // Return safe HTML string
+  return strings.reduce((result, str, i) => {
+    const value = i < values.length ? escapeHtml(String(values[i])) : '';
+    return result + str + value;
+  }, '');
+}
+
+function escapeHtml(str) {
+  // Replace HTML special characters
+  // < → &lt;  > → &gt;  & → &amp;  " → &quot;
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}`,
   testCases: [
     {
       input: [],

@@ -128,7 +128,40 @@ console.log(getFileExtension('document.pdf'));
 console.log(removeFirstAndLast('[hello]'));
 console.log(extractMiddle('abcdef', 4, 1));
 console.log(truncateWithEllipsis('Hello World', 8));`,
-  solution: `function test() { return true; }`,
+  solution: `function getFileExtension(filename) {
+  // Get file extension using slice() with negative index
+  // 'document.pdf' → '.pdf'
+  // 'image.png' → '.png'
+  const lastDot = filename.lastIndexOf('.');
+  return lastDot !== -1 ? filename.slice(lastDot) : '';
+}
+
+function removeFirstAndLast(str) {
+  // Remove first and last character using slice()
+  // '[hello]' → 'hello'
+  // '"quoted"' → 'quoted'
+  return str.slice(1, -1);
+}
+
+function extractMiddle(str, start, end) {
+  // Extract substring between start and end
+  // Handle case where start > end by swapping (use substring behavior)
+  // extractMiddle('abcdef', 4, 1) → 'bcd'
+  if (start > end) {
+    [start, end] = [end, start];
+  }
+  return str.substring(start + 1, end);
+}
+
+function truncateWithEllipsis(str, maxLength) {
+  // Truncate string to maxLength and add '...' if truncated
+  // truncateWithEllipsis('Hello World', 8) → 'Hello...'
+  // If string is shorter than maxLength, return as-is
+  if (str.length <= maxLength) {
+    return str;
+  }
+  return str.slice(0, maxLength - 3) + '...';
+}`,
   testCases: [
     {
       input: [],

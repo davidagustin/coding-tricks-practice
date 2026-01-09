@@ -157,7 +157,63 @@ console.log(useVehicle(new Car()));
 console.log(useVehicle(new Bicycle()));
 console.log(printPersonInfo({ name: 'Alice', privileges: ['create', 'delete'] }));
 console.log(printPersonInfo({ name: 'Bob', startDate: new Date('2023-01-15') }));`,
-  solution: `function test() { return true; }`,
+  solution: `// Use type narrowing with typeof, instanceof, and in operators
+
+// Task 1: Use typeof to narrow string | number | boolean
+function describeValue(value: string | number | boolean): string {
+  // Return "String: <value>" for strings
+  // Return "Number: <value>" for numbers
+  // Return "Boolean: <value>" for booleans
+  if (typeof value === 'string') {
+    return \`String: \${value}\`;
+  } else if (typeof value === 'number') {
+    return \`Number: \${value}\`;
+  } else {
+    return \`Boolean: \${value}\`;
+  }
+}
+
+// Task 2: Use instanceof to narrow class types
+class Car {
+  drive() { return 'Driving a car'; }
+}
+
+class Bicycle {
+  pedal() { return 'Pedaling a bicycle'; }
+}
+
+function useVehicle(vehicle: Car | Bicycle): string {
+  // Use instanceof to call the appropriate method
+  if (vehicle instanceof Car) {
+    return vehicle.drive();
+  } else {
+    return vehicle.pedal();
+  }
+}
+
+// Task 3: Use 'in' operator to narrow object types
+interface Admin {
+  name: string;
+  privileges: string[];
+}
+
+interface Employee {
+  name: string;
+  startDate: Date;
+}
+
+type UnknownPerson = Admin | Employee;
+
+function printPersonInfo(person: UnknownPerson): string {
+  // Use 'in' to check for 'privileges' or 'startDate'
+  // Return "Admin: <name>, Privileges: <count>" for Admin
+  // Return "Employee: <name>, Started: <date>" for Employee
+  if ('privileges' in person) {
+    return \`Admin: \${person.name}, Privileges: \${person.privileges.length}\`;
+  } else {
+    return \`Employee: \${person.name}, Started: \${person.startDate.toISOString()}\`;
+  }
+}`,
   testCases: [
     {
       input: [],

@@ -100,7 +100,27 @@ function processData(data: unknown) {
 // Test
 processData({ name: 'Alice', age: 30 });
 processData('not a user');`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a type guard function
+function isUser(value: unknown): value is { name: string; age: number } {
+  // Check if value has name (string) and age (number) properties
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'name' in value &&
+    'age' in value &&
+    typeof (value as { name: unknown; age: unknown }).name === 'string' &&
+    typeof (value as { name: unknown; age: unknown }).age === 'number'
+  );
+}
+
+// Use the type guard to narrow types
+function processData(data: unknown) {
+  if (isUser(data)) {
+    console.log(\`User: \${data.name}, Age: \${data.age}\`);
+  } else {
+    console.log('Not a user');
+  }
+}`,
   testCases: [
     {
       input: [],

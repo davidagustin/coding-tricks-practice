@@ -127,7 +127,47 @@ console.log(pluralize(5, 'apple'));
 console.log(buildUrl('https://api.com', { page: 1, limit: 10 }));
 console.log(generateTable(['Name', 'Age'], [['Alice', 30], ['Bob', 25]]));
 console.log(interpolate('Hello {{name}}!', { name: 'World' }));`,
-  solution: `function test() { return true; }`,
+  solution: `function pluralize(count, noun) {
+  // Return singular or plural form based on count
+  // pluralize(1, 'apple') → '1 apple'
+  // pluralize(5, 'apple') → '5 apples'
+  return \`\${count} \${noun}\${count !== 1 ? 's' : ''}\`;
+}
+
+function buildUrl(base, params) {
+  // Build URL with query parameters
+  // buildUrl('https://api.com', { page: 1, limit: 10 })
+  // → 'https://api.com?page=1&limit=10'
+  // Handle empty params object: return just base
+  if (!params || Object.keys(params).length === 0) {
+    return base;
+  }
+  const queryString = Object.entries(params)
+    .map(([key, value]) => \`\${encodeURIComponent(key)}=\${encodeURIComponent(String(value))}\`)
+    .join('&');
+  return \`\${base}?\${queryString}\`;
+}
+
+function generateTable(headers, rows) {
+  // Generate HTML table string
+  // headers: ['Name', 'Age']
+  // rows: [['Alice', 30], ['Bob', 25]]
+  // → '<table><thead><tr><th>Name</th><th>Age</th></tr></thead><tbody><tr><td>Alice</td><td>30</td></tr><tr><td>Bob</td><td>25</td></tr></tbody></table>'
+  const headerRow = \`<tr>\${headers.map(h => \`<th>\${h}</th>\`).join('')}</tr>\`;
+  const bodyRows = rows.map(row => 
+    \`<tr>\${row.map(cell => \`<td>\${cell}</td>\`).join('')}</tr>\`
+  ).join('');
+  return \`<table><thead>\${headerRow}</thead><tbody>\${bodyRows}</tbody></table>\`;
+}
+
+function interpolate(template, data) {
+  // Replace {{key}} placeholders with values from data object
+  // interpolate('Hello {{name}}!', { name: 'World' }) → 'Hello World!'
+  // interpolate('{{a}} + {{b}} = {{c}}', { a: 1, b: 2, c: 3 }) → '1 + 2 = 3'
+  return template.replace(/\\{\\{([^}]+)\\}\\}/g, (match, key) => {
+    return data[key.trim()] !== undefined ? String(data[key.trim()]) : match;
+  });
+}`,
   testCases: [
     {
       input: [],

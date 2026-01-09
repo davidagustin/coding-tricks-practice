@@ -134,7 +134,48 @@ console.log(normalizeAndCompare('cafe\\u0301', 'cafe'));
 console.log(removeAccents('cafe'));
 console.log(safeSlug('Cafe Munchen!'));
 console.log(sortStringsLocale(['a', 'z', 'a']));`,
-  solution: `function test() { return true; }`,
+  solution: `function normalizeAndCompare(str1, str2) {
+  // Compare two strings after normalizing both to NFC
+  // Return true if they're equal after normalization
+  // 'cafe\\u0301' and 'cafe' should return true (both become 'cafe')
+  return str1.normalize('NFC') === str2.normalize('NFC');
+}
+
+function removeAccents(str) {
+  // Remove all accents/diacritics from a string
+  // Hint: NFD decomposes, then remove combining marks (\\u0300-\\u036f)
+  // 'cafe' → 'cafe'
+  // 'nino' → 'nino'
+  // 'Zurcher' → 'Zurcher'
+  return str
+    .normalize('NFD')
+    .replace(/[\\u0300-\\u036f]/g, '')
+    .normalize('NFC');
+}
+
+function safeSlug(str) {
+  // Create URL-safe slug from Unicode string
+  // 1. Normalize to NFKD
+  // 2. Remove accents
+  // 3. Convert to lowercase
+  // 4. Replace spaces with hyphens
+  // 5. Remove non-alphanumeric (except hyphens)
+  // 'Cafe Munchen!' → 'cafe-munchen'
+  return str
+    .normalize('NFKD')
+    .replace(/[\\u0300-\\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '');
+}
+
+function sortStringsLocale(strings, locale = 'en') {
+  // Sort strings using locale-aware comparison
+  // Handle accented characters correctly for the given locale
+  // Use Intl.Collator for proper sorting
+  const collator = new Intl.Collator(locale);
+  return [...strings].sort((a, b) => collator.compare(a, b));
+}`,
   testCases: [
     {
       input: [],

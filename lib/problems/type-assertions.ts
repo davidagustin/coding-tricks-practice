@@ -150,11 +150,11 @@ function processForm(data: FormData): string {
 
 // Task 5: Double assertion for incompatible types
 function convertToNumber(value: string): number {
-  // TODO: Use double assertion (as unknown as Type)
+  // Use double assertion (as unknown as Type)
   // to treat the string as a number (this is for demonstration)
   // Return the asserted value
   // Note: This is generally unsafe, used here for learning
-  // Your code here
+  return value as unknown as number;
 }
 
 // Test your implementations
@@ -163,7 +163,76 @@ console.log(getConfig());
 console.log(parseApiResponse('{"id": 1, "name": "John", "email": "john@example.com"}'));
 console.log(processForm({ username: 'alice', email: 'alice@example.com' }));
 console.log(convertToNumber('42'));`,
-  solution: `function test() { return true; }`,
+  solution: `// Practice type assertions
+
+// Task 1: Assert element types from DOM queries
+function setupCanvas(): string {
+  // Simulate DOM element (in real code, use document.getElementById)
+  const element: unknown = {
+    tagName: 'CANVAS',
+    width: 800,
+    height: 600,
+    getContext: (type: string) => ({ fillRect: () => {} })
+  };
+
+  // Assert element as HTMLCanvasElement type
+  // Then access width and height properties
+  // Return "Canvas size: <width>x<height>"
+  const canvas = element as { width: number; height: number };
+  return \`Canvas size: \${canvas.width}x\${canvas.height}\`;
+}
+
+// Task 2: Use 'as const' for literal types
+function getConfig() {
+  // Create a config object with 'as const'
+  // Properties: apiUrl (string), timeout (number), retries (number)
+  // Return the config object
+  return {
+    apiUrl: 'https://api.example.com',
+    timeout: 5000,
+    retries: 3
+  } as const;
+}
+
+// Task 3: Assert API response type
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+function parseApiResponse(jsonString: string): User {
+  // Parse the JSON and assert it as User type
+  // Use JSON.parse and type assertion
+  return JSON.parse(jsonString) as User;
+}
+
+// Task 4: Use non-null assertion appropriately
+interface FormData {
+  username?: string;
+  email?: string;
+}
+
+function processForm(data: FormData): string {
+  // Use ! to assert that username exists
+  // Return "Processing: <username>"
+  return \`Processing: \${data.username!}\`;
+}
+
+// Task 5: Convert unknown to number safely
+function convertToNumber(value: unknown): number {
+  // Assert value as number after checking
+  if (typeof value === 'number') {
+    return value;
+  }
+  if (typeof value === 'string') {
+    const num = Number(value);
+    if (!isNaN(num)) {
+      return num;
+    }
+  }
+  throw new Error('Cannot convert to number');
+}`,
   testCases: [
     {
       input: [],

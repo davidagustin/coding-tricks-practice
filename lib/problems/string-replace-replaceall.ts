@@ -131,7 +131,53 @@ console.log(toSlug('Hello World!'));
 console.log(formatPhoneNumber('1234567890'));
 console.log(camelToSnake('helloWorld'));
 console.log(censorWords('hello world', ['world']));`,
-  solution: `function test() { return true; }`,
+  solution: `function toSlug(title) {
+  // Convert title to URL-friendly slug
+  // 1. Convert to lowercase
+  // 2. Replace spaces with hyphens
+  // 3. Remove non-alphanumeric characters (except hyphens)
+  // 4. Replace multiple hyphens with single hyphen
+  // 'Hello World!' → 'hello-world'
+  // 'My   Blog Post!!!' → 'my-blog-post'
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/\\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-');
+}
+
+function formatPhoneNumber(phone) {
+  // Format as (XXX) XXX-XXXX
+  // Remove all non-digits first, then format
+  // '1234567890' → '(123) 456-7890'
+  // '123-456-7890' → '(123) 456-7890'
+  const digits = phone.replace(/\\D/g, '');
+  if (digits.length === 10) {
+    return \`(\${digits.slice(0, 3)}) \${digits.slice(3, 6)}-\${digits.slice(6)}\`;
+  }
+  return phone;
+}
+
+function camelToSnake(str) {
+  // Convert camelCase to snake_case
+  // Use regex to find uppercase letters and replace
+  // 'helloWorld' → 'hello_world'
+  // 'myVariableName' → 'my_variable_name'
+  return str.replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, '');
+}
+
+function censorWords(text, words) {
+  // Replace each word in the words array with asterisks
+  // The number of asterisks should match the word length
+  // censorWords('hello world', ['world']) → 'hello *****'
+  let result = text;
+  for (const word of words) {
+    const regex = new RegExp(word, 'gi');
+    result = result.replace(regex, '*'.repeat(word.length));
+  }
+  return result;
+}`,
   testCases: [
     {
       input: [],

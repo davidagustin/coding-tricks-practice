@@ -102,7 +102,30 @@ function displayPerson(person: Person) {
 console.log(processValue('hello'));
 console.log(processValue(42));
 displayPerson({ name: 'Alice', age: 30 });`,
-  solution: `function test() { return true; }`,
+  solution: `// Use union and intersection types
+// 1. Create a function that accepts string | number
+// 2. Create intersection types
+// 3. Use type narrowing with typeof
+
+type StringOrNumber = string | number;
+
+function processValue(value: StringOrNumber) {
+  // Use type narrowing to handle both types
+  if (typeof value === 'string') {
+    return \`String: \${value}\`;
+  } else {
+    return \`Number: \${value}\`;
+  }
+}
+
+type HasName = { name: string };
+type HasAge = { age: number };
+type Person = HasName & HasAge; // Intersection
+
+// Create a function that works with Person
+function displayPerson(person: Person) {
+  return \`\${person.name}, \${person.age} years old\`;
+}`,
   testCases: [
     {
       input: [],
