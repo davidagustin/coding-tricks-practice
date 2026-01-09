@@ -2,6 +2,7 @@ name: Daily Tests & Auto-Fix
 
 on:
   workflow_dispatch:
+    # Manual trigger
     inputs:
       debug:
         description: 'Enable debug mode'
