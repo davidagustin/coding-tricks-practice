@@ -92,17 +92,20 @@ export const problem: Problem = {
 
 interface User {
   // TODO: id should be readonly
+  // TODO: name is required
   // TODO: email should be optional
+  // TODO: age should be optional
   // Your code here
 }
 
-function createUser(data: Partial<User>): User {
-  // TODO: Return User with defaults for optional properties
+function createUser(id: string, name: string, email?: string, age?: number): User {
+  // TODO: Return User with provided values
+  // Only include email and age if they are provided
   // Your code here
 }
 
 // Test
-const user = createUser({ id: '123', name: 'Alice' });
+const user = createUser('123', 'Alice');
 // user.id = '456'; // Should cause error (readonly)
 console.log(user);`,
   solution: `// Interface with readonly and optional properties
@@ -113,35 +116,37 @@ interface User {
   age?: number;
 }
 
-function createUser(data: Partial<User>): User {
-  // Return User with defaults for optional properties
-  return {
-    id: data.id ?? crypto.randomUUID(),
-    name: data.name ?? 'Anonymous',
-    email: data.email,
-    age: data.age
-  };
+function createUser(id: string, name: string, email?: string, age?: number): User {
+  // Return User with provided values
+  const user: User = { id, name };
+  if (email !== undefined) {
+    (user as { email?: string }).email = email;
+  }
+  if (age !== undefined) {
+    (user as { age?: number }).age = age;
+  }
+  return user;
 }
 
 // Test
-const user = createUser({ id: '123', name: 'Alice' });
+const user = createUser('123', 'Alice');
 // user.id = '456'; // Should cause error (readonly)
 console.log(user);`,
   testCases: [
     {
-      input: [{ id: '123', name: 'Alice' }],
-      expectedOutput: { id: '123', name: 'Alice', email: undefined, age: undefined },
-      description: 'createUser creates user with provided id and name',
+      input: ['123', 'Alice'],
+      expectedOutput: { id: '123', name: 'Alice' },
+      description: 'createUser creates user with id and name',
     },
     {
-      input: [{ name: 'Bob', email: 'bob@test.com' }],
-      expectedOutput: { name: 'Bob', email: 'bob@test.com' },
+      input: ['456', 'Bob', 'bob@test.com'],
+      expectedOutput: { id: '456', name: 'Bob', email: 'bob@test.com' },
       description: 'createUser includes optional email when provided',
     },
     {
-      input: [{}],
-      expectedOutput: { name: 'Anonymous' },
-      description: 'createUser uses default name when not provided',
+      input: ['789', 'Charlie', 'charlie@test.com', 30],
+      expectedOutput: { id: '789', name: 'Charlie', email: 'charlie@test.com', age: 30 },
+      description: 'createUser includes all optional properties when provided',
     },
   ],
   hints: [

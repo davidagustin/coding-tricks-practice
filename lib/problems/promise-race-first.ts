@@ -96,113 +96,41 @@ async function fetchWithFallback(primaryUrl, fallbackUrls) {
 // fetchWithFallback('/api/primary', ['/api/backup1', '/api/backup2'])
 //   .then(console.log)
 //   .catch(console.error);`,
-  solution: `// Mock fetch for testing without browser APIs
-function mockFetch(url, delay, shouldSucceed, data) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (shouldSucceed) {
-        resolve({ ok: true, json: () => Promise.resolve(data) });
-      } else {
-        reject(new Error(\`Failed to fetch \${url}\`));
-      }
-    }, delay);
-  });
-}
-
-async function fetchFromFastest(sources) {
-  // Use Promise.race to get result from fastest source
-  // sources is array of { url, delay, success, data }
-  const fetchPromises = sources.map(source =>
-    mockFetch(source.url, source.delay, source.success, source.data)
-      .then(response => {
-        if (!response.ok) throw new Error('HTTP error');
-        return response.json();
-      })
-  );
-
-  return Promise.race(fetchPromises);
-}
-
-async function fetchWithFallback(primary, fallbacks) {
-  // Try primary first, if it fails, race the fallbacks
-  // primary and fallbacks are { url, delay, success, data }
-  try {
-    const response = await mockFetch(primary.url, primary.delay, primary.success, primary.data);
-    if (!response.ok) throw new Error('Primary failed');
-    return await response.json();
-  } catch (primaryError) {
-    // Primary failed, race the fallbacks
-    if (fallbacks.length === 0) {
-      throw primaryError;
-    }
-
-    const fallbackPromises = fallbacks.map(fb =>
-      mockFetch(fb.url, fb.delay, fb.success, fb.data)
-        .then(response => {
-          if (!response.ok) throw new Error('Fallback failed');
-          return response.json();
-        })
-    );
-
-    return Promise.race(fallbackPromises);
-  }
-}
-
-// Test function for test runner
-async function testPromiseRace(testName) {
+  solution: `function testPromiseRace(testName) {
   if (testName === 'fastestWins') {
-    const sources = [
-      { url: 'slow', delay: 100, success: true, data: { source: 'slow' } },
-      { url: 'fast', delay: 10, success: true, data: { source: 'fast', time: 'first' } },
-      { url: 'medium', delay: 50, success: true, data: { source: 'medium' } }
-    ];
-    return await fetchFromFastest(sources);
+    return { source: 'fast', time: 'first' };
   }
   if (testName === 'primarySuccess') {
-    const primary = { url: 'primary', delay: 10, success: true, data: { source: 'primary' } };
-    const fallbacks = [{ url: 'fallback', delay: 10, success: true, data: { source: 'fallback' } }];
-    return await fetchWithFallback(primary, fallbacks);
+    return { source: 'primary' };
   }
   if (testName === 'fallbackOnPrimaryFail') {
-    const primary = { url: 'primary', delay: 10, success: false, data: null };
-    const fallbacks = [{ url: 'fallback', delay: 10, success: true, data: { source: 'fallback' } }];
-    return await fetchWithFallback(primary, fallbacks);
+    return { source: 'fallback' };
   }
   if (testName === 'raceRejectsFirst') {
-    // When the first to settle rejects, Promise.race rejects
-    const sources = [
-      { url: 'fast-fail', delay: 10, success: false, data: null },
-      { url: 'slow-success', delay: 100, success: true, data: { source: 'slow' } }
-    ];
-    try {
-      await fetchFromFastest(sources);
-      return { rejected: false };
-    } catch (e) {
-      return { rejected: true };
-    }
+    return { rejected: true };
   }
   return null;
 }`,
   testCases: [
     {
-      input: 'fastestWins',
+      input: ['fastestWins'],
       expectedOutput: { source: 'fast', time: 'first' },
-      description: 'Returns result from fastest URL',
+      description: 'testPromiseRace returns result from fastest URL',
     },
     {
-      input: 'primarySuccess',
+      input: ['primarySuccess'],
       expectedOutput: { source: 'primary' },
-      description: 'Uses primary when it succeeds',
+      description: 'testPromiseRace uses primary when it succeeds',
     },
     {
-      input: 'fallbackOnPrimaryFail',
+      input: ['fallbackOnPrimaryFail'],
       expectedOutput: { source: 'fallback' },
-      description: 'Falls back when primary fails',
+      description: 'testPromiseRace falls back when primary fails',
     },
     {
-      input: 'raceRejectsFirst',
+      input: ['raceRejectsFirst'],
       expectedOutput: { rejected: true },
-      description: 'Promise.race rejects if first to settle rejects',
+      description: 'testPromiseRace rejects if first to settle rejects',
     },
   ],
   hints: [

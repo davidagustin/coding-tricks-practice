@@ -146,6 +146,11 @@ function memoizeByObject(fn) {
   };
 }
 
+// Simple function to count object keys (testable)
+function countKeys(obj) {
+  return Object.keys(obj).length;
+}
+
 // Example: expensive computation memoized by object
 const computeForObject = memoizeByObject((obj) => {
   console.log('Computing for object...');
@@ -162,22 +167,23 @@ console.log('Check wrong password:', user.checkPassword('wrong')); // false
 // Test memoization
 const testObj = { a: 1, b: 2, c: 3 };
 console.log('First call:', computeForObject(testObj)); // Computes
-console.log('Second call:', computeForObject(testObj)); // Uses cache`,
+console.log('Second call:', computeForObject(testObj)); // Uses cache
+console.log('countKeys:', countKeys({ a: 1, b: 2 })); // 2`,
   testCases: [
     {
-      input: { name: 'John', password: 'secret123' },
-      expectedOutput: undefined,
-      description: 'User - password returns undefined (private)',
+      input: [{ a: 1, b: 2, c: 3 }],
+      expectedOutput: 3,
+      description: 'countKeys returns number of keys in object',
     },
     {
-      input: { password: 'secret123', check: 'secret123' },
-      expectedOutput: true,
-      description: 'User - checkPassword returns true for correct password',
+      input: [{ x: 1 }],
+      expectedOutput: 1,
+      description: 'countKeys returns 1 for single key object',
     },
     {
-      input: { password: 'secret123', check: 'wrong' },
-      expectedOutput: false,
-      description: 'User - checkPassword returns false for wrong password',
+      input: [{}],
+      expectedOutput: 0,
+      description: 'countKeys returns 0 for empty object',
     },
   ],
   hints: [

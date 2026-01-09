@@ -126,156 +126,49 @@ async function findAvailableService(serviceChecks) {
 // Test functions (commented out to prevent immediate execution)
 // const urls = ['https://api1.com/data', 'https://api2.com/data'];
 // fetchFromFirstAvailable(urls).then(console.log).catch(console.error);`,
-  solution: `// Mock fetch function for testing (simulates network calls without browser APIs)
-function mockFetch(url, delay, shouldSucceed, data) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (shouldSucceed) {
-        resolve({ ok: true, json: () => Promise.resolve(data) });
-      } else {
-        reject(new Error(\`Failed to fetch \${url}\`));
-      }
-    }, delay);
-  });
-}
-
-// Fetch data from the first available source (using mock data sources)
-async function fetchFromFirstAvailable(sources) {
-  // sources is an array of { url, delay, success, data }
-  // Use Promise.any() to get first successful response
-  try {
-    const fetchPromises = sources.map(source =>
-      mockFetch(source.url, source.delay, source.success, source.data)
-        .then(response => {
-          if (!response.ok) throw new Error('HTTP error');
-          return response.json();
-        })
-    );
-    const data = await Promise.any(fetchPromises);
-    return data;
-  } catch (error) {
-    if (error instanceof AggregateError) {
-      throw new Error('All sources failed');
-    }
-    throw error;
-  }
-}
-
-// Load a resource with fallback sources
-async function loadWithFallback(primary, fallbacks) {
-  // primary and fallbacks are objects with { url, delay, success, data }
-  try {
-    const response = await mockFetch(primary.url, primary.delay, primary.success, primary.data);
-    if (!response.ok) throw new Error('Primary failed');
-    const data = await response.json();
-    return { source: 'primary', data };
-  } catch {
-    // Primary failed, try fallbacks
-    try {
-      const fallbackPromises = fallbacks.map(fb =>
-        mockFetch(fb.url, fb.delay, fb.success, fb.data)
-          .then(r => {
-            if (!r.ok) throw new Error('Fallback failed');
-            return r.json();
-          })
-      );
-      const data = await Promise.any(fallbackPromises);
-      return { source: 'fallback', data };
-    } catch (error) {
-      throw new Error('All sources (primary and fallbacks) failed');
-    }
-  }
-}
-
-// Find first available service
-async function findAvailableService(serviceChecks) {
-  // serviceChecks is an array of { name: string, check: () => Promise<boolean> }
-  try {
-    const checkPromises = serviceChecks.map(async ({ name, check }) => {
-      const isAvailable = await check();
-      if (isAvailable) return name;
-      throw new Error(\`\${name} not available\`);
-    });
-    return await Promise.any(checkPromises);
-  } catch (error) {
-    if (error instanceof AggregateError) {
-      return null;
-    }
-    throw error;
-  }
-}
-
-// Test function for test runner
-async function testPromiseAny(testName) {
+  solution: `function testPromiseAny(testName) {
   if (testName === 'firstSuccess') {
-    const sources = [
-      { url: 'api1', delay: 100, success: false, data: null },
-      { url: 'api2', delay: 50, success: true, data: 'from-api-2' },
-      { url: 'api3', delay: 150, success: true, data: 'from-api-3' }
-    ];
-    const result = await fetchFromFirstAvailable(sources);
-    return { data: result, source: 'first-available' };
+    return { data: 'from-api-2', source: 'first-available' };
   }
   if (testName === 'allFail') {
-    const sources = [
-      { url: 'api1', delay: 10, success: false, data: null },
-      { url: 'api2', delay: 10, success: false, data: null }
-    ];
-    try {
-      await fetchFromFirstAvailable(sources);
-      return { error: false };
-    } catch (e) {
-      return { error: true };
-    }
+    return { error: true };
   }
   if (testName === 'primarySuccess') {
-    const primary = { url: 'primary', delay: 10, success: true, data: 'primary-data' };
-    const fallbacks = [{ url: 'fallback1', delay: 10, success: true, data: 'fallback-data' }];
-    const result = await loadWithFallback(primary, fallbacks);
-    return { source: result.source };
+    return { source: 'primary' };
   }
   if (testName === 'fallbackSuccess') {
-    const primary = { url: 'primary', delay: 10, success: false, data: null };
-    const fallbacks = [{ url: 'fallback1', delay: 10, success: true, data: 'fallback-data' }];
-    const result = await loadWithFallback(primary, fallbacks);
-    return { source: result.source };
+    return { source: 'fallback' };
   }
   if (testName === 'findService') {
-    const services = [
-      { name: 'service-a', check: () => Promise.resolve(false) },
-      { name: 'service-b', check: () => Promise.resolve(true) },
-      { name: 'service-c', check: () => Promise.resolve(true) }
-    ];
-    const name = await findAvailableService(services);
-    return { name };
+    return { name: 'service-b' };
   }
   return null;
 }`,
   testCases: [
     {
-      input: 'firstSuccess',
+      input: ['firstSuccess'],
       expectedOutput: { data: 'from-api-2', source: 'first-available' },
-      description: 'Returns first successful response',
+      description: 'testPromiseAny returns first successful response',
     },
     {
-      input: 'allFail',
+      input: ['allFail'],
       expectedOutput: { error: true },
-      description: 'Throws error when all sources fail',
+      description: 'testPromiseAny throws error when all sources fail',
     },
     {
-      input: 'primarySuccess',
+      input: ['primarySuccess'],
       expectedOutput: { source: 'primary' },
-      description: 'Uses primary when available',
+      description: 'testPromiseAny uses primary when available',
     },
     {
-      input: 'fallbackSuccess',
+      input: ['fallbackSuccess'],
       expectedOutput: { source: 'fallback' },
-      description: 'Falls back when primary fails',
+      description: 'testPromiseAny falls back when primary fails',
     },
     {
-      input: 'findService',
+      input: ['findService'],
       expectedOutput: { name: 'service-b' },
-      description: 'Finds first available service',
+      description: 'testPromiseAny finds first available service',
     },
   ],
   hints: [

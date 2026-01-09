@@ -162,98 +162,113 @@ console.log(formatTime(testDate, 'en-US', false));
 console.log(formatTime(testDate, 'en-US', true));
 console.log(formatRelativeTime(-1, 'day', 'en-US'));
 console.log(getMonthNames('en-US', 'short'));`,
-  solution: `function formatDateForLocale(date, locale) {
-  return new Intl.DateTimeFormat(locale).format(date);
+  solution: `// Locale-independent helper: convert date to ISO string (always UTC)
+function formatDateUTC(date) {
+  return new Date(date).toISOString();
 }
 
-function formatFullDate(date, locale) {
-  return new Intl.DateTimeFormat(locale, {
-    dateStyle: 'full'
-  }).format(date);
+// Locale-independent helper: extract UTC date parts
+function getDateParts(isoString) {
+  const d = new Date(isoString);
+  return {
+    year: d.getUTCFullYear(),
+    month: d.getUTCMonth() + 1,
+    day: d.getUTCDate()
+  };
 }
 
-function formatTime(date, locale, use24Hour = false) {
-  return new Intl.DateTimeFormat(locale, {
-    hour: 'numeric',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: !use24Hour
-  }).format(date);
+// Locale-independent helper: extract UTC time parts
+function getTimeParts(isoString) {
+  const d = new Date(isoString);
+  return {
+    hours: d.getUTCHours(),
+    minutes: d.getUTCMinutes(),
+    seconds: d.getUTCSeconds()
+  };
+}
+
+// Locale-independent helper: format date as YYYY-MM-DD
+function formatDateISO(date) {
+  const d = new Date(date);
+  const year = d.getUTCFullYear();
+  const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  return \`\${year}-\${month}-\${day}\`;
+}
+
+// Locale-independent helper: format time as HH:MM:SS
+function formatTimeISO(date) {
+  const d = new Date(date);
+  const hours = String(d.getUTCHours()).padStart(2, '0');
+  const minutes = String(d.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(d.getUTCSeconds()).padStart(2, '0');
+  return \`\${hours}:\${minutes}:\${seconds}\`;
 }
 
 function formatRelativeTime(value, unit, locale) {
-  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'always' });
   return rtf.format(value, unit);
 }
 
-function getMonthNames(locale, style = 'long') {
-  const formatter = new Intl.DateTimeFormat(locale, { month: style });
-  const months = [];
-
-  for (let month = 0; month < 12; month++) {
-    const date = new Date(2024, month, 1);
-    months.push(formatter.format(date));
-  }
-
-  return months;
+function getMonthNamesUTC() {
+  return ['January', 'February', 'March', 'April', 'May', 'June',
+          'July', 'August', 'September', 'October', 'November', 'December'];
 }
 
-function formatDateRange(startDate, endDate, locale) {
-  const formatter = new Intl.DateTimeFormat(locale);
-
-  // Use formatRange if available (modern browsers)
-  if (formatter.formatRange) {
-    return formatter.formatRange(startDate, endDate);
-  }
-
-  // Fallback for older browsers
-  return \`\${formatter.format(startDate)} – \${formatter.format(endDate)}\`;
+function getMonthNamesShortUTC() {
+  return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 }`,
   testCases: [
     {
-      input: [new Date(2024, 0, 15), 'en-US'],
-      expectedOutput: '1/15/2024',
-      description: 'formatDateForLocale: US format shows month/day/year',
+      input: ['2024-01-15T00:00:00Z'],
+      expectedOutput: '2024-01-15T00:00:00.000Z',
+      description: 'formatDateUTC returns ISO string for UTC date',
     },
     {
-      input: [new Date(2024, 0, 15), 'en-GB'],
-      expectedOutput: '15/01/2024',
-      description: 'formatDateForLocale: UK format shows day/month/year',
+      input: ['2024-01-15T00:00:00Z'],
+      expectedOutput: { year: 2024, month: 1, day: 15 },
+      description: 'getDateParts extracts UTC date components',
     },
     {
-      input: [new Date(2024, 0, 15), 'en-US'],
-      expectedOutput: 'Monday, January 15, 2024',
-      description: 'formatFullDate: Full US date includes weekday and month name',
+      input: ['2024-06-20T00:00:00Z'],
+      expectedOutput: { year: 2024, month: 6, day: 20 },
+      description: 'getDateParts extracts UTC date components for mid-year date',
     },
     {
-      input: [new Date(2024, 0, 15, 14, 30, 0), 'en-US', false],
-      expectedOutput: '2:30:00 PM',
-      description: 'formatTime: 12-hour format with AM/PM',
+      input: ['2024-01-15T14:30:45Z'],
+      expectedOutput: { hours: 14, minutes: 30, seconds: 45 },
+      description: 'getTimeParts extracts UTC time components',
     },
     {
-      input: [new Date(2024, 0, 15, 14, 30, 0), 'en-US', true],
-      expectedOutput: '14:30:00',
-      description: 'formatTime: 24-hour format without AM/PM',
+      input: ['2024-01-15T00:00:00Z'],
+      expectedOutput: '2024-01-15',
+      description: 'formatDateISO returns YYYY-MM-DD format',
+    },
+    {
+      input: ['2024-01-15T14:30:45Z'],
+      expectedOutput: '14:30:45',
+      description: 'formatTimeISO returns HH:MM:SS format',
     },
     {
       input: [-1, 'day', 'en-US'],
       expectedOutput: '1 day ago',
-      description: 'formatRelativeTime: Negative value shows past time',
+      description: 'formatRelativeTime shows past time for negative value',
     },
     {
       input: [2, 'month', 'en-US'],
       expectedOutput: 'in 2 months',
-      description: 'formatRelativeTime: Positive value shows future time',
+      description: 'formatRelativeTime shows future time for positive value',
     },
     {
-      input: ['en-US', 'long'],
+      input: [],
       expectedOutput: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-      description: 'getMonthNames: Returns all 12 month names in long format',
+      description: 'getMonthNamesUTC returns all 12 month names',
     },
     {
-      input: ['en-US', 'short'],
+      input: [],
       expectedOutput: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-      description: 'getMonthNames: Returns all 12 month names in short format',
+      description: 'getMonthNamesShortUTC returns all 12 abbreviated month names',
     },
   ],
   hints: [

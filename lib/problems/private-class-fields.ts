@@ -254,6 +254,32 @@ class Counter {
   }
 }
 
+// Helper functions for testing
+function testBankAccountDeposit(initialBalance, depositAmount) {
+  const account = new BankAccount(initialBalance);
+  account.deposit(depositAmount);
+  return account.getBalance();
+}
+
+function testBankAccountWithdraw(initialBalance, withdrawAmount) {
+  const account = new BankAccount(initialBalance);
+  return account.withdraw(withdrawAmount);
+}
+
+function testSecureTokenValid(expiresInMs) {
+  const token = new SecureToken(expiresInMs);
+  return token.isValid();
+}
+
+function testCounterInstances(count) {
+  // Reset by creating fresh counters and checking the increment
+  const startCount = Counter.getInstanceCount();
+  for (let i = 0; i < count; i++) {
+    new Counter();
+  }
+  return Counter.getInstanceCount() - startCount;
+}
+
 // Test
 const account = new BankAccount(100);
 account.deposit(50);
@@ -272,27 +298,27 @@ console.log(Counter.getInstanceCount());  // 2`,
     {
       input: [100, 50],
       expectedOutput: 150,
-      description: 'BankAccount - deposit adds to balance',
+      description: 'testBankAccountDeposit adds amount to initial balance',
     },
     {
       input: [100, 200],
       expectedOutput: false,
-      description: 'BankAccount - withdraw fails with insufficient funds',
+      description: 'testBankAccountWithdraw fails with insufficient funds',
     },
     {
       input: [100, 50],
       expectedOutput: true,
-      description: 'BankAccount - withdraw succeeds with sufficient funds',
+      description: 'testBankAccountWithdraw succeeds with sufficient funds',
     },
     {
       input: [10000],
       expectedOutput: true,
-      description: 'SecureToken - is valid before expiry',
+      description: 'testSecureTokenValid returns true before expiry',
     },
     {
-      input: [],
+      input: [2],
       expectedOutput: 2,
-      description: 'Counter - tracks instances correctly',
+      description: 'testCounterInstances tracks new instances correctly',
     },
   ],
   hints: [

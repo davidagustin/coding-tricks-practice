@@ -227,6 +227,24 @@ class LazyChain {
   }
 }
 
+// Wrapper functions for testing
+function wrapTakeLazyRange(start, end, count) {
+  return take(lazyRange(start, end), count);
+}
+
+function wrapLazyMap(arr) {
+  return [...lazyMap(arr, x => x * 2)];
+}
+
+function wrapLazyFilter(arr, count) {
+  return take(lazyFilter(arr, x => x % 2 === 0), count);
+}
+
+function wrapLazyObject() {
+  const obj = createLazyObject(() => 42);
+  return obj.value;
+}
+
 // Test
 const range = lazyRange(1, 1000000);
 console.log(take(range, 5)); // [1, 2, 3, 4, 5]
@@ -253,22 +271,22 @@ console.log(chain); // [12, 14, 16, 18, 20]`,
     {
       input: [1, 1000000, 5],
       expectedOutput: [1, 2, 3, 4, 5],
-      description: 'lazyRange with take returns only needed values',
+      description: 'wrapTakeLazyRange returns first N values from lazy range',
     },
     {
-      input: [[1, 2, 3, 4, 5], 'x => x * 2'],
+      input: [[1, 2, 3, 4, 5]],
       expectedOutput: [2, 4, 6, 8, 10],
-      description: 'lazyMap transforms values lazily',
+      description: 'wrapLazyMap doubles each value lazily',
     },
     {
-      input: [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 'x => x % 2 === 0', 3],
+      input: [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3],
       expectedOutput: [2, 4, 6],
-      description: 'lazyFilter with take returns filtered values',
+      description: 'wrapLazyFilter returns first N even numbers',
     },
     {
-      input: ['computeExpensive'],
+      input: [],
       expectedOutput: 42,
-      description: 'createLazyObject caches computed value',
+      description: 'wrapLazyObject returns cached value from lazy object',
     },
   ],
   hints: [

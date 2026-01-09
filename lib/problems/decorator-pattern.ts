@@ -141,101 +141,98 @@ const validatePositive = (a, b) => a > 0 && b > 0;
 const validatedAdd = withValidation(add, validatePositive);
 console.log(validatedAdd(5, 3)); // Works
 console.log(validatedAdd(-1, 3)); // Throws error`,
-  solution: `// Decorator that adds logging before and after function execution
+  solution: `// Logging decorator: logs args and result
 function withLogging(fn) {
-  return function(...args) {
-    console.log(\`Calling \${fn.name || 'anonymous'} with args:\`, args);
-    const result = fn.apply(this, args);
-    console.log(\`\${fn.name || 'anonymous'} returned:\`, result);
+  return function() {
+    var args = Array.prototype.slice.call(arguments);
+    console.log('Calling with args:', args);
+    var result = fn.apply(this, args);
+    console.log('Returned:', result);
     return result;
   };
 }
 
-// Decorator that measures and logs execution time
+// Timing decorator: measures execution time
 function withTiming(fn) {
-  return function(...args) {
-    const start = performance.now();
-    const result = fn.apply(this, args);
-    const end = performance.now();
-    console.log(\`Execution time: \${(end - start).toFixed(2)}ms\`);
+  return function() {
+    var args = Array.prototype.slice.call(arguments);
+    var start = Date.now();
+    var result = fn.apply(this, args);
+    var end = Date.now();
+    console.log('Execution time: ' + (end - start) + 'ms');
     return result;
   };
 }
 
-// Decorator that adds retry logic for failed operations
-function withRetry(fn, maxRetries = 3) {
-  return function(...args) {
-    let lastError;
-    for (let attempt = 0; attempt < maxRetries; attempt++) {
+// Retry decorator: retries on failure
+function withRetry(fn, maxRetries) {
+  if (maxRetries === undefined) maxRetries = 3;
+  return function() {
+    var args = Array.prototype.slice.call(arguments);
+    var lastError;
+    var attempt = 0;
+    while (attempt < maxRetries) {
       try {
         return fn.apply(this, args);
       } catch (error) {
         lastError = error;
-        console.log(\`Attempt \${attempt + 1} failed: \${error.message}\`);
+        console.log('Attempt ' + (attempt + 1) + ' failed: ' + error.message);
       }
+      attempt++;
     }
     throw lastError;
   };
 }
 
-// Decorator that validates arguments before calling function
+// Validation decorator: validates args before calling
 function withValidation(fn, validator) {
-  return function(...args) {
-    if (!validator(...args)) {
+  return function() {
+    var args = Array.prototype.slice.call(arguments);
+    if (!validator.apply(this, args)) {
       throw new Error('Validation failed');
     }
     return fn.apply(this, args);
   };
 }
 
-// Test wrapper functions for the test runner
-function testWithLogging(a, b) {
-  const add = (x, y) => x + y;
-  const loggedAdd = withLogging(add);
-  return loggedAdd(a, b);
+// Test wrapper: withLogging returns doubled input
+function testWithLogging(input) {
+  var fn = function(x) { return x * 2; };
+  var decorated = withLogging(fn);
+  return decorated(input);
 }
 
+// Test wrapper: withTiming returns sum
 function testWithTiming(a, b) {
-  const add = (x, y) => x + y;
-  const timedAdd = withTiming(add);
+  var add = function(x, y) { return x + y; };
+  var timedAdd = withTiming(add);
   return timedAdd(a, b);
 }
 
+// Test wrapper: withValidation returns sum when valid
 function testWithValidationValid(a, b) {
-  const add = (x, y) => x + y;
-  const validatePositive = (x, y) => x > 0 && y > 0;
-  const validatedAdd = withValidation(add, validatePositive);
+  var add = function(x, y) { return x + y; };
+  var validatePositive = function(x, y) { return x > 0 && y > 0; };
+  var validatedAdd = withValidation(add, validatePositive);
   return validatedAdd(a, b);
 }
 
+// Test wrapper: withRetry succeeds on third attempt
 function testWithRetry() {
-  let attempts = 0;
-  const failTwice = () => {
+  var attempts = 0;
+  var failTwice = function() {
     attempts++;
     if (attempts < 3) throw new Error('Fail');
     return 'success';
   };
-  const retryFn = withRetry(failTwice, 3);
+  var retryFn = withRetry(failTwice, 3);
   return retryFn();
-}
-
-// Test
-const add = (a, b) => a + b;
-const loggedAdd = withLogging(add);
-console.log(loggedAdd(5, 3)); // 8
-
-const timedAdd = withTiming(add);
-console.log(timedAdd(10, 20)); // 30
-
-const validatePositive = (a, b) => a > 0 && b > 0;
-const validatedAdd = withValidation(add, validatePositive);
-console.log(validatedAdd(5, 3)); // 8
-// validatedAdd(-1, 3); // Throws error`,
+}`,
   testCases: [
     {
-      input: [5, 3],
-      expectedOutput: 8,
-      description: 'testWithLogging returns correct result with logging',
+      input: [5],
+      expectedOutput: 10,
+      description: 'testWithLogging returns decorated function result',
     },
     {
       input: [10, 20],

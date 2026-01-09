@@ -182,19 +182,19 @@ console.log('obj1 visited:', isVisited(obj1, visited)); // true
 console.log('obj2 visited:', isVisited(obj2, visited)); // false`,
   testCases: [
     {
-      input: { name: 'John', privateId: 'secret-123' },
-      expectedOutput: 'secret-123',
-      description: 'User - getPrivateId returns the stored private ID',
+      input: [{ a: 1, b: 2 }],
+      expectedOutput: { a: 1, b: 2 },
+      description: 'deepCloneWithWeakSet clones simple object',
     },
     {
-      input: { markObj: true },
-      expectedOutput: true,
-      description: 'isVisited - returns true for marked objects',
+      input: [{ nested: { x: 1 } }],
+      expectedOutput: { nested: { x: 1 } },
+      description: 'deepCloneWithWeakSet clones nested object',
     },
     {
-      input: { markObj: false },
-      expectedOutput: false,
-      description: 'isVisited - returns false for unmarked objects',
+      input: [[1, 2, 3]],
+      expectedOutput: [1, 2, 3],
+      description: 'deepCloneWithWeakSet clones array',
     },
   ],
   hints: [

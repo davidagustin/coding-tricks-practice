@@ -146,7 +146,7 @@ function updateProduct(id: number, updates: ProductUpdate): Product {
 // TODO: Define ProductPreview type using Pick
 // Your code here: type ProductPreview = ...
 
-function getProductPreview(product: Product): ProductPreview {
+function getProductPreview(product: ProductPreview): ProductPreview {
   // TODO: Return object with only the preview fields
   // Your code here
 }
@@ -228,7 +228,7 @@ function updateProduct(id: number, updates: ProductUpdate): Product {
 // Task 2: Create a product preview type using Pick
 type ProductPreview = Pick<Product, 'id' | 'name' | 'price' | 'inStock'>;
 
-function getProductPreview(product: Product): ProductPreview {
+function getProductPreview(product: ProductPreview): ProductPreview {
   return {
     id: product.id,
     name: product.name,
@@ -291,19 +291,24 @@ console.log(createProduct({
 console.log(validateConfig({ apiUrl: 'https://api.example.com' }));`,
   testCases: [
     {
-      input: [1, { price: 149.99 }],
-      expectedOutput: { id: 1, name: 'Original Product', description: 'Original description', price: 149.99, category: 'electronics', inStock: true },
-      description: 'updateProduct merges updates with existing product',
-    },
-    {
-      input: [{ id: 1, name: 'Test', description: 'Test desc', price: 29.99, category: 'test', inStock: true, createdAt: new Date() }],
-      expectedOutput: { id: 1, name: 'Test', price: 29.99, inStock: true },
-      description: 'getProductPreview returns only preview fields',
-    },
-    {
       input: [{ apiUrl: 'https://api.example.com' }],
       expectedOutput: { apiUrl: 'https://api.example.com', timeout: 5000, retries: 3, debug: false },
-      description: 'validateConfig fills in default values',
+      description: 'validateConfig fills in default values for missing properties',
+    },
+    {
+      input: [{}],
+      expectedOutput: { apiUrl: 'http://localhost', timeout: 5000, retries: 3, debug: false },
+      description: 'validateConfig uses all defaults when config is empty',
+    },
+    {
+      input: [{ apiUrl: 'https://test.com', timeout: 10000, retries: 5, debug: true }],
+      expectedOutput: { apiUrl: 'https://test.com', timeout: 10000, retries: 5, debug: true },
+      description: 'validateConfig preserves all provided values',
+    },
+    {
+      input: [{ id: 1, name: 'Test', description: 'Test desc', price: 29.99, category: 'test', inStock: true }],
+      expectedOutput: { id: 1, name: 'Test', price: 29.99, inStock: true },
+      description: 'getProductPreview returns only preview fields',
     },
   ],
   hints: [

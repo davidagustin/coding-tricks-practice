@@ -228,24 +228,24 @@ processBatches(items, 10, batch => {
 }).then(console.log);`,
   testCases: [
     {
-      input: { fn: 'chunk', args: [[1, 2, 3, 4, 5, 6, 7], 3] },
+      input: [[1, 2, 3, 4, 5, 6, 7], 3],
       expectedOutput: [[1, 2, 3], [4, 5, 6], [7]],
       description: 'chunk splits array into chunks of specified size',
     },
     {
-      input: { fn: 'chunk', args: [[1, 2, 3, 4, 5, 6], 2] },
+      input: [[1, 2, 3, 4, 5, 6], 2],
       expectedOutput: [[1, 2], [3, 4], [5, 6]],
       description: 'chunk handles arrays divisible by size',
     },
     {
-      input: { fn: 'chunk', args: [[], 3] },
+      input: [[], 3],
       expectedOutput: [],
       description: 'chunk returns empty array for empty input',
     },
     {
-      input: { fn: 'processBatches', args: [[1, 2, 3, 4], 2, 'batch => batch.map(x => x * 2)'] },
-      expectedOutput: [2, 4, 6, 8],
-      description: 'processBatches processes items in batches and returns combined results',
+      input: [[1, 2, 3], 5],
+      expectedOutput: [[1, 2, 3]],
+      description: 'chunk handles chunk size larger than array',
     },
   ],
   hints: [

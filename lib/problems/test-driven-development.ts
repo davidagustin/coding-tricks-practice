@@ -446,22 +446,73 @@ describe('Stack', () => {
   });
 });
 
-runTests();`,
+runTests();
+
+// Testable toBe assertion - returns true if values match
+function testToBe(actual, expected) {
+  return actual === expected;
+}
+
+// Testable toEqual assertion - deep equality check
+function testToEqual(actual, expected) {
+  return JSON.stringify(actual) === JSON.stringify(expected);
+}
+
+// Testable toBeTruthy assertion
+function testToBeTruthy(value) {
+  return !!value;
+}
+
+// Testable toBeFalsy assertion
+function testToBeFalsy(value) {
+  return !value;
+}
+
+// Testable test result tracker
+function testResultTracker(testOutcomes) {
+  const results = {
+    passed: 0,
+    failed: 0,
+    results: []
+  };
+  testOutcomes.forEach((passed, index) => {
+    if (passed) {
+      results.passed++;
+    } else {
+      results.failed++;
+    }
+    results.results.push({
+      description: 'Test ' + (index + 1),
+      passed: passed
+    });
+  });
+  return { passed: results.passed, failed: results.failed };
+}`,
   testCases: [
     {
-      input: { actual: 5, expected: 5 },
+      input: [5, 5],
       expectedOutput: true,
-      description: 'toBe passes for equal values',
+      description: 'testToBe returns true for equal values',
     },
     {
-      input: { actual: [1, 2], expected: [1, 2] },
-      expectedOutput: true,
-      description: 'toEqual passes for deep equal arrays',
+      input: [5, 6],
+      expectedOutput: false,
+      description: 'testToBe returns false for different values',
     },
     {
-      input: { throwFn: true },
+      input: [[1, 2, 3], [1, 2, 3]],
       expectedOutput: true,
-      description: 'toThrow passes when function throws',
+      description: 'testToEqual returns true for deeply equal arrays',
+    },
+    {
+      input: [1],
+      expectedOutput: true,
+      description: 'testToBeTruthy returns true for truthy value',
+    },
+    {
+      input: [[true, true, false, true]],
+      expectedOutput: { passed: 3, failed: 1 },
+      description: 'testResultTracker counts passed and failed correctly',
     },
   ],
   hints: [

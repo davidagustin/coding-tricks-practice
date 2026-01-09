@@ -333,27 +333,55 @@ lru.set('a', 1);
 lru.set('b', 2);
 lru.set('c', 3);
 lru.get('a'); // Access 'a'
-lru.set('d', 4); // Should evict 'b' (least recently used)`,
+lru.set('d', 4); // Should evict 'b' (least recently used)
+
+// Test helper functions for the test runner
+function testTTLCache(key: string, value: any): any {
+  const cache = new TTLCache(60000);
+  cache.set(key, value);
+  return cache.get(key);
+}
+
+function testLRUCache(maxSize: number, key: string, value: any): any {
+  const lru = new LRUCache(maxSize);
+  lru.set(key, value);
+  return lru.get(key);
+}
+
+function testMemoize(value: number): number {
+  const fn = memoizeWithCache((x: number) => x * 2);
+  return fn(value);
+}`,
   testCases: [
     {
-      input: { class: 'TTLCache', operations: ['set("key", "value")', 'get("key")'] },
+      input: ['testKey', 'testValue'],
+      expectedOutput: 'testValue',
+      description: 'testTTLCache stores and retrieves values',
+    },
+    {
+      input: ['anotherKey', 42],
+      expectedOutput: 42,
+      description: 'testTTLCache works with numeric values',
+    },
+    {
+      input: [3, 'myKey', 100],
+      expectedOutput: 100,
+      description: 'testLRUCache stores and retrieves values',
+    },
+    {
+      input: [5, 'key', 'value'],
       expectedOutput: 'value',
-      description: 'TTLCache stores and retrieves values',
+      description: 'testLRUCache works with string values',
     },
     {
-      input: { class: 'TTLCache', operations: ['set("key", "value")', 'has("key")'] },
-      expectedOutput: true,
-      description: 'TTLCache has() returns true for existing keys',
+      input: [21],
+      expectedOutput: 42,
+      description: 'testMemoize returns computed result',
     },
     {
-      input: { class: 'LRUCache', operations: ['set("a", 1)', 'set("b", 2)', 'set("c", 3)', 'get("a")', 'set("d", 4)', 'get("b")'] },
-      expectedOutput: undefined,
-      description: 'LRUCache evicts least recently used item when capacity exceeded',
-    },
-    {
-      input: { class: 'LRUCache', operations: ['set("a", 1)', 'get("a")'] },
-      expectedOutput: 1,
-      description: 'LRUCache retrieves stored values',
+      input: [10],
+      expectedOutput: 20,
+      description: 'testMemoize doubles the input value',
     },
   ],
   hints: [

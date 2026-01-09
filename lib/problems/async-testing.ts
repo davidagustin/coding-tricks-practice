@@ -400,27 +400,73 @@ async function runTests() {
   console.log('Wait for completed');
 }
 
-runTests();`,
+runTests();
+
+// Testable async result function - simulates async test execution
+function testAsyncResult(shouldPass, errorMessage) {
+  const result = {
+    passed: shouldPass,
+    error: shouldPass ? null : { message: errorMessage },
+    duration: 100
+  };
+  return result;
+}
+
+// Testable timer tracker - returns count of scheduled timers
+function testTimerTracker(timerDelays) {
+  return timerDelays.length;
+}
+
+// Testable advance time function - marks timers as executed
+function testAdvanceTime(timerDelays, advanceBy) {
+  const timers = timerDelays.map((delay, index) => ({
+    id: index + 1,
+    delay: delay,
+    executed: delay <= advanceBy
+  }));
+  return timers.filter(t => t.executed).length;
+}
+
+// Testable condition check - simulates waitFor behavior
+function testConditionCheck(values, targetValue) {
+  const index = values.indexOf(targetValue);
+  return index >= 0 ? index + 1 : -1;
+}
+
+// Testable promise state tracker
+function testPromiseStateTracker(initialState) {
+  return {
+    state: initialState,
+    isResolved: () => initialState === 'resolved',
+    isRejected: () => initialState === 'rejected',
+    isPending: () => initialState === 'pending'
+  };
+}`,
   testCases: [
     {
-      input: { fn: 'asyncTest', args: ['async () => true', 5000] },
-      expectedOutput: { passed: true, error: null },
-      description: 'asyncTest returns passed: true for successful async test',
+      input: [true, null],
+      expectedOutput: { passed: true, error: null, duration: 100 },
+      description: 'testAsyncResult returns passed result when test succeeds',
     },
     {
-      input: { fn: 'flushPromises', args: [] },
-      expectedOutput: 'Promise resolved',
-      description: 'flushPromises returns a promise that resolves after microtasks',
+      input: [false, 'Test failed'],
+      expectedOutput: { passed: false, error: { message: 'Test failed' }, duration: 100 },
+      description: 'testAsyncResult returns failed result with error message',
     },
     {
-      input: { fn: 'waitFor', args: ['() => true', { timeout: 1000, interval: 50 }] },
-      expectedOutput: true,
-      description: 'waitFor returns true when condition is met',
+      input: [[100, 200, 300]],
+      expectedOutput: 3,
+      description: 'testTimerTracker getTimerCount returns correct count',
     },
     {
-      input: { fn: 'createFakeTimers', args: [] },
-      expectedOutput: { hasAdvanceTime: true, hasRestore: true },
-      description: 'createFakeTimers returns object with timer control methods',
+      input: [[100, 200, 300], 150],
+      expectedOutput: 1,
+      description: 'testAdvanceTime executes timers that have passed',
+    },
+    {
+      input: [['a', 'b', 'c'], 'b'],
+      expectedOutput: 2,
+      description: 'testConditionCheck returns iteration count when found',
     },
   ],
   hints: [

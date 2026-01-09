@@ -107,34 +107,34 @@ const users = [
 console.log(deduplicateUsers(users));`,
   testCases: [
     {
-      input: [
+      input: [[
         { id: 1, name: 'John' },
         { id: 2, name: 'Jane' },
         { id: 1, name: 'John Updated' }
-      ],
+      ]],
       expectedOutput: [
-        { id: 2, name: 'Jane' },
-        { id: 1, name: 'John Updated' }
+        { id: 1, name: 'John Updated' },
+        { id: 2, name: 'Jane' }
       ],
-      description: 'Last occurrence of duplicate id wins',
+      description: 'deduplicateUsers keeps last occurrence of duplicate id',
     },
     {
-      input: [
+      input: [[
+        { id: 1, name: 'A' },
+        { id: 2, name: 'B' },
+        { id: 3, name: 'C' }
+      ]],
+      expectedOutput: [
         { id: 1, name: 'A' },
         { id: 2, name: 'B' },
         { id: 3, name: 'C' }
       ],
-      expectedOutput: [
-        { id: 1, name: 'A' },
-        { id: 2, name: 'B' },
-        { id: 3, name: 'C' }
-      ],
-      description: 'No duplicates returns same order',
+      description: 'deduplicateUsers returns same order when no duplicates',
     },
     {
-      input: [],
+      input: [[]],
       expectedOutput: [],
-      description: 'Empty array returns empty array',
+      description: 'deduplicateUsers returns empty array for empty input',
     },
   ],
   hints: [

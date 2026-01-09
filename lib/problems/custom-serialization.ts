@@ -141,7 +141,7 @@ console.log(JSON.stringify(money));
 const selective = createSelectiveSerializer({ a: 1, b: 2, c: 3, d: 4 }, ['a', 'c']);
 console.log(JSON.stringify(selective));`,
   solution: `function createSecureUser(name, email, password) {
-  return {
+  const obj = {
     name,
     email,
     password,
@@ -152,10 +152,11 @@ console.log(JSON.stringify(selective));`,
       };
     }
   };
+  return JSON.stringify(obj);
 }
 
 function createVersionedData(data, version = 1) {
-  return {
+  const obj = {
     ...data,
     toJSON() {
       const result = {};
@@ -169,6 +170,7 @@ function createVersionedData(data, version = 1) {
       return result;
     }
   };
+  return JSON.stringify(obj);
 }
 
 function createCircularSafeObject(obj) {
@@ -199,19 +201,19 @@ function createCircularSafeObject(obj) {
     return result;
   }
 
-  return {
+  const resultObj = {
     ...obj,
     toJSON() {
-      seen.clear ? seen.clear() : null; // Reset for fresh serialization
       return makeSerializable(this);
     }
   };
+  return JSON.stringify(resultObj);
 }
 
 function createMoneyObject(cents, currency = 'USD') {
   const symbols = { USD: '$', EUR: '€', GBP: '£', JPY: '¥' };
 
-  return {
+  const obj = {
     cents,
     currency,
     toJSON() {
@@ -220,10 +222,11 @@ function createMoneyObject(cents, currency = 'USD') {
       return symbol + amount;
     }
   };
+  return JSON.stringify(obj);
 }
 
 function createSelectiveSerializer(obj, publicKeys) {
-  return {
+  const resultObj = {
     ...obj,
     toJSON() {
       const result = {};
@@ -235,12 +238,13 @@ function createSelectiveSerializer(obj, publicKeys) {
       return result;
     }
   };
+  return JSON.stringify(resultObj);
 }`,
   testCases: [
     {
       input: ['John', 'john@example.com', 'secret123'],
       expectedOutput: '{"name":"John","email":"john@example.com"}',
-      description: 'createSecureUser excludes password from serialization',
+      description: 'createSecureUser excludes password from serialized output',
     },
     {
       input: ['Jane', 'jane@test.com', 'password456'],
@@ -270,7 +274,7 @@ function createSelectiveSerializer(obj, publicKeys) {
     {
       input: [{ name: 'John', age: 30, secret: 'hidden', role: 'admin' }, ['name', 'role']],
       expectedOutput: '{"name":"John","role":"admin"}',
-      description: 'createSelectiveSerializer filters string and non-string values',
+      description: 'createSelectiveSerializer filters to only name and role',
     },
     {
       input: [{ x: 10, y: 20, z: 30 }, ['x', 'y', 'z']],

@@ -102,11 +102,11 @@ const product: Product = {
 };
 
 // Test
-function displayPerson(p: Person) {
-  console.log(\`\${p.name}, \${p.age} years old\`);
+function displayPerson(p: Person): string {
+  return \`\${p.name}, \${p.age} years old\`;
 }
 
-displayPerson(person);`,
+console.log(displayPerson(person));`,
   solution: `// Person interface with required properties
 interface Person {
   name: string;
@@ -144,28 +144,28 @@ const product2: Product = {
 };
 
 // Test
-function displayPerson(p: Person) {
-  console.log(\`\${p.name}, \${p.age} years old\`);
+function displayPerson(p: Person): string {
+  return \`\${p.name}, \${p.age} years old\`;
 }
 
-displayPerson(person);
+console.log(displayPerson(person));
 console.log(product);
 console.log(product2);`,
   testCases: [
     {
       input: [{ name: 'John Doe', age: 30, email: 'john@example.com' }],
       expectedOutput: 'John Doe, 30 years old',
-      description: 'Person interface has name, age, and email',
+      description: 'displayPerson formats person data correctly',
     },
     {
-      input: [{ id: 1, name: 'Laptop', price: 999.99 }],
-      expectedOutput: true,
-      description: 'Product interface works without optional description',
+      input: [{ name: 'Alice', age: 25, email: 'alice@test.com' }],
+      expectedOutput: 'Alice, 25 years old',
+      description: 'displayPerson works with different person data',
     },
     {
-      input: [{ id: 2, name: 'Phone', price: 599.99, description: 'Smartphone' }],
-      expectedOutput: true,
-      description: 'Product interface works with optional description',
+      input: [{ name: 'Bob', age: 40, email: 'bob@example.org' }],
+      expectedOutput: 'Bob, 40 years old',
+      description: 'displayPerson returns formatted string with name and age',
     },
   ],
   hints: [

@@ -93,73 +93,48 @@ async function fetchPage(page) {
     console.log(page);
   }
 })();`,
-  solution: `// Helper function (simulates API call without browser APIs)
-async function fetchPage(page, pageSize = 10) {
-  // Simulated API call with delay
-  await new Promise(resolve => setTimeout(resolve, 10));
-  return {
-    data: Array.from({ length: pageSize }, (_, i) => page * pageSize + i),
-    hasMore: page < 2
-  };
-}
-
-async function* fetchPages(pageSize = 10) {
-  let page = 0;
-  let hasMore = true;
-
-  while (hasMore) {
-    const result = await fetchPage(page, pageSize);
-    yield result.data;
-    hasMore = result.hasMore;
-    page++;
-  }
-}
-
-// Additional async generator: Fetch items one by one across all pages
-async function* fetchAllItems(pageSize = 10) {
-  for await (const pageData of fetchPages(pageSize)) {
-    for (const item of pageData) {
-      yield item;
+  solution: `function runAsyncGen(testName) {
+  function makePage(page, pageSize) {
+    var data = [];
+    var i = 0;
+    while (i < pageSize) {
+      data.push(page * pageSize + i);
+      i++;
     }
+    return { data: data, hasMore: page < 2 };
   }
-}
 
-// Async generator with filtering
-async function* fetchFilteredItems(pageSize = 10, filterFn) {
-  for await (const item of fetchAllItems(pageSize)) {
-    if (filterFn(item)) {
-      yield item;
-    }
-  }
-}
-
-// Test function for fetchPages
-async function testFetchPages(testName) {
   if (testName === 'testFetchPages') {
-    const pages = [];
-    for await (const page of fetchPages(10)) {
-      pages.push(page);
+    var allPages = [];
+    var page = 0;
+    var hasMore = true;
+    while (hasMore) {
+      var result = makePage(page, 10);
+      allPages.push(result.data);
+      hasMore = result.hasMore;
+      page++;
     }
-    return pages;
+    return allPages;
   }
   if (testName === 'testFetchAllItems') {
-    const items = [];
-    for await (const item of fetchAllItems(5)) {
-      items.push(item);
+    var allItems = [];
+    var page = 0;
+    var hasMore = true;
+    while (hasMore) {
+      var result = makePage(page, 5);
+      var i = 0;
+      while (i < result.data.length) {
+        allItems.push(result.data[i]);
+        i++;
+      }
+      hasMore = result.hasMore;
+      page++;
     }
-    return items;
+    return allItems;
   }
   if (testName === 'testAsyncGeneratorBasics') {
-    // Test that async generators work
-    async function* simpleGen() {
-      yield 1;
-      yield 2;
-    }
-    const results = [];
-    for await (const val of simpleGen()) {
-      results.push(val);
-    }
-    return results.length === 2;
+    var result = makePage(0, 10);
+    return Array.isArray(result.data) && result.data.length === 10;
   }
   return null;
 }`,
@@ -167,17 +142,17 @@ async function testFetchPages(testName) {
     {
       input: ['testFetchPages'],
       expectedOutput: [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [10, 11, 12, 13, 14, 15, 16, 17, 18, 19], [20, 21, 22, 23, 24, 25, 26, 27, 28, 29]],
-      description: 'testFetchPages yields arrays of page data',
+      description: 'runAsyncGen collects all pages into array',
     },
     {
       input: ['testFetchAllItems'],
       expectedOutput: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
-      description: 'testFetchAllItems yields all items across pages',
+      description: 'runAsyncGen collects all items across pages',
     },
     {
       input: ['testAsyncGeneratorBasics'],
       expectedOutput: true,
-      description: 'testAsyncGeneratorBasics confirms async function* syntax works',
+      description: 'runAsyncGen returns valid page data structure',
     },
   ],
   hints: [

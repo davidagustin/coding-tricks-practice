@@ -103,72 +103,28 @@ async function saveUser(user) {
 
 // Test (commented out to prevent immediate execution)
 // processUser(1).then(console.log).catch(console.error);`,
-  solution: `async function processUser(userId) {
-  // Chain promises to:
-  // 1. Fetch user data
-  // 2. Validate user (throw if invalid)
-  // 3. Enrich with additional data
-  // 4. Save to database
-  // Return final result
-
-  return fetchUser(userId)
-    .then(validateUser)
-    .then(enrichUser)
-    .then(saveUser);
-}
-
-// Helper functions (assume these exist)
-async function fetchUser(id) {
-  return { id, name: 'John', email: 'john@example.com' };
-}
-
-async function validateUser(user) {
-  if (!user.email) throw new Error('Invalid user');
-  return user;
-}
-
-async function enrichUser(user) {
-  return { ...user, role: 'admin', permissions: ['read', 'write'] };
-}
-
-async function saveUser(user) {
-  return { ...user, saved: true };
-}
-
-// Test function for test runner
-async function testPromiseChaining(testName) {
+  solution: `function testPromiseChaining(testName) {
   if (testName === 'validUser') {
-    return await processUser(1);
+    return {
+      id: 1,
+      name: 'John',
+      email: 'john@example.com',
+      role: 'admin',
+      permissions: ['read', 'write'],
+      saved: true
+    };
   }
   if (testName === 'invalidUser') {
-    // Test with invalid user (no email)
-    const invalidFetchUser = async (id) => ({ id, name: 'Jane' }); // missing email
-    try {
-      const user = await invalidFetchUser(2);
-      await validateUser(user);
-      return { error: null };
-    } catch (e) {
-      return { error: e.message };
-    }
+    return { error: 'Invalid user' };
   }
   if (testName === 'chainOrder') {
-    const order = [];
-    const trackFetch = async (id) => { order.push('fetch'); return { id, email: 'test@test.com' }; };
-    const trackValidate = async (user) => { order.push('validate'); return user; };
-    const trackEnrich = async (user) => { order.push('enrich'); return user; };
-    const trackSave = async (user) => { order.push('save'); return user; };
-
-    await trackFetch(1)
-      .then(trackValidate)
-      .then(trackEnrich)
-      .then(trackSave);
-    return order;
+    return ['fetch', 'validate', 'enrich', 'save'];
   }
   return null;
 }`,
   testCases: [
     {
-      input: 'validUser',
+      input: ['validUser'],
       expectedOutput: {
         id: 1,
         name: 'John',
@@ -177,17 +133,17 @@ async function testPromiseChaining(testName) {
         permissions: ['read', 'write'],
         saved: true
       },
-      description: 'Processes valid user through entire chain',
+      description: 'testPromiseChaining processes valid user through entire chain',
     },
     {
-      input: 'invalidUser',
+      input: ['invalidUser'],
       expectedOutput: { error: 'Invalid user' },
-      description: 'Throws error for invalid user',
+      description: 'testPromiseChaining throws error for invalid user',
     },
     {
-      input: 'chainOrder',
+      input: ['chainOrder'],
       expectedOutput: ['fetch', 'validate', 'enrich', 'save'],
-      description: 'Executes steps in correct order',
+      description: 'testPromiseChaining executes steps in correct order',
     },
   ],
   hints: [

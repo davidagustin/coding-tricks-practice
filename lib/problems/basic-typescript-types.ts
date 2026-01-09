@@ -121,22 +121,22 @@ console.log(calculateArea(10, 5));
 console.log(isEven(4));`,
   testCases: [
     {
-      input: { fn: 'greet', args: ['John'] },
+      input: ['John'],
       expectedOutput: 'Hello, John!',
-      description: 'greet function returns greeting string',
+      description: 'greet returns greeting string for given name',
     },
     {
-      input: { fn: 'calculateArea', args: [10, 5] },
+      input: [10, 5],
       expectedOutput: 50,
-      description: 'calculateArea returns correct area',
+      description: 'calculateArea returns correct area for width and height',
     },
     {
-      input: { fn: 'isEven', args: [4] },
+      input: [4],
       expectedOutput: true,
       description: 'isEven returns true for even numbers',
     },
     {
-      input: { fn: 'isEven', args: [7] },
+      input: [7],
       expectedOutput: false,
       description: 'isEven returns false for odd numbers',
     },

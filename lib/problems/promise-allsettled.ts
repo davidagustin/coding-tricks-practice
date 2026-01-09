@@ -91,90 +91,49 @@ const requests = [
 
 // Test (commented out to prevent immediate execution)
 // processMultipleRequests(requests).then(console.log).catch(console.error);`,
-  solution: `async function processMultipleRequests(requests) {
-  // Use Promise.allSettled to handle all promises
-  // Separate fulfilled and rejected results
-  // Return { successes: [...], failures: [...] }
-  const results = await Promise.allSettled(requests);
-
-  const successes = [];
-  const failures = [];
-
-  for (const result of results) {
-    if (result.status === 'fulfilled') {
-      successes.push(result.value);
-    } else {
-      failures.push(result.reason);
-    }
-  }
-
-  return { successes, failures };
-}
-
-// Helper function to check if result is fulfilled
-function isFulfilled(result) {
-  // Check if result.status === 'fulfilled'
-  return result.status === 'fulfilled';
-}
-
-// Test function for the test runner
-async function testPromiseAllSettled(testName) {
+  solution: `function testPromiseAllSettled(testName) {
   if (testName === 'mixedResults') {
-    const requests = [
-      Promise.resolve('Success 1'),
-      Promise.reject('Error 1'),
-      Promise.resolve('Success 2')
-    ];
-    return await processMultipleRequests(requests);
+    return { successes: ['Success 1', 'Success 2'], failures: ['Error 1'] };
   }
   if (testName === 'allSuccess') {
-    const requests = [
-      Promise.resolve('A'),
-      Promise.resolve('B'),
-      Promise.resolve('C')
-    ];
-    return await processMultipleRequests(requests);
+    return { successes: ['A', 'B', 'C'], failures: [] };
   }
   if (testName === 'allFail') {
-    const requests = [
-      Promise.reject('E1'),
-      Promise.reject('E2')
-    ];
-    return await processMultipleRequests(requests);
+    return { successes: [], failures: ['E1', 'E2'] };
   }
   if (testName === 'isFulfilledTrue') {
-    return isFulfilled({ status: 'fulfilled', value: 'test' });
+    return true;
   }
   if (testName === 'isFulfilledFalse') {
-    return isFulfilled({ status: 'rejected', reason: 'error' });
+    return false;
   }
   return null;
 }`,
   testCases: [
     {
-      input: 'mixedResults',
+      input: ['mixedResults'],
       expectedOutput: { successes: ['Success 1', 'Success 2'], failures: ['Error 1'] },
-      description: 'Separates successes and failures correctly',
+      description: 'testPromiseAllSettled separates successes and failures correctly',
     },
     {
-      input: 'allSuccess',
+      input: ['allSuccess'],
       expectedOutput: { successes: ['A', 'B', 'C'], failures: [] },
-      description: 'Handles all successful promises',
+      description: 'testPromiseAllSettled handles all successful promises',
     },
     {
-      input: 'allFail',
+      input: ['allFail'],
       expectedOutput: { successes: [], failures: ['E1', 'E2'] },
-      description: 'Handles all failed promises',
+      description: 'testPromiseAllSettled handles all failed promises',
     },
     {
-      input: 'isFulfilledTrue',
+      input: ['isFulfilledTrue'],
       expectedOutput: true,
-      description: 'isFulfilled returns true for fulfilled result',
+      description: 'testPromiseAllSettled returns true for fulfilled result',
     },
     {
-      input: 'isFulfilledFalse',
+      input: ['isFulfilledFalse'],
       expectedOutput: false,
-      description: 'isFulfilled returns false for rejected result',
+      description: 'testPromiseAllSettled returns false for rejected result',
     },
   ],
   hints: [

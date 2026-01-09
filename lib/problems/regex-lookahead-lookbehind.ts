@@ -144,7 +144,7 @@ console.log(replaceBetweenMarkers('start[REPLACE]end', 'NEW'));
   solution: `// Validate a strong password
 // Requirements: at least 8 chars, 1 uppercase, 1 lowercase, 1 digit, 1 special char
 function isStrongPassword(password) {
-  return /^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{}|;':",.<>?/]).{8,}$/.test(password);
+  return /^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,}$/.test(password);
 }
 
 // Add commas to large numbers

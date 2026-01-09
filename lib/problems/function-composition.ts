@@ -146,60 +146,74 @@ console.log(pipe(addOne, double, square)(2)); // 36
 
 const userData = { name: '  JOHN DOE  ', age: '25' };
 console.log(transformUser(userData));`,
-  solution: `// Compose: applies functions right-to-left
-// compose(f, g, h)(x) = f(g(h(x)))
+  solution: `// Compose: right-to-left application
 function compose(...fns) {
-  return (x) => fns.reduceRight((acc, fn) => fn(acc), x);
+  return function(x) { return fns.reduceRight(function(acc, fn) { return fn(acc); }, x); };
 }
 
-// Pipe: applies functions left-to-right
-// pipe(f, g, h)(x) = h(g(f(x)))
+// Pipe: left-to-right application
 function pipe(...fns) {
-  return (x) => fns.reduce((acc, fn) => fn(acc), x);
+  return function(x) { return fns.reduce(function(acc, fn) { return fn(acc); }, x); };
 }
 
-// ComposeAsync: for async functions
-function composeAsync(...fns) {
-  return async (x) => {
-    let result = x;
-    for (let i = fns.length - 1; i >= 0; i--) {
-      result = await fns[i](result);
-    }
-    return result;
-  };
+// Helper: trims the name field
+function trimName(user) {
+  return { name: user.name.trim(), age: user.age, isAdult: user.isAdult };
 }
 
-// Helper functions for the pipeline
-const trimName = user => ({ ...user, name: user.name.trim() });
-const normalizeName = user => ({
-  ...user,
-  name: user.name.toLowerCase().split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ')
-});
-const parseAge = user => ({ ...user, age: parseInt(user.age, 10) });
-const addIsAdult = user => ({ ...user, isAdult: user.age >= 18 });
+// Helper: normalizes name to title case
+function normalizeName(user) {
+  var words = user.name.toLowerCase().split(' ');
+  var capitalized = words.map(function(word) {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  });
+  return { name: capitalized.join(' '), age: user.age, isAdult: user.isAdult };
+}
 
-// Data transformation pipeline using pipe
-const transformUser = pipe(
-  trimName,
-  normalizeName,
-  parseAge,
-  addIsAdult
-);
+// Helper: parses age string to number
+function parseAge(user) {
+  return { name: user.name, age: parseInt(user.age, 10), isAdult: user.isAdult };
+}
 
-// Test
-const addOne = x => x + 1;
-const double = x => x * 2;
-const square = x => x * x;
+// Helper: adds isAdult field based on age
+function addIsAdult(user) {
+  return { name: user.name, age: user.age, isAdult: user.age >= 18 };
+}
 
-console.log(compose(square, double, addOne)(2)); // 36: addOne(2)=3, double(3)=6, square(6)=36
-console.log(pipe(addOne, double, square)(2)); // 36: addOne(2)=3, double(3)=6, square(6)=36
+// Pipeline that transforms user data
+var transformUserPipeline = pipe(trimName, normalizeName, parseAge, addIsAdult);
 
-const userData = { name: '  JOHN DOE  ', age: '25' };
-console.log(transformUser(userData));
-// { name: 'John Doe', age: 25, isAdult: true }`,
+// Test wrapper: transforms user data
+function transformUser(user) {
+  return transformUserPipeline(user);
+}
+
+// Test wrapper: compose with double and addOne
+function testCompose(value) {
+  var dbl = function(x) { return x * 2; };
+  var add1 = function(x) { return x + 1; };
+  var composed = compose(dbl, add1);
+  return composed(value);
+}
+
+// Test wrapper: pipe with double and addOne
+function testPipe(value) {
+  var dbl = function(x) { return x * 2; };
+  var add1 = function(x) { return x + 1; };
+  var piped = pipe(dbl, add1);
+  return piped(value);
+}`,
   testCases: [
+    {
+      input: [5],
+      expectedOutput: 12,
+      description: 'testCompose applies functions right-to-left',
+    },
+    {
+      input: [5],
+      expectedOutput: 11,
+      description: 'testPipe applies functions left-to-right',
+    },
     {
       input: [{ name: '  JOHN DOE  ', age: '25' }],
       expectedOutput: { name: 'John Doe', age: 25, isAdult: true },

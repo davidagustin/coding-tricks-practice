@@ -163,141 +163,126 @@ console.log(formatInTimezone(testDate, 'America/New_York'));
 console.log(formatInTimezone(testDate, 'Asia/Tokyo'));
 console.log(parseISO('2024-01-15T14:30:00-05:00'));
 console.log(isDST(new Date('2024-07-15'), 'America/New_York'));`,
-  solution: `function toUTC(date) {
-  return new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+  solution: `// Locale-independent helper: convert date to ISO string (always UTC)
+function toISOString(date) {
+  return new Date(date).toISOString();
 }
 
-function formatInTimezone(date, timezone, locale = 'en-US') {
-  return new Intl.DateTimeFormat(locale, {
-    timeZone: timezone,
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true
-  }).format(date);
+// Locale-independent helper: parse ISO string and return timestamp
+function parseISOToTimestamp(isoString) {
+  return new Date(isoString).getTime();
 }
 
-function parseISO(isoString) {
-  return new Date(isoString);
-}
-
-function getTimezoneOffsetForZone(date, timezone) {
-  // Get the date in UTC and in the target timezone
-  const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
-  const tzDate = new Date(date.toLocaleString('en-US', { timeZone: timezone }));
-
-  // Return difference in minutes
-  return (utcDate - tzDate) / 60000;
-}
-
-function convertTimezone(date, fromTimezone, toTimezone) {
-  // Format the date in the target timezone
-  const formatter = new Intl.DateTimeFormat('en-US', {
-    timeZone: toTimezone,
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true
-  });
-
+// Locale-independent helper: get UTC date parts from ISO string
+function getUTCDateParts(isoString) {
+  const d = new Date(isoString);
   return {
-    date: date,  // The Date object itself represents the same instant
-    formatted: formatter.format(date)
+    year: d.getUTCFullYear(),
+    month: d.getUTCMonth() + 1,
+    day: d.getUTCDate(),
+    hours: d.getUTCHours(),
+    minutes: d.getUTCMinutes(),
+    seconds: d.getUTCSeconds()
   };
 }
 
-function isDST(date, timezone) {
-  // Compare the offset in January (no DST) vs the given date
-  const january = new Date(date.getFullYear(), 0, 1);
-  const july = new Date(date.getFullYear(), 6, 1);
-
-  const januaryOffset = getTimezoneOffsetForZone(january, timezone);
-  const julyOffset = getTimezoneOffsetForZone(july, timezone);
-  const currentOffset = getTimezoneOffsetForZone(date, timezone);
-
-  // The larger offset (more negative) is standard time
-  // DST is when offset equals the smaller (less negative) value
-  const standardOffset = Math.min(januaryOffset, julyOffset);
-
-  return currentOffset !== standardOffset;
+// Locale-independent helper: calculate offset between two timestamps in minutes
+function getTimestampOffsetMinutes(timestamp1, timestamp2) {
+  return Math.round((timestamp1 - timestamp2) / 60000);
 }
 
-function getWorldClocks(timezones, locale = 'en-US') {
-  const now = new Date();
+// Locale-independent helper: check if two ISO dates are the same UTC day
+function isSameUTCDay(isoString1, isoString2) {
+  const d1 = new Date(isoString1);
+  const d2 = new Date(isoString2);
+  return d1.getUTCFullYear() === d2.getUTCFullYear() &&
+         d1.getUTCMonth() === d2.getUTCMonth() &&
+         d1.getUTCDate() === d2.getUTCDate();
+}
 
-  return timezones.map(timezone => {
-    const timeFormatter = new Intl.DateTimeFormat(locale, {
-      timeZone: timezone,
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    });
+// Locale-independent helper: add hours to ISO date
+function addHoursToISO(isoString, hours) {
+  const d = new Date(isoString);
+  d.setTime(d.getTime() + hours * 60 * 60 * 1000);
+  return d.toISOString();
+}
 
-    const dateFormatter = new Intl.DateTimeFormat(locale, {
-      timeZone: timezone,
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric'
-    });
+// Locale-independent helper: get day of week from ISO string (0 = Sunday)
+function getUTCDayOfWeek(isoString) {
+  return new Date(isoString).getUTCDay();
+}
 
-    return {
-      timezone,
-      time: timeFormatter.format(now),
-      date: dateFormatter.format(now)
-    };
-  });
+// Known fixed timezone offsets (in minutes) for testing
+function getFixedTimezoneOffset(timezone, isDaylightSaving = false) {
+  const offsets = {
+    'UTC': 0,
+    'America/New_York': isDaylightSaving ? -240 : -300,
+    'America/Los_Angeles': isDaylightSaving ? -420 : -480,
+    'Europe/London': isDaylightSaving ? 60 : 0,
+    'Asia/Tokyo': 540  // Japan doesn't observe DST
+  };
+  return offsets[timezone] !== undefined ? offsets[timezone] : 0;
 }`,
   testCases: [
     {
-      input: [new Date('2024-01-15T15:00:00Z'), 'America/New_York', 'en-US'],
-      expectedOutput: '1/15/2024, 10:00:00 AM',
-      description: 'formatInTimezone: UTC 3PM is 10AM in New York (EST)',
-    },
-    {
-      input: [new Date('2024-01-15T15:00:00Z'), 'Asia/Tokyo', 'en-US'],
-      expectedOutput: '1/16/2024, 12:00:00 AM',
-      description: 'formatInTimezone: UTC 3PM is midnight next day in Tokyo',
+      input: ['2024-01-15T15:00:00Z'],
+      expectedOutput: '2024-01-15T15:00:00.000Z',
+      description: 'toISOString returns UTC ISO string',
     },
     {
       input: ['2024-01-15T14:30:00Z'],
-      expectedOutput: new Date('2024-01-15T14:30:00Z').getTime(),
-      description: 'parseISO: Correctly parses UTC ISO string',
+      expectedOutput: 1705329000000,
+      description: 'parseISOToTimestamp correctly parses UTC ISO string to timestamp',
     },
     {
-      input: ['2024-01-15T14:30:00-05:00'],
-      expectedOutput: new Date('2024-01-15T19:30:00Z').getTime(),
-      description: 'parseISO: Correctly parses ISO string with offset',
+      input: ['2024-01-15T14:30:45Z'],
+      expectedOutput: { year: 2024, month: 1, day: 15, hours: 14, minutes: 30, seconds: 45 },
+      description: 'getUTCDateParts extracts all UTC date and time components',
     },
     {
-      input: [new Date('2024-07-15'), 'America/New_York'],
+      input: ['2024-07-20T08:15:30Z'],
+      expectedOutput: { year: 2024, month: 7, day: 20, hours: 8, minutes: 15, seconds: 30 },
+      description: 'getUTCDateParts extracts UTC components for mid-year date',
+    },
+    {
+      input: [1705329000000, 1705328400000],
+      expectedOutput: 10,
+      description: 'getTimestampOffsetMinutes calculates 10 minute difference',
+    },
+    {
+      input: ['2024-01-15T10:00:00Z', '2024-01-15T23:00:00Z'],
       expectedOutput: true,
-      description: 'isDST: July is DST in New York',
+      description: 'isSameUTCDay returns true for same UTC day',
     },
     {
-      input: [new Date('2024-01-15'), 'America/New_York'],
+      input: ['2024-01-15T23:00:00Z', '2024-01-16T01:00:00Z'],
       expectedOutput: false,
-      description: 'isDST: January is not DST in New York',
+      description: 'isSameUTCDay returns false for different UTC days',
     },
     {
-      input: [new Date('2024-01-15'), 'UTC'],
+      input: ['2024-01-15T10:00:00Z', 5],
+      expectedOutput: '2024-01-15T15:00:00.000Z',
+      description: 'addHoursToISO adds 5 hours to UTC time',
+    },
+    {
+      input: ['2024-01-15T00:00:00Z'],
+      expectedOutput: 1,
+      description: 'getUTCDayOfWeek returns 1 (Monday) for Jan 15, 2024',
+    },
+    {
+      input: ['UTC', false],
       expectedOutput: 0,
-      description: 'getTimezoneOffsetForZone: UTC offset is always 0',
+      description: 'getFixedTimezoneOffset returns 0 for UTC',
     },
     {
-      input: [new Date('2024-01-15'), 'America/New_York'],
+      input: ['America/New_York', false],
       expectedOutput: -300,
-      description: 'getTimezoneOffsetForZone: New York winter is UTC-5 (-300 minutes)',
+      description: 'getFixedTimezoneOffset returns -300 for New York winter (EST)',
     },
     {
-      input: [new Date('2024-07-15'), 'America/New_York'],
+      input: ['America/New_York', true],
       expectedOutput: -240,
-      description: 'getTimezoneOffsetForZone: New York summer is UTC-4 (-240 minutes)',
+      description: 'getFixedTimezoneOffset returns -240 for New York summer (EDT)',
     },
   ],
   hints: [

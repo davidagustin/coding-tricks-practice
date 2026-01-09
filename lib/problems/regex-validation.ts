@@ -145,97 +145,78 @@ console.log(isValidIPv4('256.1.1.1'));                // false
 
 console.log(isValidCreditCard('1234-5678-9012-3456')); // true
 console.log(isValidCreditCard('1234567890123456'));    // true`,
-  solution: `// Email validator
-function isValidEmail(email) {
+  solution: `function isValidEmail(email) {
   return /^[\\w.+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$/.test(email);
 }
 
-// US phone number validator
 function isValidUSPhone(phone) {
   return /^\\(?\\d{3}\\)?[-. ]?\\d{3}[-. ]?\\d{4}$/.test(phone);
 }
 
-// URL validator
 function isValidURL(url) {
   return /^https?:\\/\\/([\\w-]+\\.)+[\\w-]+(\\/[\\w-./?%&=]*)?$/.test(url);
 }
 
-// IPv4 address validator
 function isValidIPv4(ip) {
-  const octet = '(25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]?\\d)';
-  const regex = new RegExp(\`^\${octet}\\\\.\${octet}\\\\.\${octet}\\\\.\${octet}$\`);
-  return regex.test(ip);
+  var parts = ip.split('.');
+  if (parts.length !== 4) return false;
+  for (var i = 0; i < parts.length; i++) {
+    var num = parseInt(parts[i], 10);
+    if (isNaN(num) || num < 0 || num > 255) return false;
+    if (parts[i] !== String(num)) return false;
+  }
+  return true;
 }
 
-// Credit card number validator (basic format check)
 function isValidCreditCard(cardNum) {
-  // Remove separators and check for 16 digits
-  const cleaned = cardNum.replace(/[-\\s]/g, '');
+  var cleaned = cardNum.replace(/[-\\s]/g, '');
   return /^\\d{16}$/.test(cleaned);
-}
-
-// Test your functions
-console.log(isValidEmail('user@example.com'));        // true
-console.log(isValidEmail('user.name+tag@domain.co.uk')); // true
-console.log(isValidEmail('invalid-email'));           // false
-
-console.log(isValidUSPhone('(555) 123-4567'));        // true
-console.log(isValidUSPhone('555.123.4567'));          // true
-console.log(isValidUSPhone('123'));                   // false
-
-console.log(isValidURL('https://example.com/path'));  // true
-console.log(isValidURL('not-a-url'));                 // false
-
-console.log(isValidIPv4('192.168.1.1'));              // true
-console.log(isValidIPv4('256.1.1.1'));                // false
-
-console.log(isValidCreditCard('1234-5678-9012-3456')); // true
-console.log(isValidCreditCard('1234567890123456'));    // true`,
+}`,
   testCases: [
     {
       input: ['user@example.com'],
       expectedOutput: true,
-      description: 'isValidEmail accepts valid email',
+      description: 'isValidEmail returns true for valid email',
     },
     {
       input: ['user.name+tag@domain.co.uk'],
       expectedOutput: true,
-      description: 'isValidEmail accepts email with dots and plus',
+      description: 'isValidEmail returns true for email with dots and plus',
     },
     {
       input: ['invalid-email'],
       expectedOutput: false,
-      description: 'isValidEmail rejects invalid email',
+      description: 'isValidEmail returns false for invalid email',
     },
     {
       input: ['(555) 123-4567'],
       expectedOutput: true,
-      description: 'isValidUSPhone accepts phone with parentheses',
+      description: 'isValidUSPhone returns true for phone with parentheses',
     },
     {
       input: ['555.123.4567'],
       expectedOutput: true,
-      description: 'isValidUSPhone accepts phone with dots',
+      description: 'isValidUSPhone returns true for phone with dots',
     },
     {
       input: ['https://example.com/path'],
       expectedOutput: true,
-      description: 'isValidURL accepts valid URL',
+      description: 'isValidURL returns true for valid URL',
     },
     {
       input: ['192.168.1.1'],
       expectedOutput: true,
-      description: 'isValidIPv4 accepts valid IP',
+      description: 'isValidIPv4 returns true for valid IP',
     },
     {
       input: ['256.1.1.1'],
       expectedOutput: false,
-      description: 'isValidIPv4 rejects octet > 255',
+      description: 'isValidIPv4 returns false for octet greater than 255',
     },
     {
       input: ['1234-5678-9012-3456'],
       expectedOutput: true,
-      description: 'isValidCreditCard accepts 16 digits with dashes',
+      description: 'isValidCreditCard returns true for 16 digits with dashes',
     },
   ],
   hints: [

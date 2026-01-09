@@ -205,32 +205,68 @@ mock.mockReturnValue('mocked!');
 console.log('Return value:', mock());
 
 mock.mockImplementation((x) => x * 2);
-console.log('Implementation:', mock(5));`,
+console.log('Implementation:', mock(5));
+
+// Simple mock tracker that simulates mock behavior
+function createMockTracker() {
+  const calls = [];
+  return {
+    fn: (...args) => { calls.push(args); return 'mocked'; },
+    getCalls: () => calls,
+    getCallCount: () => calls.length,
+    wasCalledWith: (expected) => calls.some(c => JSON.stringify(c) === JSON.stringify(expected))
+  };
+}
+
+// Test the mock tracker - returns call count after invoking with given args
+function testMockTracker(callArgs) {
+  const mock = createMockTracker();
+  callArgs.forEach(args => mock.fn(...args));
+  return mock.getCallCount();
+}
+
+// Test mock return value behavior
+function testMockReturnValue(returnVal, numCalls) {
+  const results = [];
+  let configuredReturn = returnVal;
+  const mockFn = () => { results.push(configuredReturn); return configuredReturn; };
+  for (let i = 0; i < numCalls; i++) {
+    mockFn();
+  }
+  return results;
+}
+
+// Test wasCalledWith functionality
+function testWasCalledWith(callArgs, checkArgs) {
+  const mock = createMockTracker();
+  callArgs.forEach(args => mock.fn(...args));
+  return mock.wasCalledWith(checkArgs);
+}`,
   testCases: [
     {
-      input: { operation: 'call', args: ['test', 123] },
-      expectedOutput: { calls: [['test', 123]], callCount: 1 },
-      description: 'mock tracks calls and arguments',
+      input: [[[1], [2], [3]]],
+      expectedOutput: 3,
+      description: 'testMockTracker returns correct call count',
     },
     {
-      input: { operation: 'mockReturnValue', value: 42 },
-      expectedOutput: 42,
-      description: 'mockReturnValue sets return value',
+      input: [[['a', 'b'], ['c']]],
+      expectedOutput: 2,
+      description: 'testMockTracker tracks multiple calls with different arguments',
     },
     {
-      input: { operation: 'mockImplementation', fn: 'x => x * 2', arg: 5 },
-      expectedOutput: 10,
-      description: 'mockImplementation uses custom function',
+      input: ['mocked', 3],
+      expectedOutput: ['mocked', 'mocked', 'mocked'],
+      description: 'testMockReturnValue returns configured value for each call',
     },
     {
-      input: { operation: 'mockReset' },
-      expectedOutput: { calls: [], callCount: 0, returnValues: [] },
-      description: 'mockReset clears all tracking data',
-    },
-    {
-      input: { operation: 'wasCalledWith', calls: [['a', 1], ['b', 2]], check: ['a', 1] },
+      input: [[['hello', 'world'], ['foo', 'bar']], ['hello', 'world']],
       expectedOutput: true,
-      description: 'wasCalledWith checks if called with specific args',
+      description: 'testWasCalledWith returns true when args match',
+    },
+    {
+      input: [[['hello', 'world'], ['foo', 'bar']], ['baz', 'qux']],
+      expectedOutput: false,
+      description: 'testWasCalledWith returns false when args do not match',
     },
   ],
   hints: [

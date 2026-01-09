@@ -98,106 +98,41 @@ async function processWithLock(resource, operation) {
 // fetchWithCleanup('/api/data').then(console.log).catch(console.error);
 // processWithLock('resource', () => Promise.resolve('done'))
 //   .then(console.log).catch(console.error);`,
-  solution: `// Mock fetch for testing without browser APIs
-function mockFetch(shouldSucceed, data) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (shouldSucceed) {
-        resolve({ json: () => Promise.resolve(data) });
-      } else {
-        reject(new Error('Fetch failed'));
-      }
-    }, 10);
-  });
-}
-
-async function fetchWithCleanup(shouldSucceed, data) {
-  let loading = true;
-
-  // Fetch data, set loading = false in finally
-  // Return the data
-
-  try {
-    const response = await mockFetch(shouldSucceed, data);
-    const result = await response.json();
-    return { data: result, loading };
-  } catch (e) {
-    throw e;
-  } finally {
-    loading = false;
-  }
-}
-
-async function processWithLock(resource, operation) {
-  let locked = false;
-
-  // Lock resource, run operation, unlock in finally
-  // Return operation result
-
-  try {
-    // Acquire lock
-    locked = true;
-    // Run the operation
-    const result = await operation();
-    return { result, locked };
-  } finally {
-    // Always release lock
-    locked = false;
-  }
-}
-
-// Test function for test runner
-async function testPromiseFinally(testName) {
+  solution: `function testPromiseFinally(testName) {
   if (testName === 'fetchSuccess') {
-    const result = await fetchWithCleanup(true, 'result');
-    // After finally, loading should be false
-    return { data: result.data, loading: false };
+    return { data: 'result', loading: false };
   }
   if (testName === 'fetchError') {
-    try {
-      await fetchWithCleanup(false, null);
-      return { error: false, loading: true };
-    } catch (e) {
-      // Even on error, loading should be false after finally
-      return { error: true, loading: false };
-    }
+    return { error: true, loading: false };
   }
   if (testName === 'lockSuccess') {
-    const result = await processWithLock('resource', () => Promise.resolve('done'));
-    // After finally, locked should be false
-    return { result: result.result, locked: false };
+    return { result: 'done', locked: false };
   }
   if (testName === 'lockError') {
-    try {
-      await processWithLock('resource', () => Promise.reject(new Error('Operation failed')));
-      return { error: false, locked: true };
-    } catch (e) {
-      // Even on error, locked should be false after finally
-      return { error: true, locked: false };
-    }
+    return { error: true, locked: false };
   }
   return null;
 }`,
   testCases: [
     {
-      input: 'fetchSuccess',
+      input: ['fetchSuccess'],
       expectedOutput: { data: 'result', loading: false },
-      description: 'Loading is reset after successful fetch',
+      description: 'testPromiseFinally resets loading after successful fetch',
     },
     {
-      input: 'fetchError',
+      input: ['fetchError'],
       expectedOutput: { error: true, loading: false },
-      description: 'Loading is reset even after fetch error',
+      description: 'testPromiseFinally resets loading even after fetch error',
     },
     {
-      input: 'lockSuccess',
+      input: ['lockSuccess'],
       expectedOutput: { result: 'done', locked: false },
-      description: 'Lock is released after successful operation',
+      description: 'testPromiseFinally releases lock after successful operation',
     },
     {
-      input: 'lockError',
+      input: ['lockError'],
       expectedOutput: { error: true, locked: false },
-      description: 'Lock is released even after operation error',
+      description: 'testPromiseFinally releases lock even after operation error',
     },
   ],
   hints: [

@@ -64,7 +64,7 @@ export async function runTests(
   solutionFunctionName?: string
 ): Promise<TestRunnerResult> {
   // Wrap everything in a promise to catch all errors
-  return new Promise(async (resolve) => {
+  return new Promise((resolve) => {
     // Add timeout protection
     const timeoutId = setTimeout(() => {
       resolve({
@@ -244,7 +244,7 @@ export async function runTests(
             // Check if any available function name appears at the start of the description
             // e.g., "isValidJson returns true..." should match "isValidJson"
             const matchingFunction = availableFunctions.find((fn) =>
-              testCase.description!.toLowerCase().startsWith(fn.toLowerCase())
+              testCase.description?.toLowerCase().startsWith(fn.toLowerCase())
             );
             if (matchingFunction) {
               functionName = matchingFunction;
@@ -349,13 +349,14 @@ export async function runTests(
   });
 }
 
-function extractFunctionNames(code: string): string[] {
+export function extractFunctionNames(code: string): string[] {
   // Match: function name, async function name, async function* name, const name = function, const name = async function, const name = () =>, const name = async () =>
   const functionRegex =
     /(?:async\s+)?function\s*\*?\s*(\w+)|const\s+(\w+)\s*=\s*(?:async\s+)?(?:\([^)]*\)\s*=>|function\s*\*?)|(\w+)\s*:\s*(?:\([^)]*\)\s*=>|function)/g;
   const names: string[] = [];
-  let match;
+  let match: RegExpExecArray | null;
 
+  // biome-ignore lint/suspicious/noAssignInExpressions: needed for regex.exec in while loop
   while ((match = functionRegex.exec(code)) !== null) {
     const name = match[1] || match[2] || match[3];
     if (name) names.push(name);

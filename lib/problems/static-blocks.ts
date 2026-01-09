@@ -264,6 +264,27 @@ class Validator {
   }
 }
 
+// Helper functions for testing
+function getLoggerInitialized() {
+  return Logger.isInitialized();
+}
+
+function getLoggerLevel() {
+  return Logger.getLevel();
+}
+
+function getColorFromPalette(name) {
+  return ColorPalette.getColor(name);
+}
+
+function getPrimaryColor() {
+  return ColorPalette.primary;
+}
+
+function validateField(field, value) {
+  return Validator.validate(field, value);
+}
+
 // Test
 console.log(Logger.isInitialized());  // true
 console.log(Logger.getLevel());  // 'info'
@@ -278,37 +299,37 @@ console.log(Validator.validate('age', 25));  // true`,
     {
       input: [],
       expectedOutput: true,
-      description: 'Logger - isInitialized() returns true after static block runs',
+      description: 'getLoggerInitialized returns true after static block runs',
     },
     {
       input: [],
       expectedOutput: 'info',
-      description: 'Logger - getLevel() returns info in development mode',
+      description: 'getLoggerLevel returns info in development mode',
     },
     {
       input: ['red'],
       expectedOutput: '#FF0000',
-      description: 'ColorPalette - getColor returns correct hex for red',
+      description: 'getColorFromPalette returns correct hex for red',
     },
     {
       input: [],
       expectedOutput: '#0000FF',
-      description: 'ColorPalette - primary equals blue color',
+      description: 'getPrimaryColor returns blue as primary color',
     },
     {
       input: ['email', 'test@example.com'],
       expectedOutput: true,
-      description: 'Validator - validates email with @ symbol',
+      description: 'validateField validates email with @ symbol',
     },
     {
       input: ['phone', '1234567890'],
       expectedOutput: true,
-      description: 'Validator - validates 10-digit phone number',
+      description: 'validateField validates 10-digit phone number',
     },
     {
       input: ['age', 25],
       expectedOutput: true,
-      description: 'Validator - validates age within range',
+      description: 'validateField validates age within range',
     },
   ],
   hints: [

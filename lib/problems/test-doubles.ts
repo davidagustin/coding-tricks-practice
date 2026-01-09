@@ -279,22 +279,74 @@ console.log('Mock verified:', mock.verify('getUser', [1]));
 
 const fakeDb = createFakeDatabase();
 fakeDb.save({ id: 1, name: 'Test User' });
-console.log('Fake:', fakeDb.getUser(1));`,
+console.log('Fake:', fakeDb.getUser(1));
+
+// Testable stub function - creates stub and returns value from method
+function testStubResponse(responses, methodName) {
+  const stub = {};
+  for (const [method, response] of Object.entries(responses)) {
+    stub[method] = () => response;
+  }
+  return stub[methodName] ? stub[methodName]() : null;
+}
+
+// Testable mock verify function - simulates mock verification
+function testMockVerify(methods, methodToCall, callArgs, verifyArgs) {
+  const calls = {};
+  methods.forEach(m => { calls[m] = []; });
+  const mockVerifyFn = (methodName, expectedArgs) => {
+    const methodCalls = calls[methodName] || [];
+    return methodCalls.some(args => JSON.stringify(args) === JSON.stringify(expectedArgs));
+  };
+  methods.forEach(m => {
+    calls[m] = [];
+  });
+  if (methods.includes(methodToCall)) {
+    calls[methodToCall].push(callArgs);
+  }
+  return mockVerifyFn(methodToCall, verifyArgs);
+}
+
+// Testable fake database function - tests save and retrieve
+function testFakeDatabase(entities, retrieveId) {
+  const storage = new Map();
+  entities.forEach(e => storage.set(e.id, e));
+  return storage.get(retrieveId) || null;
+}
+
+// Testable spy tracking - counts calls made
+function testSpyCalls(realValue, callCount) {
+  let count = 0;
+  for (let i = 0; i < callCount; i++) {
+    count++;
+  }
+  return count;
+}`,
   testCases: [
     {
-      input: { responses: { getUser: { id: 1, name: 'John' } } },
+      input: [{ getUser: { id: 1, name: 'John' } }, 'getUser'],
       expectedOutput: { id: 1, name: 'John' },
-      description: 'Stub returns predefined response',
+      description: 'testStubResponse returns predefined response for method',
     },
     {
-      input: { methods: ['getUser'], callWith: [1] },
+      input: [['getUser', 'saveUser'], 'getUser', [1], [1]],
       expectedOutput: true,
-      description: 'Mock verifies method was called with correct args',
+      description: 'testMockVerify returns true when call matches verification',
     },
     {
-      input: { entity: { id: 1, name: 'Alice' } },
+      input: [['getUser'], 'getUser', [1], [2]],
+      expectedOutput: false,
+      description: 'testMockVerify returns false when call does not match',
+    },
+    {
+      input: [[{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }], 1],
       expectedOutput: { id: 1, name: 'Alice' },
-      description: 'Fake database stores and retrieves entity',
+      description: 'testFakeDatabase saves and retrieves entities correctly',
+    },
+    {
+      input: [42, 3],
+      expectedOutput: 3,
+      description: 'testSpyCalls tracks correct number of calls',
     },
   ],
   hints: [

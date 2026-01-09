@@ -403,32 +403,77 @@ property(
   (str) => {
     return decodeURIComponent(encodeURIComponent(str)) === str;
   }
-);`,
+);
+
+// Testable integer generator - generates integer in range
+function testIntegerGenerator(min, max, size) {
+  const range = Math.min(max - min, size * 10);
+  const value = min + Math.floor((range + 1) / 2);
+  return value >= min && value <= max;
+}
+
+// Testable shrink integer - returns smaller values toward zero
+function testShrinkInteger(n) {
+  if (n === 0) return [];
+  const result = [0];
+  if (Math.abs(n) > 1) {
+    result.push(Math.floor(n / 2));
+    result.push(n - Math.sign(n));
+  }
+  if (n < 0) {
+    result.push(-n);
+  }
+  return result;
+}
+
+// Testable property check - runs property against values
+function testPropertyCheck(values, propertyFn) {
+  for (const value of values) {
+    if (!propertyFn(value)) {
+      return { passed: false, counterexample: value };
+    }
+  }
+  return { passed: true, counterexample: null };
+}
+
+// Testable array shrink count - returns count of shrink options
+function testArrayShrinkCount(arrLength) {
+  if (arrLength === 0) return 0;
+  // Empty array + remove each element + first half = 1 + arrLength + 1 (if length > 1)
+  return 1 + arrLength + (arrLength > 1 ? 1 : 0);
+}
+
+// Testable roundtrip property - tests if value survives encode/decode
+function testRoundtripIdentity(value) {
+  // Simple identity roundtrip - encode to JSON and back
+  return JSON.parse(JSON.stringify(value)) === value ||
+         JSON.stringify(JSON.parse(JSON.stringify(value))) === JSON.stringify(value);
+}`,
   testCases: [
     {
-      input: 'integerGenerator',
-      expectedOutput: { inRange: true, isInteger: true },
-      description: 'Integer generator produces integers in range',
+      input: [-100, 100, 10],
+      expectedOutput: true,
+      description: 'testIntegerGenerator returns value within range',
     },
     {
-      input: 'arrayGenerator',
-      expectedOutput: { isArray: true, elementsValid: true },
-      description: 'Array generator produces valid arrays',
+      input: [10],
+      expectedOutput: [0, 5, 9],
+      description: 'testShrinkInteger returns correct shrink values',
     },
     {
-      input: 'forAllPasses',
-      expectedOutput: { passed: true, numTests: 100 },
-      description: 'forAll passes when property holds',
+      input: [-5],
+      expectedOutput: [0, -2, -4, 5],
+      description: 'testShrinkInteger handles negative numbers',
     },
     {
-      input: 'forAllFails',
-      expectedOutput: { passed: false, hasCounterexample: true },
-      description: 'forAll fails and provides counterexample',
+      input: [4],
+      expectedOutput: 6,
+      description: 'testArrayShrinkCount returns correct count for array length 4',
     },
     {
-      input: 'shrinkInteger',
-      expectedOutput: { shrinks: [0, 5, 9] },
-      description: 'shrinkInteger produces smaller values',
+      input: ['hello'],
+      expectedOutput: true,
+      description: 'testRoundtripIdentity returns true for string value',
     },
   ],
   hints: [

@@ -227,6 +227,25 @@ function fibonacci(max) {
   };
 }
 
+// Wrapper functions for testing
+function collectRange(start, end) {
+  return [...range(start, end)];
+}
+
+function collectCollection(items) {
+  const coll = new Collection(items);
+  return [...coll];
+}
+
+function getFirstReverse(arr) {
+  const iter = reverseIterator(arr);
+  return iter.next();
+}
+
+function collectFibonacci(max) {
+  return [...fibonacci(max)];
+}
+
 // Test
 console.log([...range(1, 5)]);  // [1, 2, 3, 4, 5]
 
@@ -245,22 +264,22 @@ console.log([...fibonacci(21)]);  // [1, 1, 2, 3, 5, 8, 13, 21]`,
     {
       input: [1, 5],
       expectedOutput: [1, 2, 3, 4, 5],
-      description: 'range - returns iterable yielding numbers from start to end',
+      description: 'collectRange returns array from range iterable',
     },
     {
       input: [['a', 'b', 'c']],
       expectedOutput: ['a', 'b', 'c'],
-      description: 'Collection - is iterable over its items',
+      description: 'collectCollection returns array from Collection',
     },
     {
       input: [[1, 2, 3]],
       expectedOutput: { value: 3, done: false },
-      description: 'reverseIterator - returns elements in reverse order',
+      description: 'getFirstReverse returns first element in reverse',
     },
     {
       input: [21],
       expectedOutput: [1, 1, 2, 3, 5, 8, 13, 21],
-      description: 'fibonacci - returns Fibonacci numbers up to max',
+      description: 'collectFibonacci returns Fibonacci numbers up to max',
     },
   ],
   hints: [

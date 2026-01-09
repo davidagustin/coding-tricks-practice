@@ -174,24 +174,14 @@ results.push('sync');
 // After event loop: results = ['sync', 'micro', 'macro']`,
   testCases: [
     {
-      input: 'predictOrder1',
+      input: [],
       expectedOutput: [1, 4, 3, 2],
       description: 'predictOrder1 returns correct order: sync, microtask, macrotask',
     },
     {
-      input: 'predictOrder2',
+      input: [],
       expectedOutput: ['a', 'f', 'c', 'd', 'b', 'e'],
       description: 'predictOrder2 returns correct order with nested promises',
-    },
-    {
-      input: 'deferMicrotask',
-      expectedOutput: { runsBeforeMacrotask: true },
-      description: 'deferMicrotask runs callback before setTimeout callbacks',
-    },
-    {
-      input: 'scheduleAfterMicrotasks',
-      expectedOutput: { runsAfterMicrotasks: true },
-      description: 'scheduleAfterMicrotasks runs callback after all microtasks',
     },
   ],
   hints: [

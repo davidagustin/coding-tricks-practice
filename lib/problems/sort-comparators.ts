@@ -176,22 +176,22 @@ console.log(sortByMultiple([...users], [
 console.log(sortWithNulls([3, null, 1, null, 2], true));`,
   testCases: [
     {
-      input: { arr: [{ name: 'John', age: 30 }, { name: 'Jane', age: 25 }], property: 'age', order: 'asc' },
+      input: [[{ name: 'John', age: 30 }, { name: 'Jane', age: 25 }], 'age', 'asc'],
       expectedOutput: [{ name: 'Jane', age: 25 }, { name: 'John', age: 30 }],
       description: 'sortByProperty sorts by age ascending',
     },
     {
-      input: { arr: [{ name: 'John', age: 30 }, { name: 'Jane', age: 25 }], property: 'age', order: 'desc' },
+      input: [[{ name: 'John', age: 30 }, { name: 'Jane', age: 25 }], 'age', 'desc'],
       expectedOutput: [{ name: 'John', age: 30 }, { name: 'Jane', age: 25 }],
       description: 'sortByProperty sorts by age descending',
     },
     {
-      input: { arr: [3, null, 1, null, 2], nullsFirst: true },
+      input: [[3, null, 1, null, 2], true],
       expectedOutput: [null, null, 1, 2, 3],
       description: 'sortWithNulls puts nulls first when nullsFirst is true',
     },
     {
-      input: { arr: [3, null, 1, null, 2], nullsFirst: false },
+      input: [[3, null, 1, null, 2], false],
       expectedOutput: [1, 2, 3, null, null],
       description: 'sortWithNulls puts nulls last when nullsFirst is false',
     },

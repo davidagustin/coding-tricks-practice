@@ -133,12 +133,12 @@ const greeterProto = {
 const greeter = null; // Use Object.create and set name property
 
 
-// TODO: Implement a function that returns the prototype chain of an object as an array
-// Example: getPrototypeChain([]) should return [Array.prototype, Object.prototype, null]
+// TODO: Implement a function that returns the length of the prototype chain
+// Example: getPrototypeChainLength([]) should return 3 (Array.prototype, Object.prototype, null)
 
-function getPrototypeChain(obj) {
-  // Return array of prototypes in the chain
-  return [];
+function getPrototypeChainLength(obj) {
+  // Return count of prototypes in the chain (including null)
+  return 0;
 }
 
 // Test
@@ -155,7 +155,7 @@ console.log(rect instanceof Rectangle); // true
 
 console.log(greeter.greet()); // Hello, World
 
-console.log(getPrototypeChain([])); // [Array.prototype, Object.prototype, null]`,
+console.log(getPrototypeChainLength([])); // 3 (Array.prototype, Object.prototype, null)`,
   solution: `// Shape constructor function
 function Shape(color) {
   // Store color on the instance
@@ -205,19 +205,45 @@ const greeterProto = {
 const greeter = Object.create(greeterProto);
 greeter.name = 'World';
 
-// Implement a function that returns the prototype chain of an object as an array
-function getPrototypeChain(obj) {
-  // Return array of prototypes in the chain
-  const chain = [];
+// Implement a function that returns the length of the prototype chain
+function getPrototypeChainLength(obj) {
+  // Return count of prototypes in the chain (including null)
+  let count = 0;
   let current = Object.getPrototypeOf(obj);
 
   while (current !== null) {
-    chain.push(current);
+    count++;
     current = Object.getPrototypeOf(current);
   }
 
-  chain.push(null);
-  return chain;
+  count++; // Include null
+  return count;
+}
+
+// Test wrapper functions for the test runner
+function testArrayPrototype() {
+  return Object.getPrototypeOf([]) === Array.prototype;
+}
+
+function testInheritance() {
+  class Parent { getValue() { return 42; } }
+  class Child extends Parent {}
+  const child = new Child();
+  return child.getValue();
+}
+
+function testShapeInheritance() {
+  const rect = new Rectangle('blue', 4, 5);
+  return rect instanceof Shape;
+}
+
+function testRectangleGetArea() {
+  const rect = new Rectangle('blue', 4, 5);
+  return rect.getArea();
+}
+
+function testGreeterGreet() {
+  return greeter.greet();
 }
 
 // Test
@@ -234,12 +260,42 @@ console.log(rect instanceof Rectangle); // true
 
 console.log(greeter.greet()); // Hello, World
 
-console.log(getPrototypeChain([])); // [Array.prototype, Object.prototype, null]`,
+console.log(getPrototypeChainLength([])); // 3 (Array.prototype, Object.prototype, null)`,
   testCases: [
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'testArrayPrototype confirms array prototype chain',
+    },
+    {
+      input: [],
+      expectedOutput: 42,
+      description: 'testInheritance confirms method inheritance',
+    },
+    {
+      input: [],
+      expectedOutput: true,
+      description: 'testShapeInheritance verifies Rectangle instanceof Shape is true',
+    },
+    {
+      input: [],
+      expectedOutput: 20,
+      description: 'testRectangleGetArea returns correct area (4 * 5 = 20)',
+    },
+    {
+      input: [],
+      expectedOutput: 'Hello, World',
+      description: 'testGreeterGreet returns greeting with name from prototype chain',
+    },
+    {
+      input: [[]],
+      expectedOutput: 3,
+      description: 'getPrototypeChainLength returns 3 for array (Array.prototype, Object.prototype, null)',
+    },
     {
       input: [{}],
       expectedOutput: 2,
-      description: 'getPrototypeChain returns correct length for plain object',
+      description: 'getPrototypeChainLength returns 2 for plain object (Object.prototype, null)',
     },
   ],
   hints: [

@@ -282,27 +282,49 @@ console.log(cache(testObj)); // 42 (cached)
 console.log('EventManager class defined:', typeof EventManager === 'function');
 
 // processInChunks test
-processInChunks([1, 2, 3, 4, 5], item => console.log('Processing:', item), 2);`,
+processInChunks([1, 2, 3, 4, 5], item => console.log('Processing:', item), 2);
+
+// Test helper functions for the test runner
+function testCreateObjectCache(value: number): number {
+  const cache = createObjectCache((obj: {value: number}) => obj.value * 2);
+  const testObj = { value };
+  return cache(testObj);
+}
+
+function testCreateFixedHandlers(): number {
+  const handlers = createFixedHandlers();
+  return handlers.length;
+}
+
+function testCreateHandler(index: number): string {
+  const handler = createHandler(index);
+  return typeof handler;
+}`,
   testCases: [
     {
-      input: { fn: 'createObjectCache', obj: { value: 21 } },
+      input: [21],
       expectedOutput: 42,
-      description: 'cache computes and returns result',
+      description: 'testCreateObjectCache computes and returns result',
     },
     {
-      input: { fn: 'createObjectCache', obj: { value: 10 }, cached: true },
+      input: [10],
       expectedOutput: 20,
-      description: 'cache returns cached result on second call',
+      description: 'testCreateObjectCache doubles the value',
     },
     {
-      input: { fn: 'EventManager', operation: 'defined' },
-      expectedOutput: true,
-      description: 'EventManager class is defined',
+      input: [],
+      expectedOutput: 1000,
+      description: 'testCreateFixedHandlers returns 1000 handlers',
     },
     {
-      input: { fn: 'processInChunks', items: [1, 2, 3, 4, 5], chunkSize: 2 },
-      expectedOutput: true,
-      description: 'processInChunks processes all items',
+      input: [5],
+      expectedOutput: 'function',
+      description: 'testCreateHandler returns a function',
+    },
+    {
+      input: [42],
+      expectedOutput: 'function',
+      description: 'testCreateHandler works with any index',
     },
   ],
   hints: [

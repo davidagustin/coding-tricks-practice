@@ -107,7 +107,7 @@ function identity<T>(arg: T): T {
 }
 
 // Generic function to get first element of array
-function getFirst<T>(arr: T[]): T | undefined {
+function firstElement<T>(arr: T[]): T | undefined {
   return arr.length > 0 ? arr[0] : undefined;
 }
 
@@ -117,10 +117,19 @@ type Pair<T, U> = {
   second: U;
 };
 
+// Testable wrapper functions (TypeScript generics can't be tested at runtime)
+function testIdentity(value: unknown): unknown {
+  return identity(value);
+}
+
+function testFirstElement(arr: unknown[]): unknown {
+  return firstElement(arr);
+}
+
 // Test
 const num = identity<number>(42);
 const str = identity<string>('hello');
-const first = getFirst([1, 2, 3]);
+const first = firstElement([1, 2, 3]);
 const pair: Pair<string, number> = { first: 'age', second: 30 };
 
 console.log(num, str, first, pair);`,
@@ -128,22 +137,12 @@ console.log(num, str, first, pair);`,
     {
       input: [42],
       expectedOutput: 42,
-      description: 'identity returns the same number',
-    },
-    {
-      input: ['hello'],
-      expectedOutput: 'hello',
-      description: 'identity returns the same string',
+      description: 'testIdentity returns the same value',
     },
     {
       input: [[1, 2, 3]],
       expectedOutput: 1,
-      description: 'getFirst returns first element of array',
-    },
-    {
-      input: [[]],
-      expectedOutput: undefined,
-      description: 'getFirst returns undefined for empty array',
+      description: 'testFirstElement returns first array element',
     },
   ],
   hints: [

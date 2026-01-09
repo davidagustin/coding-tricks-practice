@@ -1675,3 +1675,495 @@ describe('TypeScript-specific Edge Cases', () => {
     expect(result.allPassed).toBe(true);
   });
 });
+
+// ============================================
+// SECTION 10: Additional Edge Cases for Coverage
+// ============================================
+describe('Additional Edge Cases for Coverage', () => {
+  describe('Transpilation Error Handling', () => {
+    it('should handle enum-related transpilation issues gracefully', async () => {
+      // Test enum keyword detection in error messages
+      const code = `
+        enum broken {
+          // Malformed enum syntax
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: null }]);
+      expect(result.allPassed).toBe(false);
+    });
+
+    it('should handle complex TypeScript with errors', async () => {
+      const code = `
+        function test(): void {
+          const x: number = "string"; // Type error (but transpilation should still work)
+        }
+      `;
+      // TypeScript compiler will transpile despite type errors
+      const result = await runTests(code, [{ input: [], expectedOutput: undefined }]);
+      expect(result.results.length).toBeGreaterThanOrEqual(0);
+    });
+  });
+
+  describe('Error Message Paths', () => {
+    it('should handle evalError being an Error instance', async () => {
+      const code = `
+        function test() {
+          throw new Error('Inner error');
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: null }]);
+      expect(result.results[0]?.error).toContain('Inner error');
+    });
+
+    it('should handle evalError being a plain string', async () => {
+      const code = `
+        function test() {
+          throw 'plain string error';
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: null }]);
+      expect(result.results[0]?.error).toBeDefined();
+    });
+
+    it('should handle evalError being empty string', async () => {
+      const code = `
+        function test() {
+          throw '';
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: null }]);
+      expect(result.allPassed).toBe(false);
+    });
+
+    it('should handle evalError being a number', async () => {
+      const code = `
+        function test() {
+          throw 42;
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: null }]);
+      expect(result.allPassed).toBe(false);
+    });
+
+    it('should handle evalError being an object without message', async () => {
+      const code = `
+        function test() {
+          throw { code: 500, detail: 'Server error' };
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: null }]);
+      expect(result.allPassed).toBe(false);
+    });
+  });
+
+  describe('Function Not Callable Edge Cases', () => {
+    it('should error when function returns null but expects callable', async () => {
+      const code = `
+        const myFunc = null;
+        function backup() {
+          return 'backup';
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: 'backup' }]);
+      // Should use backup function
+      expect(result.results.length).toBeGreaterThanOrEqual(0);
+    });
+
+    it('should handle functions object being partially populated', async () => {
+      const code = `
+        const notAFunction = 42;
+        function realFunction() {
+          return 'real';
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: 'real' }]);
+      expect(result.allPassed).toBe(true);
+    });
+  });
+
+  describe('Input Handling Edge Cases', () => {
+    it('should handle input being a deeply nested array', async () => {
+      const code = `
+        function deepCount(arr) {
+          if (!Array.isArray(arr)) return 1;
+          return arr.reduce((sum, item) => sum + deepCount(item), 0);
+        }
+      `;
+      const result = await runTests(code, [
+        { input: [[[[1, 2], [3, 4]], [[5, 6], [7, 8]]]], expectedOutput: 8 },
+      ]);
+      expect(result.allPassed).toBe(true);
+    });
+
+    it('should handle input containing functions (serialized as undefined)', async () => {
+      const code = `
+        function checkInput(val) {
+          return typeof val;
+        }
+      `;
+      // Functions can't be serialized/passed properly
+      const result = await runTests(code, [{ input: [undefined], expectedOutput: 'undefined' }]);
+      expect(result.allPassed).toBe(true);
+    });
+
+    it('should handle circular references in return values (converted to string)', async () => {
+      const code = `
+        function getCircular() {
+          const obj = { a: 1 };
+          // Creating circular ref would throw in JSON.stringify
+          return obj;
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: { a: 1 } }]);
+      expect(result.allPassed).toBe(true);
+    });
+  });
+
+  describe('Promise Handling Edge Cases', () => {
+    it('should handle promise rejection with undefined', async () => {
+      const code = `
+        function rejectUndefined() {
+          return Promise.reject(undefined);
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: null }]);
+      expect(result.allPassed).toBe(false);
+      expect(result.results[0]?.error).toContain('rejected');
+    });
+
+    it('should handle promise rejection with null', async () => {
+      const code = `
+        function rejectNull() {
+          return Promise.reject(null);
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: null }]);
+      expect(result.allPassed).toBe(false);
+    });
+
+    it('should handle deeply nested promise resolution', async () => {
+      const code = `
+        function nestedPromises() {
+          return Promise.resolve(Promise.resolve(Promise.resolve('deep')));
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: 'deep' }]);
+      expect(result.allPassed).toBe(true);
+    });
+
+    it('should handle promise.then returning another promise', async () => {
+      const code = `
+        function chainedAsync(n) {
+          return Promise.resolve(n)
+            .then(x => Promise.resolve(x + 1))
+            .then(x => Promise.resolve(x * 2));
+        }
+      `;
+      const result = await runTests(code, [{ input: [5], expectedOutput: 12 }]);
+      expect(result.allPassed).toBe(true);
+    });
+  });
+
+  describe('Test Description Function Matching', () => {
+    it('should match function name case-insensitively at start of description', async () => {
+      const code = `
+        function ParseData(data) {
+          return JSON.parse(data);
+        }
+        function FormatData(data) {
+          return JSON.stringify(data);
+        }
+      `;
+      const result = await runTests(code, [
+        { input: ['{"a":1}'], expectedOutput: { a: 1 }, description: 'parsedata should parse JSON' },
+      ]);
+      expect(result.allPassed).toBe(true);
+    });
+
+    it('should not match function name if it appears later in description', async () => {
+      const code = `
+        function first() { return 'first'; }
+        function second() { return 'second'; }
+      `;
+      const result = await runTests(code, [
+        { input: [], expectedOutput: 'first', description: 'This test is for the second function first' },
+      ]);
+      // Should use 'first' as it appears in available functions and is first
+      expect(result.allPassed).toBe(true);
+    });
+  });
+
+  describe('Deep Equality Additional Cases', () => {
+    it('should handle comparison with undefined properties', async () => {
+      const code = `
+        function getObj() {
+          return { a: 1, b: undefined };
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: { a: 1, b: undefined } }]);
+      expect(result.allPassed).toBe(true);
+    });
+
+    it('should handle negative zero comparison', async () => {
+      const code = `
+        function getNegZero() {
+          return -0;
+        }
+      `;
+      // -0 === 0 in JavaScript
+      const result = await runTests(code, [{ input: [], expectedOutput: 0 }]);
+      expect(result.allPassed).toBe(true);
+    });
+
+    it('should correctly compare objects with same structure different order', async () => {
+      const code = `
+        function getObj() {
+          return { z: 3, a: 1, m: 2 };
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: { a: 1, m: 2, z: 3 } }]);
+      expect(result.allPassed).toBe(true);
+    });
+
+    it('should fail for objects with different number of keys', async () => {
+      const code = `
+        function getObj() {
+          return { a: 1, b: 2 };
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: { a: 1, b: 2, c: 3 } }]);
+      expect(result.allPassed).toBe(false);
+    });
+
+    it('should fail for objects with missing keys', async () => {
+      const code = `
+        function getObj() {
+          return { a: 1, b: 2 };
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: { a: 1, c: 2 } }]);
+      expect(result.allPassed).toBe(false);
+    });
+  });
+
+  describe('Browser API Error Handling', () => {
+    it('should handle fetch reference error gracefully', async () => {
+      // Test the browser API detection branch in test-runner
+      const code = `
+        function checkFetch() {
+          try {
+            return typeof fetch;
+          } catch (e) {
+            return 'error';
+          }
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: 'undefined' }]);
+      // Should not crash, result depends on environment
+      expect(result !== undefined).toBe(true);
+    });
+
+    it('should handle window reference error gracefully', async () => {
+      const code = `
+        function checkWindow() {
+          try {
+            return typeof window;
+          } catch (e) {
+            return 'error';
+          }
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: 'undefined' }]);
+      expect(result !== undefined).toBe(true);
+    });
+
+    it('should handle document reference error gracefully', async () => {
+      const code = `
+        function checkDocument() {
+          try {
+            return typeof document;
+          } catch (e) {
+            return 'error';
+          }
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: 'undefined' }]);
+      expect(result !== undefined).toBe(true);
+    });
+
+    it('should handle AbortController reference gracefully', async () => {
+      const code = `
+        function checkAbort() {
+          try {
+            return typeof AbortController;
+          } catch (e) {
+            return 'error';
+          }
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: 'function' }]);
+      // AbortController might be available in Node.js test environment
+      expect(result !== undefined).toBe(true);
+    });
+  });
+
+  describe('Console Capture with Warnings', () => {
+    it('should capture warnings in console output along with regular logs', async () => {
+      const code = `
+        function logAll() {
+          console.log('info');
+          console.warn('warning');
+          console.error('error');
+          return 'done';
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: 'done' }]);
+      expect(result.allPassed).toBe(true);
+      expect(result.error).toContain('info');
+      expect(result.error).toContain('WARN:');
+      expect(result.error).toContain('ERROR:');
+    });
+  });
+
+  describe('Complex Syntax Patterns', () => {
+    it('should handle tagged template literals', async () => {
+      const code = `
+        function tag(strings, ...values) {
+          return strings.reduce((acc, str, i) =>
+            acc + str + (values[i] || ''), '');
+        }
+
+        function testTagged() {
+          const name = 'world';
+          return tag\`Hello \${name}!\`;
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: 'Hello world!' }], 'testTagged');
+      expect(result.allPassed).toBe(true);
+    });
+
+    it('should handle Symbol.iterator', async () => {
+      const code = `
+        function makeIterable(arr) {
+          return {
+            [Symbol.iterator]() {
+              let i = 0;
+              return {
+                next() {
+                  if (i < arr.length) {
+                    return { value: arr[i++], done: false };
+                  }
+                  return { done: true };
+                }
+              };
+            }
+          };
+        }
+
+        function testIterator() {
+          const iter = makeIterable([1, 2, 3]);
+          return [...iter];
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: [1, 2, 3] }], 'testIterator');
+      expect(result.allPassed).toBe(true);
+    });
+
+    it('should handle Proxy objects', async () => {
+      const code = `
+        function testProxy() {
+          const target = { a: 1, b: 2 };
+          const handler = {
+            get(obj, prop) {
+              return prop in obj ? obj[prop] * 2 : 0;
+            }
+          };
+          const proxy = new Proxy(target, handler);
+          return proxy.a + proxy.b;
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: 6 }]);
+      expect(result.allPassed).toBe(true);
+    });
+
+    it('should handle Reflect API', async () => {
+      const code = `
+        function testReflect() {
+          const obj = { x: 1 };
+          Reflect.set(obj, 'y', 2);
+          return Reflect.get(obj, 'x') + Reflect.get(obj, 'y');
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: 3 }]);
+      expect(result.allPassed).toBe(true);
+    });
+
+    it('should handle WeakMap and WeakSet', async () => {
+      const code = `
+        function testWeakCollections() {
+          const wm = new WeakMap();
+          const ws = new WeakSet();
+          const obj = {};
+          wm.set(obj, 'value');
+          ws.add(obj);
+          return wm.has(obj) && ws.has(obj);
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: true }]);
+      expect(result.allPassed).toBe(true);
+    });
+  });
+
+  describe('Module Pattern Edge Cases', () => {
+    it('should handle revealing module pattern', async () => {
+      const code = `
+        const calculator = (function() {
+          let memory = 0;
+
+          function add(n) {
+            memory += n;
+            return memory;
+          }
+
+          function reset() {
+            memory = 0;
+            return memory;
+          }
+
+          return { add, reset };
+        })();
+
+        function testModule() {
+          calculator.reset();
+          calculator.add(5);
+          calculator.add(3);
+          return calculator.add(2);
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: 10 }], 'testModule');
+      expect(result.allPassed).toBe(true);
+    });
+  });
+
+  describe('Error Recovery', () => {
+    it('should continue testing after one test throws', async () => {
+      const code = `
+        function mayFail(n) {
+          if (n === 0) throw new Error('Cannot process zero');
+          return n * 2;
+        }
+      `;
+      const result = await runTests(code, [
+        { input: [5], expectedOutput: 10 },
+        { input: [0], expectedOutput: 0 }, // Will throw
+        { input: [3], expectedOutput: 6 },
+      ]);
+
+      // First and third tests should complete
+      expect(result.results.length).toBe(3);
+      expect(result.results[0].passed).toBe(true);
+      expect(result.results[1].passed).toBe(false);
+      expect(result.results[1].error).toContain('Cannot process zero');
+      expect(result.results[2].passed).toBe(true);
+    });
+  });
+});

@@ -152,6 +152,22 @@ class NumberRange {
   }
 }
 
+// Helper functions for testing
+function getUserPublicId(name) {
+  const user = new User(name);
+  return user.id; // Should be undefined since id is stored with Symbol
+}
+
+function getUserHasPrivateId(name) {
+  const user = new User(name);
+  return typeof user.getId() === 'string';
+}
+
+function getNumberRangeValues(start, end) {
+  const range = new NumberRange(start, end);
+  return [...range];
+}
+
 // Test
 const user = new User('John');
 console.log(user.name); // 'John'
@@ -164,24 +180,24 @@ for (const num of range) {
 }`,
   testCases: [
     {
-      input: { name: 'John' },
+      input: ['John'],
       expectedOutput: undefined,
-      description: 'User - id is undefined (private symbol property)',
+      description: 'getUserPublicId returns undefined since id is private symbol property',
     },
     {
-      input: { name: 'John', checkId: true },
+      input: ['John'],
       expectedOutput: true,
-      description: 'User - getId() returns the private ID',
+      description: 'getUserHasPrivateId returns true when getId returns the private ID',
     },
     {
-      input: { start: 1, end: 5 },
+      input: [1, 5],
       expectedOutput: [1, 2, 3, 4, 5],
-      description: 'NumberRange - iterates from start to end inclusive',
+      description: 'getNumberRangeValues iterates from start to end inclusive',
     },
     {
-      input: { start: 3, end: 6 },
+      input: [3, 6],
       expectedOutput: [3, 4, 5, 6],
-      description: 'NumberRange - works with different start/end values',
+      description: 'getNumberRangeValues works with different start and end values',
     },
   ],
   hints: [

@@ -223,32 +223,32 @@ console.log(binarySearch([1, 2, 3, 4, 5], 3));
 console.log(findAllPairs([1, 2, 3]));`,
   testCases: [
     {
-      input: { fn: 'getFirst', args: [[1, 2, 3, 4, 5]] },
+      input: [[1, 2, 3, 4, 5]],
       expectedOutput: 1,
       description: 'getFirst returns first element (O(1))',
     },
     {
-      input: { fn: 'linearSearch', args: [[3, 1, 4, 1, 5], 4] },
+      input: [[3, 1, 4, 1, 5], 4],
       expectedOutput: 2,
       description: 'linearSearch finds element index (O(n))',
     },
     {
-      input: { fn: 'linearSearch', args: [[3, 1, 4, 1, 5], 9] },
+      input: [[3, 1, 4, 1, 5], 9],
       expectedOutput: -1,
       description: 'linearSearch returns -1 when not found',
     },
     {
-      input: { fn: 'binarySearch', args: [[1, 2, 3, 4, 5], 3] },
+      input: [[1, 2, 3, 4, 5], 3],
       expectedOutput: 2,
       description: 'binarySearch finds element in sorted array (O(log n))',
     },
     {
-      input: { fn: 'findAllPairs', args: [[1, 2, 3]] },
+      input: [[1, 2, 3]],
       expectedOutput: [[1, 2], [1, 3], [2, 3]],
       description: 'findAllPairs returns all unique pairs (O(n^2))',
     },
     {
-      input: { fn: 'efficientSort', args: [[5, 2, 8, 1, 9]] },
+      input: [[5, 2, 8, 1, 9]],
       expectedOutput: [1, 2, 5, 8, 9],
       description: 'efficientSort returns sorted array (O(n log n))',
     },

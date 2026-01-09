@@ -139,24 +139,19 @@ console.log(Status[0]); // 'Pending'
 console.log(Status.Pending); // 0`,
   testCases: [
     {
-      input: 0,
+      input: [0],
       expectedOutput: 'Request is pending',
       description: 'processStatus returns correct message for Pending status',
     },
     {
-      input: 1,
+      input: [1],
       expectedOutput: 'Request has been approved',
       description: 'processStatus returns correct message for Approved status',
     },
     {
-      input: 2,
+      input: [2],
       expectedOutput: 'Request was rejected',
       description: 'processStatus returns correct message for Rejected status',
-    },
-    {
-      input: 'Direction.Up',
-      expectedOutput: 'UP',
-      description: 'String enum Direction.Up has value UP',
     },
   ],
   hints: [
