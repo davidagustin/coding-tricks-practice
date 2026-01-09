@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import DOMPurify from 'dompurify';
 import Link from 'next/link';
 import React, { createContext, memo, type ReactNode, useState } from 'react';
+
+import { DOMPURIFY_CONFIG } from '@/lib/constants';
 
 // ============================================================================
 // Mock Data
@@ -298,6 +301,7 @@ const MockProblemDescription = memo(function MockProblemDescription({
       <div className="flex-shrink-0 flex gap-1 pt-4 pb-2 border-b border-gray-200 dark:border-gray-700">
         {tabs.map((tab) => (
           <button
+            type="button"
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors relative ${
@@ -326,7 +330,10 @@ const MockProblemDescription = memo(function MockProblemDescription({
         {activeTab === 'description' && (
           <div
             className="prose dark:prose-invert"
-            dangerouslySetInnerHTML={{ __html: problem.description }}
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: Content sanitized with DOMPurify
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(problem.description, DOMPURIFY_CONFIG),
+            }}
           />
         )}
 
@@ -334,7 +341,7 @@ const MockProblemDescription = memo(function MockProblemDescription({
           <div className="space-y-4">
             {problem.examples.map((example, index) => (
               <div
-                key={index}
+                key={`example-${index}-${example.input.slice(0, 20)}`}
                 className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4 border border-gray-200 dark:border-gray-700"
               >
                 <div className="mb-3">
@@ -374,7 +381,7 @@ const MockProblemDescription = memo(function MockProblemDescription({
           <ul className="space-y-3">
             {problem.hints.map((hint, index) => (
               <li
-                key={index}
+                key={`hint-${index}-${hint.slice(0, 20)}`}
                 className="flex gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800"
               >
                 <span className="text-blue-500 dark:text-blue-400 flex-shrink-0">*</span>
@@ -470,6 +477,7 @@ function MockTestResults({
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -489,6 +497,7 @@ function MockTestResults({
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -508,7 +517,7 @@ function MockTestResults({
       <div className="space-y-2">
         {results.map((result, index) => (
           <div
-            key={index}
+            key={`result-${index}-${result.description || 'test'}`}
             className={`p-4 rounded-lg border ${
               result.passed
                 ? 'bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-800'
@@ -522,6 +531,7 @@ function MockTestResults({
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
@@ -536,6 +546,7 @@ function MockTestResults({
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
@@ -631,7 +642,7 @@ function MockProblemDetailPage({
         {/* Solved Badge */}
         {isSolved && (
           <div className="mb-4 inline-flex items-center gap-2 px-3 py-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full text-sm font-medium">
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
               <path
                 fillRule="evenodd"
                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -684,16 +695,23 @@ function MockProblemDetailPage({
                   Code Editor
                 </h2>
                 <div className="flex gap-2">
-                  <button className="px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200">
+                  <button
+                    type="button"
+                    className="px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200"
+                  >
                     Reset
                   </button>
                   <button
+                    type="button"
                     onClick={() => setShowSolutionState(!showSolutionState)}
                     className="px-3 py-1.5 text-sm bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-all duration-200"
                   >
                     {showSolutionState ? 'Hide' : 'Show'} Solution
                   </button>
-                  <button className="px-4 py-1.5 text-sm bg-green-600 text-white rounded hover:bg-green-700 transition-all duration-200">
+                  <button
+                    type="button"
+                    className="px-4 py-1.5 text-sm bg-green-600 text-white rounded hover:bg-green-700 transition-all duration-200"
+                  >
                     {isRunning ? 'Running...' : 'Run Tests'}
                   </button>
                 </div>

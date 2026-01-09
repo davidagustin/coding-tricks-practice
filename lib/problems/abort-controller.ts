@@ -75,71 +75,113 @@ fetchWithCancel('/api/data', controller.signal);`,
       explanation: 'Cancel long-running requests',
     },
   ],
-  starterCode: `async function fetchWithCancel(url, signal) {
-  // TODO: Pass signal to fetch options
-  // Handle AbortError when cancelled
-  
-  const response = await fetch(url);
-  return response.json();
+  starterCode: `// Simulated async operation that can be cancelled
+function createCancellableOperation(delayMs = 100) {
+  // TODO: Create a cancellable async operation
+  // Return { promise, cancel, isCancelled }
+  // - promise: resolves to 'completed' after delayMs, or rejects if cancelled
+  // - cancel: function to cancel the operation
+  // - isCancelled: function that returns true if cancelled
+
+  let cancelled = false;
+  let rejectFn = null;
+
+  const promise = new Promise((resolve, reject) => {
+    // Your code here
+  });
+
+  return {
+    promise,
+    cancel: () => {},
+    isCancelled: () => cancelled
+  };
 }
 
-function createCancellableFetch(url, timeout = 5000) {
-  // TODO: Create AbortController
-  // Set timeout to auto-cancel
-  // Return { promise, cancel }
-  
-  return {
-    promise: fetch(url).then(r => r.json()),
-    cancel: () => {}
-  };
+// Test if cancellation works properly
+async function testCancellation(cancelAfterMs, operationDelayMs) {
+  // TODO: Create operation, cancel it after cancelAfterMs
+  // Return 'cancelled' if operation was cancelled, 'completed' if it finished
+  const op = createCancellableOperation(operationDelayMs);
+
+  // Your code here - set up cancellation and return result
+  return 'completed';
 }
 
 // Test
-const { promise, cancel } = createCancellableFetch('/api/data', 1000);
-setTimeout(() => cancel(), 500); // Cancel after 500ms`,
-  solution: `async function fetchWithCancel(url, signal) {
-  // Pass signal to fetch options
-  // Handle AbortError when cancelled
-  try {
-    const response = await fetch(url, { signal });
-    return response.json();
-  } catch (error) {
-    if (error.name === 'AbortError') {
-      throw new Error('Request was cancelled');
-    }
-    throw error;
-  }
-}
+(async () => {
+  // Should complete (cancel happens after operation finishes)
+  console.log(await testCancellation(200, 50)); // 'completed'
 
-function createCancellableFetch(url, timeout = 5000) {
-  // Create AbortController
-  // Set timeout to auto-cancel
-  // Return { promise, cancel }
-  const controller = new AbortController();
-  
-  const timeoutId = setTimeout(() => {
-    controller.abort();
-  }, timeout);
-  
-  const promise = fetch(url, { signal: controller.signal })
-    .then(response => response.json())
-    .finally(() => {
-      clearTimeout(timeoutId);
-    });
-  
+  // Should be cancelled (cancel happens before operation finishes)
+  console.log(await testCancellation(50, 200)); // 'cancelled'
+})();`,
+  solution: `// Simulated async operation that can be cancelled
+function createCancellableOperation(delayMs = 100) {
+  // Create a cancellable async operation
+  // Return { promise, cancel, isCancelled }
+  let cancelled = false;
+  let rejectFn = null;
+  let timeoutId = null;
+
+  const promise = new Promise((resolve, reject) => {
+    rejectFn = reject;
+    timeoutId = setTimeout(() => {
+      if (!cancelled) {
+        resolve('completed');
+      }
+    }, delayMs);
+  });
+
   return {
     promise,
     cancel: () => {
-      controller.abort();
+      cancelled = true;
       clearTimeout(timeoutId);
-    }
+      if (rejectFn) {
+        rejectFn(new Error('Operation cancelled'));
+      }
+    },
+    isCancelled: () => cancelled
   };
+}
+
+// Test if cancellation works properly
+async function testCancellation(cancelAfterMs, operationDelayMs) {
+  // Create operation, cancel it after cancelAfterMs
+  // Return 'cancelled' if operation was cancelled, 'completed' if it finished
+  const op = createCancellableOperation(operationDelayMs);
+
+  // Set up cancellation timer
+  const cancelTimer = setTimeout(() => {
+    op.cancel();
+  }, cancelAfterMs);
+
+  try {
+    const result = await op.promise;
+    clearTimeout(cancelTimer);
+    return result;
+  } catch (error) {
+    clearTimeout(cancelTimer);
+    return 'cancelled';
+  }
 }`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: [200, 50],
+      expectedOutput: 'completed',
+      description:
+        'testCancellation returns completed when cancel happens after operation finishes',
+    },
+    {
+      input: [50, 200],
+      expectedOutput: 'cancelled',
+      description:
+        'testCancellation returns cancelled when cancel happens before operation finishes',
+    },
+    {
+      input: [100, 100],
+      expectedOutput: 'completed',
+      description: 'testCancellation returns completed when timings are equal (operation wins)',
     },
   ],
   hints: [

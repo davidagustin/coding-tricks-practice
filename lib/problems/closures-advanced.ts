@@ -200,7 +200,7 @@ function memoize(fn) {
 function createBankAccount(initialBalance = 0) {
   // Implement private balance and return public API
   let balance = initialBalance;
-  
+
   return {
     deposit: (amount) => {
       balance += amount;
@@ -215,12 +215,95 @@ function createBankAccount(initialBalance = 0) {
     },
     getBalance: () => balance
   };
+}
+
+// Test helper function for running closure tests
+function testClosures(testName) {
+  if (testName === 'createCounter increment and getCount') {
+    const counter = createCounter(0);
+    const inc = counter.increment();
+    const count = counter.getCount();
+    return inc === 1 && count === 1;
+  }
+  if (testName === 'createCounter increment and decrement') {
+    const counter = createCounter(5);
+    const afterInc = counter.increment();
+    const afterDec = counter.decrement();
+    return afterInc === 6 && afterDec === 5;
+  }
+  if (testName === 'createCounter reset') {
+    const counter = createCounter(10);
+    counter.increment();
+    counter.reset();
+    return counter.getCount() === 10;
+  }
+  if (testName === 'memoize returns correct result') {
+    const double = memoize(n => n * 2);
+    return double(5) === 10;
+  }
+  if (testName === 'memoize caches results') {
+    let callCount = 0;
+    const fn = memoize(n => { callCount++; return n * 2; });
+    fn(5);
+    fn(5);
+    return callCount === 1;
+  }
+  if (testName === 'createBankAccount deposit') {
+    const account = createBankAccount(100);
+    return account.deposit(50) === 150;
+  }
+  if (testName === 'createBankAccount withdraw') {
+    const account = createBankAccount(100);
+    return account.withdraw(30) === 70;
+  }
+  if (testName === 'createBankAccount getBalance') {
+    const account = createBankAccount(50);
+    return account.getBalance() === 50;
+  }
+  return false;
 }`,
   testCases: [
     {
-      input: [],
+      input: ['createCounter increment and getCount'],
       expectedOutput: true,
-      description: 'Test passes',
+      description:
+        'testClosures createCounter increment returns new value and getCount returns same value',
+    },
+    {
+      input: ['createCounter increment and decrement'],
+      expectedOutput: true,
+      description:
+        'testClosures createCounter with initial value 5 increments to 6 then decrements to 5',
+    },
+    {
+      input: ['createCounter reset'],
+      expectedOutput: true,
+      description: 'testClosures createCounter reset restores initial value',
+    },
+    {
+      input: ['memoize returns correct result'],
+      expectedOutput: true,
+      description: 'testClosures memoize returns correct result for n * 2',
+    },
+    {
+      input: ['memoize caches results'],
+      expectedOutput: true,
+      description: 'testClosures memoize caches and only calls function once for same input',
+    },
+    {
+      input: ['createBankAccount deposit'],
+      expectedOutput: true,
+      description: 'testClosures createBankAccount deposit adds to balance',
+    },
+    {
+      input: ['createBankAccount withdraw'],
+      expectedOutput: true,
+      description: 'testClosures createBankAccount withdraw subtracts from balance',
+    },
+    {
+      input: ['createBankAccount getBalance'],
+      expectedOutput: true,
+      description: 'testClosures createBankAccount getBalance returns current balance',
     },
   ],
   hints: [

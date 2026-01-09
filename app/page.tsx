@@ -8,19 +8,25 @@ import { problems } from '@/lib/problems';
 export default function Home() {
   const { solvedCount } = useProgress();
 
-  // Memoize stats calculation to avoid recalculating on every render
-  const stats = useMemo(
-    () => ({
-      total: problems.length,
-      easy: problems.filter((p) => p.difficulty === 'easy').length,
-      medium: problems.filter((p) => p.difficulty === 'medium').length,
-      hard: problems.filter((p) => p.difficulty === 'hard').length,
-    }),
-    []
-  );
+  // Memoize stats and category counts - single pass through problems array
+  const { stats, categoryCountMap, categories } = useMemo(() => {
+    const difficultyCounts = { easy: 0, medium: 0, hard: 0 };
+    const categoryCounts: Record<string, number> = {};
 
-  // Memoize categories extraction
-  const categories = useMemo(() => Array.from(new Set(problems.map((p) => p.category))), []);
+    for (const p of problems) {
+      difficultyCounts[p.difficulty]++;
+      categoryCounts[p.category] = (categoryCounts[p.category] || 0) + 1;
+    }
+
+    return {
+      stats: {
+        total: problems.length,
+        ...difficultyCounts,
+      },
+      categoryCountMap: categoryCounts,
+      categories: Object.keys(categoryCounts),
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
@@ -95,7 +101,7 @@ export default function Home() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {categories.map((category) => {
-              const categoryCount = problems.filter((p) => p.category === category).length;
+              const categoryCount = categoryCountMap[category];
               return (
                 <Link
                   key={category}
@@ -124,6 +130,7 @@ export default function Home() {
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
@@ -149,6 +156,7 @@ export default function Home() {
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
@@ -174,6 +182,7 @@ export default function Home() {
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
@@ -199,6 +208,7 @@ export default function Home() {
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"

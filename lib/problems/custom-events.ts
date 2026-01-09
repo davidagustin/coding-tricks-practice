@@ -164,7 +164,7 @@ function createEventBus() {
   // 4. off() removes event listener
   // 5. emit() dispatches custom event with data
   const target = document.createElement('div');
-  
+
   return {
     on(eventName, callback) {
       target.addEventListener(eventName, callback);
@@ -176,12 +176,139 @@ function createEventBus() {
       emitCustomEvent(target, eventName, data);
     }
   };
+}
+
+// Node.js compatible EventEmitter implementation for testing
+// This demonstrates the same patterns without browser APIs
+class SimpleEventEmitter {
+  constructor() {
+    this.listeners = new Map();
+  }
+
+  on(eventName, callback) {
+    if (!this.listeners.has(eventName)) {
+      this.listeners.set(eventName, []);
+    }
+    this.listeners.get(eventName).push(callback);
+    return this;
+  }
+
+  off(eventName, callback) {
+    if (!this.listeners.has(eventName)) return this;
+    const callbacks = this.listeners.get(eventName);
+    const index = callbacks.indexOf(callback);
+    if (index > -1) callbacks.splice(index, 1);
+    return this;
+  }
+
+  emit(eventName, data) {
+    if (!this.listeners.has(eventName)) return false;
+    const callbacks = this.listeners.get(eventName);
+    callbacks.forEach(cb => cb({ type: eventName, detail: data }));
+    return callbacks.length > 0;
+  }
+
+  once(eventName, callback) {
+    const onceWrapper = (event) => {
+      callback(event);
+      this.off(eventName, onceWrapper);
+    };
+    return this.on(eventName, onceWrapper);
+  }
+}
+
+// Test wrapper functions for automated testing
+function testEventEmitterOn(eventName, data) {
+  const emitter = new SimpleEventEmitter();
+  let received = null;
+  emitter.on(eventName, (event) => { received = event; });
+  emitter.emit(eventName, data);
+  return received ? { type: received.type, detail: received.detail } : null;
+}
+
+function testEventEmitterOff(eventName) {
+  const emitter = new SimpleEventEmitter();
+  let callCount = 0;
+  const handler = () => { callCount++; };
+  emitter.on(eventName, handler);
+  emitter.emit(eventName, {});
+  emitter.off(eventName, handler);
+  emitter.emit(eventName, {});
+  return callCount; // Should be 1 (only first emit triggers handler)
+}
+
+function testEventEmitterOnce(eventName) {
+  const emitter = new SimpleEventEmitter();
+  let callCount = 0;
+  emitter.once(eventName, () => { callCount++; });
+  emitter.emit(eventName, {});
+  emitter.emit(eventName, {});
+  return callCount; // Should be 1 (once only fires once)
+}
+
+function testEventEmitterMultipleListeners(eventName) {
+  const emitter = new SimpleEventEmitter();
+  let count = 0;
+  emitter.on(eventName, () => { count++; });
+  emitter.on(eventName, () => { count++; });
+  emitter.emit(eventName, {});
+  return count; // Should be 2 (both listeners called)
+}
+
+function testEventEmitterChaining() {
+  const emitter = new SimpleEventEmitter();
+  // Test that on() returns this for chaining
+  const result = emitter.on('a', () => {}).on('b', () => {});
+  return result instanceof SimpleEventEmitter;
+}
+
+function testEventEmitterEmitReturnValue(eventName, hasListeners) {
+  const emitter = new SimpleEventEmitter();
+  if (hasListeners) {
+    emitter.on(eventName, () => {});
+  }
+  return emitter.emit(eventName, {});
 }`,
   testCases: [
     {
+      input: ['userLogin', { userId: 123 }],
+      expectedOutput: { type: 'userLogin', detail: { userId: 123 } },
+      description: 'testEventEmitterOn receives event with correct type and detail',
+    },
+    {
+      input: ['cart:add', { productId: 456, quantity: 2 }],
+      expectedOutput: { type: 'cart:add', detail: { productId: 456, quantity: 2 } },
+      description: 'testEventEmitterOn supports namespaced event names',
+    },
+    {
+      input: ['testOff'],
+      expectedOutput: 1,
+      description: 'testEventEmitterOff removes listener so it only fires once',
+    },
+    {
+      input: ['testOnce'],
+      expectedOutput: 1,
+      description: 'testEventEmitterOnce only fires listener once even with multiple emits',
+    },
+    {
+      input: ['multipleListeners'],
+      expectedOutput: 2,
+      description: 'testEventEmitterMultipleListeners calls all registered listeners',
+    },
+    {
       input: [],
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'testEventEmitterChaining supports method chaining on on()',
+    },
+    {
+      input: ['withListener', true],
+      expectedOutput: true,
+      description: 'testEventEmitterEmitReturnValue returns true when listeners exist',
+    },
+    {
+      input: ['noListener', false],
+      expectedOutput: false,
+      description: 'testEventEmitterEmitReturnValue returns false when no listeners',
     },
   ],
   hints: [

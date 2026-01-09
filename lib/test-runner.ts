@@ -169,11 +169,38 @@ async function executeTests(
       }
 
       try {
+        // Sanitize the code to prevent comment injection attacks
+        const sanitizedCode = sanitizeCodeForEval(executableCode);
+
+        // Build the function extraction code with properly escaped names
+        // Since we've already validated names are safe JS identifiers, we can use them directly
+        // but we still escape them in string literals for extra safety
+        const functionExtractionCode = functionNames
+          .map((name) => {
+            // Double-check the name is valid (defense in depth)
+            if (!isValidFunctionName(name)) {
+              return ''; // Skip invalid names
+            }
+            // Escape any special characters in the name for use in string literals
+            const escapedName = name.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+            return `try {
+            if (typeof ${name} !== 'undefined') {
+              functions['${escapedName}'] = ${name};
+            } else {
+              functions['${escapedName}'] = null;
+            }
+          } catch(e) {
+            functions['${escapedName}'] = null;
+          }`;
+          })
+          .filter(Boolean)
+          .join('\n');
+
         const safeEval = new Function(
           'console',
           `
         try {
-          ${executableCode}
+          ${sanitizedCode}
         } catch (e) {
           // Don't throw during code definition - let it fail during execution
           // This allows code with browser APIs to be defined (but not executed)
@@ -181,20 +208,7 @@ async function executeTests(
 
         // Try to find the main function
         const functions = {};
-        ${functionNames
-          .map(
-            (name) =>
-              `try {
-            if (typeof ${name} !== 'undefined') {
-              functions['${name}'] = ${name};
-            } else {
-              functions['${name}'] = null;
-            }
-          } catch(e) {
-            functions['${name}'] = null;
-          }`
-          )
-          .join('\n')}
+        ${functionExtractionCode}
 
         return functions;
         `
@@ -353,6 +367,69 @@ async function executeTests(
   }
 }
 
+/**
+ * List of dangerous property names that could be used for prototype pollution
+ * or other security attacks
+ */
+const DANGEROUS_PROPERTY_NAMES = new Set([
+  '__proto__',
+  'constructor',
+  'prototype',
+  '__defineGetter__',
+  '__defineSetter__',
+  '__lookupGetter__',
+  '__lookupSetter__',
+  'hasOwnProperty',
+  'isPrototypeOf',
+  'propertyIsEnumerable',
+  'toLocaleString',
+  'toString',
+  'valueOf',
+]);
+
+/**
+ * Validates that a function name is a safe JavaScript identifier
+ * - Must match valid JS identifier pattern (starts with letter, $, or _, followed by alphanumeric, $, or _)
+ * - Must not be a dangerous property name (like __proto__, constructor)
+ * - Must not contain characters that could break out of the code context
+ */
+function isValidFunctionName(name: string): boolean {
+  // Check for valid JavaScript identifier pattern
+  // Must start with letter, $, or _ and contain only alphanumeric, $, or _
+  const validIdentifierRegex = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/;
+  if (!validIdentifierRegex.test(name)) {
+    return false;
+  }
+
+  // Check against dangerous property names
+  if (DANGEROUS_PROPERTY_NAMES.has(name)) {
+    return false;
+  }
+
+  // Additional check: ensure name doesn't start with __ (dunder methods convention)
+  // to prevent any future prototype pollution vectors
+  if (name.startsWith('__') && name.endsWith('__')) {
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * Sanitizes code to prevent comment injection attacks
+ * This removes or neutralizes patterns that could break out of code context
+ */
+function sanitizeCodeForEval(code: string): string {
+  // Remove null bytes that could terminate strings early
+  let sanitized = code.replace(/\0/g, '');
+
+  // Neutralize line terminators that could break out of template literals
+  // U+2028 (Line Separator) and U+2029 (Paragraph Separator)
+  sanitized = sanitized.replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
+
+  return sanitized;
+}
+
 export function extractFunctionNames(code: string): string[] {
   // Match: function name, async function name, async function* name, const name = function, const name = async function, const name = () =>, const name = async () =>
   const functionRegex =
@@ -363,7 +440,10 @@ export function extractFunctionNames(code: string): string[] {
   // biome-ignore lint/suspicious/noAssignInExpressions: needed for regex.exec in while loop
   while ((match = functionRegex.exec(code)) !== null) {
     const name = match[1] || match[2] || match[3];
-    if (name) names.push(name);
+    // Only include names that pass security validation
+    if (name && isValidFunctionName(name)) {
+      names.push(name);
+    }
   }
 
   return names;

@@ -443,9 +443,84 @@ function bstDelete(values: number[], toDelete: number): number[] {
 }`,
   testCases: [
     {
-      input: [],
+      input: [[5, 3, 7, 1, 4]],
+      expectedOutput: [1, 3, 4, 5, 7],
+      description: 'bstInOrder returns sorted values',
+    },
+    {
+      input: [[10, 5, 15, 3, 7, 12, 20]],
+      expectedOutput: [3, 5, 7, 10, 12, 15, 20],
+      description: 'bstInOrder correctly orders larger tree',
+    },
+    {
+      input: [[42]],
+      expectedOutput: [42],
+      description: 'bstInOrder handles single element',
+    },
+    {
+      input: [[]],
+      expectedOutput: [],
+      description: 'bstInOrder handles empty array',
+    },
+    {
+      input: [[5, 3, 7, 1, 4], 4],
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'bstSearch finds existing value',
+    },
+    {
+      input: [[5, 3, 7, 1, 4], 10],
+      expectedOutput: false,
+      description: 'bstSearch returns false for missing value',
+    },
+    {
+      input: [[5, 3, 7], 5],
+      expectedOutput: true,
+      description: 'bstSearch finds root value',
+    },
+    {
+      input: [[10, 5, 15, 3, 7], 3],
+      expectedOutput: true,
+      description: 'bstSearch finds leaf value',
+    },
+    {
+      input: [[5, 3, 7, 1, 4, 6, 8]],
+      expectedOutput: 1,
+      description: 'bstFindMin returns minimum value',
+    },
+    {
+      input: [[10]],
+      expectedOutput: 10,
+      description: 'bstFindMin returns only element',
+    },
+    {
+      input: [[5, 3, 7, 1, 4, 6, 8]],
+      expectedOutput: 8,
+      description: 'bstFindMax returns maximum value',
+    },
+    {
+      input: [[100]],
+      expectedOutput: 100,
+      description: 'bstFindMax returns only element',
+    },
+    {
+      input: [[5, 3, 7, 1, 4], 3],
+      expectedOutput: [1, 4, 5, 7],
+      description: 'bstDelete removes node with two children',
+    },
+    {
+      input: [[5, 3, 7, 1, 4], 1],
+      expectedOutput: [3, 4, 5, 7],
+      description: 'bstDelete removes leaf node',
+    },
+    {
+      input: [[5, 3, 7], 5],
+      expectedOutput: [3, 7],
+      description: 'bstDelete removes root node',
+    },
+    {
+      input: [[5, 3, 7, 1], 3],
+      expectedOutput: [1, 5, 7],
+      description: 'bstDelete removes node with one child',
     },
   ],
   hints: [

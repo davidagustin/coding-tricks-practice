@@ -63,6 +63,7 @@ export default function Navbar() {
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -97,7 +98,7 @@ export default function Navbar() {
             <div className="hidden sm:flex items-center gap-3 text-sm">
               {/* Streak */}
               <div className="flex items-center gap-1 text-orange-500" title="Current streak">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                   <path
                     fillRule="evenodd"
                     d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z"
@@ -112,7 +113,13 @@ export default function Navbar() {
                 className="flex items-center gap-1 text-green-600 dark:text-green-400"
                 title="Problems solved"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -129,6 +136,7 @@ export default function Navbar() {
             {/* Settings Menu */}
             <div className="relative" ref={settingsRef}>
               <button
+                type="button"
                 onClick={() => {
                   setSettingsOpen(!settingsOpen);
                   setShowResetConfirm(false);
@@ -136,7 +144,13 @@ export default function Navbar() {
                 className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 aria-label="Settings"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -161,6 +175,7 @@ export default function Navbar() {
 
                   <div className="py-1">
                     <button
+                      type="button"
                       onClick={handleResetClick}
                       className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     >
@@ -186,11 +201,17 @@ export default function Navbar() {
 
       {/* Reset Progress Confirmation Dialog */}
       {showResetConfirm && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center">
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="reset-dialog-title"
+        >
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={handleCancelReset}
+            aria-hidden="true"
           />
 
           {/* Dialog */}
@@ -202,6 +223,7 @@ export default function Navbar() {
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
@@ -212,7 +234,10 @@ export default function Navbar() {
                 </svg>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h3
+                  id="reset-dialog-title"
+                  className="text-lg font-semibold text-gray-900 dark:text-white"
+                >
                   Reset Progress
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -228,14 +253,18 @@ export default function Navbar() {
 
             <div className="flex gap-3 justify-end">
               <button
+                type="button"
                 onClick={handleCancelReset}
                 className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
+                aria-label="Cancel reset progress"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={handleConfirmReset}
                 className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
+                aria-label="Confirm reset progress"
               >
                 Reset Progress
               </button>

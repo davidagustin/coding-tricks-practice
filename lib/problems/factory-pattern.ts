@@ -168,12 +168,47 @@ class NotificationFactory {
         throw new Error(\`Unknown notification type: \${type}\`);
     }
   }
+}
+
+// Test function for factory pattern verification
+function testNotificationFactory(type, message) {
+  if (type === 'unknown') {
+    try {
+      NotificationFactory.create('invalid');
+      return false;
+    } catch (e) {
+      return true;
+    }
+  }
+
+  const notifier = NotificationFactory.create(type);
+  return notifier.send(message);
 }`,
   testCases: [
     {
-      input: [],
+      input: ['email', 'Hello!'],
+      expectedOutput: 'Sending email: Hello!',
+      description: 'testNotificationFactory creates email notifier that sends correctly',
+    },
+    {
+      input: ['sms', 'Your code is 1234'],
+      expectedOutput: 'Sending SMS: Your code is 1234',
+      description: 'testNotificationFactory creates SMS notifier that sends correctly',
+    },
+    {
+      input: ['push', 'You have a new message'],
+      expectedOutput: 'Sending push notification: You have a new message',
+      description: 'testNotificationFactory creates push notifier that sends correctly',
+    },
+    {
+      input: ['EMAIL', 'Test'],
+      expectedOutput: 'Sending email: Test',
+      description: 'testNotificationFactory handles case-insensitive type for EMAIL',
+    },
+    {
+      input: ['unknown', ''],
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'testNotificationFactory throws error for unknown type',
     },
   ],
   hints: [

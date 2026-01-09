@@ -121,9 +121,46 @@ function toArray(arrayLike) {
 }`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: [1, 5],
+      expectedOutput: [1, 2, 3, 4, 5],
+      description: 'range creates array from 1 to 5 inclusive',
+    },
+    {
+      input: [0, 3],
+      expectedOutput: [0, 1, 2, 3],
+      description: 'range creates array from 0 to 3 inclusive',
+    },
+    {
+      input: [-2, 2],
+      expectedOutput: [-2, -1, 0, 1, 2],
+      description: 'range handles negative start values',
+    },
+    {
+      input: [2, 3, 0],
+      expectedOutput: [
+        [0, 0, 0],
+        [0, 0, 0],
+      ],
+      description: 'createGrid creates 2x3 grid filled with 0',
+    },
+    {
+      input: [3, 2, 'x'],
+      expectedOutput: [
+        ['x', 'x'],
+        ['x', 'x'],
+        ['x', 'x'],
+      ],
+      description: 'createGrid creates 3x2 grid filled with x',
+    },
+    {
+      input: ['hello'],
+      expectedOutput: ['h', 'e', 'l', 'l', 'o'],
+      description: 'toArray converts string to character array',
+    },
+    {
+      input: ['abc'],
+      expectedOutput: ['a', 'b', 'c'],
+      description: 'toArray converts string abc to array',
     },
   ],
   hints: [

@@ -72,26 +72,34 @@ export const problem: Problem = {
   // TODO: Create async generator that yields pages
   // Start at page 0, increment until no more data
   // Yield each page as it's fetched
-  // Assume fetchPage(page) returns { data: [...], hasMore: boolean }
-  
+  // Use the fetchPage helper function below
+
   let page = 0;
   // Your code here
 }
 
-// Helper function (assume this exists)
-async function fetchPage(page) {
-  // Simulated API call
+// Helper function to simulate API call
+async function fetchPage(page, pageSize) {
+  // Simulated API call - returns page data and hasMore flag
   return {
     data: Array.from({ length: pageSize }, (_, i) => page * pageSize + i),
     hasMore: page < 2
   };
 }
 
+// Wrapper function to collect all pages (used for testing)
+async function collectAllPages(pageSize = 10) {
+  const pages = [];
+  for await (const page of fetchPages(pageSize)) {
+    pages.push(page);
+  }
+  return pages;
+}
+
 // Test
 (async () => {
-  for await (const page of fetchPages()) {
-    console.log(page);
-  }
+  const allPages = await collectAllPages();
+  console.log(allPages);
 })();`,
   solution: `async function* fetchPages(pageSize = 10) {
   // Create async generator that yields pages
@@ -99,28 +107,50 @@ async function fetchPage(page) {
   // Yield each page as it's fetched
   let page = 0;
   let hasMore = true;
-  
+
   while (hasMore) {
-    const result = await fetchPage(page);
+    const result = await fetchPage(page, pageSize);
     yield result.data;
     hasMore = result.hasMore;
     page++;
   }
 }
 
-// Helper function (assume this exists)
-async function fetchPage(page) {
-  // Simulated API call
+// Helper function to simulate API call
+async function fetchPage(page, pageSize) {
+  // Simulated API call - returns page data and hasMore flag
   return {
     data: Array.from({ length: pageSize }, (_, i) => page * pageSize + i),
     hasMore: page < 2
   };
+}
+
+// Wrapper function to collect all pages (used for testing)
+async function collectAllPages(pageSize = 10) {
+  const pages = [];
+  for await (const page of fetchPages(pageSize)) {
+    pages.push(page);
+  }
+  return pages;
 }`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: [10],
+      expectedOutput: [
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+        [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+      ],
+      description: 'collectAllPages returns all pages with pageSize 10',
+    },
+    {
+      input: [5],
+      expectedOutput: [
+        [0, 1, 2, 3, 4],
+        [5, 6, 7, 8, 9],
+        [10, 11, 12, 13, 14],
+      ],
+      description: 'collectAllPages returns all pages with pageSize 5',
     },
   ],
   hints: [

@@ -270,9 +270,64 @@ function shortestPath(graph: Graph, start: string, end: string): number {
 }`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: [{ A: ['B', 'C'], B: ['D', 'E'], C: ['F'], D: [], E: [], F: [] }, 'A'],
+      expectedOutput: ['A', 'B', 'C', 'D', 'E', 'F'],
+      description: 'bfsGraph traverses graph level by level from A',
+    },
+    {
+      input: [{ A: ['B'], B: ['C'], C: ['D'], D: [] }, 'A'],
+      expectedOutput: ['A', 'B', 'C', 'D'],
+      description: 'bfsGraph traverses linear graph',
+    },
+    {
+      input: [{ X: [] }, 'X'],
+      expectedOutput: ['X'],
+      description: 'bfsGraph handles single node graph',
+    },
+    {
+      input: [
+        {
+          val: 1,
+          left: {
+            val: 2,
+            left: { val: 4, left: null, right: null },
+            right: { val: 5, left: null, right: null },
+          },
+          right: { val: 3, left: null, right: null },
+        },
+      ],
+      expectedOutput: [[1], [2, 3], [4, 5]],
+      description: 'bfsTreeLevelOrder returns nodes grouped by level',
+    },
+    {
+      input: [{ val: 1, left: null, right: null }],
+      expectedOutput: [[1]],
+      description: 'bfsTreeLevelOrder handles single node tree',
+    },
+    {
+      input: [null],
+      expectedOutput: [],
+      description: 'bfsTreeLevelOrder returns empty array for null root',
+    },
+    {
+      input: [{ A: ['B', 'C'], B: ['D'], C: ['D'], D: [] }, 'A', 'D'],
+      expectedOutput: 2,
+      description: 'shortestPath finds path of length 2 from A to D',
+    },
+    {
+      input: [{ A: ['B', 'C'], B: ['D', 'E'], C: ['F'], D: [], E: [], F: [] }, 'A', 'F'],
+      expectedOutput: 2,
+      description: 'shortestPath finds path from A to F',
+    },
+    {
+      input: [{ A: ['B'], B: [], C: [] }, 'A', 'C'],
+      expectedOutput: -1,
+      description: 'shortestPath returns -1 when no path exists',
+    },
+    {
+      input: [{ A: ['B'], B: [] }, 'A', 'A'],
+      expectedOutput: 0,
+      description: 'shortestPath returns 0 when start equals end',
     },
   ],
   hints: [

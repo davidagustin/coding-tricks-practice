@@ -18,7 +18,11 @@ const TestResults = memo(function TestResults({
 }: TestResultsProps) {
   if (isRunning) {
     return (
-      <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+      <div
+        aria-live="polite"
+        aria-busy="true"
+        className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg"
+      >
         <div className="flex items-center gap-2">
           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
           <span className="text-sm text-gray-600 dark:text-gray-400">Running tests...</span>
@@ -29,7 +33,10 @@ const TestResults = memo(function TestResults({
 
   if (error && results.length === 0) {
     return (
-      <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+      <div
+        aria-live="polite"
+        className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
+      >
         <h3 className="font-semibold text-red-800 dark:text-red-200 mb-2">Error</h3>
         <pre className="text-sm text-red-700 dark:text-red-300 whitespace-pre-wrap font-mono">
           {error}
@@ -40,14 +47,17 @@ const TestResults = memo(function TestResults({
 
   if (results.length === 0) {
     return (
-      <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg text-center text-gray-500">
+      <div
+        aria-live="polite"
+        className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg text-center text-gray-500"
+      >
         No test results yet. Click &quot;Run Tests&quot; to execute your code.
       </div>
     );
   }
 
   return (
-    <div className="space-y-3">
+    <div aria-live="polite" className="space-y-3">
       <div
         className={`p-3 rounded-lg border-2 ${
           allPassed
@@ -63,6 +73,7 @@ const TestResults = memo(function TestResults({
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -82,6 +93,7 @@ const TestResults = memo(function TestResults({
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -101,7 +113,7 @@ const TestResults = memo(function TestResults({
       <div className="space-y-2">
         {results.map((result, index) => (
           <div
-            key={index}
+            key={`test-${index}-${JSON.stringify(result.input).slice(0, 50)}-${result.description || ''}`}
             className={`p-4 rounded-lg border ${
               result.passed
                 ? 'bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-800'
@@ -115,6 +127,7 @@ const TestResults = memo(function TestResults({
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
@@ -129,6 +142,7 @@ const TestResults = memo(function TestResults({
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"

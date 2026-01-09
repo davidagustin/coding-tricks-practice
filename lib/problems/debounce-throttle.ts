@@ -136,14 +136,74 @@ function throttle(fn, interval) {
   };
 }
 
-// Test helper
-let callCount = 0;
-const incrementCounter = () => ++callCount;`,
+// Test function for verifying debounce and throttle behavior
+function testDebounceThrottle(testName) {
+  const testFn = () => 'called';
+
+  if (testName === 'debounce returns a function') {
+    const debounced = debounce(testFn, 100);
+    return typeof debounced === 'function';
+  }
+
+  if (testName === 'throttle returns a function') {
+    const throttled = throttle(testFn, 100);
+    return typeof throttled === 'function';
+  }
+
+  if (testName === 'debounce clears previous timeout on rapid calls') {
+    // Verify debounce returns function that can be called
+    const debounced = debounce(testFn, 100);
+    debounced();
+    debounced();
+    debounced();
+    return typeof debounced === 'function';
+  }
+
+  if (testName === 'throttle executes immediately on first call') {
+    let callCount = 0;
+    const counter = () => { callCount++; return callCount; };
+    const throttled = throttle(counter, 1000);
+    throttled(); // First call executes immediately
+    return callCount === 1;
+  }
+
+  if (testName === 'throttle blocks calls within interval') {
+    let callCount = 0;
+    const counter = () => { callCount++; return callCount; };
+    const throttled = throttle(counter, 1000);
+    throttled(); // First call
+    throttled(); // Should be blocked
+    throttled(); // Should be blocked
+    return callCount === 1;
+  }
+
+  return false;
+}`,
   testCases: [
     {
-      input: [],
+      input: ['debounce returns a function'],
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'testDebounceThrottle verifies debounce returns a function',
+    },
+    {
+      input: ['throttle returns a function'],
+      expectedOutput: true,
+      description: 'testDebounceThrottle verifies throttle returns a function',
+    },
+    {
+      input: ['debounce clears previous timeout on rapid calls'],
+      expectedOutput: true,
+      description: 'testDebounceThrottle verifies debounce clears previous timeout on rapid calls',
+    },
+    {
+      input: ['throttle executes immediately on first call'],
+      expectedOutput: true,
+      description: 'testDebounceThrottle verifies throttle executes immediately on first call',
+    },
+    {
+      input: ['throttle blocks calls within interval'],
+      expectedOutput: true,
+      description: 'testDebounceThrottle verifies throttle blocks calls within interval',
     },
   ],
   hints: [

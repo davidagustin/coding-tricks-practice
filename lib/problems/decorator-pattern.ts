@@ -205,12 +205,87 @@ function withValidation(fn, validator) {
 
 // Test functions
 const add = (a, b) => a + b;
-const validatePositive = (a, b) => a > 0 && b > 0;`,
+const validatePositive = (a, b) => a > 0 && b > 0;
+
+// Test function for decorator pattern verification
+function testDecoratorPattern(testName, a, b) {
+  if (testName === 'withLogging preserves result') {
+    const loggedAdd = withLogging(add);
+    return loggedAdd(a, b);
+  }
+
+  if (testName === 'withTiming preserves result') {
+    const timedAdd = withTiming(add);
+    return timedAdd(a, b);
+  }
+
+  if (testName === 'withRetry success') {
+    const successFn = () => 'success';
+    const retried = withRetry(successFn, 3);
+    return retried() === 'success';
+  }
+
+  if (testName === 'withRetry retries') {
+    let attempts = 0;
+    const failTwice = () => {
+      attempts++;
+      if (attempts < 3) throw new Error('fail');
+      return 'success';
+    };
+    const retried = withRetry(failTwice, 3);
+    return retried() === 'success';
+  }
+
+  if (testName === 'withValidation valid') {
+    const validatedAdd = withValidation(add, validatePositive);
+    return validatedAdd(a, b);
+  }
+
+  if (testName === 'withValidation invalid') {
+    const validatedAdd = withValidation(add, validatePositive);
+    try {
+      validatedAdd(-1, 3);
+      return false;
+    } catch (e) {
+      return true;
+    }
+  }
+
+  return false;
+}`,
   testCases: [
     {
-      input: [],
+      input: ['withLogging preserves result', 5, 3],
+      expectedOutput: 8,
+      description:
+        'testDecoratorPattern verifies withLogging preserves function result for add(5, 3)',
+    },
+    {
+      input: ['withTiming preserves result', 10, 20],
+      expectedOutput: 30,
+      description:
+        'testDecoratorPattern verifies withTiming preserves function result for add(10, 20)',
+    },
+    {
+      input: ['withRetry success'],
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'testDecoratorPattern verifies withRetry returns result on successful call',
+    },
+    {
+      input: ['withRetry retries'],
+      expectedOutput: true,
+      description:
+        'testDecoratorPattern verifies withRetry retries failed calls and eventually succeeds',
+    },
+    {
+      input: ['withValidation valid', 5, 3],
+      expectedOutput: 8,
+      description: 'testDecoratorPattern verifies withValidation allows valid inputs for add(5, 3)',
+    },
+    {
+      input: ['withValidation invalid'],
+      expectedOutput: true,
+      description: 'testDecoratorPattern verifies withValidation throws for invalid inputs',
     },
   ],
   hints: [

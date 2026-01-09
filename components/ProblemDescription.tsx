@@ -52,6 +52,7 @@ const ProblemDescription = memo(function ProblemDescription({ problem }: Problem
       <div className="flex-shrink-0 flex gap-1 pt-4 pb-2 border-b border-gray-200 dark:border-gray-700">
         {tabs.map((tab) => (
           <button
+            type="button"
             key={tab.id}
             onClick={() => handleTabChange(tab.id)}
             className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors relative ${
@@ -87,7 +88,7 @@ const ProblemDescription = memo(function ProblemDescription({ problem }: Problem
             {problem.examples.length > 0 ? (
               problem.examples.map((example, index) => (
                 <div
-                  key={index}
+                  key={`example-${index}-${example.input.slice(0, 50)}`}
                   className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4 border border-gray-200 dark:border-gray-700"
                 >
                   <div className="mb-3">
@@ -133,7 +134,7 @@ const ProblemDescription = memo(function ProblemDescription({ problem }: Problem
               <ul className="space-y-3">
                 {problem.hints.map((hint, index) => (
                   <li
-                    key={index}
+                    key={`hint-${index}-${hint.slice(0, 50)}`}
                     className="flex gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800"
                   >
                     <span className="text-blue-500 dark:text-blue-400 flex-shrink-0">💡</span>

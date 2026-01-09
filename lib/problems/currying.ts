@@ -125,12 +125,87 @@ function curry2(fn) {
       return fn(a, b);
     };
   };
+}
+
+// Test helper function for running currying tests
+function testCurrying(testName) {
+  if (testName === 'multiply 2 3 4') {
+    return multiply(2)(3)(4) === 24;
+  }
+  if (testName === 'multiply 1 2 3') {
+    return multiply(1)(2)(3) === 6;
+  }
+  if (testName === 'multiply 5 5 5') {
+    return multiply(5)(5)(5) === 125;
+  }
+  if (testName === 'greet Hello World') {
+    return greet('Hello')('World') === 'Hello, World!';
+  }
+  if (testName === 'greet Hi Alice') {
+    return greet('Hi')('Alice') === 'Hi, Alice!';
+  }
+  if (testName === 'greet Welcome Developer') {
+    return greet('Welcome')('Developer') === 'Welcome, Developer!';
+  }
+  if (testName === 'curry2 add') {
+    const curriedAdd = curry2((a, b) => a + b);
+    return curriedAdd(2)(3) === 5;
+  }
+  if (testName === 'curry2 multiply') {
+    const curriedMult = curry2((a, b) => a * b);
+    return curriedMult(4)(5) === 20;
+  }
+  if (testName === 'curry2 subtract') {
+    const curriedSub = curry2((a, b) => a - b);
+    return curriedSub(10)(3) === 7;
+  }
+  return false;
 }`,
   testCases: [
     {
-      input: [],
+      input: ['multiply 2 3 4'],
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'testCurrying multiply(2)(3)(4) returns 24',
+    },
+    {
+      input: ['multiply 1 2 3'],
+      expectedOutput: true,
+      description: 'testCurrying multiply(1)(2)(3) returns 6',
+    },
+    {
+      input: ['multiply 5 5 5'],
+      expectedOutput: true,
+      description: 'testCurrying multiply(5)(5)(5) returns 125',
+    },
+    {
+      input: ['greet Hello World'],
+      expectedOutput: true,
+      description: 'testCurrying greet Hello World returns correct greeting',
+    },
+    {
+      input: ['greet Hi Alice'],
+      expectedOutput: true,
+      description: 'testCurrying greet Hi Alice returns correct greeting',
+    },
+    {
+      input: ['greet Welcome Developer'],
+      expectedOutput: true,
+      description: 'testCurrying greet Welcome Developer returns correct greeting',
+    },
+    {
+      input: ['curry2 add'],
+      expectedOutput: true,
+      description: 'testCurrying curry2 with add function works correctly',
+    },
+    {
+      input: ['curry2 multiply'],
+      expectedOutput: true,
+      description: 'testCurrying curry2 with multiply function works correctly',
+    },
+    {
+      input: ['curry2 subtract'],
+      expectedOutput: true,
+      description: 'testCurrying curry2 with subtract function works correctly',
     },
   ],
   hints: [

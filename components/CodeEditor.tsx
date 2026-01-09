@@ -22,6 +22,10 @@ export default function CodeEditor({
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const isSettingValueRef = useRef(false); // Track when we're programmatically setting value
   const modelUriRef = useRef<string | null>(null); // Store unique URI for this editor instance
+  const pasteTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Track paste format timeout
+  const setValueTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Track setValue reset timeout
+  const retrySetValueTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Track retry setValue timeout
+  const retryInnerTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Track inner retry timeout
 
   const handleEditorDidMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
@@ -120,8 +124,13 @@ export default function CodeEditor({
 
     // Format on paste
     editor.onDidPaste(async () => {
-      setTimeout(async () => {
+      // Clear any existing paste timeout to avoid stacking
+      if (pasteTimeoutRef.current) {
+        clearTimeout(pasteTimeoutRef.current);
+      }
+      pasteTimeoutRef.current = setTimeout(async () => {
         await editor.getAction('editor.action.formatDocument')?.run();
+        pasteTimeoutRef.current = null;
       }, 100);
     });
   };
@@ -135,6 +144,20 @@ export default function CodeEditor({
 
   // Update code when it changes externally (e.g., when starter code loads or showing solution)
   useEffect(() => {
+    // Clear any pending timeouts from previous effect runs
+    if (setValueTimeoutRef.current) {
+      clearTimeout(setValueTimeoutRef.current);
+      setValueTimeoutRef.current = null;
+    }
+    if (retrySetValueTimeoutRef.current) {
+      clearTimeout(retrySetValueTimeoutRef.current);
+      retrySetValueTimeoutRef.current = null;
+    }
+    if (retryInnerTimeoutRef.current) {
+      clearTimeout(retryInnerTimeoutRef.current);
+      retryInnerTimeoutRef.current = null;
+    }
+
     if (editorRef.current) {
       const model = editorRef.current.getModel();
       if (model) {
@@ -144,8 +167,9 @@ export default function CodeEditor({
           isSettingValueRef.current = true; // Mark that we're setting value programmatically
           model.setValue(code || '');
           // Reset flag after a brief delay to allow Monaco to process the change
-          setTimeout(() => {
+          setValueTimeoutRef.current = setTimeout(() => {
             isSettingValueRef.current = false;
+            setValueTimeoutRef.current = null;
             // Auto-format after setting value (only if not read-only)
             if (!readOnly && code && code.trim()) {
               editorRef.current?.getAction('editor.action.formatDocument')?.run();
@@ -155,24 +179,47 @@ export default function CodeEditor({
       } else if (code) {
         // If model doesn't exist yet but we have code, wait a bit and try again
         // This handles the case where code is set before editor mounts
-        const timeoutId = setTimeout(() => {
+        retrySetValueTimeoutRef.current = setTimeout(() => {
+          retrySetValueTimeoutRef.current = null;
           const model = editorRef.current?.getModel();
           if (model && model.getValue() !== code) {
             isSettingValueRef.current = true;
             model.setValue(code);
-            setTimeout(() => {
+            retryInnerTimeoutRef.current = setTimeout(() => {
               isSettingValueRef.current = false;
+              retryInnerTimeoutRef.current = null;
             }, 50);
           }
         }, 100);
-        return () => clearTimeout(timeoutId);
       }
     }
+
+    // Cleanup all timeouts on unmount or dependency change
+    return () => {
+      if (setValueTimeoutRef.current) {
+        clearTimeout(setValueTimeoutRef.current);
+        setValueTimeoutRef.current = null;
+      }
+      if (retrySetValueTimeoutRef.current) {
+        clearTimeout(retrySetValueTimeoutRef.current);
+        retrySetValueTimeoutRef.current = null;
+      }
+      if (retryInnerTimeoutRef.current) {
+        clearTimeout(retryInnerTimeoutRef.current);
+        retryInnerTimeoutRef.current = null;
+      }
+    };
   }, [code, readOnly]);
 
-  // Cleanup: dispose of the model when component unmounts
+  // Cleanup: dispose of the model and clear timeouts when component unmounts
   useEffect(() => {
     return () => {
+      // Clear paste timeout
+      if (pasteTimeoutRef.current) {
+        clearTimeout(pasteTimeoutRef.current);
+        pasteTimeoutRef.current = null;
+      }
+      // Dispose of the model
       if (editorRef.current && modelUriRef.current) {
         const model = editorRef.current.getModel();
         if (model) {

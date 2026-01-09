@@ -77,13 +77,14 @@ export default function FilterSidebar({
     selectedDifficulty !== 'all' || selectedCategory !== 'all' || selectedStatus !== 'all';
 
   return (
-    <aside className="w-full lg:w-64 flex-shrink-0">
+    <aside className="w-full lg:w-64 flex-shrink-0" aria-label="Problem filters">
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         {/* Header */}
         <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
           <h2 className="font-semibold text-gray-900 dark:text-gray-100">Filters</h2>
           {hasFilters && (
             <button
+              type="button"
               onClick={onClearFilters}
               className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
             >
@@ -111,8 +112,11 @@ export default function FilterSidebar({
         {/* Status Filter */}
         <div className="border-b border-gray-200 dark:border-gray-700">
           <button
+            type="button"
             onClick={() => toggleSection('status')}
             className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+            aria-expanded={expandedSections.status}
+            aria-controls="filter-status-section"
           >
             <span className="font-medium text-gray-900 dark:text-gray-100">Status</span>
             <svg
@@ -120,6 +124,7 @@ export default function FilterSidebar({
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -130,7 +135,7 @@ export default function FilterSidebar({
             </svg>
           </button>
           {expandedSections.status && (
-            <div className="px-4 pb-3 space-y-1">
+            <div id="filter-status-section" className="px-4 pb-3 space-y-1">
               {statuses.map((status) => (
                 <label
                   key={status.value}
@@ -154,8 +159,11 @@ export default function FilterSidebar({
         {/* Difficulty Filter */}
         <div className="border-b border-gray-200 dark:border-gray-700">
           <button
+            type="button"
             onClick={() => toggleSection('difficulty')}
             className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+            aria-expanded={expandedSections.difficulty}
+            aria-controls="filter-difficulty-section"
           >
             <span className="font-medium text-gray-900 dark:text-gray-100">Difficulty</span>
             <svg
@@ -163,6 +171,7 @@ export default function FilterSidebar({
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -173,7 +182,7 @@ export default function FilterSidebar({
             </svg>
           </button>
           {expandedSections.difficulty && (
-            <div className="px-4 pb-3 space-y-1">
+            <div id="filter-difficulty-section" className="px-4 pb-3 space-y-1">
               <label className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700/50 cursor-pointer transition-colors">
                 <input
                   type="radio"
@@ -210,8 +219,11 @@ export default function FilterSidebar({
         {/* Category Filter */}
         <div>
           <button
+            type="button"
             onClick={() => toggleSection('category')}
             className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+            aria-expanded={expandedSections.category}
+            aria-controls="filter-category-section"
           >
             <span className="font-medium text-gray-900 dark:text-gray-100">Category</span>
             <svg
@@ -219,6 +231,7 @@ export default function FilterSidebar({
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -229,7 +242,10 @@ export default function FilterSidebar({
             </svg>
           </button>
           {expandedSections.category && (
-            <div className="px-4 pb-3 max-h-64 overflow-y-auto space-y-1">
+            <div
+              id="filter-category-section"
+              className="px-4 pb-3 max-h-64 overflow-y-auto space-y-1"
+            >
               <label className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700/50 cursor-pointer transition-colors">
                 <input
                   type="radio"

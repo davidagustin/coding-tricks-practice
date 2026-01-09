@@ -117,9 +117,49 @@ const numbers: number[] = [1, 2, 3, 4, 5];
 const names: string[] = ['Alice', 'Bob'];`,
   testCases: [
     {
-      input: [],
+      input: ['John'],
+      expectedOutput: 'Hello, John!',
+      description: 'greet returns greeting string',
+    },
+    {
+      input: [''],
+      expectedOutput: 'Hello, !',
+      description: 'greet handles empty string',
+    },
+    {
+      input: ['Alice'],
+      expectedOutput: 'Hello, Alice!',
+      description: 'greet works with different names',
+    },
+    {
+      input: [10, 5],
+      expectedOutput: 50,
+      description: 'calculateArea returns correct area',
+    },
+    {
+      input: [0, 100],
+      expectedOutput: 0,
+      description: 'calculateArea handles zero width',
+    },
+    {
+      input: [7, 3],
+      expectedOutput: 21,
+      description: 'calculateArea multiplies width and height',
+    },
+    {
+      input: [4],
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'isEven returns true for even numbers',
+    },
+    {
+      input: [7],
+      expectedOutput: false,
+      description: 'isEven returns false for odd numbers',
+    },
+    {
+      input: [0],
+      expectedOutput: true,
+      description: 'isEven returns true for zero',
     },
   ],
   hints: [

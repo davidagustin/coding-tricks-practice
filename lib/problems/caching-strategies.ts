@@ -255,7 +255,7 @@ class SWRCache {
     if (age < this.staleTime) {
       this.fetcher(key).then(value => {
         this.cache.set(key, { value, timestamp: Date.now() });
-      });
+      }).catch(console.error);
       return entry.value;
     }
     
@@ -272,19 +272,19 @@ function memoizeWithCache(fn, options = {}) {
   const cache = options.ttl ? new TTLCache(options.ttl) : new Map();
   const keyGenerator = options.keyGenerator || ((...args) => JSON.stringify(args));
   const maxSize = options.maxSize;
-  
+
   return function(...args) {
     const key = keyGenerator(...args);
-    
+
     if (cache instanceof TTLCache) {
       const cached = cache.get(key);
       if (cached !== null) return cached;
     } else {
       if (cache.has(key)) return cache.get(key);
     }
-    
+
     const result = fn(...args);
-    
+
     if (cache instanceof TTLCache) {
       cache.set(key, result);
     } else {
@@ -294,15 +294,105 @@ function memoizeWithCache(fn, options = {}) {
       }
       cache.set(key, result);
     }
-    
+
     return result;
   };
+}
+
+// Test wrapper functions for automated testing
+function testTTLCache(key, value, ttl) {
+  const cache = new TTLCache(ttl);
+  cache.set(key, value);
+  return cache.get(key);
+}
+
+function testTTLCacheExpiration(key, value) {
+  // Use TTL of 1ms and wait to ensure expiration
+  const cache = new TTLCache(1);
+  cache.set(key, value);
+  // Simulate time passing by checking after expiration
+  const start = Date.now();
+  while (Date.now() - start < 5) {} // Busy wait 5ms
+  return cache.get(key);
+}
+
+function testTTLCacheHas(key, value, ttl) {
+  const cache = new TTLCache(ttl);
+  cache.set(key, value);
+  return cache.has(key);
+}
+
+function testLRUCache(key, value, maxSize) {
+  const lru = new LRUCache(maxSize);
+  lru.set(key, value);
+  return lru.get(key);
+}
+
+function testLRUCacheEviction(maxSize, keys) {
+  const lru = new LRUCache(maxSize);
+  keys.forEach((k, i) => lru.set(k, i + 1));
+  // After adding more items than maxSize, the first key should be evicted
+  return lru.get(keys[0]);
+}
+
+function testLRUCacheAccessOrder(maxSize) {
+  const lru = new LRUCache(maxSize);
+  lru.set('a', 1);
+  lru.set('b', 2);
+  lru.set('c', 3);
+  lru.get('a'); // Access 'a' to make it recently used
+  lru.set('d', 4); // Should evict 'b' (least recently used)
+  return lru.get('a'); // 'a' should still exist
+}
+
+function testMemoizeWithCache(x) {
+  let callCount = 0;
+  const fn = (n) => { callCount++; return n * 2; };
+  const memoized = memoizeWithCache(fn, { maxSize: 10 });
+  memoized(x);
+  memoized(x); // Second call should use cache
+  return callCount; // Should be 1 because second call was cached
 }`,
   testCases: [
     {
-      input: [],
+      input: ['myKey', 'myValue', 10000],
+      expectedOutput: 'myValue',
+      description: 'testTTLCache stores and retrieves value before expiration',
+    },
+    {
+      input: ['expiredKey', 'expiredValue'],
+      expectedOutput: null,
+      description: 'testTTLCacheExpiration returns null for expired entry after TTL passes',
+    },
+    {
+      input: ['validKey', 'validValue', 10000],
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'testTTLCacheHas returns true for valid non-expired key',
+    },
+    {
+      input: ['a', 1, 5],
+      expectedOutput: 1,
+      description: 'testLRUCache stores and retrieves value correctly',
+    },
+    {
+      input: [3, ['a', 'b', 'c', 'd']],
+      expectedOutput: null,
+      description: 'testLRUCacheEviction evicts first key when capacity exceeded',
+    },
+    {
+      input: [3],
+      expectedOutput: 1,
+      description: 'testLRUCacheAccessOrder keeps accessed keys and evicts least recently used',
+    },
+    {
+      input: [5],
+      expectedOutput: 1,
+      description: 'testMemoizeWithCache only calls function once for repeated inputs',
+    },
+    {
+      input: [42],
+      expectedOutput: 1,
+      description: 'testMemoizeWithCache caches results and returns cached value on second call',
     },
   ],
   hints: [

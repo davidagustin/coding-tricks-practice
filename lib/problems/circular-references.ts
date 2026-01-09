@@ -253,16 +253,7 @@ function getCircularPath(obj) {
 
   return detect(obj, '');
 }`,
-  // NOTE: Circular references cannot be represented in static JSON test inputs.
-  // True circular reference testing requires runtime object creation (e.g., obj.self = obj).
-  // These test cases use non-circular objects with correct expected outputs.
   testCases: [
-    {
-      input: [{ name: 'test', hasSelf: true }],
-      expectedOutput: false,
-      description:
-        'hasCircularReference returns false for object with boolean property (not a real circular reference)',
-    },
     {
       input: [{ a: 1, b: { c: 2, d: { e: 3 } } }],
       expectedOutput: false,
@@ -274,15 +265,29 @@ function getCircularPath(obj) {
       description: 'hasCircularReference returns false for object with nested arrays',
     },
     {
-      input: [{ name: 'circular', value: 42 }, '[Circular]'],
-      expectedOutput: '{"name":"circular","value":42}',
-      description:
-        'safeStringify returns normal JSON for non-circular object (circular refs require runtime creation)',
+      input: [{ simple: 'object' }],
+      expectedOutput: false,
+      description: 'hasCircularReference returns false for simple flat object',
     },
     {
-      input: [{ a: 1, b: 2 }, '[Circular]'],
-      expectedOutput: '{"a":1,"b":2}',
-      description: 'safeStringify works normally for non-circular objects',
+      input: [null],
+      expectedOutput: false,
+      description: 'hasCircularReference returns false for null input',
+    },
+    {
+      input: [{ name: 'test', value: 42 }, '[Circular]'],
+      expectedOutput: '{"name":"test","value":42}',
+      description: 'safeStringify returns normal JSON for non-circular object',
+    },
+    {
+      input: [{ a: 1, b: { c: 2 } }, '[Circular]'],
+      expectedOutput: '{"a":1,"b":{"c":2}}',
+      description: 'safeStringify handles nested objects correctly',
+    },
+    {
+      input: [{ arr: [1, 2, 3] }, '[Circular]'],
+      expectedOutput: '{"arr":[1,2,3]}',
+      description: 'safeStringify handles arrays within objects',
     },
     {
       input: [{ level1: { level2: { level3: { level4: 'deep' } } } }, 2],
@@ -295,15 +300,19 @@ function getCircularPath(obj) {
       description: 'stringifyWithDepthLimit works for shallow objects within limit',
     },
     {
-      input: [{ outer: { inner: { deepRef: null } } }],
-      expectedOutput: null,
-      description:
-        'getCircularPath returns null for object with null property (not a circular reference)',
+      input: [{ outer: { inner: 'value' } }, 1],
+      expectedOutput: '{"outer":"[Max Depth]"}',
+      description: 'stringifyWithDepthLimit replaces nested object at depth 1',
     },
     {
       input: [{ simple: 'object', no: 'circular' }],
       expectedOutput: null,
-      description: 'getCircularPath returns null when no circular reference',
+      description: 'getCircularPath returns null when no circular reference exists',
+    },
+    {
+      input: [{ a: { b: { c: 'deep' } } }],
+      expectedOutput: null,
+      description: 'getCircularPath returns null for deeply nested non-circular object',
     },
   ],
   hints: [

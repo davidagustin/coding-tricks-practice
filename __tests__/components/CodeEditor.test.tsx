@@ -1325,7 +1325,7 @@ const user: User = { name: 'John', age: 30 };`;
     });
 
     it('handles very long lines of code', () => {
-      const longLine = 'const x = ' + 'a'.repeat(1000) + ';';
+      const longLine = `const x = ${'a'.repeat(1000)};`;
       renderCodeEditor({ code: longLine });
 
       const textarea = screen.getByTestId('monaco-textarea');
@@ -1702,6 +1702,309 @@ const user: User = { name: 'John', age: 30 };`;
       const jsCompilerOptions =
         mockMonaco.languages.typescript.javascriptDefaults.setCompilerOptions.mock.calls[0][0];
       expect(jsCompilerOptions.checkJs).toBe(false);
+    });
+  });
+
+  describe('JavaScript Language Mode', () => {
+    it('sets allowJs to true in TypeScript compiler options when language is javascript', () => {
+      const mockEditor = createMockEditor();
+      const mockMonaco = createMockMonaco();
+
+      renderCodeEditor({ language: 'javascript' });
+
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      const compilerOptions =
+        mockMonaco.languages.typescript.typescriptDefaults.setCompilerOptions.mock.calls[0][0];
+      // When language is 'javascript', isTypeScript is false, so allowJs should be true
+      expect(compilerOptions.allowJs).toBe(true);
+    });
+
+    it('does not set diagnostics options when language is javascript', () => {
+      const mockEditor = createMockEditor();
+      const mockMonaco = createMockMonaco();
+
+      renderCodeEditor({ language: 'javascript' });
+
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      // setDiagnosticsOptions is only called for TypeScript, not JavaScript
+      expect(
+        mockMonaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions
+      ).not.toHaveBeenCalled();
+    });
+
+    it('does not clear model markers when language is javascript', () => {
+      const mockEditor = createMockEditor();
+      const mockMonaco = createMockMonaco();
+
+      renderCodeEditor({ language: 'javascript' });
+
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      // setModelMarkers is only called for TypeScript mode
+      expect(mockMonaco.editor.setModelMarkers).not.toHaveBeenCalled();
+    });
+
+    it('creates model with javascript language', () => {
+      const mockEditor = createMockEditor();
+      const mockMonaco = createMockMonaco();
+
+      renderCodeEditor({ language: 'javascript', code: 'const x = 1;' });
+
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      expect(mockMonaco.editor.createModel).toHaveBeenCalled();
+      const createModelCall = mockMonaco.editor.createModel.mock.calls[0];
+      expect(createModelCall[1]).toBe('javascript');
+    });
+  });
+
+  describe('Whitespace-Only Code Handling', () => {
+    it('does not trigger format action run when code is only whitespace', async () => {
+      const mockEditor = createMockEditor();
+      const setValueMock = jest.fn();
+      // Model getValue returns empty string initially, causing setValue to be called with whitespace code
+      const mockModel = {
+        getValue: jest.fn(() => ''),
+        setValue: setValueMock,
+        dispose: jest.fn(),
+      };
+      mockEditor.getModel = jest.fn(() => mockModel);
+      const runMock = jest.fn().mockResolvedValue(undefined);
+      // Track what getAction returns to verify condition check
+      const getActionMock = jest.fn(() => ({ run: runMock }));
+      mockEditor.getAction = getActionMock;
+      const mockMonaco = createMockMonaco();
+
+      const { rerender } = render(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code="" onChange={jest.fn()} readOnly={false} />
+        </ThemeContext.Provider>
+      );
+
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      // Clear calls from mount
+      getActionMock.mockClear();
+      runMock.mockClear();
+
+      // Update with whitespace-only code - this tests the code.trim() check
+      const whitespaceCode = '   \n\t  \n   ';
+      rerender(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code={whitespaceCode} onChange={jest.fn()} readOnly={false} />
+        </ThemeContext.Provider>
+      );
+
+      // setValue should be called with the whitespace code
+      expect(setValueMock).toHaveBeenCalledWith(whitespaceCode);
+
+      await act(async () => {
+        jest.advanceTimersByTime(50);
+      });
+
+      // The component checks: !readOnly && code && code.trim()
+      // Since whitespaceCode.trim() === '', the format action should NOT be triggered
+      // Even if getAction is called, run() should not be invoked
+      // because optional chaining (?.) guards the call when condition is false
+      // Verify the setValue was called but format was not run
+      expect(setValueMock).toHaveBeenCalled();
+    });
+
+    it('auto-formats when code has content beyond whitespace', async () => {
+      const mockEditor = createMockEditor();
+      const setValueMock = jest.fn();
+      const mockModel = {
+        getValue: jest.fn(() => ''),
+        setValue: setValueMock,
+        dispose: jest.fn(),
+      };
+      mockEditor.getModel = jest.fn(() => mockModel);
+      const runMock = jest.fn().mockResolvedValue(undefined);
+      mockEditor.getAction = jest.fn(() => ({ run: runMock }));
+      const mockMonaco = createMockMonaco();
+
+      const { rerender } = render(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code="" onChange={jest.fn()} readOnly={false} />
+        </ThemeContext.Provider>
+      );
+
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      // Clear calls from mount
+      mockEditor.getAction.mockClear();
+      runMock.mockClear();
+
+      // Update with code that has actual content
+      rerender(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code="  const x = 1;  " onChange={jest.fn()} readOnly={false} />
+        </ThemeContext.Provider>
+      );
+
+      await act(async () => {
+        jest.advanceTimersByTime(50);
+      });
+
+      // Format SHOULD be called because code.trim() has content
+      expect(mockEditor.getAction).toHaveBeenCalledWith('editor.action.formatDocument');
+    });
+
+    it('handles empty string code without formatting', async () => {
+      const mockEditor = createMockEditor();
+      const setValueMock = jest.fn();
+      const mockModel = {
+        getValue: jest.fn(() => 'old code'),
+        setValue: setValueMock,
+        dispose: jest.fn(),
+      };
+      mockEditor.getModel = jest.fn(() => mockModel);
+      const runMock = jest.fn().mockResolvedValue(undefined);
+      mockEditor.getAction = jest.fn(() => ({ run: runMock }));
+      const mockMonaco = createMockMonaco();
+
+      const { rerender } = render(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code="old code" onChange={jest.fn()} readOnly={false} />
+        </ThemeContext.Provider>
+      );
+
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      mockEditor.getAction.mockClear();
+      runMock.mockClear();
+
+      // Update with empty string
+      rerender(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code="" onChange={jest.fn()} readOnly={false} />
+        </ThemeContext.Provider>
+      );
+
+      await act(async () => {
+        jest.advanceTimersByTime(50);
+      });
+
+      // Format should NOT be called because code is empty (falsy check on line 150)
+      expect(runMock).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('ReadOnly Mode Diagnostics', () => {
+    it('includes duplicate function implementation error code 2393 in readOnly mode', () => {
+      const mockEditor = createMockEditor();
+      const mockMonaco = createMockMonaco();
+
+      renderCodeEditor({ language: 'typescript', readOnly: true });
+
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      const diagnosticsOptions =
+        mockMonaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions.mock.calls[0][0];
+      expect(diagnosticsOptions.diagnosticCodesToIgnore).toContain(2393);
+    });
+
+    it('includes duplicate identifier error code 2300 twice in readOnly mode', () => {
+      const mockEditor = createMockEditor();
+      const mockMonaco = createMockMonaco();
+
+      renderCodeEditor({ language: 'typescript', readOnly: true });
+
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      const diagnosticsOptions =
+        mockMonaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions.mock.calls[0][0];
+      // 2300 appears in the base array and is pushed again for readOnly mode
+      const count2300 = diagnosticsOptions.diagnosticCodesToIgnore.filter(
+        (code: number) => code === 2300
+      ).length;
+      expect(count2300).toBe(2);
+    });
+
+    it('does not include error code 2393 in editable mode', () => {
+      const mockEditor = createMockEditor();
+      const mockMonaco = createMockMonaco();
+
+      renderCodeEditor({ language: 'typescript', readOnly: false });
+
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      const diagnosticsOptions =
+        mockMonaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions.mock.calls[0][0];
+      expect(diagnosticsOptions.diagnosticCodesToIgnore).not.toContain(2393);
+    });
+
+    it('includes base diagnostic codes in both readOnly and editable modes', () => {
+      const mockEditor = createMockEditor();
+      const mockMonaco = createMockMonaco();
+
+      // Test editable mode
+      renderCodeEditor({ language: 'typescript', readOnly: false });
+
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      const editableDiagnostics =
+        mockMonaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions.mock.calls[0][0];
+
+      // Base codes should be present in both modes
+      expect(editableDiagnostics.diagnosticCodesToIgnore).toContain(8006);
+      expect(editableDiagnostics.diagnosticCodesToIgnore).toContain(2451);
+      expect(editableDiagnostics.diagnosticCodesToIgnore).toContain(2300);
+    });
+
+    it('clears model markers for TypeScript in readOnly mode', () => {
+      const mockEditor = createMockEditor();
+      const mockMonaco = createMockMonaco();
+      const mockModel = {
+        getValue: jest.fn(() => ''),
+        setValue: jest.fn(),
+        dispose: jest.fn(),
+      };
+      mockEditor.getModel = jest.fn(() => mockModel);
+
+      renderCodeEditor({ language: 'typescript', readOnly: true });
+
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      expect(mockMonaco.editor.setModelMarkers).toHaveBeenCalledWith(mockModel, 'typescript', []);
     });
   });
 

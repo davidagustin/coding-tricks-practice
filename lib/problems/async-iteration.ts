@@ -157,6 +157,18 @@ async function collectAsyncIterable(asyncIterable) {
   return [];
 }
 
+// Helper function for testing createAsyncIterable
+async function testCreateAsyncIterable(values, delayMs) {
+  const iterable = createAsyncIterable(values, delayMs);
+  return collectAsyncIterable(iterable);
+}
+
+// Helper function for testing batchFetcher
+async function testBatchFetcher(ids, batchSize, fetchBatch) {
+  const generator = batchFetcher(ids, batchSize, fetchBatch);
+  return collectAsyncIterable(generator);
+}
+
 // Test (commented out)
 // const iterable = createAsyncIterable([1, 2, 3], 100);
 // for await (const value of iterable) console.log(value);`,
@@ -223,12 +235,70 @@ async function collectAsyncIterable(asyncIterable) {
     results.push(value);
   }
   return results;
+}
+
+// Helper function for testing createAsyncIterable
+async function testCreateAsyncIterable(values, delayMs) {
+  const iterable = createAsyncIterable(values, delayMs);
+  return collectAsyncIterable(iterable);
+}
+
+// Helper function for testing batchFetcher
+async function testBatchFetcher(ids, batchSize, fetchBatch) {
+  const generator = batchFetcher(ids, batchSize, fetchBatch);
+  return collectAsyncIterable(generator);
 }`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: [[1, 2, 3], 1],
+      expectedOutput: [1, 2, 3],
+      description: 'testCreateAsyncIterable yields all values from array',
+    },
+    {
+      input: [[], 1],
+      expectedOutput: [],
+      description: 'testCreateAsyncIterable handles empty array',
+    },
+    {
+      input: [['a', 'b', 'c'], 1],
+      expectedOutput: ['a', 'b', 'c'],
+      description: 'testCreateAsyncIterable works with string values',
+    },
+    {
+      input: [
+        (page: number) => {
+          if (page === 0) return { data: [1, 2, 3], hasMore: true };
+          if (page === 1) return { data: [4, 5], hasMore: false };
+          return { data: [], hasMore: false };
+        },
+      ],
+      expectedOutput: [1, 2, 3, 4, 5],
+      description: 'processPaginatedData collects all items from multiple pages',
+    },
+    {
+      input: [
+        (page: number) => {
+          if (page === 0) return { data: ['a'], hasMore: false };
+          return { data: [], hasMore: false };
+        },
+      ],
+      expectedOutput: ['a'],
+      description: 'processPaginatedData handles single page',
+    },
+    {
+      input: [() => ({ data: [], hasMore: false })],
+      expectedOutput: [],
+      description: 'processPaginatedData handles empty first page',
+    },
+    {
+      input: [[1, 2, 3, 4, 5], 2, (batch: number[]) => batch.map((x: number) => x * 2)],
+      expectedOutput: [2, 4, 6, 8, 10],
+      description: 'testBatchFetcher processes all batches',
+    },
+    {
+      input: [[], 3, (batch: number[]) => batch],
+      expectedOutput: [],
+      description: 'testBatchFetcher handles empty ids array',
     },
   ],
   hints: [

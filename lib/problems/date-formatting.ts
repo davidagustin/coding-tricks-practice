@@ -228,44 +228,22 @@ function formatDateRange(startDate, endDate, locale) {
     return formatter.formatRange(startDate, endDate);
   }
   return \`\${formatter.format(startDate)} – \${formatter.format(endDate)}\`;
-}
-
-function formatRelativeTime(value, unit, locale) {
-  // Format a relative date/time (e.g., "in 2 days", "3 months ago")
-  // Use Intl.RelativeTimeFormat
-  const rtf = new Intl.RelativeTimeFormat(locale);
-  return rtf.format(value, unit);
 }`,
   testCases: [
     {
-      input: ['2024-01-15T00:00:00Z'],
-      expectedOutput: '2024-01-15T00:00:00.000Z',
-      description: 'formatDateUTC returns ISO string for UTC date',
+      input: [new Date(2024, 0, 15), 'en-US'],
+      expectedOutput: '1/15/2024',
+      description: 'formatDateForLocale formats date in US locale',
     },
     {
-      input: ['2024-01-15T00:00:00Z'],
-      expectedOutput: { year: 2024, month: 1, day: 15 },
-      description: 'getDateParts extracts UTC date components',
+      input: [new Date(2024, 0, 15), 'en-GB'],
+      expectedOutput: '15/01/2024',
+      description: 'formatDateForLocale formats date in UK locale',
     },
     {
-      input: ['2024-06-20T00:00:00Z'],
-      expectedOutput: { year: 2024, month: 6, day: 20 },
-      description: 'getDateParts extracts UTC date components for mid-year date',
-    },
-    {
-      input: ['2024-01-15T14:30:45Z'],
-      expectedOutput: { hours: 14, minutes: 30, seconds: 45 },
-      description: 'getTimeParts extracts UTC time components',
-    },
-    {
-      input: ['2024-01-15T00:00:00Z'],
-      expectedOutput: '2024-01-15',
-      description: 'formatDateISO returns YYYY-MM-DD format',
-    },
-    {
-      input: ['2024-01-15T14:30:45Z'],
-      expectedOutput: '14:30:45',
-      description: 'formatTimeISO returns HH:MM:SS format',
+      input: [new Date(2024, 0, 15), 'en-US'],
+      expectedOutput: 'Monday, January 15, 2024',
+      description: 'formatFullDate returns full date with weekday',
     },
     {
       input: [-1, 'day', 'en-US'],
@@ -278,7 +256,7 @@ function formatRelativeTime(value, unit, locale) {
       description: 'formatRelativeTime shows future time for positive value',
     },
     {
-      input: [],
+      input: ['en-US', 'long'],
       expectedOutput: [
         'January',
         'February',
@@ -293,10 +271,10 @@ function formatRelativeTime(value, unit, locale) {
         'November',
         'December',
       ],
-      description: 'getMonthNamesUTC returns all 12 month names',
+      description: 'getMonthNames returns all 12 month names in long format',
     },
     {
-      input: [],
+      input: ['en-US', 'short'],
       expectedOutput: [
         'Jan',
         'Feb',
@@ -311,7 +289,7 @@ function formatRelativeTime(value, unit, locale) {
         'Nov',
         'Dec',
       ],
-      description: 'getMonthNamesShortUTC returns all 12 abbreviated month names',
+      description: 'getMonthNames returns all 12 abbreviated month names',
     },
   ],
   hints: [

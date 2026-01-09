@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { memo } from 'react';
 import type { Problem } from '@/lib/problems';
 import { useProgress } from './ProgressProvider';
 
@@ -14,7 +15,7 @@ const difficultyColors = {
   hard: 'text-red-600 dark:text-red-400',
 };
 
-export default function ProblemTable({ problems }: ProblemTableProps) {
+function ProblemTable({ problems }: ProblemTableProps) {
   const { isSolved } = useProgress();
 
   return (
@@ -49,6 +50,7 @@ export default function ProblemTable({ problems }: ProblemTableProps) {
                         className="w-5 h-5 text-green-500"
                         fill="currentColor"
                         viewBox="0 0 20 20"
+                        aria-hidden="true"
                       >
                         <path
                           fillRule="evenodd"
@@ -109,3 +111,5 @@ export default function ProblemTable({ problems }: ProblemTableProps) {
     </div>
   );
 }
+
+export default memo(ProblemTable);
