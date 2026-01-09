@@ -27,6 +27,7 @@ function MockProgressProvider({
     markUnsolved: () => {},
     isSolved: (id: string) => solvedProblems.has(id),
     lastSolvedDate: solvedProblems.size > 0 ? new Date().toISOString() : null,
+    resetProgress: () => {},
   };
 
   return (

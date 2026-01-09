@@ -14,14 +14,6 @@ const difficultyColors = {
   hard: 'text-red-600 dark:text-red-400',
 };
 
-// Generate fake acceptance rates based on difficulty and problem id
-function getAcceptanceRate(problem: Problem): number {
-  const hash = problem.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const base = problem.difficulty === 'easy' ? 65 : problem.difficulty === 'medium' ? 45 : 30;
-  const variance = (hash % 20) - 10;
-  return Math.max(20, Math.min(85, base + variance));
-}
-
 export default function ProblemTable({ problems }: ProblemTableProps) {
   const { isSolved } = useProgress();
 
@@ -33,14 +25,12 @@ export default function ProblemTable({ problems }: ProblemTableProps) {
             <th className="pb-3 pl-4 pr-2 w-12">Status</th>
             <th className="pb-3 px-2">Title</th>
             <th className="pb-3 px-2 w-24 hidden sm:table-cell">Difficulty</th>
-            <th className="pb-3 px-2 w-28 hidden md:table-cell">Acceptance</th>
-            <th className="pb-3 px-2 pr-4 w-40 hidden lg:table-cell">Category</th>
+            <th className="pb-3 px-2 pr-4 w-40 hidden md:table-cell">Category</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
           {problems.map((problem, index) => {
             const solved = isSolved(problem.id);
-            const acceptanceRate = getAcceptanceRate(problem);
 
             return (
               <tr
@@ -85,13 +75,8 @@ export default function ProblemTable({ problems }: ProblemTableProps) {
                   </span>
                 </td>
 
-                {/* Acceptance Rate */}
-                <td className="py-3 px-2 text-sm text-gray-600 dark:text-gray-400 hidden md:table-cell">
-                  {acceptanceRate.toFixed(1)}%
-                </td>
-
                 {/* Category */}
-                <td className="py-3 px-2 pr-4 hidden lg:table-cell">
+                <td className="py-3 px-2 pr-4 hidden md:table-cell">
                   <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
                     {problem.category}
                   </span>

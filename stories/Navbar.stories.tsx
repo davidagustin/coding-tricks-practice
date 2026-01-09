@@ -14,6 +14,7 @@ interface MockProgressValue {
   markUnsolved: (problemId: string) => void;
   isSolved: (problemId: string) => boolean;
   lastSolvedDate: string | null;
+  resetProgress: () => void;
 }
 
 // Create mock context wrapper for Progress
@@ -33,6 +34,7 @@ const MockProgressProvider = ({
     markUnsolved: () => {},
     isSolved: () => false,
     lastSolvedDate: null,
+    resetProgress: () => {},
   };
 
   return (

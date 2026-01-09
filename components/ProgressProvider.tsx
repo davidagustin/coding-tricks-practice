@@ -12,6 +12,7 @@ interface ProgressContextType {
   markUnsolved: (problemId: string) => void;
   isSolved: (problemId: string) => boolean;
   lastSolvedDate: string | null;
+  resetProgress: () => void;
 }
 
 export const ProgressContext = createContext<ProgressContextType | undefined>(undefined);
@@ -116,6 +117,17 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     return solvedProblems.has(problemId);
   }, [solvedProblems]);
 
+  const resetProgress = useCallback(() => {
+    setSolvedProblems(new Set());
+    setStreak(0);
+    setLastSolvedDate(null);
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (e) {
+      console.error('Failed to reset progress:', e);
+    }
+  }, []);
+
   // Return default values during SSR
   if (!mounted) {
     return (
@@ -129,6 +141,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
           markUnsolved: () => {},
           isSolved: () => false,
           lastSolvedDate: null,
+          resetProgress: () => {},
         }}
       >
         {children}
@@ -147,6 +160,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
         markUnsolved,
         isSolved,
         lastSolvedDate,
+        resetProgress,
       }}
     >
       {children}
