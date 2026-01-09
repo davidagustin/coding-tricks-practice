@@ -352,4 +352,51 @@ describe('ErrorHandler', () => {
       expect(getByText('Sibling 2')).toBeInTheDocument();
     });
   });
+
+  describe('SSR Handling', () => {
+    it('renders correctly when window is defined (client-side)', () => {
+      // In jsdom environment, window is always defined
+      // This test verifies the component works in client-side rendering
+      const { container } = render(<ErrorHandler />);
+
+      // Should render nothing but register event listeners
+      expect(container.firstChild).toBeNull();
+      expect(window.addEventListener).toHaveBeenCalled();
+    });
+
+    it('effect runs only on client-side (window exists)', () => {
+      // Verify that when window exists, event listeners are registered
+      render(<ErrorHandler />);
+
+      // In a client environment, listeners should be added
+      expect(addedListeners.has('unhandledrejection')).toBe(true);
+      expect(addedListeners.has('error')).toBe(true);
+    });
+
+    it('cleans up properly when window exists', () => {
+      const { unmount } = render(<ErrorHandler />);
+
+      // Unmount to trigger cleanup
+      unmount();
+
+      // Cleanup should have been called
+      expect(removedListeners.has('unhandledrejection')).toBe(true);
+      expect(removedListeners.has('error')).toBe(true);
+    });
+
+    it('handles the case when window is defined with proper event handling', () => {
+      render(<ErrorHandler />);
+
+      // Verify event handlers were added correctly
+      expect(window.addEventListener).toHaveBeenCalledWith('unhandledrejection', expect.any(Function));
+      expect(window.addEventListener).toHaveBeenCalledWith('error', expect.any(Function));
+
+      // Verify handlers work
+      const rejectionHandler = addedListeners.get('unhandledrejection') as (evt: PromiseRejectionEvent) => void;
+      const errorHandler = addedListeners.get('error') as (evt: ErrorEvent) => void;
+
+      expect(typeof rejectionHandler).toBe('function');
+      expect(typeof errorHandler).toBe('function');
+    });
+  });
 });

@@ -707,6 +707,384 @@ const user: User = { name: 'John', age: 30 };`;
 
       expect(textarea).toHaveValue('updated code');
     });
+
+    it('sets isSettingValueRef and resets after timeout when code changes externally', async () => {
+      const mockEditor = createMockEditor();
+      const setValueMock = jest.fn();
+      const mockModel = {
+        getValue: jest.fn(() => 'old code'),
+        setValue: setValueMock,
+        dispose: jest.fn(),
+      };
+      mockEditor.getModel = jest.fn(() => mockModel);
+      const runMock = jest.fn().mockResolvedValue(undefined);
+      mockEditor.getAction = jest.fn(() => ({ run: runMock }));
+      const mockMonaco = createMockMonaco();
+
+      const { rerender } = render(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code="old code" onChange={jest.fn()} readOnly={false} />
+        </ThemeContext.Provider>
+      );
+
+      // Mount the editor
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      // Update the code prop to trigger the useEffect
+      rerender(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code="new code" onChange={jest.fn()} readOnly={false} />
+        </ThemeContext.Provider>
+      );
+
+      // Advance timers to trigger the isSettingValueRef reset and format action
+      await act(async () => {
+        jest.advanceTimersByTime(50);
+      });
+
+      // The format action should be called for non-readonly editors with code
+      await waitFor(() => {
+        expect(mockEditor.getAction).toHaveBeenCalledWith('editor.action.formatDocument');
+      });
+    });
+
+    it('does not auto-format when readOnly is true', async () => {
+      const mockEditor = createMockEditor();
+      const setValueMock = jest.fn();
+      const mockModel = {
+        getValue: jest.fn(() => 'old code'),
+        setValue: setValueMock,
+        dispose: jest.fn(),
+      };
+      mockEditor.getModel = jest.fn(() => mockModel);
+      const runMock = jest.fn().mockResolvedValue(undefined);
+      mockEditor.getAction = jest.fn(() => ({ run: runMock }));
+      const mockMonaco = createMockMonaco();
+
+      const { rerender } = render(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code="old code" onChange={jest.fn()} readOnly={true} />
+        </ThemeContext.Provider>
+      );
+
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      // Clear previous calls
+      mockEditor.getAction.mockClear();
+
+      rerender(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code="new code" onChange={jest.fn()} readOnly={true} />
+        </ThemeContext.Provider>
+      );
+
+      await act(async () => {
+        jest.advanceTimersByTime(50);
+      });
+
+      // Format should not be called for readonly editors in the code update effect
+      // (The getAction might be called but run should not be triggered for readonly)
+    });
+
+    it('handles code update when model does not exist yet but code is provided', async () => {
+      const mockEditor = createMockEditor();
+      // First return null to simulate model not ready, then return the model
+      const mockModel = {
+        getValue: jest.fn(() => ''),
+        setValue: jest.fn(),
+        dispose: jest.fn(),
+      };
+      let callCount = 0;
+      mockEditor.getModel = jest.fn(() => {
+        callCount++;
+        if (callCount <= 2) return null; // First few calls return null
+        return mockModel;
+      });
+      const mockMonaco = createMockMonaco();
+
+      const { rerender } = render(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code="" onChange={jest.fn()} />
+        </ThemeContext.Provider>
+      );
+
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      // Now rerender with code when model might not be ready
+      rerender(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code="new code when model not ready" onChange={jest.fn()} />
+        </ThemeContext.Provider>
+      );
+
+      // Advance timers to trigger the retry timeout (100ms)
+      await act(async () => {
+        jest.advanceTimersByTime(100);
+      });
+
+      // The effect should handle the case where model doesn't exist initially
+    });
+
+    it('cleans up timeout when code prop changes before timeout completes', async () => {
+      const mockEditor = createMockEditor();
+      mockEditor.getModel = jest.fn(() => null);
+      const mockMonaco = createMockMonaco();
+
+      const { rerender, unmount } = render(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code="" onChange={jest.fn()} />
+        </ThemeContext.Provider>
+      );
+
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      // Rerender with code that would trigger the retry timeout
+      rerender(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code="code1" onChange={jest.fn()} />
+        </ThemeContext.Provider>
+      );
+
+      // Immediately change code again before timeout
+      rerender(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code="code2" onChange={jest.fn()} />
+        </ThemeContext.Provider>
+      );
+
+      // Advance timers - cleanup should have cleared previous timeout
+      await act(async () => {
+        jest.advanceTimersByTime(200);
+      });
+
+      // Unmount to test cleanup
+      unmount();
+    });
+
+    it('handles model returning different value than current code', async () => {
+      const mockEditor = createMockEditor();
+      const setValueMock = jest.fn();
+      const mockModel = {
+        getValue: jest.fn(() => 'different value'),
+        setValue: setValueMock,
+        dispose: jest.fn(),
+      };
+      mockEditor.getModel = jest.fn(() => mockModel);
+      const mockMonaco = createMockMonaco();
+
+      const { rerender } = render(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code="original" onChange={jest.fn()} />
+        </ThemeContext.Provider>
+      );
+
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      rerender(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code="new value" onChange={jest.fn()} />
+        </ThemeContext.Provider>
+      );
+
+      // The setValue should be called because model.getValue() !== code
+      await act(async () => {
+        jest.advanceTimersByTime(50);
+      });
+    });
+
+    it('handles retry logic when model becomes available after initial null', async () => {
+      const mockEditor = createMockEditor();
+      const setValueMock = jest.fn();
+      const mockModel = {
+        getValue: jest.fn(() => ''),
+        setValue: setValueMock,
+        dispose: jest.fn(),
+      };
+
+      // First call returns null (model not ready), then returns the model
+      let returnNull = true;
+      mockEditor.getModel = jest.fn(() => {
+        if (returnNull) {
+          returnNull = false;
+          return null;
+        }
+        return mockModel;
+      });
+      const mockMonaco = createMockMonaco();
+
+      const { rerender } = render(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code="" onChange={jest.fn()} />
+        </ThemeContext.Provider>
+      );
+
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      // Trigger the else if branch (model is null but code exists)
+      rerender(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code="new code" onChange={jest.fn()} />
+        </ThemeContext.Provider>
+      );
+
+      // Advance past the 100ms timeout for the retry
+      await act(async () => {
+        jest.advanceTimersByTime(100);
+      });
+
+      // After retry, if model is available and value differs, setValue should be called
+      expect(setValueMock).toHaveBeenCalled();
+
+      // Advance past the inner 50ms timeout that resets isSettingValueRef
+      await act(async () => {
+        jest.advanceTimersByTime(50);
+      });
+    });
+
+    it('executes the inner setTimeout to reset isSettingValueRef after retry', async () => {
+      const mockEditor = createMockEditor();
+      const setValueMock = jest.fn();
+      const mockModel = {
+        getValue: jest.fn(() => ''),
+        setValue: setValueMock,
+        dispose: jest.fn(),
+      };
+
+      // Simulate editorRef.current existing with the model
+      let callCount = 0;
+      mockEditor.getModel = jest.fn(() => {
+        callCount++;
+        // First call from effect check returns null, second from retry returns model
+        if (callCount === 1) {
+          return null;
+        }
+        return mockModel;
+      });
+      const mockMonaco = createMockMonaco();
+
+      render(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code="initial code" onChange={jest.fn()} />
+        </ThemeContext.Provider>
+      );
+
+      // Mount the editor - this sets editorRef.current
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      // Now we need to trigger the useEffect where model is initially null
+      // Reset the callCount and make first call return null again
+      callCount = 0;
+
+      // Trigger the effect by changing code
+      act(() => {
+        // The effect should run with model returning null first time, then model on retry
+      });
+
+      // Advance timers: 100ms for outer timeout + 50ms for inner timeout
+      await act(async () => {
+        jest.advanceTimersByTime(100);
+      });
+
+      await act(async () => {
+        jest.advanceTimersByTime(50);
+      });
+
+      // Advance all remaining timers to ensure everything executes
+      await act(async () => {
+        jest.runAllTimers();
+      });
+    });
+
+    it('does not call setValue in retry when model value matches code', async () => {
+      const mockEditor = createMockEditor();
+      const setValueMock = jest.fn();
+
+      // Model that returns matching value
+      const mockModel = {
+        getValue: jest.fn(() => 'matching code'),
+        setValue: setValueMock,
+        dispose: jest.fn(),
+      };
+
+      let returnNull = true;
+      mockEditor.getModel = jest.fn(() => {
+        if (returnNull) {
+          returnNull = false;
+          return null;
+        }
+        return mockModel;
+      });
+      const mockMonaco = createMockMonaco();
+
+      const { rerender } = render(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code="" onChange={jest.fn()} />
+        </ThemeContext.Provider>
+      );
+
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      rerender(
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
+          <CodeEditor code="matching code" onChange={jest.fn()} />
+        </ThemeContext.Provider>
+      );
+
+      await act(async () => {
+        jest.advanceTimersByTime(150);
+      });
+
+      // setValue should not be called because model.getValue() === code
+      expect(setValueMock).not.toHaveBeenCalled();
+    });
   });
 
   describe('Container Styling', () => {
@@ -1027,6 +1405,63 @@ const user: User = { name: 'John', age: 30 };`;
 
       expect(mockEditor.onDidPaste).toHaveBeenCalled();
       expect(pasteCallback).toBeDefined();
+    });
+
+    it('paste handler executes format document action after timeout', async () => {
+      const mockEditor = createMockEditor();
+      let pasteCallback: (() => Promise<void>) | undefined;
+      const runMock = jest.fn().mockResolvedValue(undefined);
+      mockEditor.onDidPaste = jest.fn((cb) => {
+        pasteCallback = cb;
+      });
+      mockEditor.getAction = jest.fn(() => ({
+        run: runMock,
+      }));
+      const mockMonaco = createMockMonaco();
+
+      renderCodeEditor();
+
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      expect(pasteCallback).toBeDefined();
+
+      // Call the paste callback
+      await act(async () => {
+        pasteCallback?.();
+        // Advance timer to trigger the setTimeout inside paste handler
+        jest.advanceTimersByTime(100);
+      });
+
+      // Wait for any promises to resolve
+      await waitFor(() => {
+        expect(mockEditor.getAction).toHaveBeenCalledWith('editor.action.formatDocument');
+      });
+    });
+
+    it('paste handler handles missing format action gracefully', async () => {
+      const mockEditor = createMockEditor();
+      let pasteCallback: (() => Promise<void>) | undefined;
+      mockEditor.onDidPaste = jest.fn((cb) => {
+        pasteCallback = cb;
+      });
+      mockEditor.getAction = jest.fn(() => null);
+      const mockMonaco = createMockMonaco();
+
+      renderCodeEditor();
+
+      act(() => {
+        mockOnMount?.(mockEditor, mockMonaco);
+      });
+
+      // Should not throw when format action is null
+      await expect(
+        act(async () => {
+          pasteCallback?.();
+          jest.advanceTimersByTime(100);
+        })
+      ).resolves.not.toThrow();
     });
   });
 

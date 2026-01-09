@@ -970,4 +970,23 @@ describe('Problem Page Edge Cases', () => {
       expect(screen.getByTestId('error-message')).toHaveTextContent(/No code to test/i);
     });
   });
+
+  it('should not call runTests when code is empty', async () => {
+    // Use the prev-problem which has empty starterCode
+    mockParams.id = 'prev-problem';
+
+    renderWithProgress(<ProblemPage />);
+
+    // prev-problem has starterCode: '' (empty string)
+    const runButton = screen.getByRole('button', { name: /Run Tests/i });
+
+    await act(async () => {
+      fireEvent.click(runButton);
+    });
+
+    // The validation should prevent calling runTests
+    expect(mockRunTests).not.toHaveBeenCalled();
+  });
+
+
 });

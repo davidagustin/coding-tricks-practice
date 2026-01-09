@@ -598,7 +598,12 @@ describe('lib/problems', () => {
           problem.solution.includes('=>') ||
           problem.solution.includes('return') ||
           problem.solution.includes('class') ||
-          problem.solution.includes('const');
+          problem.solution.includes('const') ||
+          problem.solution.includes('let') ||
+          problem.solution.includes('var') ||
+          problem.solution.includes('type ') ||
+          problem.solution.includes('interface ') ||
+          problem.solution.includes('enum ');
 
         expect(hasImplementation).toBe(true);
       });

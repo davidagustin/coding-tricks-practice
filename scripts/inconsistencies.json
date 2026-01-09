@@ -1,0 +1,795 @@
+[
+  {
+    "problemId": "abort-controller",
+    "problemTitle": "AbortController for Cancellation",
+    "issues": [
+      "Functions in starter code but not in solution: fetchWithCancel, createCancellableFetch"
+    ]
+  },
+  {
+    "problemId": "array-from-tricks",
+    "problemTitle": "Array.from Magic",
+    "issues": [
+      "Functions in starter code but not in solution: range, createGrid, toArray"
+    ]
+  },
+  {
+    "problemId": "async-await-error",
+    "problemTitle": "Async/Await Error Handling",
+    "issues": [
+      "Functions in starter code but not in solution: fetchUserData, fetchMultipleUsers"
+    ]
+  },
+  {
+    "problemId": "async-generators",
+    "problemTitle": "Async Generators",
+    "issues": [
+      "Functions in starter code but not in solution: fetchPage"
+    ]
+  },
+  {
+    "problemId": "async-iteration",
+    "problemTitle": "Async Iteration with for-await-of",
+    "issues": [
+      "Functions in starter code but not in solution: createAsyncIterable, processPaginatedData, collectAsyncIterable"
+    ]
+  },
+  {
+    "problemId": "basic-typescript-types",
+    "problemTitle": "Basic TypeScript Types",
+    "issues": [
+      "Functions in starter code but not in solution: greet, calculateArea, isEven"
+    ]
+  },
+  {
+    "problemId": "branded-types",
+    "problemTitle": "TypeScript Branded Types",
+    "issues": [
+      "Functions in starter code but not in solution: createUserId, createProductId, getUser, getProduct"
+    ]
+  },
+  {
+    "problemId": "closures-advanced",
+    "problemTitle": "Advanced Closure Patterns",
+    "issues": [
+      "Functions in starter code but not in solution: createCounter, memoize, createBankAccount"
+    ]
+  },
+  {
+    "problemId": "currying",
+    "problemTitle": "Function Currying",
+    "issues": [
+      "Functions in starter code but not in solution: multiply, greet, curry2"
+    ]
+  },
+  {
+    "problemId": "debounce-throttle",
+    "problemTitle": "Debounce and Throttle",
+    "issues": [
+      "Functions in starter code but not in solution: debounce, throttle, incrementCounter"
+    ]
+  },
+  {
+    "problemId": "enums",
+    "problemTitle": "Enums",
+    "issues": [
+      "Functions in starter code but not in solution: processStatus"
+    ]
+  },
+  {
+    "problemId": "error-boundaries",
+    "problemTitle": "Error Handling Patterns",
+    "issues": [
+      "Functions in starter code but not in solution: safeOperation, handleMultipleOperations"
+    ]
+  },
+  {
+    "problemId": "event-loop",
+    "problemTitle": "Understanding the JavaScript Event Loop",
+    "issues": [
+      "Functions in starter code but not in solution: predictOrder1, predictOrder2, deferMicrotask, scheduleAfterMicrotasks"
+    ]
+  },
+  {
+    "problemId": "interfaces",
+    "problemTitle": "Interfaces",
+    "issues": [
+      "Functions in starter code but not in solution: displayPerson"
+    ]
+  },
+  {
+    "problemId": "map-deduplication",
+    "problemTitle": "Map for Deduplication",
+    "issues": [
+      "Functions in starter code but not in solution: deduplicateUsers"
+    ]
+  },
+  {
+    "problemId": "memoization",
+    "problemTitle": "Function Memoization",
+    "issues": [
+      "Functions in starter code but not in solution: memoize, slowFib, fastFib"
+    ]
+  },
+  {
+    "problemId": "memory-management",
+    "problemTitle": "Memory Management and Garbage Collection",
+    "issues": [
+      "Functions in starter code but not in solution: createObjectCache, processInChunks, createLeakyHandlers, createFixedHandlers"
+    ]
+  },
+  {
+    "problemId": "object-assign-deep",
+    "problemTitle": "Shallow vs Deep Object Cloning Patterns",
+    "issues": [
+      "Functions in starter code but not in solution: shallowCloneAssign, shallowCloneSpread, deepCloneStructured, deepCloneJSON, deepCloneRecursive, deepMerge"
+    ]
+  },
+  {
+    "problemId": "object-freeze-seal",
+    "problemTitle": "Object.freeze, seal, and preventExtensions",
+    "issues": [
+      "Functions in starter code but not in solution: createImmutableObject, createSealedObject, isFrozen, deepFreeze"
+    ]
+  },
+  {
+    "problemId": "object-fromentries",
+    "problemTitle": "Object.fromEntries() - Creating Objects from Key-Value Pairs",
+    "issues": [
+      "Functions in starter code but not in solution: arrayToObject, mapToObject, parseQueryString, zipToObject"
+    ]
+  },
+  {
+    "problemId": "object-getownpropertynames",
+    "problemTitle": "Object.getOwnPropertyNames & getOwnPropertySymbols",
+    "issues": [
+      "Functions in starter code but not in solution: getAllOwnProperties, getNonEnumerableProps, deepCloneWithNonEnumerable, getAllSymbols, inspectObject"
+    ]
+  },
+  {
+    "problemId": "object-groupby",
+    "problemTitle": "Object.groupBy() - Modern Array Categorization",
+    "issues": [
+      "Functions in starter code but not in solution: groupByProperty, groupByRange, groupByFirstLetter, groupByMultiple, groupByPolyfill"
+    ]
+  },
+  {
+    "problemId": "object-hasown",
+    "problemTitle": "Object.hasOwn() vs hasOwnProperty - Modern Property Checking",
+    "issues": [
+      "Functions in starter code but not in solution: hasProperty, getOwnProps, mergeDefaults, hasAllProperties, countProperties"
+    ]
+  },
+  {
+    "problemId": "optional-readonly",
+    "problemTitle": "Optional and Readonly Properties",
+    "issues": [
+      "Functions in starter code but not in solution: createUser"
+    ]
+  },
+  {
+    "problemId": "pipe-compose",
+    "problemTitle": "Pipe and Compose",
+    "issues": [
+      "Functions in starter code but not in solution: pipe, compose"
+    ]
+  },
+  {
+    "problemId": "promise-all-vs-allsettled",
+    "problemTitle": "Promise.all vs Promise.allSettled",
+    "issues": [
+      "Functions in starter code but not in solution: fetchAllOrFail, fetchAllWithFailures"
+    ]
+  },
+  {
+    "problemId": "promise-allsettled",
+    "problemTitle": "Promise.allSettled for Mixed Results",
+    "issues": [
+      "Functions in starter code but not in solution: processMultipleRequests, isFulfilled"
+    ]
+  },
+  {
+    "problemId": "promise-any",
+    "problemTitle": "Promise.any() for First Success",
+    "issues": [
+      "Functions in starter code but not in solution: fetchFromFirstAvailable, loadWithFallback, findAvailableService"
+    ]
+  },
+  {
+    "problemId": "promise-chaining",
+    "problemTitle": "Promise Chaining Patterns",
+    "issues": [
+      "Functions in starter code but not in solution: processUser, fetchUser, validateUser, enrichUser, saveUser"
+    ]
+  },
+  {
+    "problemId": "promise-constructor",
+    "problemTitle": "Promise Constructor Pattern",
+    "issues": [
+      "Functions in solution but not in starter code: handler"
+    ]
+  },
+  {
+    "problemId": "promise-deferred",
+    "problemTitle": "Deferred Promises for External Resolution",
+    "issues": [
+      "Functions in starter code but not in solution: createDeferred, waitForEvent"
+    ]
+  },
+  {
+    "problemId": "promise-finally",
+    "problemTitle": "Promise.finally for Cleanup",
+    "issues": [
+      "Functions in starter code but not in solution: fetchWithCleanup, processWithLock"
+    ]
+  },
+  {
+    "problemId": "promise-race-first",
+    "problemTitle": "Promise.race for First Result",
+    "issues": [
+      "Functions in starter code but not in solution: fetchFromFastest, fetchWithFallback"
+    ]
+  },
+  {
+    "problemId": "prototype-chain",
+    "problemTitle": "Prototype Inheritance and the Prototype Chain",
+    "issues": [
+      "Functions in starter code but not in solution: Shape, Rectangle, getPrototypeChainLength"
+    ]
+  },
+  {
+    "problemId": "proxy-api",
+    "problemTitle": "Proxy API for Interception",
+    "issues": [
+      "Functions in starter code but not in solution: createLoggedObject, createValidatedObject"
+    ]
+  },
+  {
+    "problemId": "proxy-traps",
+    "problemTitle": "JavaScript Proxy",
+    "issues": [
+      "Functions in starter code but not in solution: createLoggingProxy, createDefaultProxy, createValidatingProxy"
+    ]
+  },
+  {
+    "problemId": "reduce-right",
+    "problemTitle": "ReduceRight for Right-to-Left Operations",
+    "issues": [
+      "Functions in solution but not in starter code: testCompose"
+    ]
+  },
+  {
+    "problemId": "retry-pattern",
+    "problemTitle": "Retry Pattern with Exponential Backoff",
+    "issues": [
+      "Functions in starter code but not in solution: retryWithBackoff, fetchData"
+    ]
+  },
+  {
+    "problemId": "short-circuit-evaluation",
+    "problemTitle": "Short-Circuit Evaluation",
+    "issues": [
+      "Functions in starter code but not in solution: greetUser, getConfigValue"
+    ]
+  },
+  {
+    "problemId": "sort-comparators",
+    "problemTitle": "Custom Sort Comparators",
+    "issues": [
+      "Functions in starter code but not in solution: sortByProperty, sortByMultiple, sortWithNulls"
+    ]
+  },
+  {
+    "problemId": "string-normalize-unicode",
+    "problemTitle": "Unicode Normalization and String Comparison",
+    "issues": [
+      "Functions in starter code but not in solution: normalizeAndCompare, removeAccents, safeSlug, sortStringsLocale"
+    ]
+  },
+  {
+    "problemId": "string-replace-replaceall",
+    "problemTitle": "Using replace() and replaceAll() with Regex",
+    "issues": [
+      "Functions in starter code but not in solution: toSlug, formatPhoneNumber, camelToSnake, censorWords"
+    ]
+  },
+  {
+    "problemId": "string-slice-substring",
+    "problemTitle": "Comparing slice() vs substring() Methods",
+    "issues": [
+      "Functions in starter code but not in solution: getFileExtension, removeFirstAndLast, extractMiddle, truncateWithEllipsis"
+    ]
+  },
+  {
+    "problemId": "string-template-tricks",
+    "problemTitle": "Advanced Template Literal Techniques",
+    "issues": [
+      "Functions in starter code but not in solution: pluralize, buildUrl, generateTable, interpolate"
+    ]
+  },
+  {
+    "problemId": "tagged-template-literals",
+    "problemTitle": "Tagged Template Literals",
+    "issues": [
+      "Functions in starter code but not in solution: html, escapeHtml"
+    ]
+  },
+  {
+    "problemId": "type-aliases",
+    "problemTitle": "Type Aliases",
+    "issues": [
+      "Functions in starter code but not in solution: processStatus"
+    ]
+  },
+  {
+    "problemId": "type-assertions",
+    "problemTitle": "Type Assertions",
+    "issues": [
+      "Functions in starter code but not in solution: setupCanvas, getConfig, parseApiResponse, processForm, convertToNumber"
+    ]
+  },
+  {
+    "problemId": "type-guards",
+    "problemTitle": "Type Guards",
+    "issues": [
+      "Functions in starter code but not in solution: isUser, processData"
+    ]
+  },
+  {
+    "problemId": "type-narrowing",
+    "problemTitle": "Type Narrowing",
+    "issues": [
+      "Functions in starter code but not in solution: describeValue, useVehicle, printPersonInfo"
+    ]
+  },
+  {
+    "problemId": "union-intersection",
+    "problemTitle": "Union and Intersection Types",
+    "issues": [
+      "Functions in starter code but not in solution: processValue, displayPerson"
+    ]
+  },
+  {
+    "problemId": "utility-types-basic",
+    "problemTitle": "Basic Utility Types",
+    "issues": [
+      "Functions in starter code but not in solution: updateProduct, getProductPreview, createProduct, validateConfig"
+    ]
+  },
+  {
+    "problemId": "keyof-typeof",
+    "problemTitle": "keyof and typeof Operators",
+    "issues": [
+      "Functions in starter code but not in solution: translate"
+    ]
+  },
+  {
+    "problemId": "function-overloads",
+    "problemTitle": "Function Overloads",
+    "issues": [
+      "Functions in starter code but not in solution: parse, makeRequest, combine"
+    ]
+  },
+  {
+    "problemId": "weak-collections",
+    "problemTitle": "WeakMap and WeakSet",
+    "issues": [
+      "Functions in starter code but not in solution: memoizeByObject"
+    ]
+  },
+  {
+    "problemId": "weakmap-weakset",
+    "problemTitle": "WeakMap and WeakSet",
+    "issues": [
+      "Functions in starter code but not in solution: markVisited, isVisited"
+    ]
+  },
+  {
+    "problemId": "breadth-first-search",
+    "problemTitle": "Breadth-First Search (BFS)",
+    "issues": [
+      "Functions in starter code but not in solution: bfsGraph, bfsTreeLevelOrder, shortestPath"
+    ]
+  },
+  {
+    "problemId": "depth-first-search",
+    "problemTitle": "Depth-First Search (DFS)",
+    "issues": [
+      "Functions in starter code but not in solution: dfsGraphRecursive, dfsGraphIterative, dfsTreePreOrder, dfsTreeInOrder"
+    ]
+  },
+  {
+    "problemId": "merge-sort",
+    "problemTitle": "Merge Sort Algorithm",
+    "issues": [
+      "Functions in starter code but not in solution: merge, mergeSort"
+    ]
+  },
+  {
+    "problemId": "quick-sort",
+    "problemTitle": "Quick Sort Algorithm",
+    "issues": [
+      "Functions in starter code but not in solution: partition, quickSort, swap"
+    ]
+  },
+  {
+    "problemId": "custom-events",
+    "problemTitle": "Creating and Dispatching Custom Events",
+    "issues": [
+      "Functions in starter code but not in solution: emitCustomEvent, createEventBus"
+    ]
+  },
+  {
+    "problemId": "event-delegation",
+    "problemTitle": "Event Delegation Pattern",
+    "issues": [
+      "Functions in starter code but not in solution: delegate, setupTodoList"
+    ]
+  },
+  {
+    "problemId": "intersection-observer",
+    "problemTitle": "IntersectionObserver for Lazy Loading",
+    "issues": [
+      "Functions in starter code but not in solution: lazyLoad, setupInfiniteScroll, trackVisibility"
+    ]
+  },
+  {
+    "problemId": "local-session-storage",
+    "problemTitle": "Working with localStorage and sessionStorage",
+    "issues": [
+      "Functions in starter code but not in solution: createStorage, createStorageWithExpiry, createNamespacedStorage"
+    ]
+  },
+  {
+    "problemId": "mutation-observer",
+    "problemTitle": "MutationObserver for DOM Changes",
+    "issues": [
+      "Functions in starter code but not in solution: watchForElement, watchAttributes, createDOMRecorder"
+    ]
+  },
+  {
+    "problemId": "binary-search-tree",
+    "problemTitle": "Binary Search Tree Implementation",
+    "issues": [
+      "Functions in starter code but not in solution: bstInOrder, bstSearch, bstFindMin, bstFindMax, bstDelete"
+    ]
+  },
+  {
+    "problemId": "hash-table",
+    "problemTitle": "Hash Table with Collision Handling",
+    "issues": [
+      "Functions in starter code but not in solution: htGet, htHas, htUpdate, htDelete"
+    ]
+  },
+  {
+    "problemId": "linked-list",
+    "problemTitle": "Singly Linked List Implementation",
+    "issues": [
+      "Functions in starter code but not in solution: listAppend, listPrepend, listDelete, listInsertAfter"
+    ]
+  },
+  {
+    "problemId": "queue-implementation",
+    "problemTitle": "Queue Implementation",
+    "issues": [
+      "Functions in starter code but not in solution: queueFront, queueDequeue, queueIsEmpty, queueSize"
+    ]
+  },
+  {
+    "problemId": "stack-implementation",
+    "problemTitle": "Stack Implementation",
+    "issues": [
+      "Functions in starter code but not in solution: stackPeek, stackPop, stackSize, stackIsEmpty"
+    ]
+  },
+  {
+    "problemId": "regex-basics",
+    "problemTitle": "Regular Expression Basics",
+    "issues": [
+      "Functions in starter code but not in solution: isOnlyLetters, extractNumbers, isValidHexColor, countWords"
+    ]
+  },
+  {
+    "problemId": "regex-groups",
+    "problemTitle": "Capturing Groups and Named Groups",
+    "issues": [
+      "Functions in starter code but not in solution: parseDate, parseURL, flipName, parseQueryString"
+    ]
+  },
+  {
+    "problemId": "regex-lookahead-lookbehind",
+    "problemTitle": "Lookahead and Lookbehind Assertions",
+    "issues": [
+      "Functions in starter code but not in solution: isStrongPassword, addCommas, extractAmounts, wordsWithoutPunctuation, replaceBetweenMarkers"
+    ]
+  },
+  {
+    "problemId": "regex-validation",
+    "problemTitle": "Common Validation Patterns",
+    "issues": [
+      "Functions in starter code but not in solution: isValidEmail, isValidUSPhone, isValidURL, isValidIPv4, isValidCreditCard"
+    ]
+  },
+  {
+    "problemId": "regex-replace-patterns",
+    "problemTitle": "Advanced Replace Patterns with Backreferences",
+    "issues": [
+      "Functions in starter code but not in solution: camelToSnake, maskNumber, markdownBoldToHtml, reformatDate, wrapNumbers"
+    ]
+  },
+  {
+    "problemId": "destructuring-patterns",
+    "problemTitle": "Destructuring Patterns",
+    "issues": [
+      "Functions in starter code but not in solution: extractUserInfo, getFirstAndLast, swapValues"
+    ]
+  },
+  {
+    "problemId": "nullish-coalescing",
+    "problemTitle": "Nullish Coalescing (??) vs OR (||)",
+    "issues": [
+      "Functions in starter code but not in solution: getConfigWithDefaults, getValue, incrementCounter"
+    ]
+  },
+  {
+    "problemId": "optional-chaining",
+    "problemTitle": "Optional Chaining (?.) for Safe Property Access",
+    "issues": [
+      "Functions in starter code but not in solution: getUserCity, getFirstItemName, callCallback"
+    ]
+  },
+  {
+    "problemId": "rest-parameters",
+    "problemTitle": "Rest Parameters and Spread in Function Arguments",
+    "issues": [
+      "Functions in starter code but not in solution: sumAll, mergeArrays, createLogger, callWithArray"
+    ]
+  },
+  {
+    "problemId": "pure-functions",
+    "problemTitle": "Pure Functions",
+    "issues": [
+      "Functions in starter code but not in solution: addItemImpure, addItem, calculateTotalImpure, calculateTotal, updateUserImpure, updateUser"
+    ]
+  },
+  {
+    "problemId": "immutability-patterns",
+    "problemTitle": "Immutability Patterns",
+    "issues": [
+      "Functions in starter code but not in solution: insertAt, removeAt, updateAt, updateNested, removeProperty"
+    ]
+  },
+  {
+    "problemId": "function-composition",
+    "problemTitle": "Function Composition",
+    "issues": [
+      "Functions in starter code but not in solution: compose, pipe, composeAsync"
+    ]
+  },
+  {
+    "problemId": "monads-basics",
+    "problemTitle": "Monads Basics (Maybe & Either)",
+    "issues": [
+      "Functions in starter code but not in solution: safeDivide, safeGet"
+    ]
+  },
+  {
+    "problemId": "array-flat-flatmap",
+    "problemTitle": "Flattening Arrays with flat() and flatMap()",
+    "issues": [
+      "Functions in starter code but not in solution: flattenDeep, flattenToDepth, expandAndFlatten, getWordsFromSentences, filterAndTransform"
+    ]
+  },
+  {
+    "problemId": "array-at-method",
+    "problemTitle": "Array Indexing with at()",
+    "issues": [
+      "Functions in starter code but not in solution: getLastElement, getSecondToLast, getNthFromEnd, getFirstAndLast, safeAt"
+    ]
+  },
+  {
+    "problemId": "array-findlast-findlastindex",
+    "problemTitle": "Finding Elements from the End with findLast() and findLastIndex()",
+    "issues": [
+      "Functions in starter code but not in solution: findLastEven, findLastIndexOf, findLastObjectByProperty, findLastGreaterThan, findLastWithIndex"
+    ]
+  },
+  {
+    "problemId": "array-toSorted-toReversed",
+    "problemTitle": "Non-Mutating Array Methods: toSorted(), toReversed(), toSpliced()",
+    "issues": [
+      "Functions in starter code but not in solution: getSortedCopy, getReversedCopy, removeAtIndex, insertAtIndex, replaceAtIndex, sortDescending"
+    ]
+  },
+  {
+    "problemId": "array-intersection-difference",
+    "problemTitle": "Set Operations on Arrays: Intersection and Difference",
+    "issues": [
+      "Functions in starter code but not in solution: intersection, difference, symmetricDifference, union, isSubset, intersectionMany"
+    ]
+  },
+  {
+    "problemId": "try-catch-patterns",
+    "problemTitle": "Try-Catch-Finally Patterns and Best Practices",
+    "issues": [
+      "Functions in starter code but not in solution: safeExecute, demonstrateFinally"
+    ]
+  },
+  {
+    "problemId": "custom-errors",
+    "problemTitle": "Creating Custom Error Classes",
+    "issues": [
+      "Functions in starter code but not in solution: handleError"
+    ]
+  },
+  {
+    "problemId": "async-error-handling",
+    "problemTitle": "Error Handling in Async/Await Code",
+    "issues": [
+      "Functions in starter code but not in solution: tryCatchSync, executeAll, retrySync"
+    ]
+  },
+  {
+    "problemId": "error-boundaries-pattern",
+    "problemTitle": "Implementing Error Boundary Patterns",
+    "issues": [
+      "Functions in starter code but not in solution: executeSafe, executeMultiple"
+    ]
+  },
+  {
+    "problemId": "graceful-degradation",
+    "problemTitle": "Graceful Degradation and Fallback Strategies",
+    "issues": [
+      "Functions in starter code but not in solution: getFallbackData, getCircuitState, getCacheResult"
+    ]
+  },
+  {
+    "problemId": "observer-pattern",
+    "problemTitle": "Observer/PubSub Pattern",
+    "issues": [
+      "Functions in starter code but not in solution: handler1, handler2"
+    ]
+  },
+  {
+    "problemId": "decorator-pattern",
+    "problemTitle": "Decorator Pattern",
+    "issues": [
+      "Functions in starter code but not in solution: withLogging, withTiming, withRetry, withValidation, add, validatePositive"
+    ]
+  },
+  {
+    "problemId": "mock-functions",
+    "problemTitle": "Creating Mock Functions and Spies",
+    "issues": [
+      "Functions in starter code but not in solution: createMock, mockFn"
+    ]
+  },
+  {
+    "problemId": "test-doubles",
+    "problemTitle": "Understanding Stubs, Mocks, and Fakes",
+    "issues": [
+      "Functions in starter code but not in solution: createStub, createMock, createFakeDatabase, createSpy"
+    ]
+  },
+  {
+    "problemId": "async-testing",
+    "problemTitle": "Testing Asynchronous Code Patterns",
+    "issues": [
+      "Functions in starter code but not in solution: asyncTest, createFakeTimers, flushPromises, waitFor, expectAsync, runTests"
+    ]
+  },
+  {
+    "problemId": "test-driven-development",
+    "problemTitle": "TDD Approach with Red-Green-Refactor",
+    "issues": [
+      "Functions in starter code but not in solution: runTests"
+    ]
+  },
+  {
+    "problemId": "property-based-testing",
+    "problemTitle": "Property-Based Testing Concepts",
+    "issues": [
+      "Functions in starter code but not in solution: integer, generate, boolean, string, array, object, oneOf, shrinkInteger, shrinkArray, forAll, property"
+    ]
+  },
+  {
+    "problemId": "big-o-analysis",
+    "problemTitle": "Understanding Big O Notation",
+    "issues": [
+      "Functions in starter code but not in solution: getFirst, linearSearch, binarySearch, findAllPairs, efficientSort, analyzeComplexity"
+    ]
+  },
+  {
+    "problemId": "lazy-evaluation",
+    "problemTitle": "Lazy Evaluation Patterns",
+    "issues": [
+      "Functions in starter code but not in solution: take, createLazyObject"
+    ]
+  },
+  {
+    "problemId": "batch-processing",
+    "problemTitle": "Batching Operations for Performance",
+    "issues": [
+      "Functions in starter code but not in solution: chunk, processBatches, createBatcher, batchCalls, processWithYield"
+    ]
+  },
+  {
+    "problemId": "caching-strategies",
+    "problemTitle": "Implementing Caching Patterns",
+    "issues": [
+      "Functions in starter code but not in solution: memoizeWithCache"
+    ]
+  },
+  {
+    "problemId": "web-workers",
+    "problemTitle": "Web Workers for Heavy Computation",
+    "issues": [
+      "Functions in starter code but not in solution: createInlineWorker, createPromiseWorker, postWithTransfer, fibonacciWorker, fib"
+    ]
+  },
+  {
+    "problemId": "iterators-iterables",
+    "problemTitle": "Creating Custom Iterators and Iterables",
+    "issues": [
+      "Functions in starter code but not in solution: range, reverseIterator, fibonacci"
+    ]
+  },
+  {
+    "problemId": "top-level-await",
+    "problemTitle": "Top-Level Await in ES Modules",
+    "issues": [
+      "Functions in starter code but not in solution: createConfigModule, loadWithFallback, loadImplementation, initializeResources, runTests, fetchConfig, mockPrimaryLoader, mockFallbackLoader, mockFeatureCheck"
+    ]
+  },
+  {
+    "problemId": "logical-assignment",
+    "problemTitle": "Logical Assignment Operators (??=, ||=, &&=)",
+    "issues": [
+      "Functions in starter code but not in solution: setDefaults, createLazyCache, transformIfPresent, createWordCounter, simplifyCode"
+    ]
+  },
+  {
+    "problemId": "number-methods",
+    "problemTitle": "Number Methods: toFixed, toPrecision, parseInt, parseFloat",
+    "issues": [
+      "Functions in starter code but not in solution: formatPrice, parseUserInput, hexToDecimal, formatSignificantDigits, decimalToHex"
+    ]
+  },
+  {
+    "problemId": "math-object",
+    "problemTitle": "Math Object Methods: round, floor, ceil, random, and more",
+    "issues": [
+      "Functions in starter code but not in solution: calculatePages, clampValue, getRandomInt, roundToDecimal, calculateDistance"
+    ]
+  },
+  {
+    "problemId": "date-formatting",
+    "problemTitle": "Date Formatting with Intl.DateTimeFormat",
+    "issues": [
+      "Functions in solution but not in starter code: formatDateUTC, getDateParts, getTimeParts, formatDateISO, formatTimeISO, getMonthNamesUTC, getMonthNamesShortUTC",
+      "Functions in starter code but not in solution: formatDateForLocale, formatFullDate, formatTime, getMonthNames, formatDateRange"
+    ]
+  },
+  {
+    "problemId": "timezone-handling",
+    "problemTitle": "Handling Timezones and UTC",
+    "issues": [
+      "Functions in solution but not in starter code: toISOString, parseISOToTimestamp, getUTCDateParts, getTimestampOffsetMinutes, isSameUTCDay, addHoursToISO, getUTCDayOfWeek, getFixedTimezoneOffset",
+      "Functions in starter code but not in solution: toUTC, formatInTimezone, parseISO, getTimezoneOffsetForZone, convertTimezone, isDST, getWorldClocks"
+    ]
+  },
+  {
+    "problemId": "circular-references",
+    "problemTitle": "Handling Circular References in Serialization",
+    "issues": [
+      "Functions in solution but not in starter code: detect, replacer"
+    ]
+  },
+  {
+    "problemId": "custom-serialization",
+    "problemTitle": "Custom toJSON Methods and Serialization",
+    "issues": [
+      "Functions in solution but not in starter code: makeSerializable"
+    ]
+  }
+]

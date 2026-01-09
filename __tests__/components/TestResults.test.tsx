@@ -358,6 +358,52 @@ describe('TestResults', () => {
 
       expect(screen.getByText('true')).toBeInTheDocument();
     });
+
+    it('formats function values correctly', () => {
+      const testFunction = function myTestFunction(x: number) {
+        return x * 2;
+      };
+      const results = [
+        createMockTestResult({
+          passed: true,
+          actualOutput: testFunction,
+        }),
+      ];
+      render(<TestResults results={results} allPassed={true} isRunning={false} />);
+
+      // Function should be converted to its string representation
+      expect(screen.getByText(/function myTestFunction/)).toBeInTheDocument();
+    });
+
+    it('formats arrow function values correctly', () => {
+      const arrowFunction = (x: number) => x + 1;
+      const results = [
+        createMockTestResult({
+          passed: true,
+          actualOutput: arrowFunction,
+        }),
+      ];
+      render(<TestResults results={results} allPassed={true} isRunning={false} />);
+
+      // Arrow function should be displayed as its string representation
+      expect(screen.getByText(/=>/)).toBeInTheDocument();
+    });
+
+    it('formats anonymous function values correctly', () => {
+      const anonFunction = function () {
+        return 42;
+      };
+      const results = [
+        createMockTestResult({
+          passed: true,
+          actualOutput: anonFunction,
+        }),
+      ];
+      render(<TestResults results={results} allPassed={true} isRunning={false} />);
+
+      // Anonymous function should be displayed
+      expect(screen.getByText(/function/)).toBeInTheDocument();
+    });
   });
 
   describe('Edge Cases', () => {
