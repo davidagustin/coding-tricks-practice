@@ -235,7 +235,7 @@ function formatRelativeTime(value, unit, locale) {
   // Use Intl.RelativeTimeFormat
   const rtf = new Intl.RelativeTimeFormat(locale);
   return rtf.format(value, unit);
-}
+}`,
   testCases: [
     {
       input: ['2024-01-15T00:00:00Z'],
