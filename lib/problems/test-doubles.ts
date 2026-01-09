@@ -145,7 +145,109 @@ console.log('Mock verified:', mock.verify('getUser', [1]));
 const fakeDb = createFakeDatabase();
 fakeDb.save({ id: 1, name: 'Test User' });
 console.log('Fake:', fakeDb.getUser(1));`,
-  solution: `function test() { return true; }`,
+  solution: `// Implement different types of test doubles
+
+// 1. STUB: Returns predefined responses
+function createStub(responses) {
+  // Create an object where each method returns the predefined response
+  // Example: createStub({ getUser: { id: 1 } }) creates stub.getUser() => { id: 1 }
+  const stub = {};
+  for (const [method, response] of Object.entries(responses)) {
+    stub[method] = () => response;
+  }
+  return stub;
+}
+
+// 2. MOCK: Returns responses AND tracks/verifies calls
+function createMock(methods) {
+  // Create an object with tracking capabilities
+  // Should have: calls record, verify method, expect method
+
+  const mock = {
+    _calls: {},
+
+    // Verify a method was called with specific args
+    verify: function(methodName, expectedArgs) {
+      // Check if method was called with expectedArgs
+      const calls = this._calls[methodName] || [];
+      return calls.some(call => JSON.stringify(call) === JSON.stringify(expectedArgs));
+    },
+
+    // Set up expected call (for strict mocking)
+    expect: function(methodName) {
+      // Return object with methods: withArgs, toReturn, times
+      return {
+        withArgs: function(...args) {
+          mock._calls[methodName] = mock._calls[methodName] || [];
+          mock._calls[methodName].push(args);
+          return this;
+        },
+        toReturn: function(value) {
+          return this;
+        },
+        times: function(n) {
+          return this;
+        }
+      };
+    }
+  };
+
+  // Create methods that track calls
+  for (const method of methods) {
+    mock[method] = function(...args) {
+      mock._calls[method] = mock._calls[method] || [];
+      mock._calls[method].push(args);
+      return undefined;
+    };
+  }
+
+  return mock;
+}
+
+// 3. FAKE: Working implementation with shortcuts
+function createFakeDatabase() {
+  // In-memory database implementation
+  // Should support: save, getUser, getAllUsers, deleteUser
+  const storage = new Map();
+
+  return {
+    // Implement methods using a Map or object for storage
+    save: function(user) {
+      storage.set(user.id, user);
+      return user;
+    },
+    getUser: function(id) {
+      return storage.get(id);
+    },
+    getAllUsers: function() {
+      return Array.from(storage.values());
+    },
+    deleteUser: function(id) {
+      return storage.delete(id);
+    }
+  };
+}
+
+// 4. SPY: Wraps real object and records calls
+function createSpy(realObject) {
+  // Wrap each method of realObject
+  // Track calls while still calling the real implementation
+  const spy = { _calls: {} };
+  
+  for (const [key, value] of Object.entries(realObject)) {
+    if (typeof value === 'function') {
+      spy._calls[key] = [];
+      spy[key] = function(...args) {
+        spy._calls[key].push(args);
+        return value.apply(realObject, args);
+      };
+    } else {
+      spy[key] = value;
+    }
+  }
+  
+  return spy;
+}`,
   testCases: [
     {
       input: [],

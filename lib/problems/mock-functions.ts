@@ -135,7 +135,66 @@ console.log('Return value:', mock());
 
 mock.mockImplementation((x) => x * 2);
 console.log('Implementation:', mock(5));`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a mock function factory
+function createMock() {
+  // Return a function that tracks calls
+  // Add properties: calls (array), callCount, returnValues
+  // Add methods: mockReturnValue, mockImplementation
+
+  function mockFn(...args) {
+    // Track the call and arguments
+    // Return the configured value
+    mockFn.calls.push(args);
+    mockFn.callCount++;
+    
+    if (mockFn._implementation) {
+      const result = mockFn._implementation(...args);
+      mockFn.returnValues.push(result);
+      return result;
+    }
+    
+    if (mockFn._returnValue !== undefined) {
+      mockFn.returnValues.push(mockFn._returnValue);
+      return mockFn._returnValue;
+    }
+    
+    return undefined;
+  }
+
+  // Initialize tracking properties
+  mockFn.calls = [];
+  mockFn.callCount = 0;
+  mockFn.returnValues = [];
+  mockFn._returnValue = undefined;
+  mockFn._implementation = undefined;
+
+  // Add method to set return value
+  mockFn.mockReturnValue = function(value) {
+    // Set what the mock should return
+    mockFn._returnValue = value;
+    return mockFn;
+  };
+
+  // Add method to set implementation
+  mockFn.mockImplementation = function(fn) {
+    // Replace the mock's behavior with fn
+    mockFn._implementation = fn;
+    return mockFn;
+  };
+
+  // Add method to reset the mock
+  mockFn.mockReset = function() {
+    // Clear all tracking data
+    mockFn.calls = [];
+    mockFn.callCount = 0;
+    mockFn.returnValues = [];
+    mockFn._returnValue = undefined;
+    mockFn._implementation = undefined;
+    return mockFn;
+  };
+
+  return mockFn;
+}`,
   testCases: [
     {
       input: [],

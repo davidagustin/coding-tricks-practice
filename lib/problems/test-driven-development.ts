@@ -205,7 +205,158 @@ class Stack {
 }
 
 runTests();`,
-  solution: `function test() { return true; }`,
+  solution: `// Implement a mini TDD test framework
+
+// Test results storage
+const testResults = {
+  passed: 0,
+  failed: 0,
+  results: []
+};
+
+// Implement describe - groups related tests
+function describe(description, fn) {
+  // Store current describe context
+  // Run the function which contains it() calls
+  // Restore context after
+  try {
+    fn();
+  } catch (error) {
+    testResults.failed++;
+    testResults.results.push({
+      description,
+      passed: false,
+      error: error.message
+    });
+  }
+}
+
+// Implement it - defines a single test
+function it(description, fn) {
+  // Run the test function
+  // Catch any errors (failed assertions)
+  // Record pass/fail
+  try {
+    if (beforeEachFn) beforeEachFn();
+    fn();
+    if (afterEachFn) afterEachFn();
+    testResults.passed++;
+    testResults.results.push({ description, passed: true, error: null });
+  } catch (error) {
+    if (afterEachFn) afterEachFn();
+    testResults.failed++;
+    testResults.results.push({
+      description,
+      passed: false,
+      error: error.message
+    });
+  }
+}
+
+// Implement expect - creates assertion object
+function expect(actual) {
+  // Return object with matchers:
+  // toBe, toEqual, toBeTruthy, toBeFalsy, toThrow, toContain
+  return {
+    toBe: function(expected) {
+      // Strict equality check
+      if (actual !== expected) {
+        throw new Error(\`Expected \${expected}, got \${actual}\`);
+      }
+    },
+    toEqual: function(expected) {
+      // Deep equality check
+      if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+        throw new Error(\`Expected \${JSON.stringify(expected)}, got \${JSON.stringify(actual)}\`);
+      }
+    },
+    toBeTruthy: function() {
+      // Check if value is truthy
+      if (!actual) {
+        throw new Error(\`Expected truthy, got \${actual}\`);
+      }
+    },
+    toBeFalsy: function() {
+      // Check if value is falsy
+      if (actual) {
+        throw new Error(\`Expected falsy, got \${actual}\`);
+      }
+    },
+    toThrow: function(expectedMessage) {
+      // Check if function throws
+      try {
+        if (typeof actual === 'function') {
+          actual();
+        }
+        throw new Error('Expected function to throw');
+      } catch (error) {
+        if (expectedMessage && error.message !== expectedMessage) {
+          throw new Error(\`Expected error message "\${expectedMessage}", got "\${error.message}"\`);
+        }
+      }
+    },
+    toContain: function(item) {
+      // Check if array/string contains item
+      if (!actual.includes || !actual.includes(item)) {
+        throw new Error(\`Expected \${actual} to contain \${item}\`);
+      }
+    },
+    not: {
+      toBe: function(expected) {
+        if (actual === expected) {
+          throw new Error(\`Expected not \${expected}, got \${actual}\`);
+        }
+      },
+      toEqual: function(expected) {
+        if (JSON.stringify(actual) === JSON.stringify(expected)) {
+          throw new Error(\`Expected not \${JSON.stringify(expected)}, got \${JSON.stringify(actual)}\`);
+        }
+      }
+    }
+  };
+}
+
+// Implement beforeEach/afterEach hooks
+let beforeEachFn = null;
+let afterEachFn = null;
+
+function beforeEach(fn) {
+  beforeEachFn = fn;
+}
+
+function afterEach(fn) {
+  afterEachFn = fn;
+}
+
+// Helper to run all tests and report results
+function runTests() {
+  console.log('\\n=== Test Results ===');
+  testResults.results.forEach(r => {
+    const status = r.passed ? 'PASS' : 'FAIL';
+    console.log(\`\${status}: \${r.description}\`);
+    if (!r.passed) console.log(\`  Error: \${r.error}\`);
+  });
+  console.log(\`\\nPassed: \${testResults.passed}, Failed: \${testResults.failed}\`);
+}
+
+// Example Stack class
+class Stack {
+  constructor() {
+    this.items = [];
+  }
+  isEmpty() {
+    return this.items.length === 0;
+  }
+  push(item) {
+    this.items.push(item);
+  }
+  pop() {
+    if (this.isEmpty()) {
+      throw new Error('Cannot pop from empty stack');
+    }
+    return this.items.pop();
+  }
+}`,
   testCases: [
     {
       input: [],

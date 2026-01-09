@@ -135,7 +135,98 @@ console.log([...doubled]);
 
 const evens = lazyFilter(lazyRange(1, 20), x => x % 2 === 0);
 console.log(take(evens, 5));`,
-  solution: `function test() { return true; }`,
+  solution: `// Implement lazy evaluation patterns
+
+// 1. Lazy Range Generator - generates numbers on demand
+function* lazyRange(start, end) {
+  // Yield numbers from start to end lazily
+  for (let i = start; i <= end; i++) {
+    yield i;
+  }
+}
+
+// 2. Lazy Map - transforms values only when consumed
+function* lazyMap(iterable, transform) {
+  // Apply transform lazily to each value
+  for (const value of iterable) {
+    yield transform(value);
+  }
+}
+
+// 3. Lazy Filter - filters values only when consumed
+function* lazyFilter(iterable, predicate) {
+  // Filter values lazily
+  for (const value of iterable) {
+    if (predicate(value)) {
+      yield value;
+    }
+  }
+}
+
+// 4. Take - get first n values from a lazy sequence
+function take(iterable, n) {
+  // Take first n values from any iterable
+  const result = [];
+  const iterator = iterable[Symbol.iterator]();
+  for (let i = 0; i < n; i++) {
+    const { value, done } = iterator.next();
+    if (done) break;
+    result.push(value);
+  }
+  return result;
+}
+
+// 5. Lazy Property - compute value only on first access, then cache
+function createLazyObject(computeExpensive) {
+  // Return object with a lazy 'value' property
+  let cachedValue = undefined;
+  let computed = false;
+  
+  return {
+    get value() {
+      if (!computed) {
+        cachedValue = computeExpensive();
+        computed = true;
+      }
+      return cachedValue;
+    }
+  };
+}
+
+// 6. Lazy Chain - chain operations without immediate execution
+class LazyChain {
+  constructor(iterable) {
+    this.iterable = iterable;
+    this.operations = [];
+  }
+
+  map(fn) {
+    // Add map operation to chain
+    this.operations.push({ type: 'map', fn });
+    return this;
+  }
+
+  filter(fn) {
+    // Add filter operation to chain
+    this.operations.push({ type: 'filter', fn });
+    return this;
+  }
+
+  take(n) {
+    // Execute chain and take n results
+    let result = this.iterable;
+    
+    for (const op of this.operations) {
+      if (op.type === 'map') {
+        result = lazyMap(result, op.fn);
+      } else if (op.type === 'filter') {
+        result = lazyFilter(result, op.fn);
+      }
+    }
+    
+    return take(result, n);
+  }
+}`,
   testCases: [
     {
       input: [],

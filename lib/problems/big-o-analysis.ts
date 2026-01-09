@@ -120,7 +120,90 @@ console.log(getFirst([1, 2, 3, 4, 5]));
 console.log(linearSearch([3, 1, 4, 1, 5], 4));
 console.log(binarySearch([1, 2, 3, 4, 5], 3));
 console.log(findAllPairs([1, 2, 3]));`,
-  solution: `function test() { return true; }`,
+  solution: `// Implement functions with different time complexities
+// and a function to analyze/identify the complexity
+
+// O(1) - Constant time: Get first element
+function getFirst(arr) {
+  return arr[0];
+}
+
+// O(n) - Linear time: Find element in unsorted array
+function linearSearch(arr, target) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === target) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+// O(log n) - Logarithmic time: Binary search in sorted array
+function binarySearch(arr, target) {
+  let left = 0;
+  let right = arr.length - 1;
+  
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+    if (arr[mid] === target) {
+      return mid;
+    } else if (arr[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
+    }
+  }
+  
+  return -1;
+}
+
+// O(n²) - Quadratic time: Find all pairs
+function findAllPairs(arr) {
+  const pairs = [];
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = i + 1; j < arr.length; j++) {
+      pairs.push([arr[i], arr[j]]);
+    }
+  }
+  return pairs;
+}
+
+// O(n log n) - Sort array using efficient algorithm
+function efficientSort(arr) {
+  // Your code here (can use built-in sort)
+  return [...arr].sort((a, b) => a - b);
+}
+
+// Analyze the complexity of a given function based on its behavior
+function analyzeComplexity(fn, testSizes = [10, 100, 1000]) {
+  // Measure execution time for different input sizes
+  // Return the Big O notation as a string
+  const times = [];
+  
+  for (const size of testSizes) {
+    const testArray = Array(size).fill(0).map((_, i) => i);
+    const start = Date.now();
+    fn(testArray, Math.floor(size / 2));
+    const duration = Date.now() - start;
+    times.push({ size, duration });
+  }
+  
+  // Analyze growth pattern
+  const ratio1 = times[1].duration / times[0].duration;
+  const ratio2 = times[2].duration / times[1].duration;
+  
+  if (ratio1 < 1.5 && ratio2 < 1.5) {
+    return 'O(1)';
+  } else if (ratio1 < 15 && ratio2 < 15) {
+    return 'O(log n)';
+  } else if (ratio1 < 150 && ratio2 < 150) {
+    return 'O(n)';
+  } else if (ratio1 < 200 && ratio2 < 200) {
+    return 'O(n log n)';
+  } else {
+    return 'O(n²)';
+  }
+}`,
   testCases: [
     {
       input: [],

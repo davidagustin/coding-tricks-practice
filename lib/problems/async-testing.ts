@@ -177,7 +177,184 @@ async function runTests() {
 }
 
 runTests();`,
-  solution: `function test() { return true; }`,
+  solution: `// 1. Async test wrapper with timeout
+async function asyncTest(testFn, timeoutMs = 5000) {
+  // Wrap async test function with timeout
+  // Return { passed: true/false, error: null/Error, duration: number }
+  const start = Date.now();
+  try {
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Test timeout')), timeoutMs)
+    );
+    await Promise.race([testFn(), timeoutPromise]);
+    return { passed: true, error: null, duration: Date.now() - start };
+  } catch (error) {
+    return { 
+      passed: false, 
+      error: error instanceof Error ? error : new Error(String(error)), 
+      duration: Date.now() - start 
+    };
+  }
+}
+
+// 2. Fake timers - control setTimeout and setInterval
+function createFakeTimers() {
+  // Replace global setTimeout/setInterval
+  // Track scheduled callbacks
+  // Provide advanceTime, runAllTimers, clearAllTimers
+  const timers = [];
+  let currentTime = 0;
+  
+  const originalSetTimeout = globalThis.setTimeout;
+  const originalSetInterval = globalThis.setInterval;
+  const originalClearTimeout = globalThis.clearTimeout;
+  const originalClearInterval = globalThis.clearInterval;
+  
+  globalThis.setTimeout = function(callback, delay) {
+    const id = timers.length;
+    timers.push({ callback, time: currentTime + delay, id, type: 'timeout' });
+    return id;
+  };
+  
+  globalThis.setInterval = function(callback, delay) {
+    const id = timers.length;
+    timers.push({ callback, time: currentTime + delay, id, delay, type: 'interval' });
+    return id;
+  };
+  
+  return {
+    advanceTime: function(ms) {
+      // Execute callbacks whose time has come
+      currentTime += ms;
+      timers.forEach(timer => {
+        if (timer.time <= currentTime) {
+          timer.callback();
+          if (timer.type === 'interval') {
+            timer.time += timer.delay;
+          } else {
+            timers.splice(timers.indexOf(timer), 1);
+          }
+        }
+      });
+    },
+    runAllTimers: function() {
+      // Execute all pending timers immediately
+      while (timers.length > 0) {
+        const timer = timers.shift();
+        timer.callback();
+        if (timer.type === 'interval') {
+          timers.push(timer);
+        }
+      }
+    },
+    clearAllTimers: function() {
+      // Clear all pending timers
+      timers.length = 0;
+    },
+    getTimerCount: function() {
+      // Return number of pending timers
+      return timers.length;
+    },
+    restore: function() {
+      // Restore real timers
+      globalThis.setTimeout = originalSetTimeout;
+      globalThis.setInterval = originalSetInterval;
+      globalThis.clearTimeout = originalClearTimeout;
+      globalThis.clearInterval = originalClearInterval;
+    }
+  };
+}
+
+// 3. Flush promises - ensure all pending promises resolve
+function flushPromises() {
+  // Return a promise that resolves after all pending microtasks
+  // Use setImmediate or setTimeout(0) trick
+  return new Promise(resolve => setTimeout(resolve, 0));
+}
+
+// 4. Wait for condition - poll until condition is true
+async function waitFor(conditionFn, options = {}) {
+  // Poll conditionFn until it returns true
+  // Options: timeout, interval
+  // Throw if timeout exceeded
+  const { timeout = 1000, interval = 50 } = options;
+  const start = Date.now();
+  
+  while (Date.now() - start < timeout) {
+    if (conditionFn()) {
+      return;
+    }
+    await new Promise(resolve => setTimeout(resolve, interval));
+  }
+  
+  throw new Error('Timeout waiting for condition');
+}
+
+// 5. Async assertion helper
+async function expectAsync(promiseOrFn) {
+  // Return object with assertion methods:
+  // toResolve, toReject, toResolveWith, toRejectWith
+  const promise = typeof promiseOrFn === 'function' ? promiseOrFn() : promiseOrFn;
+  
+  return {
+    toResolve: async function() {
+      try {
+        await promise;
+        return true;
+      } catch {
+        throw new Error('Expected promise to resolve');
+      }
+    },
+    toReject: async function() {
+      try {
+        await promise;
+        throw new Error('Expected promise to reject');
+      } catch {
+        return true;
+      }
+    },
+    toResolveWith: async function(expected) {
+      const result = await promise;
+      if (JSON.stringify(result) !== JSON.stringify(expected)) {
+        throw new Error(\`Expected \${expected}, got \${result}\`);
+      }
+      return true;
+    },
+    toRejectWith: async function(expectedError) {
+      try {
+        await promise;
+        throw new Error('Expected promise to reject');
+      } catch (error) {
+        if (error.message !== expectedError) {
+          throw new Error(\`Expected error \${expectedError}, got \${error.message}\`);
+        }
+        return true;
+      }
+    }
+  };
+}
+
+// Helper to run all tests
+async function runTests() {
+  // Test asyncTest
+  const result = await asyncTest(async () => {
+    await new Promise(r => setTimeout(r, 100));
+    return true;
+  });
+  console.log('Async test result:', result);
+
+  // Test flushPromises
+  let resolved = false;
+  Promise.resolve().then(() => { resolved = true; });
+  await flushPromises();
+  console.log('Promise flushed:', resolved);
+
+  // Test waitFor
+  let ready = false;
+  setTimeout(() => { ready = true; }, 100);
+  await waitFor(() => ready);
+  console.log('Wait for completed');
+}`,
   testCases: [
     {
       input: [],

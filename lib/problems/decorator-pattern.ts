@@ -141,7 +141,71 @@ const validatePositive = (a, b) => a > 0 && b > 0;
 const validatedAdd = withValidation(add, validatePositive);
 console.log(validatedAdd(5, 3)); // Works
 console.log(validatedAdd(-1, 3)); // Throws error`,
-  solution: `function test() { return true; }`,
+  solution: `// Decorator that logs function calls and returns
+function withLogging(fn) {
+  return function(...args) {
+    // Log: "Calling [function name] with args: [args]"
+    // Call original function
+    // Log: "[function name] returned: [result]"
+    // Return result
+    const fnName = fn.name || 'anonymous';
+    console.log(\`Calling \${fnName} with args:\`, args);
+    const result = fn(...args);
+    console.log(\`\${fnName} returned:\`, result);
+    return result;
+  };
+}
+
+// Decorator that measures and logs execution time
+function withTiming(fn) {
+  return function(...args) {
+    // Record start time
+    // Call original function
+    // Calculate and log execution time
+    // Return result
+    const start = Date.now();
+    const result = fn(...args);
+    const duration = Date.now() - start;
+    console.log(\`\${fn.name || 'Function'} took \${duration}ms\`);
+    return result;
+  };
+}
+
+// Decorator that adds retry logic for failed operations
+function withRetry(fn, maxRetries = 3) {
+  return function(...args) {
+    // Attempt to call function
+    // If it throws, retry up to maxRetries times
+    // Return result or throw final error
+    let lastError;
+    for (let i = 0; i <= maxRetries; i++) {
+      try {
+        return fn(...args);
+      } catch (error) {
+        lastError = error;
+        if (i === maxRetries) throw error;
+      }
+    }
+    throw lastError;
+  };
+}
+
+// Decorator that validates arguments before calling function
+function withValidation(fn, validator) {
+  return function(...args) {
+    // Call validator with args
+    // If validation fails, throw error
+    // Otherwise call and return original function
+    if (!validator(...args)) {
+      throw new Error('Validation failed');
+    }
+    return fn(...args);
+  };
+}
+
+// Test functions
+const add = (a, b) => a + b;
+const validatePositive = (a, b) => a > 0 && b > 0;`,
   testCases: [
     {
       input: [],
