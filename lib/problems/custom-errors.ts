@@ -118,7 +118,64 @@ console.log(handleError('validation', 'Email is invalid', 'email'));
 console.log(handleError('notfound', 'User', '12345'));
 console.log(handleError('auth'));
 console.log(handleError('generic', 'Something went wrong'));`,
-  solution: `function test() { return true; }`,
+  solution: `// Create custom error classes
+class ValidationError extends Error {
+  constructor(message, field) {
+    super(message);
+    this.name = 'ValidationError';
+    this.field = field;
+  }
+}
+
+class NotFoundError extends Error {
+  constructor(resourceType, resourceId) {
+    super(\`\${resourceType} with id \${resourceId} not found\`);
+    this.name = 'NotFoundError';
+    this.resourceType = resourceType;
+    this.resourceId = resourceId;
+  }
+}
+
+class AuthenticationError extends Error {
+  constructor() {
+    super('Authentication required');
+    this.name = 'AuthenticationError';
+  }
+}
+
+// Create a function that handles different error types
+// and returns a formatted response object
+
+function handleError(errorType, ...args) {
+  // Based on errorType, create the appropriate error and return its details
+  // errorType can be: 'validation', 'notfound', 'auth', 'generic'
+  try {
+    switch (errorType) {
+      case 'validation': {
+        const [message, field] = args;
+        const error = new ValidationError(message, field);
+        return { type: 'ValidationError', status: 400, message: \`\${message} (field: \${field})\` };
+      }
+      case 'notfound': {
+        const [resourceType, resourceId] = args;
+        const error = new NotFoundError(resourceType, resourceId);
+        return { type: 'NotFoundError', status: 404, message: \`\${resourceType} with id \${resourceId} not found\` };
+      }
+      case 'auth': {
+        const error = new AuthenticationError();
+        return { type: 'AuthenticationError', status: 401, message: 'Authentication required' };
+      }
+      case 'generic': {
+        const [message] = args;
+        return { type: 'Error', status: 500, message: message || 'Unknown error' };
+      }
+      default:
+        return { type: 'Error', status: 500, message: 'Unknown error' };
+    }
+  } catch (err) {
+    return { type: 'Error', status: 500, message: 'Error handling failed' };
+  }
+}`,
   testCases: [
     {
       input: [],

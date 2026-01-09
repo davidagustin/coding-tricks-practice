@@ -108,7 +108,35 @@ console.log(executeSafe('success', 'default'));  // 'success'
 console.log(executeSafe('error', 'default'));    // 'default'
 console.log(executeMultiple(['ok', 'error', 'ok'], 'fallback'));
 // { results: ['ok', 'fallback', 'ok'], errorCount: 1 }`,
-  solution: `function test() { return true; }`,
+  solution: `// Execute a value safely with error boundary pattern
+function executeSafe(value, fallback) {
+  // TODO: If value === 'error', return fallback
+  // Otherwise return value
+  if (value === 'error') {
+    return fallback;
+  }
+  return value;
+}
+
+// Execute multiple values and track errors
+function executeMultiple(values, fallback) {
+  // Process each value using error boundary pattern
+  // If a value is 'error', use fallback instead and count it as an error
+  // Return { results: [...], errorCount: number }
+  const results = [];
+  let errorCount = 0;
+  
+  for (const value of values) {
+    if (value === 'error') {
+      results.push(fallback);
+      errorCount++;
+    } else {
+      results.push(value);
+    }
+  }
+  
+  return { results, errorCount };
+}`,
   testCases: [
     {
       input: [],

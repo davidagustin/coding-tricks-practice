@@ -138,7 +138,66 @@ emitter.emit('message', 'Hello World');
 
 emitter.off('message', handler1);
 emitter.emit('message', 'Second message');`,
-  solution: `function test() { return true; }`,
+  solution: `// Implement the Observer pattern
+// 1. Allow subscribing to events with on(eventName, callback)
+// 2. Allow unsubscribing with off(eventName, callback)
+// 3. Emit events to all subscribers with emit(eventName, data)
+// 4. Support multiple events and multiple subscribers per event
+
+class EventEmitter {
+  constructor() {
+    // Initialize events storage (use Map or object)
+    this.events = new Map();
+  }
+
+  // Subscribe to an event
+  on(eventName, callback) {
+    // Add callback to the list of subscribers for this event
+    // Return this for chaining
+    if (!this.events.has(eventName)) {
+      this.events.set(eventName, []);
+    }
+    this.events.get(eventName).push(callback);
+    return this;
+  }
+
+  // Unsubscribe from an event
+  off(eventName, callback) {
+    // Remove the specific callback from subscribers
+    // Return this for chaining
+    const callbacks = this.events.get(eventName);
+    if (callbacks) {
+      const index = callbacks.indexOf(callback);
+      if (index > -1) {
+        callbacks.splice(index, 1);
+      }
+    }
+    return this;
+  }
+
+  // Emit an event to all subscribers
+  emit(eventName, data) {
+    // Call all callbacks registered for this event
+    // Return true if event had listeners, false otherwise
+    const callbacks = this.events.get(eventName);
+    if (callbacks && callbacks.length > 0) {
+      callbacks.forEach(callback => callback(data));
+      return true;
+    }
+    return false;
+  }
+
+  // Get count of listeners for an event
+  listenerCount(eventName) {
+    // Return number of subscribers for this event
+    const callbacks = this.events.get(eventName);
+    return callbacks ? callbacks.length : 0;
+  }
+}
+
+// Test handlers
+const handler1 = (data) => console.log('Handler 1:', data);
+const handler2 = (data) => console.log('Handler 2:', data);`,
   testCases: [
     {
       input: [],

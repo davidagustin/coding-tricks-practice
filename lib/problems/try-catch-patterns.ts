@@ -113,7 +113,47 @@ console.log(safeExecute('valid'));
 console.log(safeExecute('error'));
 console.log(demonstrateFinally(false));
 console.log(demonstrateFinally(true));`,
-  solution: `function test() { return true; }`,
+  solution: `// Wrap a function call in try-catch and return a result object
+function safeExecute(input) {
+  // TODO: Try to process input
+  // If input === 'error', throw an Error('Invalid input')
+  // If error occurs, return { success: false, data: null, error: error.message }
+  // Otherwise return { success: true, data: input, error: null }
+  try {
+    if (input === 'error') {
+      throw new Error('Invalid input');
+    }
+    return { success: true, data: input, error: null };
+  } catch (error) {
+    return {
+      success: false,
+      data: null,
+      error: error instanceof Error ? error.message : String(error)
+    };
+  }
+}
+
+// Also implement a function that demonstrates finally always runs
+function demonstrateFinally(shouldThrow) {
+  const log = [];
+  // Use try-catch-finally
+  // Log 'try' when entering try block
+  // Throw an error if shouldThrow is true
+  // Log 'catch' in catch block
+  // Log 'finally' in finally block
+  // Return the log array
+  try {
+    log.push('try');
+    if (shouldThrow) {
+      throw new Error('Error occurred');
+    }
+  } catch (error) {
+    log.push('catch');
+  } finally {
+    log.push('finally');
+  }
+  return log;
+}`,
   testCases: [
     {
       input: [],

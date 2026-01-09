@@ -123,7 +123,48 @@ console.log(getFallbackData(['primary', 'secondary'], null));
 console.log(getFallbackData(['error', 'secondary'], null));
 console.log(getFallbackData(['error', 'error'], 'default'));
 console.log(getCircuitState('data', 5, 3));`,
-  solution: `function test() { return true; }`,
+  solution: `// Pattern 1: Fallback Chain
+// Try multiple data sources in order, use fallback if all fail
+function getFallbackData(sources, defaultValue) {
+  // Try each source in order
+  // If source === 'error', it fails, try next
+  // If source succeeds, return { data: sourceName + ' data', source: sourceName }
+  // If all fail and defaultValue provided, return { data: defaultValue, source: 'fallback' }
+  // If all fail and no defaultValue, throw error
+  for (const source of sources) {
+    if (source !== 'error') {
+      return { data: source + ' data', source };
+    }
+  }
+  
+  if (defaultValue !== undefined && defaultValue !== null) {
+    return { data: defaultValue, source: 'fallback' };
+  }
+  
+  throw new Error('All sources failed and no fallback provided');
+}
+
+// Pattern 2: Circuit Breaker State
+// Simulate circuit breaker: after threshold failures, state becomes 'open'
+function getCircuitState(operation, failureCount, threshold) {
+  // If failureCount >= threshold, return 'open'
+  // Otherwise return 'closed'
+  return failureCount >= threshold ? 'open' : 'closed';
+}
+
+// Pattern 3: Cache Lookup
+// Check if we should use cached data or fetch fresh
+function getCacheResult(cachedData, cacheAge, maxAge) {
+  // If cacheAge <= maxAge and cachedData exists, return { data: cachedData, fromCache: true, stale: false }
+  // If cacheAge > maxAge but cachedData exists, return { data: cachedData, fromCache: true, stale: true }
+  // If no cachedData, return { data: null, fromCache: false, stale: false }
+  if (!cachedData) {
+    return { data: null, fromCache: false, stale: false };
+  }
+  
+  const stale = cacheAge > maxAge;
+  return { data: cachedData, fromCache: true, stale };
+}`,
   testCases: [
     {
       input: [],
