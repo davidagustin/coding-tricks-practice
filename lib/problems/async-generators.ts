@@ -93,7 +93,29 @@ async function fetchPage(page) {
     console.log(page);
   }
 })();`,
-  solution: `function test() { return true; }`,
+  solution: `async function* fetchPages(pageSize = 10) {
+  // Create async generator that yields pages
+  // Start at page 0, increment until no more data
+  // Yield each page as it's fetched
+  let page = 0;
+  let hasMore = true;
+  
+  while (hasMore) {
+    const result = await fetchPage(page);
+    yield result.data;
+    hasMore = result.hasMore;
+    page++;
+  }
+}
+
+// Helper function (assume this exists)
+async function fetchPage(page) {
+  // Simulated API call
+  return {
+    data: Array.from({ length: pageSize }, (_, i) => page * pageSize + i),
+    hasMore: page < 2
+  };
+}`,
   testCases: [
     {
       input: [],

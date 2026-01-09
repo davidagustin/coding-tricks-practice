@@ -95,7 +95,36 @@ async function fetchMultipleUsers(userIds) {
 // Test (commented out to prevent immediate execution)
 // fetchUserData(1).then(console.log).catch(console.error);
 // fetchMultipleUsers([1, 2, 3]).then(console.log).catch(console.error);`,
-  solution: `function test() { return true; }`,
+  solution: `async function fetchUserData(userId) {
+  // Fetch user, handle errors
+  // If fetch fails, return null
+  // If user not found (404), return null
+  // Otherwise return user data
+  try {
+    const response = await fetch(\`/api/users/\${userId}\`);
+    if (!response.ok) {
+      if (response.status === 404) {
+        return null;
+      }
+      throw new Error(\`HTTP error! status: \${response.status}\`);
+    }
+    return response.json();
+  } catch (error) {
+    return null;
+  }
+}
+
+async function fetchMultipleUsers(userIds) {
+  // Fetch all users, return array
+  // If any fetch fails, skip that user (don't fail entire operation)
+  const results = await Promise.allSettled(
+    userIds.map(id => fetchUserData(id))
+  );
+  
+  return results
+    .filter(result => result.status === 'fulfilled' && result.value !== null)
+    .map(result => result.value);
+}`,
   testCases: [
     {
       input: [],

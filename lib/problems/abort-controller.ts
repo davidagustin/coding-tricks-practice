@@ -97,7 +97,44 @@ function createCancellableFetch(url, timeout = 5000) {
 // Test
 const { promise, cancel } = createCancellableFetch('/api/data', 1000);
 setTimeout(() => cancel(), 500); // Cancel after 500ms`,
-  solution: `function test() { return true; }`,
+  solution: `async function fetchWithCancel(url, signal) {
+  // Pass signal to fetch options
+  // Handle AbortError when cancelled
+  try {
+    const response = await fetch(url, { signal });
+    return response.json();
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      throw new Error('Request was cancelled');
+    }
+    throw error;
+  }
+}
+
+function createCancellableFetch(url, timeout = 5000) {
+  // Create AbortController
+  // Set timeout to auto-cancel
+  // Return { promise, cancel }
+  const controller = new AbortController();
+  
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, timeout);
+  
+  const promise = fetch(url, { signal: controller.signal })
+    .then(response => response.json())
+    .finally(() => {
+      clearTimeout(timeoutId);
+    });
+  
+  return {
+    promise,
+    cancel: () => {
+      controller.abort();
+      clearTimeout(timeoutId);
+    }
+  };
+}`,
   testCases: [
     {
       input: [],

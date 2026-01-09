@@ -112,7 +112,29 @@ console.log(getProduct(productId));
 // This should cause type error (uncomment to test):
 // getUser(productId); // Error!
 // getProduct(userId); // Error!`,
-  solution: `function test() { return true; }`,
+  solution: `// Create branded types for UserId and ProductId
+// Both are numbers but should not be interchangeable
+type UserId = number & { readonly __brand: unique symbol };
+type ProductId = number & { readonly __brand: unique symbol };
+
+// Create validation functions that return branded types
+function createUserId(id: number): UserId {
+  return id as UserId;
+}
+
+function createProductId(id: number): ProductId {
+  return id as ProductId;
+}
+
+// Create a function that only accepts UserId
+function getUser(id: UserId): string {
+  return 'User ' + id;
+}
+
+// Create a function that only accepts ProductId
+function getProduct(id: ProductId): string {
+  return 'Product ' + id;
+}`,
   testCases: [
     {
       input: [],
