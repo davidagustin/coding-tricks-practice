@@ -135,11 +135,9 @@ describe('Test Runner Mocked Tests', () => {
             throw new Error('window is not defined');
           };
         }
-        // @ts-expect-error - we need to call the original
         return new OriginalFunction(...args);
       }) as typeof Function;
 
-      // @ts-expect-error - intentionally overriding
       global.Function = mockFn;
 
       // Code MUST have a function so extractFunctionNames returns non-empty array
@@ -171,11 +169,9 @@ describe('Test Runner Mocked Tests', () => {
             throw new ReferenceError('fetch is not defined');
           };
         }
-        // @ts-expect-error - need to call original Function constructor
         return new OriginalFunction(...args);
       }) as typeof Function;
 
-      // @ts-expect-error - intentionally overriding global Function for testing
       global.Function = mockFn;
 
       const code = `
@@ -201,11 +197,9 @@ describe('Test Runner Mocked Tests', () => {
             throw new ReferenceError('document is not defined');
           };
         }
-        // @ts-expect-error - need to call original Function constructor
         return new OriginalFunction(...args);
       }) as typeof Function;
 
-      // @ts-expect-error - intentionally overriding global Function for testing
       global.Function = mockFn;
 
       const code = `
@@ -231,11 +225,9 @@ describe('Test Runner Mocked Tests', () => {
             throw new ReferenceError('AbortController is not defined');
           };
         }
-        // @ts-expect-error - need to call original Function constructor
         return new OriginalFunction(...args);
       }) as typeof Function;
 
-      // @ts-expect-error - intentionally overriding global Function for testing
       global.Function = mockFn;
 
       const code = `
@@ -285,11 +277,9 @@ describe('Test Runner Mocked Tests', () => {
             return {}; // Empty functions object
           };
         }
-        // @ts-expect-error - need to call original
         return new OriginalFunction(...args);
       }) as typeof Function;
 
-      // @ts-expect-error - intentionally overriding
       global.Function = mockFn;
 
       // Use code that won't have any function names detected by the regex
@@ -349,11 +339,9 @@ describe('Test Runner Mocked Tests', () => {
             },
           });
         }
-        // @ts-expect-error - need to call original
         return new OriginalFunction(...args);
       }) as typeof Function;
 
-      // @ts-expect-error - intentionally overriding
       global.Function = mockFn;
 
       const code = `

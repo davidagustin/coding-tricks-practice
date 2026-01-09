@@ -1,8 +1,9 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import type React from 'react';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
 // Component that throws an error on render
-function ThrowingComponent({ errorMessage }: { errorMessage?: string }) {
+function ThrowingComponent({ errorMessage }: { errorMessage?: string }): React.ReactElement {
   throw new Error(errorMessage || 'Test error');
 }
 
@@ -25,7 +26,7 @@ function TypedErrorComponent({
   errorType,
 }: {
   errorType: 'Error' | 'TypeError' | 'RangeError' | 'ReferenceError' | 'SyntaxError';
-}) {
+}): React.ReactElement {
   switch (errorType) {
     case 'TypeError':
       throw new TypeError('Type error occurred');
@@ -41,12 +42,12 @@ function TypedErrorComponent({
 }
 
 // Component that throws error without message
-function ErrorWithoutMessage() {
+function ErrorWithoutMessage(): React.ReactElement {
   throw new Error();
 }
 
-// Async component that might throw
-function AsyncErrorComponent({ shouldThrow }: { shouldThrow: boolean }) {
+// Async component that might throw - used in complex async test scenarios
+function _AsyncErrorComponent({ shouldThrow }: { shouldThrow: boolean }) {
   if (shouldThrow) {
     throw new Error('Async component error');
   }
@@ -63,8 +64,8 @@ function NestedComponent() {
 }
 
 // Component that throws error with stack trace
-function ErrorWithStackComponent() {
-  function innerFunction() {
+function ErrorWithStackComponent(): React.ReactElement | null {
+  function innerFunction(): never {
     throw new Error('Error with stack trace');
   }
   innerFunction();
@@ -136,10 +137,8 @@ describe('ErrorBoundary', () => {
     it('should render fragments as children', () => {
       render(
         <ErrorBoundary>
-          <>
-            <span data-testid="fragment-child-1">Fragment 1</span>
-            <span data-testid="fragment-child-2">Fragment 2</span>
-          </>
+          <span data-testid="fragment-child-1">Fragment 1</span>
+          <span data-testid="fragment-child-2">Fragment 2</span>
         </ErrorBoundary>
       );
 
@@ -390,7 +389,7 @@ describe('ErrorBoundary', () => {
     it('should store errorInfo in state', () => {
       // We can't directly access state, but in development mode, error details would be visible
       const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = 'development';
+      Object.defineProperty(process.env, 'NODE_ENV', { value: 'development', writable: true });
 
       render(
         <ErrorBoundary>
@@ -401,7 +400,7 @@ describe('ErrorBoundary', () => {
       // The component did catch and log
       expect(console.error).toHaveBeenCalled();
 
-      process.env.NODE_ENV = originalEnv;
+      Object.defineProperty(process.env, 'NODE_ENV', { value: originalEnv, writable: true });
     });
   });
 
@@ -514,7 +513,7 @@ describe('ErrorBoundary', () => {
     const originalEnv = process.env.NODE_ENV;
 
     afterEach(() => {
-      process.env.NODE_ENV = originalEnv;
+      Object.defineProperty(process.env, 'NODE_ENV', { value: originalEnv, writable: true });
     });
 
     it('should show error details in development mode', () => {
@@ -667,7 +666,7 @@ describe('ErrorBoundary', () => {
       // Use a stable reference for the throw count
       const throwTracker = { count: 0 };
 
-      function ReThrowingComponent() {
+      function ReThrowingComponent(): React.ReactElement {
         throwTracker.count++;
         const currentCount = throwTracker.count;
         throw new Error(`Error throw #${currentCount}`);
@@ -704,7 +703,7 @@ describe('ErrorBoundary', () => {
     });
 
     it('should handle empty error message gracefully', () => {
-      function EmptyMessageError() {
+      function EmptyMessageError(): React.ReactElement {
         const error = new Error('');
         throw error;
       }
@@ -719,7 +718,7 @@ describe('ErrorBoundary', () => {
     });
 
     it('should handle error in initial render', () => {
-      function ImmediateError() {
+      function ImmediateError(): React.ReactElement {
         throw new Error('Immediate error');
       }
 

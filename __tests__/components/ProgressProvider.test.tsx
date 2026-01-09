@@ -1,5 +1,5 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
-import { useContext, useRef } from 'react';
+import { useContext } from 'react';
 import { ProgressContext, ProgressProvider, useProgress } from '@/components/ProgressProvider';
 
 // Mock the problems module
@@ -59,22 +59,22 @@ function TestComponent() {
       <div data-testid="solved-problems">{Array.from(solvedProblems).join(',')}</div>
       <div data-testid="is-solved-1">{isSolved('problem-1') ? 'true' : 'false'}</div>
       <div data-testid="is-solved-2">{isSolved('problem-2') ? 'true' : 'false'}</div>
-      <button onClick={() => markSolved('problem-1')} data-testid="mark-solved-1">
+      <button type="button" onClick={() => markSolved('problem-1')} data-testid="mark-solved-1">
         Mark Solved 1
       </button>
-      <button onClick={() => markSolved('problem-2')} data-testid="mark-solved-2">
+      <button type="button" onClick={() => markSolved('problem-2')} data-testid="mark-solved-2">
         Mark Solved 2
       </button>
-      <button onClick={() => markSolved('problem-3')} data-testid="mark-solved-3">
+      <button type="button" onClick={() => markSolved('problem-3')} data-testid="mark-solved-3">
         Mark Solved 3
       </button>
-      <button onClick={() => markUnsolved('problem-1')} data-testid="mark-unsolved-1">
+      <button type="button" onClick={() => markUnsolved('problem-1')} data-testid="mark-unsolved-1">
         Mark Unsolved 1
       </button>
-      <button onClick={() => markUnsolved('problem-2')} data-testid="mark-unsolved-2">
+      <button type="button" onClick={() => markUnsolved('problem-2')} data-testid="mark-unsolved-2">
         Mark Unsolved 2
       </button>
-      <button onClick={resetProgress} data-testid="reset">
+      <button type="button" onClick={resetProgress} data-testid="reset">
         Reset
       </button>
     </div>
@@ -753,9 +753,9 @@ describe('ProgressProvider', () => {
     it('should handle localStorage errors gracefully on save', async () => {
       const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
       const originalSetItem = localStorageMock.setItem;
-      localStorageMock.setItem = jest.fn(() => {
+      localStorageMock.setItem = jest.fn().mockImplementation(() => {
         throw new Error('Storage full');
-      });
+      }) as typeof localStorageMock.setItem;
 
       render(
         <ProgressProvider>
@@ -788,9 +788,9 @@ describe('ProgressProvider', () => {
       localStorageMock.setItem('js-ts-tricks-progress', JSON.stringify(savedProgress));
 
       const originalRemoveItem = localStorageMock.removeItem;
-      localStorageMock.removeItem = jest.fn(() => {
+      localStorageMock.removeItem = jest.fn().mockImplementation(() => {
         throw new Error('Storage error');
-      });
+      }) as typeof localStorageMock.removeItem;
 
       render(
         <ProgressProvider>
@@ -944,7 +944,7 @@ describe('ProgressProvider', () => {
           <div>
             <div data-testid="is-solved-special">{isSolved(specialId) ? 'true' : 'false'}</div>
             <div data-testid="solved-list">{Array.from(solvedProblems).join(',')}</div>
-            <button onClick={() => markSolved(specialId)} data-testid="mark-special">
+            <button type="button" onClick={() => markSolved(specialId)} data-testid="mark-special">
               Mark Special
             </button>
           </div>
@@ -1011,20 +1011,17 @@ describe('ProgressProvider', () => {
     });
 
     it('should provide all expected functions from the hook', async () => {
-      let hookResultRef: { current: ReturnType<typeof useProgress> | null } = { current: null };
-
       function HookInspectorComponent() {
         const result = useProgress();
-        hookResultRef.current = result;
 
         return (
           <div>
             <div data-testid="has-functions">
-              {hookResultRef.current &&
-              typeof hookResultRef.current.markSolved === 'function' &&
-              typeof hookResultRef.current.markUnsolved === 'function' &&
-              typeof hookResultRef.current.isSolved === 'function' &&
-              typeof hookResultRef.current.resetProgress === 'function'
+              {result &&
+              typeof result.markSolved === 'function' &&
+              typeof result.markUnsolved === 'function' &&
+              typeof result.isSolved === 'function' &&
+              typeof result.resetProgress === 'function'
                 ? 'true'
                 : 'false'}
             </div>
@@ -1044,10 +1041,10 @@ describe('ProgressProvider', () => {
 
       // Verify all functions are present and are functions
       expect(hookResultRef.current).not.toBeNull();
-      expect(typeof hookResultRef.current!.markSolved).toBe('function');
-      expect(typeof hookResultRef.current!.markUnsolved).toBe('function');
-      expect(typeof hookResultRef.current!.isSolved).toBe('function');
-      expect(typeof hookResultRef.current!.resetProgress).toBe('function');
+      expect(typeof hookResultRef.current?.markSolved).toBe('function');
+      expect(typeof hookResultRef.current?.markUnsolved).toBe('function');
+      expect(typeof hookResultRef.current?.isSolved).toBe('function');
+      expect(typeof hookResultRef.current?.resetProgress).toBe('function');
     });
   });
 
@@ -1071,5 +1068,4 @@ describe('ProgressProvider', () => {
       });
     });
   });
-
 });
