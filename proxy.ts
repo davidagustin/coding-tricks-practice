@@ -2,13 +2,13 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 /**
- * Security middleware that adds Content Security Policy and other security headers
+ * Security proxy that adds Content Security Policy and other security headers
  * to protect against XSS, clickjacking, and other common web vulnerabilities.
  *
  * Note: Monaco Editor requires 'unsafe-eval' and 'unsafe-inline' to function.
  * This is a known limitation of the editor's architecture.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const response = NextResponse.next();
 
   // Content Security Policy
@@ -57,7 +57,7 @@ export function middleware(request: NextRequest) {
   return response;
 }
 
-// Apply middleware to all routes
+// Apply proxy to all routes
 export const config = {
   matcher: [
     /*
