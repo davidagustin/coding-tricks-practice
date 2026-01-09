@@ -115,7 +115,54 @@ const mockContainer = {
 //   console.log('Item clicked:', e.target);
 // });
 // cleanup(); // removes the listener`,
-  solution: `function test() { return true; }`,
+  solution: `// Implement event delegation
+// Listen on parent, handle events from children matching selector
+function delegate(parent, eventType, selector, handler) {
+  // 1. Add event listener to parent
+  // 2. Check if event.target matches selector (use closest)
+  // 3. Call handler with matched element
+  // 4. Return cleanup function
+  const listener = (e) => {
+    const matched = e.target.closest(selector);
+    if (matched && parent.contains(matched)) {
+      handler(e, matched);
+    }
+  };
+  
+  parent.addEventListener(eventType, listener);
+  
+  return () => {
+    parent.removeEventListener(eventType, listener);
+  };
+}
+
+// Implement a delegated click handler for a todo list
+// Should handle: toggle complete, delete, edit
+function setupTodoList(container) {
+  // Use delegate() to handle:
+  // - Clicking .toggle-btn toggles 'completed' class on parent li
+  // - Clicking .delete-btn removes the parent li
+  // - Clicking .edit-btn dispatches custom 'edit' event with todo text
+  const cleanup1 = delegate(container, 'click', '.toggle-btn', (e, btn) => {
+    btn.closest('li')?.classList.toggle('completed');
+  });
+  
+  const cleanup2 = delegate(container, 'click', '.delete-btn', (e, btn) => {
+    btn.closest('li')?.remove();
+  });
+  
+  const cleanup3 = delegate(container, 'click', '.edit-btn', (e, btn) => {
+    const li = btn.closest('li');
+    const text = li?.querySelector('.todo-text')?.textContent || '';
+    container.dispatchEvent(new CustomEvent('edit', { detail: { text } }));
+  });
+  
+  return () => {
+    cleanup1();
+    cleanup2();
+    cleanup3();
+  };
+}`,
   testCases: [
     {
       input: [],

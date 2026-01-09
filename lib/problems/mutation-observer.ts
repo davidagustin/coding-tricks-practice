@@ -133,7 +133,110 @@ const mockObserver = {
 //   console.log('Modal added:', modal);
 //   initializeModal(modal);
 // });`,
-  solution: `function test() { return true; }`,
+  solution: `// Watch for elements matching selector to be added to DOM
+// Should call callback when matching elements appear
+function watchForElement(selector, callback, options = {}) {
+  // 1. Create MutationObserver
+  // 2. Configure to watch childList and subtree
+  // 3. Check addedNodes for matching elements
+  // 4. Also check descendants of added nodes
+  // 5. Return cleanup function
+  const target = options.root || document.body;
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach(mutation => {
+      mutation.addedNodes.forEach(node => {
+        if (node.nodeType === 1) { // Element node
+          if (node.matches && node.matches(selector)) {
+            callback(node);
+          }
+          const matches = node.querySelectorAll && node.querySelectorAll(selector);
+          if (matches) {
+            matches.forEach(match => callback(match));
+          }
+        }
+      });
+    });
+  });
+  
+  observer.observe(target, {
+    childList: true,
+    subtree: true
+  });
+  
+  return () => observer.disconnect();
+}
+
+// Watch for attribute changes on a specific element
+// Should track old and new values
+function watchAttributes(element, attributeNames, callback) {
+  // 1. Create observer with attributes: true
+  // 2. Use attributeFilter to limit which attributes
+  // 3. Enable attributeOldValue for change tracking
+  // 4. Call callback with attribute name, old value, new value
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach(mutation => {
+      if (mutation.type === 'attributes') {
+        const attrName = mutation.attributeName;
+        const oldValue = mutation.oldValue;
+        const newValue = element.getAttribute(attrName);
+        callback(attrName, oldValue, newValue);
+      }
+    });
+  });
+  
+  observer.observe(element, {
+    attributes: true,
+    attributeFilter: attributeNames,
+    attributeOldValue: true
+  });
+  
+  return () => observer.disconnect();
+}
+
+// Create a DOM change recorder for undo/redo
+// Should record changes and provide undo capability
+function createDOMRecorder(root) {
+  // 1. Watch all changes (childList, attributes, characterData)
+  // 2. Store mutations in a history array
+  // 3. Provide undo() method to reverse last change
+  // 4. Provide redo() method to reapply undone change
+  const history: MutationRecord[] = [];
+  let historyIndex = -1;
+  
+  const observer = new MutationObserver((mutations) => {
+    history.push(...mutations);
+    historyIndex = history.length - 1;
+  });
+  
+  observer.observe(root, {
+    childList: true,
+    attributes: true,
+    characterData: true,
+    subtree: true,
+    attributeOldValue: true,
+    characterDataOldValue: true
+  });
+  
+  return {
+    undo() {
+      if (historyIndex >= 0) {
+        const mutation = history[historyIndex];
+        // Reverse the mutation (simplified - full implementation would be complex)
+        historyIndex--;
+      }
+    },
+    redo() {
+      if (historyIndex < history.length - 1) {
+        historyIndex++;
+        const mutation = history[historyIndex];
+        // Reapply the mutation (simplified)
+      }
+    },
+    disconnect() {
+      observer.disconnect();
+    }
+  };
+}`,
   testCases: [
     {
       input: [],

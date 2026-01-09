@@ -139,7 +139,44 @@ const testElement = {
 
 // Usage:
 // emitCustomEvent(button, 'cart:add', { productId: 123, quantity: 1 });`,
-  solution: `function test() { return true; }`,
+  solution: `// Create and dispatch a custom event
+// Should include custom data in the detail property
+function emitCustomEvent(element, eventName, data) {
+  // 1. Create a new CustomEvent with the given name
+  // 2. Pass data in the detail property
+  // 3. Set bubbles: true so parent elements can listen
+  // 4. Dispatch the event on the element
+  // 5. Return the event object
+  const event = new CustomEvent(eventName, {
+    detail: data,
+    bubbles: true
+  });
+  element.dispatchEvent(event);
+  return event;
+}
+
+// Create a simple event bus using custom events
+// Should allow subscribing to and emitting events
+function createEventBus() {
+  // 1. Create a target element (or use document)
+  // 2. Return object with on(), off(), and emit() methods
+  // 3. on() adds event listener
+  // 4. off() removes event listener
+  // 5. emit() dispatches custom event with data
+  const target = document.createElement('div');
+  
+  return {
+    on(eventName, callback) {
+      target.addEventListener(eventName, callback);
+    },
+    off(eventName, callback) {
+      target.removeEventListener(eventName, callback);
+    },
+    emit(eventName, data) {
+      emitCustomEvent(target, eventName, data);
+    }
+  };
+}`,
   testCases: [
     {
       input: [],

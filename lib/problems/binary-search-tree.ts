@@ -246,7 +246,201 @@ function bstDelete(values: number[], toDelete: number): number[] {
   bst.delete(toDelete);
   return bst.inOrderTraversal();
 }`,
-  solution: `function test() { return true; }`,
+  solution: `class TreeNode<T> {
+  value: T;
+  left: TreeNode<T> | null;
+  right: TreeNode<T> | null;
+
+  constructor(value: T) {
+    // Initialize value, left, and right
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+class BinarySearchTree<T> {
+  private root: TreeNode<T> | null;
+
+  constructor() {
+    // Initialize root
+    this.root = null;
+  }
+
+  insert(value: T): void {
+    // Insert a new value into the BST
+    // If tree is empty, create root
+    // Otherwise, find correct position (left if smaller, right if larger)
+    if (!this.root) {
+      this.root = new TreeNode(value);
+    } else {
+      this.insertNode(this.root, value);
+    }
+  }
+
+  private insertNode(node: TreeNode<T>, value: T): void {
+    // Helper method to recursively insert
+    // Compare value with node.value
+    // Go left if smaller, right if larger
+    if (value < node.value) {
+      if (!node.left) {
+        node.left = new TreeNode(value);
+      } else {
+        this.insertNode(node.left, value);
+      }
+    } else {
+      if (!node.right) {
+        node.right = new TreeNode(value);
+      } else {
+        this.insertNode(node.right, value);
+      }
+    }
+  }
+
+  search(value: T): boolean {
+    // Search for a value in the BST
+    // Return true if found, false otherwise
+    return this.searchNode(this.root, value);
+  }
+
+  private searchNode(node: TreeNode<T> | null, value: T): boolean {
+    // Helper method to recursively search
+    if (!node) return false;
+    if (value === node.value) return true;
+    if (value < node.value) return this.searchNode(node.left, value);
+    return this.searchNode(node.right, value);
+  }
+
+  delete(value: T): void {
+    // Delete a value from the BST
+    // Handle three cases:
+    // 1. Node has no children (leaf) - just remove
+    // 2. Node has one child - replace with child
+    // 3. Node has two children - replace with in-order successor
+    this.root = this.deleteNode(this.root, value);
+  }
+
+  private deleteNode(node: TreeNode<T> | null, value: T): TreeNode<T> | null {
+    // Helper method to recursively delete
+    if (!node) return null;
+    
+    if (value < node.value) {
+      node.left = this.deleteNode(node.left, value);
+    } else if (value > node.value) {
+      node.right = this.deleteNode(node.right, value);
+    } else {
+      if (!node.left) return node.right;
+      if (!node.right) return node.left;
+      
+      const minNode = this.findMinNode(node.right);
+      node.value = minNode.value;
+      node.right = this.deleteNode(node.right, minNode.value);
+    }
+    
+    return node;
+  }
+
+  private findMinNode(node: TreeNode<T>): TreeNode<T> {
+    // Find the leftmost (minimum) node
+    return node.left ? this.findMinNode(node.left) : node;
+  }
+
+  inOrderTraversal(): T[] {
+    // Return array of values in sorted order
+    // Visit: left subtree, root, right subtree
+    const result: T[] = [];
+    this.inOrderHelper(this.root, result);
+    return result;
+  }
+
+  private inOrderHelper(node: TreeNode<T> | null, result: T[]): void {
+    if (node) {
+      this.inOrderHelper(node.left, result);
+      result.push(node.value);
+      this.inOrderHelper(node.right, result);
+    }
+  }
+
+  preOrderTraversal(): T[] {
+    // Return array of values in pre-order
+    // Visit: root, left subtree, right subtree
+    const result: T[] = [];
+    this.preOrderHelper(this.root, result);
+    return result;
+  }
+
+  private preOrderHelper(node: TreeNode<T> | null, result: T[]): void {
+    if (node) {
+      result.push(node.value);
+      this.preOrderHelper(node.left, result);
+      this.preOrderHelper(node.right, result);
+    }
+  }
+
+  postOrderTraversal(): T[] {
+    // Return array of values in post-order
+    // Visit: left subtree, right subtree, root
+    const result: T[] = [];
+    this.postOrderHelper(this.root, result);
+    return result;
+  }
+
+  private postOrderHelper(node: TreeNode<T> | null, result: T[]): void {
+    if (node) {
+      this.postOrderHelper(node.left, result);
+      this.postOrderHelper(node.right, result);
+      result.push(node.value);
+    }
+  }
+
+  findMin(): T | null {
+    // Return the minimum value in the BST
+    if (!this.root) return null;
+    return this.findMinNode(this.root).value;
+  }
+
+  findMax(): T | null {
+    // Return the maximum value in the BST
+    if (!this.root) return null;
+    let current = this.root;
+    while (current.right) {
+      current = current.right;
+    }
+    return current.value;
+  }
+}
+
+// Helper functions for testing (these will be used by the test runner)
+function bstInOrder(values: number[]): number[] {
+  const bst = new BinarySearchTree<number>();
+  for (const v of values) bst.insert(v);
+  return bst.inOrderTraversal();
+}
+
+function bstSearch(values: number[], target: number): boolean {
+  const bst = new BinarySearchTree<number>();
+  for (const v of values) bst.insert(v);
+  return bst.search(target);
+}
+
+function bstFindMin(values: number[]): number | null {
+  const bst = new BinarySearchTree<number>();
+  for (const v of values) bst.insert(v);
+  return bst.findMin();
+}
+
+function bstFindMax(values: number[]): number | null {
+  const bst = new BinarySearchTree<number>();
+  for (const v of values) bst.insert(v);
+  return bst.findMax();
+}
+
+function bstDelete(values: number[], toDelete: number): number[] {
+  const bst = new BinarySearchTree<number>();
+  for (const v of values) bst.insert(v);
+  bst.delete(toDelete);
+  return bst.inOrderTraversal();
+}`,
   testCases: [
     {
       input: [],

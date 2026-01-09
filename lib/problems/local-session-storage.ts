@@ -138,7 +138,134 @@ const mockStorage = {
 // const storage = createStorage('local');
 // storage.set('preferences', { theme: 'dark', fontSize: 16 });
 // const prefs = storage.get('preferences');`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a storage wrapper with JSON support
+// Should handle serialization and provide cleaner API
+function createStorage(storageType = 'local') {
+  // 1. Use localStorage or sessionStorage based on type
+  // 2. Implement set(key, value) that JSON.stringifies
+  // 3. Implement get(key) that JSON.parses
+  // 4. Handle errors gracefully (storage full, private browsing)
+  // 5. Return null for missing keys (not undefined)
+  const storage = storageType === 'local' ? localStorage : sessionStorage;
+  
+  return {
+    set(key, value) {
+      try {
+        storage.setItem(key, JSON.stringify(value));
+      } catch (error) {
+        console.error('Storage error:', error);
+      }
+    },
+    get(key) {
+      try {
+        const item = storage.getItem(key);
+        return item ? JSON.parse(item) : null;
+      } catch (error) {
+        console.error('Storage error:', error);
+        return null;
+      }
+    },
+    remove(key) {
+      storage.removeItem(key);
+    },
+    clear() {
+      storage.clear();
+    }
+  };
+}
+
+// Add expiration support to storage
+// Should automatically remove expired items
+function createStorageWithExpiry(storageType = 'local') {
+  // 1. Store items with timestamp: { value, expires }
+  // 2. Check expiration on get()
+  // 3. Remove expired items automatically
+  // 4. Support expires option in set()
+  const storage = storageType === 'local' ? localStorage : sessionStorage;
+  
+  return {
+    set(key, value, options = {}) {
+      try {
+        const expires = options.expires ? Date.now() + options.expires * 1000 : null;
+        storage.setItem(key, JSON.stringify({ value, expires }));
+      } catch (error) {
+        console.error('Storage error:', error);
+      }
+    },
+    get(key) {
+      try {
+        const item = storage.getItem(key);
+        if (!item) return null;
+        
+        const { value, expires } = JSON.parse(item);
+        if (expires && Date.now() > expires) {
+          storage.removeItem(key);
+          return null;
+        }
+        return value;
+      } catch (error) {
+        console.error('Storage error:', error);
+        return null;
+      }
+    },
+    remove(key) {
+      storage.removeItem(key);
+    },
+    clear() {
+      storage.clear();
+    }
+  };
+}
+
+// Create a namespace-based storage
+// Should prefix all keys to avoid collisions
+function createNamespacedStorage(namespace, storageType = 'local') {
+  // 1. Prefix all keys with namespace
+  // 2. Provide getAll() to get all namespaced items
+  // 3. Provide clear() to clear only namespaced items
+  const storage = storageType === 'local' ? localStorage : sessionStorage;
+  const prefix = \`\${namespace}:\`;
+  
+  return {
+    set(key, value) {
+      try {
+        storage.setItem(prefix + key, JSON.stringify(value));
+      } catch (error) {
+        console.error('Storage error:', error);
+      }
+    },
+    get(key) {
+      try {
+        const item = storage.getItem(prefix + key);
+        return item ? JSON.parse(item) : null;
+      } catch (error) {
+        console.error('Storage error:', error);
+        return null;
+      }
+    },
+    getAll() {
+      const result = {};
+      for (let i = 0; i < storage.length; i++) {
+        const key = storage.key(i);
+        if (key && key.startsWith(prefix)) {
+          const actualKey = key.slice(prefix.length);
+          result[actualKey] = this.get(actualKey);
+        }
+      }
+      return result;
+    },
+    clear() {
+      const keys = [];
+      for (let i = 0; i < storage.length; i++) {
+        const key = storage.key(i);
+        if (key && key.startsWith(prefix)) {
+          keys.push(key);
+        }
+      }
+      keys.forEach(key => storage.removeItem(key));
+    }
+  };
+}`,
   testCases: [
     {
       input: [],
