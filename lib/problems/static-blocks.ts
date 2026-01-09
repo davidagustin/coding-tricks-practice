@@ -150,12 +150,25 @@ class Logger {
 // - static getColor(name): returns hex value or '#000000' if not found
 
 class ColorPalette {
-  // TODO: Add static fields
+  // Add static fields
+  static colors = {};
 
-  // TODO: Add static initialization block
+  // Add static initialization block
+  static {
+    this.colors = {
+      red: '#FF0000',
+      green: '#00FF00',
+      blue: '#0000FF'
+    };
+  }
+
+  static get primary() {
+    return this.colors.blue;
+  }
 
   static getColor(name) {
-    // TODO: Return color hex or default black
+    // Return color hex or default black
+    return this.colors[name] || '#000000';
   }
 }
 
@@ -169,20 +182,30 @@ class ColorPalette {
 // - static addRule(field, fn): adds new rule
 
 class Validator {
-  // TODO: Add private static Map for rules
+  // Add private static Map for rules
+  static #rules = new Map();
 
-  // TODO: Add static initialization block with default rules
+  // Add static initialization block with default rules
+  static {
+    this.#rules.set('email', value => value.includes('@'));
+    this.#rules.set('phone', value => /^\\d{10}$/.test(value));
+    this.#rules.set('age', value => value >= 0 && value <= 150);
+  }
 
   static validate(field, value) {
-    // TODO: Run validation rule if exists, return true if no rule
+    // Run validation rule if exists, return true if no rule
+    const rule = this.#rules.get(field);
+    return rule ? rule(value) : true;
   }
 
   static addRule(field, validationFn) {
-    // TODO: Add new validation rule
+    // Add new validation rule
+    this.#rules.set(field, validationFn);
   }
 
   static hasRule(field) {
-    // TODO: Check if rule exists
+    // Check if rule exists
+    return this.#rules.has(field);
   }
 }
 
