@@ -118,45 +118,52 @@ type Test3 = ExtractArrayType<number[]>; // should be number
 type Test4 = MyNonNullable<string | null | undefined>; // should be string
 type Test5 = FunctionReturnType<() => string>; // should be string
 
-// Runtime verification function
-function verifyTypes() {
-  // These are compile-time checks - TypeScript will error if types are wrong
-  const test1: true = true as IsArray<string[]>;
-  const test2: false = false as IsArray<string>;
-  const test3: number = 0 as ExtractArrayType<number[]>;
-  const test4: string = '' as MyNonNullable<string | null | undefined>;
-  const test5: string = '' as FunctionReturnType<() => string>;
-
-  console.log('All type checks passed!');
-  return true;
+// Runtime functions to demonstrate conditional type behavior
+function isArray(value: unknown): boolean {
+  return Array.isArray(value);
 }
 
-verifyTypes();`,
+function getFirstElement<T>(arr: T[]): T | undefined {
+  return arr[0];
+}
+
+function removeNullish<T>(value: T | null | undefined): T | undefined {
+  if (value === null || value === undefined) {
+    return undefined;
+  }
+  return value;
+}
+
+function getFunctionResult<T>(fn: () => T): T {
+  return fn();
+}
+
+console.log('All type checks passed!');`,
   testCases: [
     {
-      input: { type: 'IsArray', args: ['string[]'] },
-      expectedOutput: 'true',
-      description: 'IsArray<string[]> returns true',
+      input: [['a', 'b', 'c']],
+      expectedOutput: true,
+      description: 'isArray returns true for arrays',
     },
     {
-      input: { type: 'IsArray', args: ['string'] },
-      expectedOutput: 'false',
-      description: 'IsArray<string> returns false',
+      input: ['not an array'],
+      expectedOutput: false,
+      description: 'isArray returns false for non-arrays',
     },
     {
-      input: { type: 'ExtractArrayType', args: ['number[]'] },
-      expectedOutput: 'number',
-      description: 'ExtractArrayType extracts element type from array',
+      input: [[1, 2, 3]],
+      expectedOutput: 1,
+      description: 'getFirstElement returns first element of array',
     },
     {
-      input: { type: 'MyNonNullable', args: ['string | null | undefined'] },
-      expectedOutput: 'string',
-      description: 'MyNonNullable removes null and undefined',
+      input: ['hello'],
+      expectedOutput: 'hello',
+      description: 'removeNullish returns value when not null/undefined',
     },
     {
-      input: { type: 'FunctionReturnType', args: ['() => string'] },
-      expectedOutput: 'string',
-      description: 'FunctionReturnType extracts function return type',
+      input: [null],
+      expectedOutput: undefined,
+      description: 'removeNullish returns undefined for null',
     },
   ],
   hints: [

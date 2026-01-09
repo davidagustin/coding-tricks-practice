@@ -143,17 +143,17 @@ function omitProperty(obj, key) {
     {
       input: [{ a: 1, b: 2 }],
       expectedOutput: { a: 1, b: 2 },
-      description: 'shallowClone',
+      description: 'shallowClone - creates a shallow copy of an object',
     },
     {
       input: [{ a: 1 }, { b: 2 }, { a: 3 }],
       expectedOutput: { a: 3, b: 2 },
-      description: 'mergeObjects',
+      description: 'mergeObjects - merges multiple objects with later overrides',
     },
     {
       input: [{ a: 1, b: 2, c: 3 }, 'b'],
       expectedOutput: { a: 1, c: 3 },
-      description: 'omitProperty',
+      description: 'omitProperty - removes specified key from object',
     },
   ],
   hints: [

@@ -116,17 +116,17 @@ console.log('User ID:', userId);
 console.log('Point:', point);`,
   testCases: [
     {
-      input: { status: 'loading' },
+      input: ['loading'],
       expectedOutput: 'Processing...',
       description: 'processStatus returns loading message',
     },
     {
-      input: { status: 'success' },
+      input: ['success'],
       expectedOutput: 'Operation completed successfully!',
       description: 'processStatus returns success message',
     },
     {
-      input: { status: 'error' },
+      input: ['error'],
       expectedOutput: 'An error occurred.',
       description: 'processStatus returns error message',
     },

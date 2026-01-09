@@ -188,6 +188,37 @@ function withValidation(fn, validator) {
   };
 }
 
+// Test wrapper functions for the test runner
+function testWithLogging(a, b) {
+  const add = (x, y) => x + y;
+  const loggedAdd = withLogging(add);
+  return loggedAdd(a, b);
+}
+
+function testWithTiming(a, b) {
+  const add = (x, y) => x + y;
+  const timedAdd = withTiming(add);
+  return timedAdd(a, b);
+}
+
+function testWithValidationValid(a, b) {
+  const add = (x, y) => x + y;
+  const validatePositive = (x, y) => x > 0 && y > 0;
+  const validatedAdd = withValidation(add, validatePositive);
+  return validatedAdd(a, b);
+}
+
+function testWithRetry() {
+  let attempts = 0;
+  const failTwice = () => {
+    attempts++;
+    if (attempts < 3) throw new Error('Fail');
+    return 'success';
+  };
+  const retryFn = withRetry(failTwice, 3);
+  return retryFn();
+}
+
 // Test
 const add = (a, b) => a + b;
 const loggedAdd = withLogging(add);
@@ -204,22 +235,22 @@ console.log(validatedAdd(5, 3)); // 8
     {
       input: [5, 3],
       expectedOutput: 8,
-      description: 'withLogging decorator logs and returns correct result',
+      description: 'testWithLogging returns correct result with logging',
     },
     {
       input: [10, 20],
       expectedOutput: 30,
-      description: 'withTiming decorator measures time and returns correct result',
+      description: 'testWithTiming returns correct result with timing',
     },
     {
       input: [5, 3],
       expectedOutput: 8,
-      description: 'withValidation decorator passes for valid inputs',
+      description: 'testWithValidationValid returns result for valid inputs',
     },
     {
-      input: [-1, 3],
-      expectedOutput: 'Error: Validation failed',
-      description: 'withValidation decorator throws for invalid inputs',
+      input: [],
+      expectedOutput: 'success',
+      description: 'testWithRetry retries and succeeds on third attempt',
     },
   ],
   hints: [

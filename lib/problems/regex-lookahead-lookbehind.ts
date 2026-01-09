@@ -186,32 +186,32 @@ console.log(replaceBetweenMarkers('start[REPLACE]end', 'NEW'));
 // 'start[NEW]end'`,
   testCases: [
     {
-      input: { fn: 'isStrongPassword', password: 'Abc123!@' },
+      input: ['Abc123!@'],
       expectedOutput: true,
       description: 'isStrongPassword accepts valid strong password',
     },
     {
-      input: { fn: 'isStrongPassword', password: 'weakpass' },
+      input: ['weakpass'],
       expectedOutput: false,
       description: 'isStrongPassword rejects weak password',
     },
     {
-      input: { fn: 'addCommas', numStr: '1234567' },
+      input: ['1234567'],
       expectedOutput: '1,234,567',
       description: 'addCommas formats large number correctly',
     },
     {
-      input: { fn: 'addCommas', numStr: '1000' },
+      input: ['1000'],
       expectedOutput: '1,000',
       description: 'addCommas formats thousands correctly',
     },
     {
-      input: { fn: 'extractAmounts', text: 'Price: $99.99 or EUR 50.00' },
+      input: ['Price: $99.99 or EUR 50.00'],
       expectedOutput: ['99.99', '50.00'],
       description: 'extractAmounts finds amounts after currency symbols',
     },
     {
-      input: { fn: 'replaceBetweenMarkers', text: 'start[REPLACE]end', replacement: 'NEW' },
+      input: ['start[REPLACE]end', 'NEW'],
       expectedOutput: 'start[NEW]end',
       description: 'replaceBetweenMarkers replaces content between brackets',
     },

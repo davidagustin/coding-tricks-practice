@@ -86,200 +86,85 @@ export const problem: Problem = {
       explanation: 'Boundary tracks error state for recovery decisions',
     },
   ],
-  starterCode: `// TODO: Implement Error Boundary Pattern
+  starterCode: `// TODO: Implement Error Boundary Pattern (simplified synchronous version)
 
-interface ErrorBoundaryOptions<T> {
-  fallback: T;
-  onError?: (error: Error) => void;
-  shouldCatch?: (error: Error) => boolean;
+// Execute a single value safely - if value is 'error', return fallback
+function executeSafe(value, fallback) {
+  // TODO: If value === 'error', simulate an error and return fallback
+  // Otherwise return the value
+  return value;
 }
 
-class ErrorBoundary<T> {
-  private fallback: T;
-  private onError?: (error: Error) => void;
-  private shouldCatch: (error: Error) => boolean;
-  private lastError: Error | null = null;
-  private errorCount: number = 0;
-
-  constructor(options: ErrorBoundaryOptions<T>) {
-    this.fallback = options.fallback;
-    this.onError = options.onError;
-    this.shouldCatch = options.shouldCatch ?? (() => true);
-  }
-
-  // Execute a function within the boundary
-  execute<R>(fn: () => R): R | T {
-    // TODO: Implement
-    // - Try to execute fn
-    // - If error, check shouldCatch
-    // - If catching, call onError, track error, return fallback
-    // - If not catching, re-throw
-    return this.fallback;
-  }
-
-  // Async version
-  async executeAsync<R>(fn: () => Promise<R>): Promise<R | T> {
-    // TODO: Implement async version
-    return this.fallback;
-  }
-
-  // Check if boundary has caught an error
-  hasError(): boolean {
-    return this.lastError !== null;
-  }
-
-  // Get the last error
-  getLastError(): Error | null {
-    return this.lastError;
-  }
-
-  // Get error count
-  getErrorCount(): number {
-    return this.errorCount;
-  }
-
-  // Reset error state
-  reset(): void {
-    this.lastError = null;
-    this.errorCount = 0;
-  }
-}
-
-// Utility: Create a bounded function
-function createBoundedFunction<T, Args extends any[], R>(
-  fn: (...args: Args) => R,
-  fallback: T
-): (...args: Args) => R | T {
-  // TODO: Return a function wrapped in error boundary
-  return fn;
+// Execute multiple values and track errors
+function executeMultiple(values, fallback) {
+  // TODO: Process each value using error boundary pattern
+  // If a value is 'error', use fallback instead and count it as an error
+  // Return { results: [...], errorCount: number }
+  return { results: [], errorCount: 0 };
 }
 
 // Test
-const boundary = new ErrorBoundary<string>({
-  fallback: 'default',
-  onError: (err) => console.log('Caught:', err.message)
-});
-
-console.log(boundary.execute(() => 'success'));
-console.log(boundary.execute(() => { throw new Error('fail'); }));
-console.log(boundary.hasError());`,
-  solution: `interface ErrorBoundaryOptions<T> {
-  fallback: T;
-  onError?: (error: Error) => void;
-  shouldCatch?: (error: Error) => boolean;
-}
-
-class ErrorBoundary<T> {
-  private fallback: T;
-  private onError?: (error: Error) => void;
-  private shouldCatch: (error: Error) => boolean;
-  private lastError: Error | null = null;
-  private errorCount: number = 0;
-
-  constructor(options: ErrorBoundaryOptions<T>) {
-    this.fallback = options.fallback;
-    this.onError = options.onError;
-    this.shouldCatch = options.shouldCatch ?? (() => true);
-  }
-
-  execute<R>(fn: () => R): R | T {
-    try {
-      return fn();
-    } catch (err) {
-      const error = err instanceof Error ? err : new Error(String(err));
-
-      if (!this.shouldCatch(error)) {
-        throw error;
-      }
-
-      this.lastError = error;
-      this.errorCount++;
-
-      if (this.onError) {
-        this.onError(error);
-      }
-
-      return this.fallback;
+console.log(executeSafe('success', 'default'));  // 'success'
+console.log(executeSafe('error', 'default'));    // 'default'
+console.log(executeMultiple(['ok', 'error', 'ok'], 'fallback'));
+// { results: ['ok', 'fallback', 'ok'], errorCount: 1 }`,
+  solution: `// Execute a single value safely - if value is 'error', return fallback
+function executeSafe(value, fallback) {
+  try {
+    if (value === 'error') {
+      throw new Error('Simulated error');
     }
-  }
-
-  async executeAsync<R>(fn: () => Promise<R>): Promise<R | T> {
-    try {
-      return await fn();
-    } catch (err) {
-      const error = err instanceof Error ? err : new Error(String(err));
-
-      if (!this.shouldCatch(error)) {
-        throw error;
-      }
-
-      this.lastError = error;
-      this.errorCount++;
-
-      if (this.onError) {
-        this.onError(error);
-      }
-
-      return this.fallback;
-    }
-  }
-
-  hasError(): boolean {
-    return this.lastError !== null;
-  }
-
-  getLastError(): Error | null {
-    return this.lastError;
-  }
-
-  getErrorCount(): number {
-    return this.errorCount;
-  }
-
-  reset(): void {
-    this.lastError = null;
-    this.errorCount = 0;
+    return value;
+  } catch (err) {
+    return fallback;
   }
 }
 
-function createBoundedFunction<T, Args extends any[], R>(
-  fn: (...args: Args) => R,
-  fallback: T
-): (...args: Args) => R | T {
-  const boundary = new ErrorBoundary<T>({ fallback });
-  return (...args: Args) => boundary.execute(() => fn(...args));
+// Execute multiple values and track errors
+function executeMultiple(values, fallback) {
+  const results = [];
+  let errorCount = 0;
+
+  for (const value of values) {
+    try {
+      if (value === 'error') {
+        throw new Error('Simulated error');
+      }
+      results.push(value);
+    } catch (err) {
+      results.push(fallback);
+      errorCount++;
+    }
+  }
+
+  return { results, errorCount };
 }
 
 // Test
-const boundary = new ErrorBoundary<string>({
-  fallback: 'default',
-  onError: (err) => console.log('Caught:', err.message)
-});
-
-console.log(boundary.execute(() => 'success')); // 'success'
-console.log(boundary.execute(() => { throw new Error('fail'); })); // 'default'
-console.log(boundary.hasError()); // true
-console.log(boundary.getErrorCount()); // 1`,
+console.log(executeSafe('success', 'default'));  // 'success'
+console.log(executeSafe('error', 'default'));    // 'default'
+console.log(executeMultiple(['ok', 'error', 'ok'], 'fallback'));
+// { results: ['ok', 'fallback', 'ok'], errorCount: 1 }`,
   testCases: [
     {
-      input: { fn: '() => "success"' },
+      input: ['success', 'default'],
       expectedOutput: 'success',
-      description: 'ErrorBoundary.execute returns result for successful function',
+      description: 'executeSafe returns result when value is not "error"',
     },
     {
-      input: { fn: '() => { throw new Error("fail"); }' },
+      input: ['error', 'default'],
       expectedOutput: 'default',
-      description: 'ErrorBoundary.execute returns fallback for throwing function',
+      description: 'executeSafe returns fallback when value is "error"',
     },
     {
-      input: { operation: 'hasError after error' },
-      expectedOutput: true,
-      description: 'ErrorBoundary.hasError returns true after catching an error',
+      input: [['ok', 'error', 'ok'], 'fallback'],
+      expectedOutput: { results: ['ok', 'fallback', 'ok'], errorCount: 1 },
+      description: 'executeMultiple processes all values and counts errors',
     },
     {
-      input: { operation: 'getErrorCount after two errors' },
-      expectedOutput: 2,
-      description: 'ErrorBoundary.getErrorCount tracks number of caught errors',
+      input: [['error', 'error'], 'fallback'],
+      expectedOutput: { results: ['fallback', 'fallback'], errorCount: 2 },
+      description: 'executeMultiple tracks multiple errors correctly',
     },
   ],
   hints: [

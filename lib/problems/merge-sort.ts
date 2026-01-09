@@ -180,27 +180,27 @@ console.log(merge([1, 3, 5], [2, 4, 6]));
 // Expected: [1, 2, 3, 4, 5, 6]`,
   testCases: [
     {
-      input: [38, 27, 43, 3, 9, 82, 10],
+      input: [[38, 27, 43, 3, 9, 82, 10]],
       expectedOutput: [3, 9, 10, 27, 38, 43, 82],
       description: 'mergeSort sorts array in ascending order',
     },
     {
-      input: [5, 2, 8, 1, 9],
+      input: [[5, 2, 8, 1, 9]],
       expectedOutput: [1, 2, 5, 8, 9],
       description: 'mergeSort handles smaller array',
     },
     {
-      input: [1],
+      input: [[1]],
       expectedOutput: [1],
       description: 'mergeSort handles single element',
     },
     {
-      input: [],
+      input: [[]],
       expectedOutput: [],
       description: 'mergeSort handles empty array',
     },
     {
-      input: { fn: 'merge', left: [1, 3, 5], right: [2, 4, 6] },
+      input: [[1, 3, 5], [2, 4, 6]],
       expectedOutput: [1, 2, 3, 4, 5, 6],
       description: 'merge combines two sorted arrays',
     },

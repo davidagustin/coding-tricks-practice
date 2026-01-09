@@ -146,9 +146,9 @@ function copyDescriptors(source, target) {
 }`,
   testCases: [
     {
-      input: [{ a: 1 }, 'hidden', 'secret'],
-      expectedOutput: { a: 1 },
-      description: 'addHiddenProperty - check enumerable',
+      input: [{ a: 1, b: 2 }],
+      expectedOutput: { a: { value: 1, writable: true, enumerable: true, configurable: true }, b: { value: 2, writable: true, enumerable: true, configurable: true } },
+      description: 'getDescriptors returns all property descriptors for simple object',
     },
   ],
   hints: [

@@ -144,22 +144,22 @@ console.log(processData({ name: 'Bob' })); // Missing age
 console.log(processData(null));`,
   testCases: [
     {
-      input: { data: { name: 'Alice', age: 30 } },
+      input: [{ name: 'Alice', age: 30 }],
       expectedOutput: 'User: Alice, Age: 30',
       description: 'processData returns user info for valid User',
     },
     {
-      input: { data: 'not a user' },
+      input: ['not a user'],
       expectedOutput: 'Not a user',
       description: 'processData returns "Not a user" for string',
     },
     {
-      input: { data: { name: 'Bob' } },
+      input: [{ name: 'Bob' }],
       expectedOutput: 'Not a user',
       description: 'processData returns "Not a user" for incomplete object',
     },
     {
-      input: { data: null },
+      input: [null],
       expectedOutput: 'Not a user',
       description: 'processData returns "Not a user" for null',
     },

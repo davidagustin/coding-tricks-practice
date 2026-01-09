@@ -209,6 +209,11 @@ console.log(removeProperty(obj, 'b')); // { a: 1, c: 3 }`,
       expectedOutput: { a: 1, c: 3 },
       description: 'removeProperty removes key from object',
     },
+    {
+      input: [{ user: { profile: { name: 'Alice' } } }, ['user', 'profile', 'name'], 'Bob'],
+      expectedOutput: { user: { profile: { name: 'Bob' } } },
+      description: 'updateNested updates deeply nested property',
+    },
   ],
   hints: [
     'Use array.slice() to extract portions of arrays without mutation',

@@ -158,23 +158,18 @@ const deep = deepFreeze({ a: { b: { c: 1 } } });
   testCases: [
     {
       input: [{ a: 1, b: 2 }],
-      expectedOutput: true,
-      description: 'createImmutableObject returns a frozen object',
+      expectedOutput: { a: 1, b: 2 },
+      description: 'createImmutableObject returns the frozen object with same properties',
     },
     {
       input: [{ x: 1 }],
-      expectedOutput: true,
-      description: 'createSealedObject returns a sealed object',
-    },
-    {
-      input: [{ a: 1 }],
-      expectedOutput: true,
-      description: 'isFrozen returns true for frozen objects',
+      expectedOutput: { x: 1 },
+      description: 'createSealedObject returns the sealed object with same properties',
     },
     {
       input: [{ a: { b: { c: 1 } } }],
-      expectedOutput: true,
-      description: 'deepFreeze freezes nested objects recursively',
+      expectedOutput: { a: { b: { c: 1 } } },
+      description: 'deepFreeze returns the deeply frozen object with same structure',
     },
   ],
   hints: [

@@ -162,6 +162,27 @@ console.log(instance1 === instance2); // Should print true`,
   }
 }
 
+// Test wrapper functions for the test runner
+function testSingletonSameInstance() {
+  const instance1 = Singleton.getInstance();
+  const instance2 = Singleton.getInstance();
+  return instance1 === instance2;
+}
+
+function testSingletonSetAndGet(key, value) {
+  const instance = Singleton.getInstance();
+  instance.set(key, value);
+  const anotherInstance = Singleton.getInstance();
+  return anotherInstance.get(key);
+}
+
+function testSingletonDataPersists() {
+  const instance1 = Singleton.getInstance();
+  instance1.set('testKey', 'testValue');
+  const instance2 = Singleton.getInstance();
+  return instance2.get('testKey');
+}
+
 // Test
 const instance1 = Singleton.getInstance();
 const instance2 = Singleton.getInstance();
@@ -171,19 +192,19 @@ console.log(instance2.get('name')); // Should print 'MyApp'
 console.log(instance1 === instance2); // Should print true`,
   testCases: [
     {
-      input: {},
+      input: [],
       expectedOutput: true,
-      description: 'getInstance returns same instance every time',
+      description: 'testSingletonSameInstance returns true',
     },
     {
-      input: { key: 'theme', value: 'dark' },
+      input: ['theme', 'dark'],
       expectedOutput: 'dark',
-      description: 'Data persists across getInstance calls',
+      description: 'testSingletonSetAndGet stores and retrieves values',
     },
     {
-      input: { key: 'version', value: '1.0.0' },
-      expectedOutput: '1.0.0',
-      description: 'Can store and retrieve string values',
+      input: [],
+      expectedOutput: 'testValue',
+      description: 'testSingletonDataPersists returns persisted value',
     },
   ],
   hints: [

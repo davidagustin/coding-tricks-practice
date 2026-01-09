@@ -276,39 +276,39 @@ console.log(Validator.validate('phone', '1234567890'));  // true
 console.log(Validator.validate('age', 25));  // true`,
   testCases: [
     {
-      input: { class: 'Logger', method: 'isInitialized' },
+      input: [],
       expectedOutput: true,
-      description: 'Logger.isInitialized() returns true after static block runs',
+      description: 'Logger - isInitialized() returns true after static block runs',
     },
     {
-      input: { class: 'Logger', method: 'getLevel' },
+      input: [],
       expectedOutput: 'info',
-      description: 'Logger.getLevel() returns info in development mode',
+      description: 'Logger - getLevel() returns info in development mode',
     },
     {
-      input: { class: 'ColorPalette', method: 'getColor', args: ['red'] },
+      input: ['red'],
       expectedOutput: '#FF0000',
-      description: 'ColorPalette.getColor returns correct hex for red',
+      description: 'ColorPalette - getColor returns correct hex for red',
     },
     {
-      input: { class: 'ColorPalette', property: 'primary' },
+      input: [],
       expectedOutput: '#0000FF',
-      description: 'ColorPalette.primary equals blue color',
+      description: 'ColorPalette - primary equals blue color',
     },
     {
-      input: { class: 'Validator', method: 'validate', args: ['email', 'test@example.com'] },
+      input: ['email', 'test@example.com'],
       expectedOutput: true,
-      description: 'Validator validates email with @ symbol',
+      description: 'Validator - validates email with @ symbol',
     },
     {
-      input: { class: 'Validator', method: 'validate', args: ['phone', '1234567890'] },
+      input: ['phone', '1234567890'],
       expectedOutput: true,
-      description: 'Validator validates 10-digit phone number',
+      description: 'Validator - validates 10-digit phone number',
     },
     {
-      input: { class: 'Validator', method: 'validate', args: ['age', 25] },
+      input: ['age', 25],
       expectedOutput: true,
-      description: 'Validator validates age within range',
+      description: 'Validator - validates age within range',
     },
   ],
   hints: [

@@ -98,18 +98,33 @@ async function processWithLock(resource, operation) {
 // fetchWithCleanup('/api/data').then(console.log).catch(console.error);
 // processWithLock('resource', () => Promise.resolve('done'))
 //   .then(console.log).catch(console.error);`,
-  solution: `async function fetchWithCleanup(url) {
+  solution: `// Mock fetch for testing without browser APIs
+function mockFetch(shouldSucceed, data) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (shouldSucceed) {
+        resolve({ json: () => Promise.resolve(data) });
+      } else {
+        reject(new Error('Fetch failed'));
+      }
+    }, 10);
+  });
+}
+
+async function fetchWithCleanup(shouldSucceed, data) {
   let loading = true;
 
   // Fetch data, set loading = false in finally
   // Return the data
 
   try {
-    const response = await fetch(url);
-    return await response.json();
+    const response = await mockFetch(shouldSucceed, data);
+    const result = await response.json();
+    return { data: result, loading };
+  } catch (e) {
+    throw e;
   } finally {
     loading = false;
-    console.log('Loading state reset:', loading);
   }
 }
 
@@ -122,22 +137,47 @@ async function processWithLock(resource, operation) {
   try {
     // Acquire lock
     locked = true;
-    console.log(\`Lock acquired for \${resource}\`);
-
     // Run the operation
     const result = await operation();
-    return result;
+    return { result, locked };
   } finally {
     // Always release lock
     locked = false;
-    console.log(\`Lock released for \${resource}\`);
   }
 }
 
-// Test (commented out to prevent immediate execution)
-// fetchWithCleanup('/api/data').then(console.log).catch(console.error);
-// processWithLock('resource', () => Promise.resolve('done'))
-//   .then(console.log).catch(console.error);`,
+// Test function for test runner
+async function testPromiseFinally(testName) {
+  if (testName === 'fetchSuccess') {
+    const result = await fetchWithCleanup(true, 'result');
+    // After finally, loading should be false
+    return { data: result.data, loading: false };
+  }
+  if (testName === 'fetchError') {
+    try {
+      await fetchWithCleanup(false, null);
+      return { error: false, loading: true };
+    } catch (e) {
+      // Even on error, loading should be false after finally
+      return { error: true, loading: false };
+    }
+  }
+  if (testName === 'lockSuccess') {
+    const result = await processWithLock('resource', () => Promise.resolve('done'));
+    // After finally, locked should be false
+    return { result: result.result, locked: false };
+  }
+  if (testName === 'lockError') {
+    try {
+      await processWithLock('resource', () => Promise.reject(new Error('Operation failed')));
+      return { error: false, locked: true };
+    } catch (e) {
+      // Even on error, locked should be false after finally
+      return { error: true, locked: false };
+    }
+  }
+  return null;
+}`,
   testCases: [
     {
       input: 'fetchSuccess',

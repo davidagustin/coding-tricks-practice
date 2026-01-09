@@ -135,8 +135,37 @@ async function saveUser(user) {
   return { ...user, saved: true };
 }
 
-// Test (commented out to prevent immediate execution)
-// processUser(1).then(console.log).catch(console.error);`,
+// Test function for test runner
+async function testPromiseChaining(testName) {
+  if (testName === 'validUser') {
+    return await processUser(1);
+  }
+  if (testName === 'invalidUser') {
+    // Test with invalid user (no email)
+    const invalidFetchUser = async (id) => ({ id, name: 'Jane' }); // missing email
+    try {
+      const user = await invalidFetchUser(2);
+      await validateUser(user);
+      return { error: null };
+    } catch (e) {
+      return { error: e.message };
+    }
+  }
+  if (testName === 'chainOrder') {
+    const order = [];
+    const trackFetch = async (id) => { order.push('fetch'); return { id, email: 'test@test.com' }; };
+    const trackValidate = async (user) => { order.push('validate'); return user; };
+    const trackEnrich = async (user) => { order.push('enrich'); return user; };
+    const trackSave = async (user) => { order.push('save'); return user; };
+
+    await trackFetch(1)
+      .then(trackValidate)
+      .then(trackEnrich)
+      .then(trackSave);
+    return order;
+  }
+  return null;
+}`,
   testCases: [
     {
       input: 'validUser',

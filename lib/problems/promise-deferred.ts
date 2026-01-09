@@ -205,41 +205,6 @@ function createDeferred() {
   };
 }
 
-// Wait for a one-time event
-function waitForEvent(target, eventName, options = {}) {
-  // Return a promise that resolves when the event fires
-  // - options.timeout: reject after timeout ms
-  // - options.filter: only resolve if filter(event) returns true
-  // - Clean up event listener after resolution
-
-  const deferred = createDeferred();
-  let timeoutId;
-
-  const handler = (event) => {
-    if (options.filter && !options.filter(event)) {
-      return;
-    }
-    cleanup();
-    deferred.resolve(event);
-  };
-
-  const cleanup = () => {
-    target.removeEventListener(eventName, handler);
-    if (timeoutId) clearTimeout(timeoutId);
-  };
-
-  target.addEventListener(eventName, handler);
-
-  if (options.timeout) {
-    timeoutId = setTimeout(() => {
-      cleanup();
-      deferred.reject(new Error(\`Timeout waiting for \${eventName}\`));
-    }, options.timeout);
-  }
-
-  return deferred.promise;
-}
-
 // Request/Response matcher for async messaging
 class RequestMatcher {
   constructor() {
@@ -286,11 +251,49 @@ class RequestMatcher {
   }
 }
 
-// Test (commented out)
-// const deferred = createDeferred();
-// setTimeout(() => deferred.resolve('done'), 100);
-// const result = await deferred.promise;
-// console.log(result); // 'done'`,
+// Test function for test runner
+async function testPromiseDeferred(testName) {
+  if (testName === 'deferredResolve') {
+    const deferred = createDeferred();
+    setTimeout(() => deferred.resolve('test-value'), 10);
+    const value = await deferred.promise;
+    return { value, status: deferred.status };
+  }
+  if (testName === 'deferredReject') {
+    const deferred = createDeferred();
+    setTimeout(() => deferred.reject('test-error'), 10);
+    try {
+      await deferred.promise;
+      return { error: null, status: deferred.status };
+    } catch (e) {
+      return { error: e, status: deferred.status };
+    }
+  }
+  if (testName === 'deferredStatus') {
+    const deferred = createDeferred();
+    const initial = deferred.status;
+    deferred.resolve('value');
+    return { initial, afterResolve: deferred.status };
+  }
+  if (testName === 'requestMatcherSuccess') {
+    const matcher = new RequestMatcher();
+    const promise = matcher.createRequest('req-1', 1000);
+    setTimeout(() => matcher.handleResponse('req-1', 'response-data'), 10);
+    const response = await promise;
+    return { matched: true, response };
+  }
+  if (testName === 'requestMatcherTimeout') {
+    const matcher = new RequestMatcher();
+    const promise = matcher.createRequest('req-2', 50);
+    try {
+      await promise;
+      return { timedOut: false };
+    } catch (e) {
+      return { timedOut: true };
+    }
+  }
+  return null;
+}`,
   testCases: [
     {
       input: 'deferredResolve',

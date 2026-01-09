@@ -162,6 +162,30 @@ type PathOf<T, K extends keyof T = keyof T> = K extends string
     : K
   : never;
 
+// Runtime functions for recursive tree operations
+function countTreeNodes<T>(tree: BinaryTree<T> | null): number {
+  if (tree === null) return 0;
+  return 1 + countTreeNodes(tree.left) + countTreeNodes(tree.right);
+}
+
+function getTreeDepth<T>(tree: BinaryTree<T> | null): number {
+  if (tree === null) return 0;
+  return 1 + Math.max(getTreeDepth(tree.left), getTreeDepth(tree.right));
+}
+
+function countFileSystemNodes(node: FileSystemNode): number {
+  if (node.type === 'file') return 1;
+  return 1 + node.children.reduce((sum, child) => sum + countFileSystemNodes(child), 0);
+}
+
+function isValidJson(value: unknown): boolean {
+  if (value === null) return true;
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return true;
+  if (Array.isArray(value)) return value.every(isValidJson);
+  if (typeof value === 'object') return Object.values(value).every(isValidJson);
+  return false;
+}
+
 // Test your types
 const tree: BinaryTree<number> = {
   value: 10,
@@ -177,24 +201,24 @@ const json: Json = {
 };`,
   testCases: [
     {
-      input: { type: 'BinaryTree', tree: { value: 10, left: { value: 5, left: null, right: null }, right: null } },
-      expectedOutput: true,
-      description: 'BinaryTree type correctly allows nested tree structure',
+      input: [{ value: 10, left: { value: 5, left: null, right: null }, right: { value: 15, left: null, right: null } }],
+      expectedOutput: 3,
+      description: 'countTreeNodes counts all nodes in binary tree',
     },
     {
-      input: { type: 'Json', json: { name: 'John', nested: { value: true }, items: [1, 'two'] } },
-      expectedOutput: true,
-      description: 'Json type correctly allows mixed nested structures',
+      input: [{ value: 1, left: { value: 2, left: { value: 3, left: null, right: null }, right: null }, right: null }],
+      expectedOutput: 3,
+      description: 'getTreeDepth returns maximum depth of binary tree',
     },
     {
-      input: { type: 'DeepPartial', obj: { a: { b: undefined } } },
-      expectedOutput: true,
-      description: 'DeepPartial allows deeply nested optional properties',
+      input: [{ name: 'folder', type: 'directory', children: [{ name: 'file.txt', type: 'file', size: 100 }] }],
+      expectedOutput: 2,
+      description: 'countFileSystemNodes counts directory and file nodes',
     },
     {
-      input: { type: 'FileSystemNode', node: { name: 'folder', type: 'directory', children: [{ name: 'file.txt', type: 'file', size: 100 }] } },
+      input: [{ name: 'John', age: 30, nested: { value: true } }],
       expectedOutput: true,
-      description: 'FileSystemNode handles recursive directory structure',
+      description: 'isValidJson returns true for valid JSON objects',
     },
   ],
   hints: [

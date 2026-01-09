@@ -219,48 +219,50 @@ async function collectAsyncIterable(asyncIterable) {
   return results;
 }
 
-// Test
-async function runTests() {
-  // Test createAsyncIterable
-  const iterable = createAsyncIterable([1, 2, 3], 100);
-  console.log('Async iterable values:');
-  for await (const value of iterable) {
-    console.log(value);
+// Test function that runs based on test name
+async function testAsyncIteration(testName) {
+  if (testName === 'createAsyncIterable') {
+    const iterable = createAsyncIterable([1, 2, 3], 10);
+    return await collectAsyncIterable(iterable);
   }
-
-  // Test collectAsyncIterable
-  const collected = await collectAsyncIterable(createAsyncIterable(['a', 'b', 'c'], 50));
-  console.log('Collected:', collected);
-
-  // Test batchFetcher
-  const mockFetchBatch = async (ids) => ids.map(id => ({ id, data: \`Data for \${id}\` }));
-  console.log('Batch fetcher results:');
-  for await (const item of batchFetcher([1, 2, 3, 4, 5], 2, mockFetchBatch)) {
-    console.log(item);
+  if (testName === 'collectAsyncIterable') {
+    const iterable = createAsyncIterable(['a', 'b', 'c'], 10);
+    return await collectAsyncIterable(iterable);
   }
-}
-
-runTests();`,
+  if (testName === 'batchFetcher') {
+    const mockFetchBatch = async (ids) => ids.map(id => ({ id }));
+    const results = [];
+    for await (const item of batchFetcher([1, 2, 3, 4, 5], 2, mockFetchBatch)) {
+      results.push(item);
+    }
+    return results;
+  }
+  if (testName === 'asyncIteratorSymbol') {
+    const iterable = createAsyncIterable([1], 1);
+    return typeof iterable[Symbol.asyncIterator] === 'function';
+  }
+  return null;
+}`,
   testCases: [
     {
-      input: [[1, 2, 3], 100],
+      input: ['createAsyncIterable'],
       expectedOutput: [1, 2, 3],
-      description: 'createAsyncIterable yields values with delay',
+      description: 'testAsyncIteration creates async iterable that yields values',
     },
     {
-      input: [['a', 'b', 'c']],
+      input: ['collectAsyncIterable'],
       expectedOutput: ['a', 'b', 'c'],
-      description: 'collectAsyncIterable collects all values from async iterable',
+      description: 'testAsyncIteration collects all values from async iterable',
     },
     {
-      input: [[1, 2, 3, 4, 5], 2],
+      input: ['batchFetcher'],
       expectedOutput: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }],
-      description: 'batchFetcher yields items from batched fetches',
+      description: 'testAsyncIteration tests batchFetcher yields items from batched fetches',
     },
     {
-      input: ['Symbol.asyncIterator'],
+      input: ['asyncIteratorSymbol'],
       expectedOutput: true,
-      description: 'Async iterables implement Symbol.asyncIterator',
+      description: 'testAsyncIteration confirms async iterables implement Symbol.asyncIterator',
     },
   ],
   hints: [

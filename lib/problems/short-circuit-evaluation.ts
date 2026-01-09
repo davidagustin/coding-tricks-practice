@@ -121,24 +121,24 @@ console.log(getConfigValue({ timeout: 5000 }, 'timeout', 3000));
 console.log(getConfigValue({}, 'timeout', 3000));`,
   testCases: [
     {
-      input: { user: { getName: () => 'John' } },
+      input: [{ getName: () => 'John' }],
       expectedOutput: 'Hello, John!',
-      description: 'greetUser with valid user returns greeting with name',
+      description: 'greetUser - with valid user returns greeting with name',
     },
     {
-      input: { user: null },
+      input: [null],
       expectedOutput: 'Hello, Guest!',
-      description: 'greetUser with null user returns Guest greeting',
+      description: 'greetUser - with null user returns Guest greeting',
     },
     {
-      input: { config: { timeout: 5000 }, key: 'timeout', defaultValue: 3000 },
+      input: [{ timeout: 5000 }, 'timeout', 3000],
       expectedOutput: 5000,
-      description: 'getConfigValue returns existing config value',
+      description: 'getConfigValue - returns existing config value',
     },
     {
-      input: { config: {}, key: 'timeout', defaultValue: 3000 },
+      input: [{}, 'timeout', 3000],
       expectedOutput: 3000,
-      description: 'getConfigValue returns default when key missing',
+      description: 'getConfigValue - returns default when key missing',
     },
   ],
   hints: [

@@ -213,7 +213,39 @@ console.log('Search 4:', bst.search(4));
 console.log('Min:', bst.findMin());
 console.log('Max:', bst.findMax());
 bst.delete(3);
-console.log('After delete 3:', bst.inOrderTraversal());`,
+console.log('After delete 3:', bst.inOrderTraversal());
+
+// Helper functions for testing (these will be used by the test runner)
+function bstInOrder(values: number[]): number[] {
+  const bst = new BinarySearchTree<number>();
+  for (const v of values) bst.insert(v);
+  return bst.inOrderTraversal();
+}
+
+function bstSearch(values: number[], target: number): boolean {
+  const bst = new BinarySearchTree<number>();
+  for (const v of values) bst.insert(v);
+  return bst.search(target);
+}
+
+function bstFindMin(values: number[]): number | null {
+  const bst = new BinarySearchTree<number>();
+  for (const v of values) bst.insert(v);
+  return bst.findMin();
+}
+
+function bstFindMax(values: number[]): number | null {
+  const bst = new BinarySearchTree<number>();
+  for (const v of values) bst.insert(v);
+  return bst.findMax();
+}
+
+function bstDelete(values: number[], toDelete: number): number[] {
+  const bst = new BinarySearchTree<number>();
+  for (const v of values) bst.insert(v);
+  bst.delete(toDelete);
+  return bst.inOrderTraversal();
+}`,
   solution: `class TreeNode<T> {
   value: T;
   left: TreeNode<T> | null;
@@ -398,37 +430,69 @@ console.log('Search 4:', bst.search(4));
 console.log('Min:', bst.findMin());
 console.log('Max:', bst.findMax());
 bst.delete(3);
-console.log('After delete 3:', bst.inOrderTraversal());`,
+console.log('After delete 3:', bst.inOrderTraversal());
+
+// Helper functions for testing
+function bstInOrder(values: number[]): number[] {
+  const bst = new BinarySearchTree<number>();
+  for (const v of values) bst.insert(v);
+  return bst.inOrderTraversal();
+}
+
+function bstSearch(values: number[], target: number): boolean {
+  const bst = new BinarySearchTree<number>();
+  for (const v of values) bst.insert(v);
+  return bst.search(target);
+}
+
+function bstFindMin(values: number[]): number | null {
+  const bst = new BinarySearchTree<number>();
+  for (const v of values) bst.insert(v);
+  return bst.findMin();
+}
+
+function bstFindMax(values: number[]): number | null {
+  const bst = new BinarySearchTree<number>();
+  for (const v of values) bst.insert(v);
+  return bst.findMax();
+}
+
+function bstDelete(values: number[], toDelete: number): number[] {
+  const bst = new BinarySearchTree<number>();
+  for (const v of values) bst.insert(v);
+  bst.delete(toDelete);
+  return bst.inOrderTraversal();
+}`,
   testCases: [
     {
-      input: { operations: ['insert(5)', 'insert(3)', 'insert(7)', 'inOrderTraversal()'] },
+      input: [[5, 3, 7]],
       expectedOutput: [3, 5, 7],
-      description: 'BST inOrderTraversal returns sorted elements',
+      description: 'bstInOrder returns sorted elements',
     },
     {
-      input: { operations: ['insert(5)', 'insert(3)', 'insert(7)', 'search(3)'] },
+      input: [[5, 3, 7], 3],
       expectedOutput: true,
-      description: 'search returns true for existing value',
+      description: 'bstSearch returns true for existing value',
     },
     {
-      input: { operations: ['insert(5)', 'insert(3)', 'insert(7)', 'search(10)'] },
+      input: [[5, 3, 7], 10],
       expectedOutput: false,
-      description: 'search returns false for non-existing value',
+      description: 'bstSearch returns false for non-existing value',
     },
     {
-      input: { operations: ['insert(5)', 'insert(3)', 'insert(7)', 'insert(1)', 'findMin()'] },
+      input: [[5, 3, 7, 1]],
       expectedOutput: 1,
-      description: 'findMin returns smallest value',
+      description: 'bstFindMin returns smallest value',
     },
     {
-      input: { operations: ['insert(5)', 'insert(3)', 'insert(7)', 'insert(9)', 'findMax()'] },
+      input: [[5, 3, 7, 9]],
       expectedOutput: 9,
-      description: 'findMax returns largest value',
+      description: 'bstFindMax returns largest value',
     },
     {
-      input: { operations: ['insert(5)', 'insert(3)', 'insert(7)', 'delete(3)', 'inOrderTraversal()'] },
+      input: [[5, 3, 7], 3],
       expectedOutput: [5, 7],
-      description: 'delete removes node and maintains BST property',
+      description: 'bstDelete removes node and maintains BST property',
     },
   ],
   hints: [

@@ -164,7 +164,34 @@ console.log('After prepend:', list.toArray());
 list.delete(2);
 console.log('After delete:', list.toArray());
 list.insertAfter(1, 1.5);
-console.log('After insertAfter:', list.toArray());`,
+console.log('After insertAfter:', list.toArray());
+
+// Helper functions for testing
+function listAppend(values: number[]): number[] {
+  const list = new LinkedList<number>();
+  for (const v of values) list.append(v);
+  return list.toArray();
+}
+
+function listPrepend(values: number[]): number[] {
+  const list = new LinkedList<number>();
+  for (const v of values) list.prepend(v);
+  return list.toArray();
+}
+
+function listDelete(values: number[], deleteValue: number): number[] {
+  const list = new LinkedList<number>();
+  for (const v of values) list.append(v);
+  list.delete(deleteValue);
+  return list.toArray();
+}
+
+function listInsertAfter(values: number[], existingValue: number, newValue: number): number[] {
+  const list = new LinkedList<number>();
+  for (const v of values) list.append(v);
+  list.insertAfter(existingValue, newValue);
+  return list.toArray();
+}`,
   solution: `class ListNode<T> {
   value: T;
   next: ListNode<T> | null;
@@ -284,27 +311,54 @@ console.log('After prepend:', list.toArray());
 list.delete(2);
 console.log('After delete:', list.toArray());
 list.insertAfter(1, 1.5);
-console.log('After insertAfter:', list.toArray());`,
+console.log('After insertAfter:', list.toArray());
+
+// Helper functions for testing
+function listAppend(values: number[]): number[] {
+  const list = new LinkedList<number>();
+  for (const v of values) list.append(v);
+  return list.toArray();
+}
+
+function listPrepend(values: number[]): number[] {
+  const list = new LinkedList<number>();
+  for (const v of values) list.prepend(v);
+  return list.toArray();
+}
+
+function listDelete(values: number[], deleteValue: number): number[] {
+  const list = new LinkedList<number>();
+  for (const v of values) list.append(v);
+  list.delete(deleteValue);
+  return list.toArray();
+}
+
+function listInsertAfter(values: number[], existingValue: number, newValue: number): number[] {
+  const list = new LinkedList<number>();
+  for (const v of values) list.append(v);
+  list.insertAfter(existingValue, newValue);
+  return list.toArray();
+}`,
   testCases: [
     {
-      input: { operation: 'append', values: [1, 2, 3] },
+      input: [[1, 2, 3]],
       expectedOutput: [1, 2, 3],
-      description: 'append adds elements to the end',
+      description: 'listAppend adds elements to the end',
     },
     {
-      input: { operation: 'prepend', values: [1, 2, 3] },
+      input: [[1, 2, 3]],
       expectedOutput: [3, 2, 1],
-      description: 'prepend adds elements to the beginning',
+      description: 'listPrepend adds elements to the beginning',
     },
     {
-      input: { operation: 'delete', values: [1, 2, 3], deleteValue: 2 },
+      input: [[1, 2, 3], 2],
       expectedOutput: [1, 3],
-      description: 'delete removes the specified value',
+      description: 'listDelete removes the specified value',
     },
     {
-      input: { operation: 'insertAfter', values: [1, 3], existingValue: 1, newValue: 2 },
+      input: [[1, 3], 1, 2],
       expectedOutput: [1, 2, 3],
-      description: 'insertAfter inserts after the specified value',
+      description: 'listInsertAfter inserts after the specified value',
     },
   ],
   hints: [

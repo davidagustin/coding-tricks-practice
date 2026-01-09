@@ -132,36 +132,49 @@ type RequiredUser = MyRequired<User>;
 type ReadonlyUser = MyReadonly<User>;
 type NullableUser = Nullable<User>;
 
+// Runtime functions to demonstrate mapped type behavior
+function makePartial<T extends object>(obj: T): Partial<T> {
+  return { ...obj };
+}
+
+function hasAllKeys(obj: object, keys: string[]): boolean {
+  return keys.every(key => key in obj);
+}
+
+function makeNullable<T extends object>(obj: T): { [K in keyof T]: T[K] | null } {
+  return { ...obj };
+}
+
+function getKeys(obj: object): string[] {
+  return Object.keys(obj);
+}
+
 // Test
 const partialUser: PartialUser = { name: 'John' };
 const requiredUser: RequiredUser = { name: 'John', age: 30, email: 'john@example.com' };
-const readonlyUser: ReadonlyUser = { name: 'John', age: 30 };
-const nullableUser: NullableUser = { name: null, age: 30, email: null };
 
 console.log('Partial:', partialUser);
-console.log('Required:', requiredUser);
-console.log('Readonly:', readonlyUser);
-console.log('Nullable:', nullableUser);`,
+console.log('Required:', requiredUser);`,
   testCases: [
     {
-      input: { type: 'MyPartial', test: { name: 'John' } },
-      expectedOutput: true,
-      description: 'MyPartial allows partial objects',
+      input: [{ name: 'John', age: 30 }],
+      expectedOutput: { name: 'John', age: 30 },
+      description: 'makePartial returns a copy of the object',
     },
     {
-      input: { type: 'MyRequired', test: { name: 'John', age: 30, email: 'test@example.com' } },
+      input: [{ name: 'John', age: 30 }, ['name', 'age']],
       expectedOutput: true,
-      description: 'MyRequired requires all properties',
+      description: 'hasAllKeys returns true when all keys exist',
     },
     {
-      input: { type: 'MyReadonly', test: { name: 'John', age: 30 } },
-      expectedOutput: true,
-      description: 'MyReadonly makes properties readonly',
+      input: [{ name: 'John' }, ['name', 'age', 'email']],
+      expectedOutput: false,
+      description: 'hasAllKeys returns false when keys are missing',
     },
     {
-      input: { type: 'Nullable', test: { name: null, age: 30, email: null } },
-      expectedOutput: true,
-      description: 'Nullable allows null for all properties',
+      input: [{ name: 'Alice', age: 25 }],
+      expectedOutput: ['name', 'age'],
+      description: 'getKeys returns array of object keys',
     },
   ],
   hints: [

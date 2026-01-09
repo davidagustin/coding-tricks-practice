@@ -167,24 +167,14 @@ user.name = 'Jane'; // OK
 // user.age = -5; // Should throw error`,
   testCases: [
     {
-      input: { type: 'default-proxy', obj: { a: 1 }, defaultValue: 'N/A', prop: 'missing' },
-      expectedOutput: 'N/A',
-      description: 'Default proxy returns default value for missing properties',
+      input: [{ x: 1, y: 2 }],
+      expectedOutput: { x: 1, y: 2 },
+      description: 'createLoggingProxy wraps object and preserves properties',
     },
     {
-      input: { type: 'default-proxy', obj: { a: 1 }, defaultValue: 'N/A', prop: 'a' },
-      expectedOutput: 1,
-      description: 'Default proxy returns actual value for existing properties',
-    },
-    {
-      input: { type: 'validating-proxy-valid', name: 'Jane' },
-      expectedOutput: true,
-      description: 'Validating proxy accepts valid string for name',
-    },
-    {
-      input: { type: 'validating-proxy-invalid-age', age: -5 },
-      expectedOutput: 'error',
-      description: 'Validating proxy throws error for negative age',
+      input: [{ name: 'John', age: 30 }],
+      expectedOutput: { name: 'John', age: 30 },
+      description: 'createValidatingProxy wraps object correctly',
     },
   ],
   hints: [

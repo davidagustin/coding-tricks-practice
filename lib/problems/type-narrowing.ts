@@ -216,29 +216,29 @@ console.log(printPersonInfo({ name: 'Alice', privileges: ['create', 'delete'] })
 console.log(printPersonInfo({ name: 'Bob', startDate: new Date('2023-01-15') }));`,
   testCases: [
     {
-      input: { value: 'hello' },
+      input: ['hello'],
       expectedOutput: 'String: hello',
       description: 'describeValue handles string',
     },
     {
-      input: { value: 42 },
+      input: [42],
       expectedOutput: 'Number: 42',
       description: 'describeValue handles number',
     },
     {
-      input: { value: true },
+      input: [true],
       expectedOutput: 'Boolean: true',
       description: 'describeValue handles boolean',
     },
     {
-      input: { vehicleType: 'car' },
-      expectedOutput: 'Driving a car',
-      description: 'useVehicle calls drive for Car',
+      input: [{ name: 'Alice', privileges: ['create', 'delete'] }],
+      expectedOutput: 'Admin: Alice, Privileges: 2',
+      description: 'printPersonInfo handles Admin type',
     },
     {
-      input: { vehicleType: 'bicycle' },
-      expectedOutput: 'Pedaling a bicycle',
-      description: 'useVehicle calls pedal for Bicycle',
+      input: [{ name: 'Bob', startDate: new Date('2023-01-15') }],
+      expectedOutput: 'Employee: Bob, Started: 2023-01-15',
+      description: 'printPersonInfo handles Employee type',
     },
   ],
   hints: [

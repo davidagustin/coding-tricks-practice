@@ -169,32 +169,32 @@ console.log(camelToSnake('helloWorld'));
 console.log(censorWords('hello world', ['world']));`,
   testCases: [
     {
-      input: { title: 'Hello World!' },
+      input: ['Hello World!'],
       expectedOutput: 'hello-world',
       description: 'toSlug converts title to URL-friendly slug',
     },
     {
-      input: { title: 'My   Blog Post!!!' },
+      input: ['My   Blog Post!!!'],
       expectedOutput: 'my-blog-post',
       description: 'toSlug handles multiple spaces and special chars',
     },
     {
-      input: { phone: '1234567890' },
+      input: ['1234567890'],
       expectedOutput: '(123) 456-7890',
       description: 'formatPhoneNumber formats digits correctly',
     },
     {
-      input: { phone: '123-456-7890' },
+      input: ['123-456-7890'],
       expectedOutput: '(123) 456-7890',
       description: 'formatPhoneNumber handles existing formatting',
     },
     {
-      input: { str: 'helloWorld' },
+      input: ['helloWorld'],
       expectedOutput: 'hello_world',
       description: 'camelToSnake converts camelCase to snake_case',
     },
     {
-      input: { text: 'hello world', words: ['world'] },
+      input: ['hello world', ['world']],
       expectedOutput: 'hello *****',
       description: 'censorWords replaces words with asterisks',
     },

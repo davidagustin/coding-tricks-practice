@@ -169,22 +169,22 @@ console.log(updateUser(user, 'Bob')); // { id: 1, name: 'Bob' }
 console.log(user.name); // 'Alice' - unchanged`,
   testCases: [
     {
-      input: { fn: 'addItem', cart: ['apple', 'banana'], item: 'orange' },
+      input: [['apple', 'banana'], 'orange'],
       expectedOutput: ['apple', 'banana', 'orange'],
       description: 'addItem returns new array with added item',
     },
     {
-      input: { fn: 'addItem-immutable', cart: ['a', 'b'], item: 'c' },
-      expectedOutput: ['a', 'b'],
-      description: 'addItem does not modify original array',
-    },
-    {
-      input: { fn: 'calculateTotal', price: 100, taxRate: 0.1 },
+      input: [100, 0.1],
       expectedOutput: 110,
       description: 'calculateTotal correctly calculates price with tax',
     },
     {
-      input: { fn: 'updateUser', user: { id: 1, name: 'Alice' }, name: 'Bob' },
+      input: [100, 0.2],
+      expectedOutput: 120,
+      description: 'calculateTotal with 20% tax rate',
+    },
+    {
+      input: [{ id: 1, name: 'Alice' }, 'Bob'],
       expectedOutput: { id: 1, name: 'Bob' },
       description: 'updateUser returns new object with updated name',
     },

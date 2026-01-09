@@ -291,17 +291,17 @@ console.log(createProduct({
 console.log(validateConfig({ apiUrl: 'https://api.example.com' }));`,
   testCases: [
     {
-      input: { id: 1, updates: { price: 149.99 } },
-      expectedOutput: { price: 149.99 },
+      input: [1, { price: 149.99 }],
+      expectedOutput: { id: 1, name: 'Original Product', description: 'Original description', price: 149.99, category: 'electronics', inStock: true },
       description: 'updateProduct merges updates with existing product',
     },
     {
-      input: { product: { id: 1, name: 'Test', price: 29.99, inStock: true } },
+      input: [{ id: 1, name: 'Test', description: 'Test desc', price: 29.99, category: 'test', inStock: true, createdAt: new Date() }],
       expectedOutput: { id: 1, name: 'Test', price: 29.99, inStock: true },
       description: 'getProductPreview returns only preview fields',
     },
     {
-      input: { config: { apiUrl: 'https://api.example.com' } },
+      input: [{ apiUrl: 'https://api.example.com' }],
       expectedOutput: { apiUrl: 'https://api.example.com', timeout: 5000, retries: 3, debug: false },
       description: 'validateConfig fills in default values',
     },

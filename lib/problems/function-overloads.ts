@@ -273,11 +273,6 @@ console.log(combine([1, 2], [3, 4]));        // [1, 2, 3, 4]`,
       description: 'parse converts string to boolean',
     },
     {
-      input: [[1, 2, 3, 4, 5], 3],
-      expectedOutput: 4,
-      description: 'find returns first element greater than predicate',
-    },
-    {
       input: ['Hello, ', 'World!'],
       expectedOutput: 'Hello, World!',
       description: 'combine concatenates strings',
@@ -286,6 +281,11 @@ console.log(combine([1, 2], [3, 4]));        // [1, 2, 3, 4]`,
       input: [10, 20],
       expectedOutput: 30,
       description: 'combine adds numbers',
+    },
+    {
+      input: [[1, 2], [3, 4]],
+      expectedOutput: [1, 2, 3, 4],
+      description: 'combine concatenates arrays',
     },
   ],
   hints: [

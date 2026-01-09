@@ -227,17 +227,17 @@ console.log(getNonEnumerableProps([1, 2, 3]));`,
     {
       input: [{ a: 1, b: 2 }],
       expectedOutput: ['a', 'b'],
-      description: 'getAllOwnProperties returns all string keys',
+      description: 'getAllOwnProperties returns all string keys for simple object',
     },
     {
       input: [[1, 2, 3]],
       expectedOutput: ['length'],
-      description: 'getNonEnumerableProps finds non-enumerable "length" on arrays',
+      description: 'getNonEnumerableProps finds non-enumerable length on arrays',
     },
     {
       input: [{ visible: 1 }],
       expectedOutput: { enumerable: ['visible'], nonEnumerable: [], symbols: [] },
-      description: 'inspectObject categorizes enumerable properties',
+      description: 'inspectObject categorizes enumerable properties correctly',
     },
     {
       input: [{}],

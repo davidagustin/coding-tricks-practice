@@ -169,22 +169,22 @@ console.log(safeSlug('Caf\\u00e9 M\\u00fcnchen!'));
 console.log(sortStringsLocale(['\\u00e0', 'z', 'a']));`,
   testCases: [
     {
-      input: { str1: 'cafe\u0301', str2: 'caf\u00e9' },
+      input: ['cafe\u0301', 'caf\u00e9'],
       expectedOutput: true,
       description: 'normalizeAndCompare returns true for equivalent unicode strings',
     },
     {
-      input: { str: 'caf\u00e9' },
+      input: ['caf\u00e9'],
       expectedOutput: 'cafe',
       description: 'removeAccents removes accent from e',
     },
     {
-      input: { str: 'Caf\u00e9 M\u00fcnchen!' },
+      input: ['Caf\u00e9 M\u00fcnchen!'],
       expectedOutput: 'cafe-munchen',
       description: 'safeSlug creates URL-safe slug from unicode string',
     },
     {
-      input: { strings: ['\u00e0', 'z', 'a'], locale: 'en' },
+      input: [['\u00e0', 'z', 'a'], 'en'],
       expectedOutput: ['a', '\u00e0', 'z'],
       description: 'sortStringsLocale sorts with locale awareness',
     },

@@ -166,22 +166,22 @@ for (const num of range) {
     {
       input: { name: 'John' },
       expectedOutput: undefined,
-      description: 'user.id is undefined (private symbol property)',
+      description: 'User - id is undefined (private symbol property)',
     },
     {
       input: { name: 'John', checkId: true },
       expectedOutput: true,
-      description: 'user.getId() returns the private ID',
+      description: 'User - getId() returns the private ID',
     },
     {
       input: { start: 1, end: 5 },
       expectedOutput: [1, 2, 3, 4, 5],
-      description: 'NumberRange iterates from start to end inclusive',
+      description: 'NumberRange - iterates from start to end inclusive',
     },
     {
       input: { start: 3, end: 6 },
       expectedOutput: [3, 4, 5, 6],
-      description: 'NumberRange works with different start/end values',
+      description: 'NumberRange - works with different start/end values',
     },
   ],
   hints: [

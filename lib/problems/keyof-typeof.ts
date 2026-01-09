@@ -310,9 +310,9 @@ console.log(translate('fr', 'thanks'));   // 'Merci'`,
       description: 'getProperty returns correct property value',
     },
     {
-      input: ['apiEndpoint'],
-      expectedOutput: 'https://api.example.com',
-      description: 'getConfigValue returns config value by key',
+      input: [{ name: 'Alice', age: 30, email: 'alice@example.com', isActive: true }, 'age'],
+      expectedOutput: 30,
+      description: 'getProperty returns age value correctly',
     },
     {
       input: ['en', 'greeting'],

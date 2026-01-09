@@ -149,29 +149,29 @@ console.log(fastFib(10)); // 55
 console.log(memoizedFib(40)); // 102334155 (fast due to memoization)`,
   testCases: [
     {
-      input: { fn: 'memoizedFib', arg: 10 },
-      expectedOutput: 55,
-      description: 'memoizedFib(10) returns 55',
-    },
-    {
-      input: { fn: 'memoizedFib', arg: 0 },
-      expectedOutput: 0,
-      description: 'memoizedFib(0) returns 0',
-    },
-    {
-      input: { fn: 'memoizedFib', arg: 1 },
-      expectedOutput: 1,
-      description: 'memoizedFib(1) returns 1',
-    },
-    {
-      input: { fn: 'fastFib', arg: 10 },
+      input: 10,
       expectedOutput: 55,
       description: 'fastFib(10) returns 55',
     },
     {
-      input: { fn: 'fastFib', arg: 20 },
+      input: 0,
+      expectedOutput: 0,
+      description: 'fastFib(0) returns 0',
+    },
+    {
+      input: 1,
+      expectedOutput: 1,
+      description: 'fastFib(1) returns 1',
+    },
+    {
+      input: 20,
       expectedOutput: 6765,
       description: 'fastFib(20) returns 6765',
+    },
+    {
+      input: 15,
+      expectedOutput: 610,
+      description: 'fastFib(15) returns 610',
     },
   ],
   hints: [

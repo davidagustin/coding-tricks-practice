@@ -289,24 +289,24 @@ console.log(dfsTreePreOrder(tree));
 // [1, 2, 4, 5, 3]`,
   testCases: [
     {
-      input: { graph: { A: ['B', 'C'], B: ['D', 'E'], C: ['F'], D: [], E: [], F: [] }, start: 'A' },
+      input: [{ A: ['B', 'C'], B: ['D', 'E'], C: ['F'], D: [], E: [], F: [] }, 'A'],
       expectedOutput: ['A', 'B', 'D', 'E', 'C', 'F'],
-      description: 'Recursive DFS traverses graph in correct order',
+      description: 'dfsGraphRecursive traverses graph in correct order',
     },
     {
-      input: { graph: { A: ['B', 'C'], B: ['D'], C: [], D: [] }, start: 'A' },
+      input: [{ A: ['B', 'C'], B: ['D'], C: [], D: [] }, 'A'],
       expectedOutput: ['A', 'B', 'D', 'C'],
-      description: 'Iterative DFS traverses graph in correct order',
+      description: 'dfsGraphIterative traverses graph in correct order',
     },
     {
-      input: { tree: { val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } } },
+      input: [{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }],
       expectedOutput: [1, 2, 3],
-      description: 'Pre-order DFS traverses tree: node, left, right',
+      description: 'dfsTreePreOrder traverses tree: node, left, right',
     },
     {
-      input: { tree: { val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } } },
+      input: [{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }],
       expectedOutput: [2, 1, 3],
-      description: 'In-order DFS traverses tree: left, node, right',
+      description: 'dfsTreeInOrder traverses tree: left, node, right',
     },
   ],
   hints: [

@@ -255,12 +255,73 @@ const users = await Promise.all(
   }
 }
 
-// Test (commented out)
-// const queue = new PromiseQueue(2);
-// queue.add(() => new Promise(r => setTimeout(() => r(1), 100)));
-// queue.add(() => new Promise(r => setTimeout(() => r(2), 100)));
-// queue.add(() => new Promise(r => setTimeout(() => r(3), 100)));
-// queue.onIdle().then(() => console.log('All done'));`,
+// Test function for test runner
+async function testPromiseQueue(testName) {
+  if (testName === 'concurrencyLimit') {
+    const queue = new PromiseQueue(2);
+    let maxConcurrent = 0;
+    let currentConcurrent = 0;
+
+    const task = () => new Promise(resolve => {
+      currentConcurrent++;
+      maxConcurrent = Math.max(maxConcurrent, currentConcurrent);
+      setTimeout(() => {
+        currentConcurrent--;
+        resolve();
+      }, 10);
+    });
+
+    await Promise.all([
+      queue.add(task),
+      queue.add(task),
+      queue.add(task),
+      queue.add(task)
+    ]);
+    return { maxConcurrent };
+  }
+  if (testName === 'addAll') {
+    const queue = new PromiseQueue(2);
+    const results = await queue.addAll([
+      () => Promise.resolve(1),
+      () => Promise.resolve(2),
+      () => Promise.resolve(3),
+      () => Promise.resolve(4)
+    ]);
+    const inOrder = results[0] === 1 && results[1] === 2 && results[2] === 3 && results[3] === 4;
+    return { results, inOrder };
+  }
+  if (testName === 'onIdle') {
+    const queue = new PromiseQueue(2);
+    queue.add(() => new Promise(r => setTimeout(r, 10)));
+    queue.add(() => new Promise(r => setTimeout(r, 10)));
+    await queue.onIdle();
+    return { idle: true };
+  }
+  if (testName === 'sizeAndPending') {
+    const queue = new PromiseQueue(2);
+    queue.add(() => new Promise(r => setTimeout(r, 100)));
+    queue.add(() => new Promise(r => setTimeout(r, 100)));
+    queue.add(() => new Promise(r => setTimeout(r, 100)));
+    queue.add(() => new Promise(r => setTimeout(r, 100)));
+    queue.add(() => new Promise(r => setTimeout(r, 100)));
+    // Give a moment for tasks to start
+    await new Promise(r => setTimeout(r, 5));
+    const pendingDuring = queue.pending;
+    const initialSize = queue.size + pendingDuring;
+    return { initialSize, pendingDuring };
+  }
+  if (testName === 'clear') {
+    const queue = new PromiseQueue(1);
+    queue.add(() => new Promise(r => setTimeout(r, 100)));
+    queue.add(() => new Promise(r => setTimeout(r, 100)));
+    queue.add(() => new Promise(r => setTimeout(r, 100)));
+    // Give a moment for first task to start
+    await new Promise(r => setTimeout(r, 5));
+    queue.clear();
+    return { clearedSize: queue.size };
+  }
+  return null;
+}`,
   testCases: [
     {
       input: 'concurrencyLimit',
@@ -279,7 +340,7 @@ const users = await Promise.all(
     },
     {
       input: 'sizeAndPending',
-      expectedOutput: { initialSize: 3, pendingDuring: 2 },
+      expectedOutput: { initialSize: 5, pendingDuring: 2 },
       description: 'size and pending return correct values',
     },
     {

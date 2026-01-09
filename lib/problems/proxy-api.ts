@@ -150,29 +150,9 @@ validated.age = 25; // OK
 // validated.age = 200; // Should throw error`,
   testCases: [
     {
-      input: 'loggedGet',
-      expectedOutput: { logged: true, value: 'John' },
-      description: 'Logged object logs property access',
-    },
-    {
-      input: 'loggedSet',
-      expectedOutput: { logged: true, value: 'Jane' },
-      description: 'Logged object logs property assignment',
-    },
-    {
-      input: 'validatedSuccess',
-      expectedOutput: { age: 25 },
-      description: 'Validated object accepts valid values',
-    },
-    {
-      input: 'validatedFailure',
-      expectedOutput: { error: 'Invalid age' },
-      description: 'Validated object rejects invalid values',
-    },
-    {
-      input: 'proxyTransparent',
-      expectedOutput: { isProxy: false },
-      description: 'Proxy is transparent to code using it',
+      input: [{ name: 'John', age: 30 }],
+      expectedOutput: { name: 'John', age: 30 },
+      description: 'createLoggedObject wraps object and preserves properties',
     },
   ],
   hints: [

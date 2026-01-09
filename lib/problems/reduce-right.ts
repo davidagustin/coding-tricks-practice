@@ -91,16 +91,26 @@ const addOne = x => x + 1;
 const multiplyByTwo = x => x * 2;
 const subtractFive = x => x - 5;
 
-// Test function that uses compose
-function testCompose() {
+// Test function that uses compose - accepts input and returns result
+function testCompose(x) {
   const composed = compose(multiplyByTwo, addOne, subtractFive);
-  return composed(10);
+  return composed(x);
 }`,
   testCases: [
     {
-      input: [],
+      input: [10],
       expectedOutput: 12,
-      description: 'testCompose',
+      description: 'testCompose applies functions right-to-left: (10-5+1)*2=12',
+    },
+    {
+      input: [5],
+      expectedOutput: 2,
+      description: 'testCompose with input 5: (5-5+1)*2=2',
+    },
+    {
+      input: [15],
+      expectedOutput: 22,
+      description: 'testCompose with input 15: (15-5+1)*2=22',
     },
   ],
   hints: [

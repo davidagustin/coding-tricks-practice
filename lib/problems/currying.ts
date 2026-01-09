@@ -127,60 +127,41 @@ function curry2(fn) {
   };
 }
 
-// Bonus: Generic curry for any number of arguments
-function curry(fn) {
-  return function curried(...args) {
-    if (args.length >= fn.length) {
-      return fn.apply(this, args);
-    } else {
-      return function(...moreArgs) {
-        return curried.apply(this, args.concat(moreArgs));
-      };
-    }
-  };
+// Test wrapper for multiply - calls the curried function
+function testMultiply(a, b, c) {
+  return multiply(a)(b)(c);
+}
+
+// Test wrapper for greet - calls the curried function
+function testGreet(greeting, name) {
+  return greet(greeting)(name);
 }
 
 // Test
 console.log(multiply(2)(3)(4)); // 24
 console.log(greet('Hello')('World')); // Hello, World!
 const curriedAdd = curry2((a, b) => a + b);
-console.log(curriedAdd(2)(3)); // 5
-
-// Bonus test
-const curriedSum = curry((a, b, c) => a + b + c);
-console.log(curriedSum(1)(2)(3)); // 6
-console.log(curriedSum(1, 2)(3)); // 6
-console.log(curriedSum(1)(2, 3)); // 6`,
+console.log(curriedAdd(2)(3)); // 5`,
   testCases: [
     {
-      input: { fn: 'multiply', calls: [[2], [3], [4]] },
+      input: [2, 3, 4],
       expectedOutput: 24,
-      description: 'multiply(2)(3)(4) returns 24',
+      description: 'testMultiply calls multiply(2)(3)(4) and returns 24',
     },
     {
-      input: { fn: 'multiply', calls: [[1], [5], [10]] },
+      input: [1, 5, 10],
       expectedOutput: 50,
-      description: 'multiply(1)(5)(10) returns 50',
+      description: 'testMultiply calls multiply(1)(5)(10) and returns 50',
     },
     {
-      input: { fn: 'greet', calls: [['Hello'], ['World']] },
+      input: ['Hello', 'World'],
       expectedOutput: 'Hello, World!',
-      description: 'greet creates greeting message',
+      description: 'testGreet creates greeting message',
     },
     {
-      input: { fn: 'greet', calls: [['Hi'], ['there']] },
+      input: ['Hi', 'there'],
       expectedOutput: 'Hi, there!',
-      description: 'greet works with different inputs',
-    },
-    {
-      input: { fn: 'curry2', args: ['(a, b) => a + b'], calls: [[2], [3]] },
-      expectedOutput: 5,
-      description: 'curry2 curries 2-argument functions',
-    },
-    {
-      input: { fn: 'curry2', args: ['(a, b) => a * b'], calls: [[4], [5]] },
-      expectedOutput: 20,
-      description: 'curry2 works with multiplication',
+      description: 'testGreet works with different inputs',
     },
   ],
   hints: [

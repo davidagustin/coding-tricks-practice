@@ -186,42 +186,42 @@ console.log(roundToDecimal(3.14159, 2)); // 3.14
 console.log(calculateDistance(0, 0, 3, 4)); // 5`,
   testCases: [
     {
-      input: { fn: 'calculatePages', args: [25, 10] },
+      input: [25, 10],
       expectedOutput: 3,
       description: 'calculatePages rounds up partial pages',
     },
     {
-      input: { fn: 'calculatePages', args: [30, 10] },
+      input: [30, 10],
       expectedOutput: 3,
       description: 'calculatePages exact division',
     },
     {
-      input: { fn: 'calculatePages', args: [0, 10] },
+      input: [0, 10],
       expectedOutput: 0,
       description: 'calculatePages with 0 items',
     },
     {
-      input: { fn: 'clampValue', args: [5, 0, 10] },
+      input: [5, 0, 10],
       expectedOutput: 5,
       description: 'clampValue within range',
     },
     {
-      input: { fn: 'clampValue', args: [-5, 0, 10] },
+      input: [-5, 0, 10],
       expectedOutput: 0,
       description: 'clampValue below min',
     },
     {
-      input: { fn: 'clampValue', args: [15, 0, 10] },
+      input: [15, 0, 10],
       expectedOutput: 10,
       description: 'clampValue above max',
     },
     {
-      input: { fn: 'roundToDecimal', args: [3.14159, 2] },
+      input: [3.14159, 2],
       expectedOutput: 3.14,
       description: 'roundToDecimal to 2 places',
     },
     {
-      input: { fn: 'calculateDistance', args: [0, 0, 3, 4] },
+      input: [0, 0, 3, 4],
       expectedOutput: 5,
       description: 'calculateDistance 3-4-5 triangle',
     },

@@ -112,6 +112,23 @@ console.log(partitionUsers(users));`,
         ],
         inactive: [{ id: 2, name: 'Jane', active: false }],
       },
+      description: 'partitionUsers splits users into active and inactive groups',
+    },
+    {
+      input: [
+        [
+          { id: 1, name: 'Alice', active: false },
+          { id: 2, name: 'Bob', active: false },
+        ],
+      ],
+      expectedOutput: {
+        active: [],
+        inactive: [
+          { id: 1, name: 'Alice', active: false },
+          { id: 2, name: 'Bob', active: false },
+        ],
+      },
+      description: 'partitionUsers handles all inactive users',
     },
   ],
   hints: [

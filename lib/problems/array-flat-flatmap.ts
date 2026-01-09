@@ -164,6 +164,11 @@ console.log(filterAndTransform([1, 2, 3, 4, 5], n => n > 2, n => n * 10)); // [3
       description: 'flattenDeep completely flattens nested array',
     },
     {
+      input: [[[1, 2], [3, [4, 5]], 6]],
+      expectedOutput: [1, 2, 3, 4, 5, 6],
+      description: 'flattenDeep handles mixed nesting levels',
+    },
+    {
       input: [[1, [2, [3, [4]]]], 2],
       expectedOutput: [1, 2, 3, [4]],
       description: 'flattenToDepth flattens to specific depth',
@@ -182,11 +187,6 @@ console.log(filterAndTransform([1, 2, 3, 4, 5], n => n > 2, n => n * 10)); // [3
       input: [["a b c", "d e"]],
       expectedOutput: ["a", "b", "c", "d", "e"],
       description: 'getWordsFromSentences handles multiple spaces',
-    },
-    {
-      input: [[[1, 2], [3, [4, 5]], 6]],
-      expectedOutput: [1, 2, 3, 4, 5, 6],
-      description: 'flattenDeep handles mixed nesting levels',
     },
   ],
   hints: [

@@ -138,7 +138,32 @@ stack.push(30);
 console.log('Peek:', stack.peek());
 console.log('Pop:', stack.pop());
 console.log('Size:', stack.size());
-console.log('isEmpty:', stack.isEmpty());`,
+console.log('isEmpty:', stack.isEmpty());
+
+// Helper functions for testing
+function stackPeek(values: number[]): number | undefined {
+  const stack = new Stack<number>();
+  for (const v of values) stack.push(v);
+  return stack.peek();
+}
+
+function stackPop(values: number[]): number | undefined {
+  const stack = new Stack<number>();
+  for (const v of values) stack.push(v);
+  return stack.pop();
+}
+
+function stackSize(values: number[]): number {
+  const stack = new Stack<number>();
+  for (const v of values) stack.push(v);
+  return stack.size();
+}
+
+function stackIsEmpty(values: number[]): boolean {
+  const stack = new Stack<number>();
+  for (const v of values) stack.push(v);
+  return stack.isEmpty();
+}`,
   solution: `class Stack<T> {
   private items: T[];
 
@@ -175,32 +200,57 @@ stack.push(30);
 console.log('Peek:', stack.peek());
 console.log('Pop:', stack.pop());
 console.log('Size:', stack.size());
-console.log('isEmpty:', stack.isEmpty());`,
+console.log('isEmpty:', stack.isEmpty());
+
+// Helper functions for testing
+function stackPeek(values: number[]): number | undefined {
+  const stack = new Stack<number>();
+  for (const v of values) stack.push(v);
+  return stack.peek();
+}
+
+function stackPop(values: number[]): number | undefined {
+  const stack = new Stack<number>();
+  for (const v of values) stack.push(v);
+  return stack.pop();
+}
+
+function stackSize(values: number[]): number {
+  const stack = new Stack<number>();
+  for (const v of values) stack.push(v);
+  return stack.size();
+}
+
+function stackIsEmpty(values: number[]): boolean {
+  const stack = new Stack<number>();
+  for (const v of values) stack.push(v);
+  return stack.isEmpty();
+}`,
   testCases: [
     {
-      input: { operations: ['push(10)', 'push(20)', 'peek()'] },
+      input: [[10, 20]],
       expectedOutput: 20,
-      description: 'peek returns top element without removing it',
+      description: 'stackPeek returns top element without removing it',
     },
     {
-      input: { operations: ['push(10)', 'push(20)', 'pop()'] },
+      input: [[10, 20]],
       expectedOutput: 20,
-      description: 'pop returns and removes top element',
+      description: 'stackPop returns and removes top element',
     },
     {
-      input: { operations: ['push(10)', 'push(20)', 'pop()', 'size()'] },
-      expectedOutput: 1,
-      description: 'size returns correct count after operations',
+      input: [[10, 20, 30]],
+      expectedOutput: 3,
+      description: 'stackSize returns correct count',
     },
     {
-      input: { operations: ['isEmpty()'] },
+      input: [[]],
       expectedOutput: true,
-      description: 'isEmpty returns true for empty stack',
+      description: 'stackIsEmpty returns true for empty stack',
     },
     {
-      input: { operations: ['push(5)', 'isEmpty()'] },
+      input: [[5]],
       expectedOutput: false,
-      description: 'isEmpty returns false for non-empty stack',
+      description: 'stackIsEmpty returns false for non-empty stack',
     },
   ],
   hints: [

@@ -182,6 +182,35 @@ emitter.emit('message', 'Second message');`,
   }
 }
 
+// Test wrapper functions for the test runner
+function testEmitReturnsTrue() {
+  const emitter = new EventEmitter();
+  emitter.on('test', () => {});
+  return emitter.emit('test', 'data');
+}
+
+function testListenerCountAfterAdd() {
+  const emitter = new EventEmitter();
+  emitter.on('test', () => {});
+  emitter.on('test', () => {});
+  return emitter.listenerCount('test');
+}
+
+function testListenerCountAfterRemove() {
+  const emitter = new EventEmitter();
+  const handler1 = () => {};
+  const handler2 = () => {};
+  emitter.on('test', handler1);
+  emitter.on('test', handler2);
+  emitter.off('test', handler1);
+  return emitter.listenerCount('test');
+}
+
+function testEmitReturnsFalseNoListeners() {
+  const emitter = new EventEmitter();
+  return emitter.emit('nonexistent', 'data');
+}
+
 // Test
 const emitter = new EventEmitter();
 
@@ -199,22 +228,22 @@ emitter.emit('message', 'Second message');`,
     {
       input: [],
       expectedOutput: true,
-      description: 'EventEmitter can subscribe and emit events',
+      description: 'testEmitReturnsTrue returns true when listeners exist',
     },
     {
       input: [],
       expectedOutput: 2,
-      description: 'listenerCount returns correct count after adding 2 listeners',
+      description: 'testListenerCountAfterAdd returns 2 after adding 2 listeners',
     },
     {
       input: [],
       expectedOutput: 1,
-      description: 'listenerCount returns 1 after removing one listener',
+      description: 'testListenerCountAfterRemove returns 1 after removing one listener',
     },
     {
       input: [],
       expectedOutput: false,
-      description: 'emit returns false when no listeners exist',
+      description: 'testEmitReturnsFalseNoListeners returns false when no listeners exist',
     },
   ],
   hints: [

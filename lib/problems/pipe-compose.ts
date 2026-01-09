@@ -122,6 +122,12 @@ const addOne = x => x + 1;
 const double = x => x * 2;
 const square = x => x * x;
 
+// Test wrapper that creates and executes the pipeline
+function testPipeline(x) {
+  const pipeline = pipe(addOne, double, square);
+  return pipeline(x);
+}
+
 // Test
 const pipeline = pipe(addOne, double, square);
 console.log(pipeline(2)); // 2 -> 3 -> 6 -> 36
@@ -132,22 +138,17 @@ console.log(composed(2)); // 2 -> 3 -> 6 -> 36`,
     {
       input: [2],
       expectedOutput: 36,
-      description: 'pipe(addOne, double, square)(2) = 36 (2->3->6->36)',
+      description: 'testPipeline with input 2 returns 36',
     },
     {
       input: [3],
       expectedOutput: 64,
-      description: 'pipe(addOne, double, square)(3) = 64 (3->4->8->64)',
-    },
-    {
-      input: [2],
-      expectedOutput: 36,
-      description: 'compose(square, double, addOne)(2) = 36 (same result, different order)',
+      description: 'testPipeline with input 3 returns 64',
     },
     {
       input: [0],
       expectedOutput: 4,
-      description: 'pipe(addOne, double, square)(0) = 4 (0->1->2->4)',
+      description: 'testPipeline with input 0 returns 4',
     },
   ],
   hints: [

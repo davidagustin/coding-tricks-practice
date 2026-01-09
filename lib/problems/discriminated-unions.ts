@@ -151,22 +151,22 @@ function assertNever(x: never): never {
 }`,
   testCases: [
     {
-      input: { status: 'idle' },
+      input: [{ status: 'idle' }],
       expectedOutput: 'Waiting to start',
       description: 'describeAsyncState handles idle state',
     },
     {
-      input: { status: 'loading' },
+      input: [{ status: 'loading' }],
       expectedOutput: 'Loading...',
       description: 'describeAsyncState handles loading state',
     },
     {
-      input: { status: 'success', data: 'test' },
+      input: [{ status: 'success', data: 'test' }],
       expectedOutput: 'Loaded: test',
       description: 'describeAsyncState handles success state with data',
     },
     {
-      input: { status: 'error', error: 'Network error' },
+      input: [{ status: 'error', error: 'Network error' }],
       expectedOutput: 'Error: Network error',
       description: 'describeAsyncState handles error state with message',
     },

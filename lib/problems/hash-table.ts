@@ -195,7 +195,38 @@ console.log('Has "four":', ht.has('four'));
 console.log('Keys:', ht.keys());
 console.log('Values:', ht.values());
 ht.delete('two');
-console.log('After delete:', ht.keys());`,
+console.log('After delete:', ht.keys());
+
+// Helper functions for testing
+function htGet(key: string, value: string): string | undefined {
+  const ht = new HashTable<string, string>();
+  ht.set(key, value);
+  return ht.get(key);
+}
+
+function htHas(keys: string[], checkKey: string): boolean {
+  const ht = new HashTable<string, number>();
+  for (let i = 0; i < keys.length; i++) {
+    ht.set(keys[i], i);
+  }
+  return ht.has(checkKey);
+}
+
+function htUpdate(key: string, value1: number, value2: number): number | undefined {
+  const ht = new HashTable<string, number>();
+  ht.set(key, value1);
+  ht.set(key, value2);
+  return ht.get(key);
+}
+
+function htDelete(keys: string[], deleteKey: string): string[] {
+  const ht = new HashTable<string, number>();
+  for (let i = 0; i < keys.length; i++) {
+    ht.set(keys[i], i);
+  }
+  ht.delete(deleteKey);
+  return ht.keys().sort();
+}`,
   solution: `class HashTable<K, V> {
   private buckets: Array<Array<[K, V]>>;
   private size: number;
@@ -310,27 +341,58 @@ console.log('Has "four":', ht.has('four')); // false
 console.log('Keys:', ht.keys()); // ['one', 'two', 'three']
 console.log('Values:', ht.values()); // [1, 2, 3]
 ht.delete('two');
-console.log('After delete:', ht.keys()); // ['one', 'three']`,
+console.log('After delete:', ht.keys()); // ['one', 'three']
+
+// Helper functions for testing
+function htGet(key: string, value: string): string | undefined {
+  const ht = new HashTable<string, string>();
+  ht.set(key, value);
+  return ht.get(key);
+}
+
+function htHas(keys: string[], checkKey: string): boolean {
+  const ht = new HashTable<string, number>();
+  for (let i = 0; i < keys.length; i++) {
+    ht.set(keys[i], i);
+  }
+  return ht.has(checkKey);
+}
+
+function htUpdate(key: string, value1: number, value2: number): number | undefined {
+  const ht = new HashTable<string, number>();
+  ht.set(key, value1);
+  ht.set(key, value2);
+  return ht.get(key);
+}
+
+function htDelete(keys: string[], deleteKey: string): string[] {
+  const ht = new HashTable<string, number>();
+  for (let i = 0; i < keys.length; i++) {
+    ht.set(keys[i], i);
+  }
+  ht.delete(deleteKey);
+  return ht.keys().sort();
+}`,
   testCases: [
     {
       input: ['name', 'Alice'],
       expectedOutput: 'Alice',
-      description: 'get retrieves value for existing key',
+      description: 'htGet retrieves value for existing key',
     },
     {
-      input: ['one', 'two', 'three'],
+      input: [['one', 'two', 'three'], 'two'],
       expectedOutput: true,
-      description: 'has returns true for existing key',
+      description: 'htHas returns true for existing key',
     },
     {
-      input: ['nonexistent'],
+      input: [['one', 'two'], 'nonexistent'],
       expectedOutput: false,
-      description: 'has returns false for non-existing key',
+      description: 'htHas returns false for non-existing key',
     },
     {
       input: ['x', 100, 200],
       expectedOutput: 200,
-      description: 'set with existing key updates the value',
+      description: 'htUpdate with existing key updates the value',
     },
   ],
   hints: [

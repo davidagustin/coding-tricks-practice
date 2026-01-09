@@ -126,45 +126,58 @@ async function findAvailableService(serviceChecks) {
 // Test functions (commented out to prevent immediate execution)
 // const urls = ['https://api1.com/data', 'https://api2.com/data'];
 // fetchFromFirstAvailable(urls).then(console.log).catch(console.error);`,
-  solution: `// Fetch data from the first available source
-async function fetchFromFirstAvailable(urls) {
-  // Use Promise.any() to fetch from multiple URLs
-  // Return the first successful response data
-  // If all fail, throw a meaningful error message
+  solution: `// Mock fetch function for testing (simulates network calls without browser APIs)
+function mockFetch(url, delay, shouldSucceed, data) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (shouldSucceed) {
+        resolve({ ok: true, json: () => Promise.resolve(data) });
+      } else {
+        reject(new Error(\`Failed to fetch \${url}\`));
+      }
+    }, delay);
+  });
+}
+
+// Fetch data from the first available source (using mock data sources)
+async function fetchFromFirstAvailable(sources) {
+  // sources is an array of { url, delay, success, data }
+  // Use Promise.any() to get first successful response
   try {
-    const fetchPromises = urls.map(url =>
-      fetch(url).then(response => {
-        if (!response.ok) throw new Error(\`HTTP error: \${response.status}\`);
-        return response.json();
-      })
+    const fetchPromises = sources.map(source =>
+      mockFetch(source.url, source.delay, source.success, source.data)
+        .then(response => {
+          if (!response.ok) throw new Error('HTTP error');
+          return response.json();
+        })
     );
     const data = await Promise.any(fetchPromises);
     return data;
   } catch (error) {
     if (error instanceof AggregateError) {
-      throw new Error(\`All \${urls.length} sources failed: \${error.errors.map(e => e.message).join(', ')}\`);
+      throw new Error('All sources failed');
     }
     throw error;
   }
 }
 
 // Load a resource with fallback sources
-async function loadWithFallback(primaryUrl, fallbackUrls) {
-  // Try primary URL first, then fallback URLs using Promise.any()
-  // Return { source: 'primary' | 'fallback', data: ... }
+async function loadWithFallback(primary, fallbacks) {
+  // primary and fallbacks are objects with { url, delay, success, data }
   try {
-    const response = await fetch(primaryUrl);
+    const response = await mockFetch(primary.url, primary.delay, primary.success, primary.data);
     if (!response.ok) throw new Error('Primary failed');
     const data = await response.json();
     return { source: 'primary', data };
   } catch {
     // Primary failed, try fallbacks
     try {
-      const fallbackPromises = fallbackUrls.map(url =>
-        fetch(url).then(r => {
-          if (!r.ok) throw new Error('Fallback failed');
-          return r.json();
-        })
+      const fallbackPromises = fallbacks.map(fb =>
+        mockFetch(fb.url, fb.delay, fb.success, fb.data)
+          .then(r => {
+            if (!r.ok) throw new Error('Fallback failed');
+            return r.json();
+          })
       );
       const data = await Promise.any(fallbackPromises);
       return { source: 'fallback', data };
@@ -177,9 +190,6 @@ async function loadWithFallback(primaryUrl, fallbackUrls) {
 // Find first available service
 async function findAvailableService(serviceChecks) {
   // serviceChecks is an array of { name: string, check: () => Promise<boolean> }
-  // Use Promise.any() to find the first service that returns true
-  // Return the name of the first available service
-  // If none available, return null
   try {
     const checkPromises = serviceChecks.map(async ({ name, check }) => {
       const isAvailable = await check();
@@ -195,9 +205,52 @@ async function findAvailableService(serviceChecks) {
   }
 }
 
-// Test functions (commented out to prevent immediate execution)
-// const urls = ['https://api1.com/data', 'https://api2.com/data'];
-// fetchFromFirstAvailable(urls).then(console.log).catch(console.error);`,
+// Test function for test runner
+async function testPromiseAny(testName) {
+  if (testName === 'firstSuccess') {
+    const sources = [
+      { url: 'api1', delay: 100, success: false, data: null },
+      { url: 'api2', delay: 50, success: true, data: 'from-api-2' },
+      { url: 'api3', delay: 150, success: true, data: 'from-api-3' }
+    ];
+    const result = await fetchFromFirstAvailable(sources);
+    return { data: result, source: 'first-available' };
+  }
+  if (testName === 'allFail') {
+    const sources = [
+      { url: 'api1', delay: 10, success: false, data: null },
+      { url: 'api2', delay: 10, success: false, data: null }
+    ];
+    try {
+      await fetchFromFirstAvailable(sources);
+      return { error: false };
+    } catch (e) {
+      return { error: true };
+    }
+  }
+  if (testName === 'primarySuccess') {
+    const primary = { url: 'primary', delay: 10, success: true, data: 'primary-data' };
+    const fallbacks = [{ url: 'fallback1', delay: 10, success: true, data: 'fallback-data' }];
+    const result = await loadWithFallback(primary, fallbacks);
+    return { source: result.source };
+  }
+  if (testName === 'fallbackSuccess') {
+    const primary = { url: 'primary', delay: 10, success: false, data: null };
+    const fallbacks = [{ url: 'fallback1', delay: 10, success: true, data: 'fallback-data' }];
+    const result = await loadWithFallback(primary, fallbacks);
+    return { source: result.source };
+  }
+  if (testName === 'findService') {
+    const services = [
+      { name: 'service-a', check: () => Promise.resolve(false) },
+      { name: 'service-b', check: () => Promise.resolve(true) },
+      { name: 'service-c', check: () => Promise.resolve(true) }
+    ];
+    const name = await findAvailableService(services);
+    return { name };
+  }
+  return null;
+}`,
   testCases: [
     {
       input: 'firstSuccess',

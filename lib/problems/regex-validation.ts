@@ -193,47 +193,47 @@ console.log(isValidCreditCard('1234-5678-9012-3456')); // true
 console.log(isValidCreditCard('1234567890123456'));    // true`,
   testCases: [
     {
-      input: { fn: 'isValidEmail', email: 'user@example.com' },
+      input: ['user@example.com'],
       expectedOutput: true,
       description: 'isValidEmail accepts valid email',
     },
     {
-      input: { fn: 'isValidEmail', email: 'user.name+tag@domain.co.uk' },
+      input: ['user.name+tag@domain.co.uk'],
       expectedOutput: true,
       description: 'isValidEmail accepts email with dots and plus',
     },
     {
-      input: { fn: 'isValidEmail', email: 'invalid-email' },
+      input: ['invalid-email'],
       expectedOutput: false,
       description: 'isValidEmail rejects invalid email',
     },
     {
-      input: { fn: 'isValidUSPhone', phone: '(555) 123-4567' },
+      input: ['(555) 123-4567'],
       expectedOutput: true,
       description: 'isValidUSPhone accepts phone with parentheses',
     },
     {
-      input: { fn: 'isValidUSPhone', phone: '555.123.4567' },
+      input: ['555.123.4567'],
       expectedOutput: true,
       description: 'isValidUSPhone accepts phone with dots',
     },
     {
-      input: { fn: 'isValidURL', url: 'https://example.com/path' },
+      input: ['https://example.com/path'],
       expectedOutput: true,
       description: 'isValidURL accepts valid URL',
     },
     {
-      input: { fn: 'isValidIPv4', ip: '192.168.1.1' },
+      input: ['192.168.1.1'],
       expectedOutput: true,
       description: 'isValidIPv4 accepts valid IP',
     },
     {
-      input: { fn: 'isValidIPv4', ip: '256.1.1.1' },
+      input: ['256.1.1.1'],
       expectedOutput: false,
       description: 'isValidIPv4 rejects octet > 255',
     },
     {
-      input: { fn: 'isValidCreditCard', cardNum: '1234-5678-9012-3456' },
+      input: ['1234-5678-9012-3456'],
       expectedOutput: true,
       description: 'isValidCreditCard accepts 16 digits with dashes',
     },

@@ -107,6 +107,22 @@ console.log(groupByRole(users));`,
         ],
         user: [{ id: 2, name: 'Jane', role: 'user' }],
       },
+      description: 'groupByRole groups users by their role property',
+    },
+    {
+      input: [
+        [
+          { id: 1, name: 'Alice', role: 'admin' },
+          { id: 2, name: 'Bob', role: 'admin' },
+        ],
+      ],
+      expectedOutput: {
+        admin: [
+          { id: 1, name: 'Alice', role: 'admin' },
+          { id: 2, name: 'Bob', role: 'admin' },
+        ],
+      },
+      description: 'groupByRole handles all same role',
     },
   ],
   hints: [

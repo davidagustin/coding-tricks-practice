@@ -141,17 +141,17 @@ console.log(handleResult({ success: true, data: { id: 1 } }));
 console.log(handleResult({ success: false, error: 'Not found' }));`,
   testCases: [
     {
-      input: { value: 'hello' },
+      input: ['hello'],
       expectedOutput: 'String value: HELLO',
       description: 'processValue handles string with uppercase',
     },
     {
-      input: { value: 42 },
+      input: [42],
       expectedOutput: 'Number value: 42.00',
       description: 'processValue handles number with toFixed',
     },
     {
-      input: { person: { name: 'Alice', age: 30 } },
+      input: [{ name: 'Alice', age: 30 }],
       expectedOutput: 'Alice is 30 years old',
       description: 'displayPerson formats person info',
     },

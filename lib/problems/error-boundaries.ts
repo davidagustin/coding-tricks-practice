@@ -80,80 +80,78 @@ export const problem: Problem = {
       explanation: 'Prevent unhandled promise rejections',
     },
   ],
-  starterCode: `async function safeOperation(operation, fallback) {
+  starterCode: `// Synchronous version for testing
+function safeOperation(shouldFail, fallback) {
   // TODO: Try operation, catch errors, return fallback on error
-  
-  return operation();
+  // If shouldFail is true, throw an error and return fallback
+  // If shouldFail is false, return 'success'
+
+  if (shouldFail) {
+    throw new Error('Operation failed');
+  }
+  return 'success';
 }
 
-async function handleMultipleOperations(operations) {
-  // TODO: Run all operations, collect errors
-  // Return { successes: [...], errors: [...] }
-  
-  return { successes: [], errors: [] };
+function handleMultipleOperations(shouldFailArray) {
+  // TODO: Process each item, count successes and errors
+  // Return { successCount: number, errorCount: number }
+
+  return { successCount: 0, errorCount: 0 };
 }
 
 // Test
-// Test (commented out to prevent immediate execution)
-// const riskyOp = () => Promise.reject(new Error('Failed'));
-// const safeOp = () => Promise.resolve('Success');
-//
-// safeOperation(riskyOp, 'fallback').then(console.log).catch(console.error);
-//
-// handleMultipleOperations([riskyOp, safeOp, riskyOp])
-//   .then(console.log).catch(console.error);`,
-  solution: `async function safeOperation(operation, fallback) {
+console.log(safeOperation(true, 'fallback'));
+console.log(safeOperation(false, 'fallback'));
+console.log(handleMultipleOperations([true, false, true]));`,
+  solution: `// Synchronous version for testing
+function safeOperation(shouldFail, fallback) {
   try {
-    return await operation();
+    if (shouldFail) {
+      throw new Error('Operation failed');
+    }
+    return 'success';
   } catch (error) {
-    console.error('Operation failed:', error);
     return fallback;
   }
 }
 
-async function handleMultipleOperations(operations) {
-  const results = await Promise.allSettled(operations.map(op => op()));
+function handleMultipleOperations(shouldFailArray) {
+  let successCount = 0;
+  let errorCount = 0;
 
-  const successes = [];
-  const errors = [];
-
-  results.forEach((result, index) => {
-    if (result.status === 'fulfilled') {
-      successes.push({ index, value: result.value });
-    } else {
-      errors.push({ index, error: result.reason });
+  for (const shouldFail of shouldFailArray) {
+    try {
+      if (shouldFail) {
+        throw new Error('Failed');
+      }
+      successCount++;
+    } catch (error) {
+      errorCount++;
     }
-  });
+  }
 
-  return { successes, errors };
+  return { successCount, errorCount };
 }
 
 // Test
-const riskyOp = () => Promise.reject(new Error('Failed'));
-const safeOp = () => Promise.resolve('Success');
-
-// safeOperation returns fallback on error
-safeOperation(riskyOp, 'fallback').then(console.log); // 'fallback'
-
-// handleMultipleOperations collects successes and errors
-handleMultipleOperations([riskyOp, safeOp, riskyOp])
-  .then(console.log);
-// { successes: [{ index: 1, value: 'Success' }], errors: [{ index: 0, error: ... }, { index: 2, error: ... }] }`,
+console.log(safeOperation(true, 'fallback')); // 'fallback'
+console.log(safeOperation(false, 'fallback')); // 'success'
+console.log(handleMultipleOperations([true, false, true])); // { successCount: 1, errorCount: 2 }`,
   testCases: [
     {
-      input: { operation: 'riskyOp', fallback: 'fallback' },
+      input: [true, 'fallback'],
       expectedOutput: 'fallback',
-      description: 'safeOperation returns fallback when operation throws',
+      description: 'safeOperation returns fallback when shouldFail is true',
     },
     {
-      input: { operation: 'safeOp', fallback: 'fallback' },
-      expectedOutput: 'Success',
-      description: 'safeOperation returns result when operation succeeds',
+      input: [false, 'fallback'],
+      expectedOutput: 'success',
+      description: 'safeOperation returns success when shouldFail is false',
     },
     {
-      input: ['riskyOp', 'safeOp', 'riskyOp'],
+      input: [[true, false, true]],
       expectedOutput: { successCount: 1, errorCount: 2 },
-      description: 'handleMultipleOperations collects all successes and errors',
+      description: 'handleMultipleOperations counts successes and errors correctly',
     },
   ],
   hints: [

@@ -159,24 +159,24 @@ console.log(swapValues(10, 20));
 // [20, 10]`,
   testCases: [
     {
-      input: { name: 'Alice', email: 'alice@example.com', age: 28 },
+      input: [{ name: 'Alice', email: 'alice@example.com', age: 28 }],
       expectedOutput: { greeting: 'Hello, Alice! You are 28 years old.', contact: 'alice@example.com' },
-      description: 'extractUserInfo destructures user object and creates greeting',
+      description: 'extractUserInfo - destructures user object and creates greeting',
     },
     {
-      input: [1, 2, 3, 4, 5],
+      input: [[1, 2, 3, 4, 5]],
       expectedOutput: { first: 1, last: 5 },
-      description: 'getFirstAndLast returns first and last array elements',
+      description: 'getFirstAndLast - returns first and last array elements',
     },
     {
       input: [10, 20],
       expectedOutput: [20, 10],
-      description: 'swapValues swaps two values using destructuring',
+      description: 'swapValues - swaps two values using destructuring',
     },
     {
-      input: ['a'],
+      input: [['a']],
       expectedOutput: { first: 'a', last: 'a' },
-      description: 'getFirstAndLast handles single element array',
+      description: 'getFirstAndLast - handles single element array',
     },
   ],
   hints: [

@@ -177,29 +177,29 @@ const arr2 = [3, 6, 2, 7, 1];
 console.log(quickSort([...arr2])); // [1, 2, 3, 6, 7]`,
   testCases: [
     {
-      input: [10, 7, 8, 9, 1, 5],
+      input: [[10, 7, 8, 9, 1, 5]],
       expectedOutput: [1, 5, 7, 8, 9, 10],
-      description: 'Sorts array of integers correctly',
+      description: 'quickSort sorts array of integers correctly',
     },
     {
-      input: [3, 6, 2, 7, 1],
+      input: [[3, 6, 2, 7, 1]],
       expectedOutput: [1, 2, 3, 6, 7],
-      description: 'Sorts another array correctly',
+      description: 'quickSort sorts another array correctly',
     },
     {
-      input: [5, 4, 3, 2, 1],
+      input: [[5, 4, 3, 2, 1]],
       expectedOutput: [1, 2, 3, 4, 5],
-      description: 'Sorts reverse-sorted array',
+      description: 'quickSort handles reverse-sorted array',
     },
     {
-      input: [1],
+      input: [[1]],
       expectedOutput: [1],
-      description: 'Handles single element array',
+      description: 'quickSort handles single element array',
     },
     {
-      input: [],
+      input: [[]],
       expectedOutput: [],
-      description: 'Handles empty array',
+      description: 'quickSort handles empty array',
     },
   ],
   hints: [

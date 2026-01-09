@@ -138,7 +138,22 @@ function createInstance(Constructor, args) {
     {
       input: [{ a: { b: 1 } }, 'a.b'],
       expectedOutput: 1,
-      description: 'safeGet',
+      description: 'safeGet retrieves nested property value',
+    },
+    {
+      input: [{ x: 1 }, 'y', 2],
+      expectedOutput: true,
+      description: 'safeSet returns true when setting property',
+    },
+    {
+      input: [{ name: 'test' }, 'name'],
+      expectedOutput: true,
+      description: 'hasProperty returns true for existing property',
+    },
+    {
+      input: [{ name: 'test' }, 'missing'],
+      expectedOutput: false,
+      description: 'hasProperty returns false for missing property',
     },
   ],
   hints: [

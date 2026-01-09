@@ -125,7 +125,12 @@ function runningTotal(numbers) {
     {
       input: [['a', 'b', 'a', 'c', 'b', 'a']],
       expectedOutput: { a: 3, b: 2, c: 1 },
-      description: 'countOccurrences',
+      description: 'countOccurrences counts each item in the array',
+    },
+    {
+      input: [['x', 'y', 'x', 'x']],
+      expectedOutput: { x: 3, y: 1 },
+      description: 'countOccurrences with different input',
     },
     {
       input: [
@@ -143,12 +148,12 @@ function runningTotal(numbers) {
         ],
         vegetable: [{ type: 'vegetable', name: 'carrot' }],
       },
-      description: 'groupBy',
+      description: 'groupBy groups objects by specified key',
     },
     {
       input: [[1, 2, 3, 4, 5]],
       expectedOutput: [1, 3, 6, 10, 15],
-      description: 'runningTotal',
+      description: 'runningTotal calculates cumulative sum',
     },
   ],
   hints: [

@@ -167,17 +167,17 @@ console.log('Second call:', computeForObject(testObj)); // Uses cache`,
     {
       input: { name: 'John', password: 'secret123' },
       expectedOutput: undefined,
-      description: 'User.password returns undefined (private)',
+      description: 'User - password returns undefined (private)',
     },
     {
       input: { password: 'secret123', check: 'secret123' },
       expectedOutput: true,
-      description: 'checkPassword returns true for correct password',
+      description: 'User - checkPassword returns true for correct password',
     },
     {
       input: { password: 'secret123', check: 'wrong' },
       expectedOutput: false,
-      description: 'checkPassword returns false for wrong password',
+      description: 'User - checkPassword returns false for wrong password',
     },
   ],
   hints: [

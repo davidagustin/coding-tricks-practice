@@ -135,28 +135,55 @@ type ExtractEvent<T extends string> = T extends \`on\${infer E}\` ? Uncapitalize
 type HttpMethod = 'get' | 'post' | 'put' | 'delete';
 type Endpoint<Resource extends string, Method extends HttpMethod> = \`\${Uppercase<Method>} /api/\${Resource}\`;
 
-// Test functions to verify types work at runtime
-function testGetterName(): string {
-  type Result = GetterName<'name'>;
-  const value: Result = 'getName';
-  return value;
+// Runtime functions for template literal string operations
+function makeGetterName(property: string): string {
+  return 'get' + property.charAt(0).toUpperCase() + property.slice(1);
 }
 
-function testBEMClass(): string {
-  type Result = BEMClass<'card', 'header', 'active'>;
-  const value: Result = 'card__header--active';
-  return value;
+function makeSetterName(property: string): string {
+  return 'set' + property.charAt(0).toUpperCase() + property.slice(1);
+}
+
+function makeBEMClass(block: string, element: string, modifier: string): string {
+  return \`\${block}__\${element}--\${modifier}\`;
+}
+
+function extractEventName(handlerName: string): string {
+  if (handlerName.startsWith('on')) {
+    const event = handlerName.slice(2);
+    return event.charAt(0).toLowerCase() + event.slice(1);
+  }
+  return handlerName;
+}
+
+function makeEndpoint(resource: string, method: string): string {
+  return \`\${method.toUpperCase()} /api/\${resource}\`;
 }`,
   testCases: [
     {
-      input: [],
+      input: ['name'],
       expectedOutput: 'getName',
-      description: 'GetterName generates correct getter name',
+      description: 'makeGetterName generates correct getter name',
     },
     {
-      input: [],
+      input: ['value'],
+      expectedOutput: 'setValue',
+      description: 'makeSetterName generates correct setter name',
+    },
+    {
+      input: ['card', 'header', 'active'],
       expectedOutput: 'card__header--active',
-      description: 'BEMClass generates correct BEM class name',
+      description: 'makeBEMClass generates correct BEM class name',
+    },
+    {
+      input: ['onClick'],
+      expectedOutput: 'click',
+      description: 'extractEventName extracts event name from handler',
+    },
+    {
+      input: ['users', 'get'],
+      expectedOutput: 'GET /api/users',
+      description: 'makeEndpoint generates correct endpoint string',
     },
   ],
   hints: [

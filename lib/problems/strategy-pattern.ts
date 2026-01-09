@@ -210,6 +210,35 @@ class PaymentProcessor {
   }
 }
 
+// Test wrapper functions for the test runner
+function testCreditCardPayment(amount) {
+  const creditCard = new CreditCardStrategy('4111111111111234', '123');
+  const processor = new PaymentProcessor(creditCard);
+  return processor.pay(amount);
+}
+
+function testPayPalPayment(amount) {
+  const paypal = new PayPalStrategy('user@example.com');
+  const processor = new PaymentProcessor(paypal);
+  return processor.pay(amount);
+}
+
+function testCryptoPayment(amount) {
+  const crypto = new CryptoStrategy('0x1234567890abcdef', 'ETH');
+  const processor = new PaymentProcessor(crypto);
+  return processor.pay(amount);
+}
+
+function testStrategySwitching() {
+  const creditCard = new CreditCardStrategy('4111111111111234', '123');
+  const paypal = new PayPalStrategy('user@example.com');
+  const processor = new PaymentProcessor(creditCard);
+  const result1 = processor.pay(100).includes('Credit Card');
+  processor.setStrategy(paypal);
+  const result2 = processor.pay(50).includes('PayPal');
+  return result1 && result2;
+}
+
 // Test
 const creditCard = new CreditCardStrategy('4111111111111234', '123');
 const paypal = new PayPalStrategy('user@example.com');
@@ -225,24 +254,24 @@ processor.setStrategy(crypto);
 console.log(processor.pay(75));`,
   testCases: [
     {
-      input: { strategy: 'CreditCard', cardNumber: '4111111111111234', amount: 100 },
+      input: 100,
       expectedOutput: 'Paid $100 using Credit Card ending in 1234',
-      description: 'CreditCardStrategy pays with last 4 digits',
+      description: 'testCreditCardPayment pays with last 4 digits',
     },
     {
-      input: { strategy: 'PayPal', email: 'user@example.com', amount: 50 },
+      input: 50,
       expectedOutput: 'Paid $50 using PayPal account user@example.com',
-      description: 'PayPalStrategy pays with email address',
+      description: 'testPayPalPayment pays with email address',
     },
     {
-      input: { strategy: 'Crypto', walletAddress: '0x1234567890abcdef', currency: 'ETH', amount: 75 },
+      input: 75,
       expectedOutput: 'Paid $75 using ETH to wallet 0x1234...',
-      description: 'CryptoStrategy pays with wallet prefix and currency',
+      description: 'testCryptoPayment pays with wallet prefix and currency',
     },
     {
-      input: { strategySwitch: true },
+      input: [],
       expectedOutput: true,
-      description: 'PaymentProcessor can switch strategies at runtime',
+      description: 'testStrategySwitching can switch strategies at runtime',
     },
   ],
   hints: [

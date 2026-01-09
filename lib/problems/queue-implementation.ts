@@ -145,7 +145,32 @@ queue.enqueue('third');
 console.log('Front:', queue.front());
 console.log('Dequeue:', queue.dequeue());
 console.log('Size:', queue.size());
-console.log('isEmpty:', queue.isEmpty());`,
+console.log('isEmpty:', queue.isEmpty());
+
+// Helper functions for testing
+function queueFront(values: number[]): number | undefined {
+  const queue = new Queue<number>();
+  for (const v of values) queue.enqueue(v);
+  return queue.front();
+}
+
+function queueDequeue(values: number[]): number | undefined {
+  const queue = new Queue<number>();
+  for (const v of values) queue.enqueue(v);
+  return queue.dequeue();
+}
+
+function queueIsEmpty(values: number[]): boolean {
+  const queue = new Queue<number>();
+  for (const v of values) queue.enqueue(v);
+  return queue.isEmpty();
+}
+
+function queueSize(values: number[]): number {
+  const queue = new Queue<number>();
+  for (const v of values) queue.enqueue(v);
+  return queue.size();
+}`,
   solution: `class Queue<T> {
   private items: { [key: number]: T };
   private headIndex: number;
@@ -196,32 +221,57 @@ queue.enqueue('third');
 console.log('Front:', queue.front()); // 'first'
 console.log('Dequeue:', queue.dequeue()); // 'first'
 console.log('Size:', queue.size()); // 2
-console.log('isEmpty:', queue.isEmpty()); // false`,
+console.log('isEmpty:', queue.isEmpty()); // false
+
+// Helper functions for testing
+function queueFront(values: number[]): number | undefined {
+  const queue = new Queue<number>();
+  for (const v of values) queue.enqueue(v);
+  return queue.front();
+}
+
+function queueDequeue(values: number[]): number | undefined {
+  const queue = new Queue<number>();
+  for (const v of values) queue.enqueue(v);
+  return queue.dequeue();
+}
+
+function queueIsEmpty(values: number[]): boolean {
+  const queue = new Queue<number>();
+  for (const v of values) queue.enqueue(v);
+  return queue.isEmpty();
+}
+
+function queueSize(values: number[]): number {
+  const queue = new Queue<number>();
+  for (const v of values) queue.enqueue(v);
+  return queue.size();
+}`,
   testCases: [
     {
-      input: { operations: ['enqueue:1', 'enqueue:2', 'enqueue:3', 'front'] },
+      input: [[1, 2, 3]],
       expectedOutput: 1,
-      description: 'front() returns first element without removing it',
+      description: 'queueFront returns first element without removing it',
     },
     {
-      input: { operations: ['enqueue:1', 'enqueue:2', 'dequeue', 'dequeue'] },
-      expectedOutput: [1, 2],
-      description: 'dequeue() removes and returns elements in FIFO order',
+      input: [[1, 2, 3]],
+      expectedOutput: 1,
+      description: 'queueDequeue removes and returns first element (FIFO)',
     },
     {
-      input: { operations: ['enqueue:a', 'enqueue:b', 'dequeue', 'enqueue:c', 'front'] },
-      expectedOutput: 'b',
-      description: 'After dequeue and enqueue, front is the next element',
-    },
-    {
-      input: { operations: ['isEmpty'] },
+      input: [[]],
       expectedOutput: true,
-      description: 'isEmpty() returns true for empty queue',
+      description: 'queueIsEmpty returns true for empty queue',
     },
     {
-      input: { operations: ['enqueue:1', 'enqueue:2', 'size'] },
-      expectedOutput: 2,
-      description: 'size() returns correct count',
+      input: [[1, 2]],
+      expectedOutput: false,
+      description: 'queueIsEmpty returns false for non-empty queue',
+    },
+    {
+      input: [[1, 2, 3]],
+      expectedOutput: 3,
+      description: 'queueSize returns correct count',
     },
   ],
   hints: [

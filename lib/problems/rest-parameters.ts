@@ -164,24 +164,24 @@ log('Server started', 'on port 3000');
 console.log(callWithArray(Math.max, [3, 1, 4, 1, 5, 9])); // 9`,
   testCases: [
     {
-      input: { fn: 'sumAll', args: [1, 2, 3, 4, 5] },
+      input: [1, 2, 3, 4, 5],
       expectedOutput: 15,
-      description: 'sumAll sums all numbers passed as arguments',
+      description: 'sumAll - sums all numbers passed as arguments',
     },
     {
-      input: { fn: 'sumAll', args: [] },
+      input: [],
       expectedOutput: 0,
-      description: 'sumAll returns 0 for no arguments',
+      description: 'sumAll - returns 0 for no arguments',
     },
     {
-      input: { fn: 'mergeArrays', first: [1, 2], rest: [[3, 4], [5, 6]] },
+      input: [[1, 2], [3, 4], [5, 6]],
       expectedOutput: [1, 2, 3, 4, 5, 6],
-      description: 'mergeArrays combines all arrays into one',
+      description: 'mergeArrays - combines all arrays into one',
     },
     {
-      input: { fn: 'callWithArray', fnName: 'Math.max', args: [3, 1, 4, 1, 5, 9] },
+      input: [Math.max, [3, 1, 4, 1, 5, 9]],
       expectedOutput: 9,
-      description: 'callWithArray spreads array as function arguments',
+      description: 'callWithArray - spreads array as function arguments',
     },
   ],
   hints: [

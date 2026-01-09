@@ -239,10 +239,19 @@ export async function runTests(
           // Try to find the function based on test case description, or use default
           let functionName = solutionFunctionName;
 
-          // If test case has a description that matches a function name, use it
-          if (testCase.description && availableFunctions.includes(testCase.description)) {
-            functionName = testCase.description;
-          } else if (!functionName) {
+          // If test case has a description, try to find a function name within it
+          if (testCase.description) {
+            // Check if any available function name appears at the start of the description
+            // e.g., "isValidJson returns true..." should match "isValidJson"
+            const matchingFunction = availableFunctions.find((fn) =>
+              testCase.description!.toLowerCase().startsWith(fn.toLowerCase())
+            );
+            if (matchingFunction) {
+              functionName = matchingFunction;
+            }
+          }
+
+          if (!functionName) {
             // Fall back to first available function
             functionName = availableFunctions[0] || functionNames[0];
           }

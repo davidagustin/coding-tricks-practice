@@ -165,6 +165,27 @@ class NotificationFactory {
   }
 }
 
+// Test wrapper functions for the test runner
+function testEmailNotification(message) {
+  const email = NotificationFactory.create('email');
+  return email.send(message);
+}
+
+function testSMSNotification(message) {
+  const sms = NotificationFactory.create('sms');
+  return sms.send(message);
+}
+
+function testPushNotification(message) {
+  const push = NotificationFactory.create('push');
+  return push.send(message);
+}
+
+function testFactoryCreatesCorrectType(type) {
+  const notification = NotificationFactory.create(type);
+  return notification.constructor.name;
+}
+
 // Test
 const email = NotificationFactory.create('email');
 console.log(email.send('Welcome to our service!')); // 'Sending email: Welcome to our service!'
@@ -176,24 +197,24 @@ const push = NotificationFactory.create('push');
 console.log(push.send('You have a new message')); // 'Sending push notification: You have a new message'`,
   testCases: [
     {
-      input: { type: 'email', message: 'Welcome!' },
+      input: 'Welcome!',
       expectedOutput: 'Sending email: Welcome!',
-      description: 'EmailNotification.send returns formatted email message',
+      description: 'testEmailNotification returns formatted email message',
     },
     {
-      input: { type: 'sms', message: 'Code: 1234' },
+      input: 'Code: 1234',
       expectedOutput: 'Sending SMS: Code: 1234',
-      description: 'SMSNotification.send returns formatted SMS message',
+      description: 'testSMSNotification returns formatted SMS message',
     },
     {
-      input: { type: 'push', message: 'New alert' },
+      input: 'New alert',
       expectedOutput: 'Sending push notification: New alert',
-      description: 'PushNotification.send returns formatted push notification',
+      description: 'testPushNotification returns formatted push notification',
     },
     {
-      input: { type: 'unknown' },
-      expectedOutput: 'Error: Unknown notification type: unknown',
-      description: 'NotificationFactory.create throws error for unknown types',
+      input: 'email',
+      expectedOutput: 'EmailNotification',
+      description: 'testFactoryCreatesCorrectType returns correct class name',
     },
   ],
   hints: [

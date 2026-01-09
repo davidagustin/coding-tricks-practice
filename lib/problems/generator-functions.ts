@@ -162,22 +162,22 @@ console.log([...chunk([1, 2, 3, 4, 5], 2)]); // [[1, 2], [3, 4], [5]]`,
     {
       input: [1, 5],
       expectedOutput: [1, 2, 3, 4, 5],
-      description: 'range generates numbers from start to end',
+      description: 'range - generates numbers from start to end',
     },
     {
       input: ['user', 3],
       expectedOutput: ['user-1', 'user-2', 'user-3'],
-      description: 'idGenerator generates sequential IDs',
+      description: 'idGenerator - generates sequential IDs',
     },
     {
       input: [10],
       expectedOutput: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34],
-      description: 'fibonacci generates first 10 Fibonacci numbers',
+      description: 'fibonacci - generates first 10 Fibonacci numbers',
     },
     {
       input: [[1, 2, 3, 4, 5], 2],
       expectedOutput: [[1, 2], [3, 4], [5]],
-      description: 'chunk splits array into groups of specified size',
+      description: 'chunk - splits array into groups of specified size',
     },
   ],
   hints: [

@@ -117,15 +117,39 @@ function isFulfilled(result) {
   return result.status === 'fulfilled';
 }
 
-// Test
-const requests = [
-  Promise.resolve('Success 1'),
-  Promise.reject('Error 1'),
-  Promise.resolve('Success 2')
-];
-
-// Test (commented out to prevent immediate execution)
-// processMultipleRequests(requests).then(console.log).catch(console.error);`,
+// Test function for the test runner
+async function testPromiseAllSettled(testName) {
+  if (testName === 'mixedResults') {
+    const requests = [
+      Promise.resolve('Success 1'),
+      Promise.reject('Error 1'),
+      Promise.resolve('Success 2')
+    ];
+    return await processMultipleRequests(requests);
+  }
+  if (testName === 'allSuccess') {
+    const requests = [
+      Promise.resolve('A'),
+      Promise.resolve('B'),
+      Promise.resolve('C')
+    ];
+    return await processMultipleRequests(requests);
+  }
+  if (testName === 'allFail') {
+    const requests = [
+      Promise.reject('E1'),
+      Promise.reject('E2')
+    ];
+    return await processMultipleRequests(requests);
+  }
+  if (testName === 'isFulfilledTrue') {
+    return isFulfilled({ status: 'fulfilled', value: 'test' });
+  }
+  if (testName === 'isFulfilledFalse') {
+    return isFulfilled({ status: 'rejected', reason: 'error' });
+  }
+  return null;
+}`,
   testCases: [
     {
       input: 'mixedResults',

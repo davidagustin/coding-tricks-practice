@@ -279,24 +279,24 @@ console.log(simplifyCode({ value: null, items: null, name: '  hello  ' }));
 // { value: 'default', items: [], name: 'hello' }`,
   testCases: [
     {
-      input: { timeout: null, name: 'custom' },
+      input: [{ timeout: null, name: 'custom' }],
       expectedOutput: { timeout: 5000, retries: 3, debug: false, name: 'custom' },
-      description: 'setDefaults uses ??= for null/undefined only',
+      description: 'setDefaults - uses ??= for null/undefined only',
     },
     {
-      input: { timeout: 0, retries: 0 },
+      input: [{ timeout: 0, retries: 0 }],
       expectedOutput: { timeout: 0, retries: 0, debug: false, name: 'default' },
-      description: 'setDefaults preserves falsy values like 0',
+      description: 'setDefaults - preserves falsy values like 0',
     },
     {
-      input: { name: 'john', email: 'JOHN@EXAMPLE.COM', age: 25 },
+      input: [{ name: 'john', email: 'JOHN@EXAMPLE.COM', age: 25 }],
       expectedOutput: { name: 'JOHN', email: 'john@example.com', age: 50 },
-      description: 'transformIfPresent transforms truthy values',
+      description: 'transformIfPresent - transforms truthy values',
     },
     {
-      input: { name: '', email: null, age: 0 },
+      input: [{ name: '', email: null, age: 0 }],
       expectedOutput: { name: '', email: null, age: 0 },
-      description: 'transformIfPresent skips falsy values',
+      description: 'transformIfPresent - skips falsy values',
     },
   ],
   hints: [

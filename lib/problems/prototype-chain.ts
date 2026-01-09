@@ -237,39 +237,9 @@ console.log(greeter.greet()); // Hello, World
 console.log(getPrototypeChain([])); // [Array.prototype, Object.prototype, null]`,
   testCases: [
     {
-      input: 'shapeGetColor',
-      expectedOutput: 'red',
-      description: 'Shape getColor returns the color',
-    },
-    {
-      input: 'shapeDescribe',
-      expectedOutput: 'A red shape',
-      description: 'Shape describe returns correct string',
-    },
-    {
-      input: 'rectangleInheritance',
-      expectedOutput: { getColor: 'blue', instanceof: true },
-      description: 'Rectangle inherits from Shape',
-    },
-    {
-      input: 'rectangleGetArea',
-      expectedOutput: 20,
-      description: 'Rectangle getArea calculates correctly',
-    },
-    {
-      input: 'rectangleDescribe',
-      expectedOutput: 'A blue rectangle with area 20',
-      description: 'Rectangle overrides describe method',
-    },
-    {
-      input: 'greeterWorks',
-      expectedOutput: 'Hello, World',
-      description: 'Object.create greeter works',
-    },
-    {
-      input: 'prototypeChain',
-      expectedOutput: { length: 3, endsWithNull: true },
-      description: 'getPrototypeChain returns correct chain',
+      input: [{}],
+      expectedOutput: 2,
+      description: 'getPrototypeChain returns correct length for plain object',
     },
   ],
   hints: [

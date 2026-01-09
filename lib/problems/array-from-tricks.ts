@@ -128,6 +128,11 @@ console.log(toArray('hello')); // ['h', 'e', 'l', 'l', 'o']`,
       description: 'range generates inclusive array from start to end',
     },
     {
+      input: [0, 4],
+      expectedOutput: [0, 1, 2, 3, 4],
+      description: 'range works with zero as start',
+    },
+    {
       input: [2, 3, 0],
       expectedOutput: [[0, 0, 0], [0, 0, 0]],
       description: 'createGrid creates 2D array with default values',
@@ -136,11 +141,6 @@ console.log(toArray('hello')); // ['h', 'e', 'l', 'l', 'o']`,
       input: ['hello'],
       expectedOutput: ['h', 'e', 'l', 'l', 'o'],
       description: 'toArray converts string to character array',
-    },
-    {
-      input: [0, 4],
-      expectedOutput: [0, 1, 2, 3, 4],
-      description: 'range works with zero as start',
     },
   ],
   hints: [

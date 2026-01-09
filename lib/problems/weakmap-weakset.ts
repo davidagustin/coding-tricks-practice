@@ -184,17 +184,17 @@ console.log('obj2 visited:', isVisited(obj2, visited)); // false`,
     {
       input: { name: 'John', privateId: 'secret-123' },
       expectedOutput: 'secret-123',
-      description: 'getPrivateId returns the stored private ID',
+      description: 'User - getPrivateId returns the stored private ID',
     },
     {
       input: { markObj: true },
       expectedOutput: true,
-      description: 'isVisited returns true for marked objects',
+      description: 'isVisited - returns true for marked objects',
     },
     {
       input: { markObj: false },
       expectedOutput: false,
-      description: 'isVisited returns false for unmarked objects',
+      description: 'isVisited - returns false for unmarked objects',
     },
   ],
   hints: [

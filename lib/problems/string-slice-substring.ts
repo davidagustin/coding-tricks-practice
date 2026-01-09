@@ -159,37 +159,37 @@ console.log(extractMiddle('abcdef', 4, 1));
 console.log(truncateWithEllipsis('Hello World', 8));`,
   testCases: [
     {
-      input: { filename: 'document.pdf' },
+      input: ['document.pdf'],
       expectedOutput: '.pdf',
       description: 'getFileExtension returns extension with dot',
     },
     {
-      input: { filename: 'image.png' },
+      input: ['image.png'],
       expectedOutput: '.png',
       description: 'getFileExtension works for .png files',
     },
     {
-      input: { str: '[hello]' },
+      input: ['[hello]'],
       expectedOutput: 'hello',
       description: 'removeFirstAndLast removes brackets',
     },
     {
-      input: { str: '"quoted"' },
+      input: ['"quoted"'],
       expectedOutput: 'quoted',
       description: 'removeFirstAndLast removes quotes',
     },
     {
-      input: { str: 'abcdef', start: 4, end: 1 },
+      input: ['abcdef', 4, 1],
       expectedOutput: 'bcd',
       description: 'extractMiddle swaps arguments when start > end',
     },
     {
-      input: { str: 'Hello World', maxLength: 8 },
+      input: ['Hello World', 8],
       expectedOutput: 'Hello...',
       description: 'truncateWithEllipsis truncates with ellipsis',
     },
     {
-      input: { str: 'Short', maxLength: 10 },
+      input: ['Short', 10],
       expectedOutput: 'Short',
       description: 'truncateWithEllipsis returns original if shorter than maxLength',
     },

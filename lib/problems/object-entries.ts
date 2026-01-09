@@ -102,12 +102,12 @@ function filterPrivateProperties(obj) {
     {
       input: [{ apple: 1, banana: 2, cherry: 3 }],
       expectedOutput: { apple: 2, banana: 4, cherry: 6 },
-      description: 'doublePrices',
+      description: 'doublePrices doubles all values in the object',
     },
     {
       input: [{ name: 'John', _internal: 'secret', age: 30, _temp: 'data' }],
       expectedOutput: { name: 'John', age: 30 },
-      description: 'filterPrivateProperties',
+      description: 'filterPrivateProperties removes properties starting with underscore',
     },
   ],
   hints: [

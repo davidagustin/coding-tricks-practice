@@ -308,44 +308,47 @@ class AsyncSemaphore {
   }
 }
 
-// Test
-async function runTests() {
-  const mutex = new AsyncMutex();
-  let counter = 0;
-
-  // Test mutex serialization
-  await Promise.all([
-    mutex.withLock(async () => {
-      const temp = counter;
-      await new Promise(r => setTimeout(r, 10));
-      counter = temp + 1;
-    }),
-    mutex.withLock(async () => {
-      const temp = counter;
-      await new Promise(r => setTimeout(r, 10));
-      counter = temp + 1;
-    }),
-  ]);
-  console.log('Counter (should be 2):', counter);
-
-  // Test semaphore
-  const semaphore = new AsyncSemaphore(2);
-  console.log('Initial permits:', semaphore.availablePermits);
-
-  const release1 = await semaphore.acquire();
-  console.log('After first acquire:', semaphore.availablePermits);
-
-  const release2 = await semaphore.acquire();
-  console.log('After second acquire:', semaphore.availablePermits);
-
-  release1();
-  console.log('After first release:', semaphore.availablePermits);
-
-  release2();
-  console.log('After second release:', semaphore.availablePermits);
-}
-
-runTests();`,
+// Test function for test runner
+async function testAsyncMutex(testName) {
+  if (testName === 'mutex serialization') {
+    const mutex = new AsyncMutex();
+    let counter = 0;
+    await Promise.all([
+      mutex.withLock(async () => {
+        const temp = counter;
+        await new Promise(r => setTimeout(r, 10));
+        counter = temp + 1;
+      }),
+      mutex.withLock(async () => {
+        const temp = counter;
+        await new Promise(r => setTimeout(r, 10));
+        counter = temp + 1;
+      }),
+    ]);
+    return counter;
+  }
+  if (testName === 'mutex isLocked') {
+    const mutex = new AsyncMutex();
+    const release = await mutex.acquire();
+    const locked = mutex.isLocked();
+    release();
+    return locked;
+  }
+  if (testName === 'semaphore permits') {
+    const semaphore = new AsyncSemaphore(2);
+    // A semaphore with 2 permits allows 2 concurrent holders
+    // Return 2 to confirm the semaphore was initialized correctly
+    return semaphore._permits;
+  }
+  if (testName === 'withLock auto-release') {
+    const mutex = new AsyncMutex();
+    await mutex.withLock(async () => {
+      return 'done';
+    });
+    return mutex.isLocked() === false;
+  }
+  return null;
+}`,
   testCases: [
     {
       input: ['mutex serialization'],

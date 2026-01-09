@@ -167,27 +167,27 @@ console.log(binarySearchRecursive([1, 2, 3, 4, 5], 3)); // 2`,
     {
       input: [[1, 3, 5, 7, 9, 11, 13], 7],
       expectedOutput: 3,
-      description: 'Find 7 in middle of array',
+      description: 'binarySearch finds 7 in middle of array',
     },
     {
       input: [[2, 4, 6, 8, 10], 5],
       expectedOutput: -1,
-      description: 'Element not in array returns -1',
+      description: 'binarySearch returns -1 for element not in array',
     },
     {
       input: [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 1],
       expectedOutput: 0,
-      description: 'Find first element',
+      description: 'binarySearch finds first element at index 0',
     },
     {
       input: [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 10],
       expectedOutput: 9,
-      description: 'Find last element',
+      description: 'binarySearch finds last element',
     },
     {
       input: [[], 5],
       expectedOutput: -1,
-      description: 'Empty array returns -1',
+      description: 'binarySearch returns -1 for empty array',
     },
   ],
   hints: [

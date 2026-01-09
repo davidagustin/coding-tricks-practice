@@ -127,17 +127,17 @@ function uniqueValues(arr) {
         { b: 3, c: 4 },
       ],
       expectedOutput: { a: 1, b: 3, c: 4 },
-      description: 'mergeObjects',
+      description: 'mergeObjects - merges two objects with later properties overriding',
     },
     {
       input: [[1, 2, 3], 4],
       expectedOutput: [1, 2, 3, 4],
-      description: 'cloneAndPush',
+      description: 'cloneAndPush - clones array and adds new item',
     },
     {
       input: [[1, 2, 2, 3, 3, 3]],
       expectedOutput: [1, 2, 3],
-      description: 'uniqueValues',
+      description: 'uniqueValues - returns array with unique values',
     },
   ],
   hints: [

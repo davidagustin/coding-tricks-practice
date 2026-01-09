@@ -224,22 +224,22 @@ console.log(processForm({ username: 'alice', email: 'alice@example.com' }));
 console.log(convertToNumber('42'));`,
   testCases: [
     {
-      input: {},
+      input: [],
       expectedOutput: 'Canvas size: 800x600',
       description: 'setupCanvas returns canvas dimensions',
     },
     {
-      input: {},
+      input: [],
       expectedOutput: { apiUrl: 'https://api.example.com', timeout: 5000, retries: 3 },
       description: 'getConfig returns readonly config object',
     },
     {
-      input: { json: '{"id": 1, "name": "John", "email": "john@example.com"}' },
+      input: ['{"id": 1, "name": "John", "email": "john@example.com"}'],
       expectedOutput: { id: 1, name: 'John', email: 'john@example.com' },
       description: 'parseApiResponse parses and returns User',
     },
     {
-      input: { username: 'alice' },
+      input: [{ username: 'alice' }],
       expectedOutput: 'Processing user: alice',
       description: 'processForm returns formatted username',
     },

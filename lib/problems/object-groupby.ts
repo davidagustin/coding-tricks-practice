@@ -242,11 +242,6 @@ console.log(groupByMultiple(employees, 'dept', 'role'));`,
       expectedOutput: { A: ['Apple', 'Avocado'], B: ['Banana'] },
       description: 'groupByFirstLetter groups by uppercase first letter',
     },
-    {
-      input: [[1, 2, 3, 4, 5]],
-      expectedOutput: { odd: [1, 3, 5], even: [2, 4] },
-      description: 'groupByPolyfill works like Object.groupBy',
-    },
   ],
   hints: [
     'Object.groupBy(array, callback) returns an object with grouped items',

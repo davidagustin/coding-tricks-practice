@@ -160,32 +160,32 @@ console.log(incrementCounter(5));`,
     {
       input: [{ port: 0, timeout: 0, debug: false, name: '' }],
       expectedOutput: { port: 0, timeout: 0, debug: false, name: '' },
-      description: 'getConfigWithDefaults preserves valid falsy values (0, false, empty string)',
+      description: 'getConfigWithDefaults - preserves valid falsy values (0, false, empty string)',
     },
     {
       input: [{ port: null, timeout: undefined, debug: null, name: undefined }],
       expectedOutput: { port: 3000, timeout: 5000, debug: false, name: 'app' },
-      description: 'getConfigWithDefaults applies defaults for null/undefined',
+      description: 'getConfigWithDefaults - applies defaults for null/undefined',
     },
     {
       input: [0, 100],
       expectedOutput: 0,
-      description: 'getValue returns 0 (not default) because 0 is not nullish',
+      description: 'getValue - returns 0 (not default) because 0 is not nullish',
     },
     {
       input: [null, 100],
       expectedOutput: 100,
-      description: 'getValue returns default for null',
+      description: 'getValue - returns default for null',
     },
     {
       input: [null],
       expectedOutput: 1,
-      description: 'incrementCounter starts at 0 for null input, returns 1',
+      description: 'incrementCounter - starts at 0 for null input, returns 1',
     },
     {
       input: [5],
       expectedOutput: 6,
-      description: 'incrementCounter increments existing value from 5 to 6',
+      description: 'incrementCounter - increments existing value from 5 to 6',
     },
   ],
   hints: [

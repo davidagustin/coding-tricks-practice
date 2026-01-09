@@ -173,37 +173,37 @@ console.log(generateTable(['Name', 'Age'], [['Alice', 30], ['Bob', 25]]));
 console.log(interpolate('Hello {{name}}!', { name: 'World' }));`,
   testCases: [
     {
-      input: { count: 1, singular: 'apple' },
+      input: [1, 'apple'],
       expectedOutput: '1 apple',
       description: 'pluralize returns singular for count of 1',
     },
     {
-      input: { count: 5, singular: 'apple' },
+      input: [5, 'apple'],
       expectedOutput: '5 apples',
       description: 'pluralize returns plural for count > 1',
     },
     {
-      input: { count: 0, singular: 'cherry', plural: 'cherries' },
+      input: [0, 'cherry', 'cherries'],
       expectedOutput: '0 cherries',
       description: 'pluralize uses custom plural form',
     },
     {
-      input: { base: 'https://api.com', params: { page: 1, limit: 10 } },
+      input: ['https://api.com', { page: 1, limit: 10 }],
       expectedOutput: 'https://api.com?page=1&limit=10',
       description: 'buildUrl creates URL with query params',
     },
     {
-      input: { base: 'https://api.com', params: {} },
+      input: ['https://api.com', {}],
       expectedOutput: 'https://api.com',
       description: 'buildUrl returns base for empty params',
     },
     {
-      input: { template: 'Hello {{name}}!', data: { name: 'World' } },
+      input: ['Hello {{name}}!', { name: 'World' }],
       expectedOutput: 'Hello World!',
       description: 'interpolate replaces placeholders with values',
     },
     {
-      input: { template: '{{a}} + {{b}} = {{c}}', data: { a: 1, b: 2, c: 3 } },
+      input: ['{{a}} + {{b}} = {{c}}', { a: 1, b: 2, c: 3 }],
       expectedOutput: '1 + 2 = 3',
       description: 'interpolate handles multiple placeholders',
     },

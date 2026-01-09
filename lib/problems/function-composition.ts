@@ -201,24 +201,19 @@ console.log(transformUser(userData));
 // { name: 'John Doe', age: 25, isAdult: true }`,
   testCases: [
     {
-      input: 2,
-      expectedOutput: 36,
-      description: 'compose(square, double, addOne)(2) returns 36 (right-to-left)',
-    },
-    {
-      input: 2,
-      expectedOutput: 36,
-      description: 'pipe(addOne, double, square)(2) returns 36 (left-to-right)',
-    },
-    {
-      input: { name: '  JOHN DOE  ', age: '25' },
+      input: [{ name: '  JOHN DOE  ', age: '25' }],
       expectedOutput: { name: 'John Doe', age: 25, isAdult: true },
       description: 'transformUser pipeline transforms user data correctly',
     },
     {
-      input: { name: 'alice', age: '17' },
+      input: [{ name: 'alice', age: '17' }],
       expectedOutput: { name: 'Alice', age: 17, isAdult: false },
       description: 'transformUser handles underage user correctly',
+    },
+    {
+      input: [{ name: '  bob smith  ', age: '30' }],
+      expectedOutput: { name: 'Bob Smith', age: 30, isAdult: true },
+      description: 'transformUser normalizes name and parses age',
     },
   ],
   hints: [

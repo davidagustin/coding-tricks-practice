@@ -132,24 +132,24 @@ const name = 'John & Jane';
 console.log(html\`<span>Hello, \${name}!</span>\`);`,
   testCases: [
     {
-      input: { userInput: '<script>alert("xss")</script>' },
-      expectedOutput: '<div>&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;</div>',
-      description: 'html tag escapes script tags to prevent XSS',
+      input: '<script>alert("xss")</script>',
+      expectedOutput: '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;',
+      description: 'escapeHtml - escapes script tags to prevent XSS',
     },
     {
-      input: { name: 'John & Jane' },
-      expectedOutput: '<span>Hello, John &amp; Jane!</span>',
-      description: 'html tag escapes ampersand in names',
+      input: 'John & Jane',
+      expectedOutput: 'John &amp; Jane',
+      description: 'escapeHtml - escapes ampersand in names',
     },
     {
-      input: { str: '<div>' },
+      input: '<div>',
       expectedOutput: '&lt;div&gt;',
-      description: 'escapeHtml converts angle brackets to entities',
+      description: 'escapeHtml - converts angle brackets to entities',
     },
     {
-      input: { str: 'Tom & Jerry' },
+      input: 'Tom & Jerry',
       expectedOutput: 'Tom &amp; Jerry',
-      description: 'escapeHtml converts ampersand to entity',
+      description: 'escapeHtml - converts ampersand to entity',
     },
   ],
   hints: [

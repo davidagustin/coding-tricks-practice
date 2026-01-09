@@ -173,6 +173,31 @@ type DeepRequired<T> = T extends Function
     ? { [K in keyof T]-?: DeepRequired<T[K]> }
     : T;
 
+// Runtime functions to demonstrate type utility behavior
+function flattenArray<T>(arr: T[]): T | undefined {
+  return arr[0];
+}
+
+function tupleToArray<T extends unknown[]>(...tuple: T): T {
+  return tuple;
+}
+
+function pickByKeys<T extends object, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
+  const result = {} as Pick<T, K>;
+  for (const key of keys) {
+    result[key] = obj[key];
+  }
+  return result;
+}
+
+function omitByKeys<T extends object, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> {
+  const result = { ...obj };
+  for (const key of keys) {
+    delete (result as T)[key];
+  }
+  return result as Omit<T, K>;
+}
+
 // Test your types
 type TestObj = {
   name: string;
@@ -187,50 +212,27 @@ type TestObj = {
   tags: string[];
 };
 
-type ReadonlyTest = DeepReadonly<TestObj>;
-type FlattenTest = Flatten<string[]>; // string
-type TupleTest = TupleToUnion<[1, 'hello', true]>; // 1 | 'hello' | true
-type PickTest = PickByType<{ a: string; b: number; c: boolean }, string>; // { a: string }
-type OmitTest = OmitByType<{ a: string; b: number; c: boolean }, string>; // { b: number; c: boolean }
-
-// Runtime test to verify types compile correctly
-function testTypes() {
-  const readonlyObj: ReadonlyTest = {
-    name: 'Test',
-    age: 25,
-    address: { city: 'NYC', coords: { lat: 40.7, lng: -74.0 } },
-    tags: ['a', 'b']
-  };
-
-  const flattened: FlattenTest = 'hello';
-  const union: TupleTest = 1; // or 'hello' or true
-  const picked: PickTest = { a: 'test' };
-  const omitted: OmitTest = { b: 42, c: false };
-
-  return { readonlyObj, flattened, union, picked, omitted };
-}
-
 console.log('Type challenges compiled successfully!');`,
   testCases: [
     {
-      input: { type: 'DeepReadonly' },
-      expectedOutput: true,
-      description: 'DeepReadonly makes nested properties readonly',
+      input: [['hello', 'world']],
+      expectedOutput: 'hello',
+      description: 'flattenArray returns first element of array',
     },
     {
-      input: { type: 'Flatten', arrayType: 'string[]' },
-      expectedOutput: 'string',
-      description: 'Flatten extracts element type from array',
+      input: [1, 'hello', true],
+      expectedOutput: [1, 'hello', true],
+      description: 'tupleToArray returns tuple as array',
     },
     {
-      input: { type: 'TupleToUnion', tuple: [1, 'hello', true] },
-      expectedOutput: '1 | "hello" | true',
-      description: 'TupleToUnion converts tuple to union',
+      input: [{ a: 'test', b: 42, c: true }, ['a', 'b']],
+      expectedOutput: { a: 'test', b: 42 },
+      description: 'pickByKeys picks specified properties',
     },
     {
-      input: { type: 'PickByType' },
-      expectedOutput: { a: 'string' },
-      description: 'PickByType selects properties by value type',
+      input: [{ a: 'test', b: 42, c: true }, ['a']],
+      expectedOutput: { b: 42, c: true },
+      description: 'omitByKeys omits specified properties',
     },
   ],
   hints: [

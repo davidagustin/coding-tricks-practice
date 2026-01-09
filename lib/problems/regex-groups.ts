@@ -183,22 +183,22 @@ console.log(parseQueryString('name=John&age=30&city=NYC'));
 // { name: 'John', age: '30', city: 'NYC' }`,
   testCases: [
     {
-      input: { fn: 'parseDate', dateStr: '2024-01-15' },
+      input: ['2024-01-15'],
       expectedOutput: { year: 2024, month: 1, day: 15 },
       description: 'parseDate extracts year, month, day correctly',
     },
     {
-      input: { fn: 'parseURL', url: 'https://example.com/path/to/page' },
+      input: ['https://example.com/path/to/page'],
       expectedOutput: { protocol: 'https', domain: 'example.com', path: '/path/to/page' },
       description: 'parseURL extracts protocol, domain, path',
     },
     {
-      input: { fn: 'flipName', name: 'Doe, John' },
+      input: ['Doe, John'],
       expectedOutput: 'John Doe',
       description: 'flipName swaps lastName, firstName to firstName lastName',
     },
     {
-      input: { fn: 'parseQueryString', queryStr: 'name=John&age=30&city=NYC' },
+      input: ['name=John&age=30&city=NYC'],
       expectedOutput: { name: 'John', age: '30', city: 'NYC' },
       description: 'parseQueryString extracts all key-value pairs',
     },

@@ -225,6 +225,45 @@ function createBankAccount(initialBalance = 0) {
   };
 }
 
+// Test wrapper functions for the test runner
+function testCounterIncrement(initialValue) {
+  const counter = createCounter(initialValue);
+  counter.increment();
+  return counter.getCount();
+}
+
+function testCounterDecrement(initialValue) {
+  const counter = createCounter(initialValue);
+  counter.decrement();
+  return counter.getCount();
+}
+
+function testCounterReset(initialValue) {
+  const counter = createCounter(initialValue);
+  counter.increment();
+  counter.increment();
+  counter.reset();
+  return counter.getCount();
+}
+
+function testBankDeposit(initialBalance, depositAmount) {
+  const account = createBankAccount(initialBalance);
+  account.deposit(depositAmount);
+  return account.getBalance();
+}
+
+function testBankWithdraw(initialBalance, withdrawAmount) {
+  const account = createBankAccount(initialBalance);
+  account.withdraw(withdrawAmount);
+  return account.getBalance();
+}
+
+function testMemoize(n) {
+  const memoizedFn = memoize((x) => x * 2);
+  memoizedFn(n);
+  return memoizedFn(n);
+}
+
 // Test
 const counter = createCounter(5);
 console.log(counter.increment()); // 6
@@ -244,34 +283,34 @@ console.log(account.deposit(50)); // 150
 console.log(account.withdraw(30)); // 120`,
   testCases: [
     {
-      input: { fn: 'createCounter', args: [5], operations: ['increment()', 'getCount()'] },
+      input: [5],
       expectedOutput: 6,
-      description: 'Counter increment increases count',
+      description: 'testCounterIncrement returns count after increment',
     },
     {
-      input: { fn: 'createCounter', args: [10], operations: ['decrement()', 'getCount()'] },
+      input: [10],
       expectedOutput: 9,
-      description: 'Counter decrement decreases count',
+      description: 'testCounterDecrement returns count after decrement',
     },
     {
-      input: { fn: 'createCounter', args: [5], operations: ['increment()', 'increment()', 'reset()', 'getCount()'] },
+      input: [5],
       expectedOutput: 5,
-      description: 'Counter reset restores initial value',
+      description: 'testCounterReset returns initial value after reset',
     },
     {
-      input: { fn: 'createBankAccount', args: [100], operations: ['deposit(50)', 'getBalance()'] },
+      input: [100, 50],
       expectedOutput: 150,
-      description: 'Bank account deposit increases balance',
+      description: 'testBankDeposit returns balance after deposit',
     },
     {
-      input: { fn: 'createBankAccount', args: [100], operations: ['withdraw(30)', 'getBalance()'] },
+      input: [100, 30],
       expectedOutput: 70,
-      description: 'Bank account withdraw decreases balance',
+      description: 'testBankWithdraw returns balance after withdraw',
     },
     {
-      input: { fn: 'memoize', args: ['n => n * 2'], callWith: [5, 5] },
+      input: [5],
       expectedOutput: 10,
-      description: 'Memoized function returns cached result',
+      description: 'testMemoize returns memoized result',
     },
   ],
   hints: [

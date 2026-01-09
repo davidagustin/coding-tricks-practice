@@ -186,27 +186,27 @@ console.log(wrapNumbers('I have 3 cats and 12 dogs'));
 // 'I have <span class="number">3</span> cats and <span class="number">12</span> dogs'`,
   testCases: [
     {
-      input: { fn: 'camelToSnake', str: 'getUserName' },
+      input: ['getUserName'],
       expectedOutput: 'get_user_name',
       description: 'camelToSnake converts camelCase to snake_case',
     },
     {
-      input: { fn: 'maskNumber', str: '1234567890' },
+      input: ['1234567890'],
       expectedOutput: '******7890',
       description: 'maskNumber masks all but last 4 digits',
     },
     {
-      input: { fn: 'markdownBoldToHtml', str: 'This is **bold** text' },
+      input: ['This is **bold** text'],
       expectedOutput: 'This is <strong>bold</strong> text',
       description: 'markdownBoldToHtml converts **text** to <strong>text</strong>',
     },
     {
-      input: { fn: 'reformatDate', dateStr: '2024-01-15' },
+      input: ['2024-01-15'],
       expectedOutput: '01/15/2024',
       description: 'reformatDate converts YYYY-MM-DD to MM/DD/YYYY',
     },
     {
-      input: { fn: 'wrapNumbers', str: 'I have 3 cats and 12 dogs' },
+      input: ['I have 3 cats and 12 dogs'],
       expectedOutput: 'I have <span class="number">3</span> cats and <span class="number">12</span> dogs',
       description: 'wrapNumbers wraps all numbers with span tags',
     },

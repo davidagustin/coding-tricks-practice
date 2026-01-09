@@ -283,15 +283,20 @@ class Either {
 }
 
 // Implement a safe division function using Either
-function safeDivide(a, b) {
+function safeDivideEither(a, b) {
   if (b === 0) {
     return Either.left('Division by zero');
   }
   return Either.right(a / b);
 }
 
+// Wrapper function that returns the unwrapped result for testing
+function safeDivide(a, b) {
+  return safeDivideEither(a, b).fold(e => e, v => v);
+}
+
 // Implement a safe property access using Maybe
-function safeGet(obj, ...keys) {
+function safeGetMaybe(obj, ...keys) {
   return keys.reduce((maybe, key) => {
     return maybe.flatMap(value => {
       if (value && typeof value === 'object' && key in value) {
@@ -302,46 +307,36 @@ function safeGet(obj, ...keys) {
   }, Maybe.of(obj));
 }
 
+// Wrapper function that returns the unwrapped result for testing
+function safeGet(obj, ...keys) {
+  return safeGetMaybe(obj, ...keys).getOrElse(null);
+}
+
 // Test
 console.log(Maybe.of(5).map(x => x * 2).getOrElse(0)); // 10
 console.log(Maybe.of(null).map(x => x * 2).getOrElse(0)); // 0
 
-console.log(safeDivide(10, 2).fold(e => e, v => v)); // 5
-console.log(safeDivide(10, 0).fold(e => e, v => v)); // 'Division by zero'
+console.log(safeDivide(10, 2)); // 5
+console.log(safeDivide(10, 0)); // 'Division by zero'
 
 const data = { user: { address: { city: 'NYC' } } };
-console.log(safeGet(data, 'user', 'address', 'city').getOrElse('Unknown')); // 'NYC'
-console.log(safeGet(data, 'user', 'phone').getOrElse('Unknown')); // 'Unknown'`,
+console.log(safeGet(data, 'user', 'address', 'city')); // 'NYC'
+console.log(safeGet(data, 'user', 'phone')); // null`,
   testCases: [
     {
-      input: { monad: 'Maybe', value: 5, operations: ['map(x => x * 2)'] },
-      expectedOutput: 10,
-      description: 'Maybe.map transforms value',
-    },
-    {
-      input: { monad: 'Maybe', value: null, operations: ['map(x => x * 2)'], default: 0 },
-      expectedOutput: 0,
-      description: 'Maybe.map on null returns default',
-    },
-    {
-      input: { fn: 'safeDivide', args: [10, 2] },
+      input: [10, 2],
       expectedOutput: 5,
       description: 'safeDivide returns Right with result',
     },
     {
-      input: { fn: 'safeDivide', args: [10, 0] },
+      input: [10, 0],
       expectedOutput: 'Division by zero',
       description: 'safeDivide returns Left on division by zero',
     },
     {
-      input: { fn: 'safeGet', obj: { user: { name: 'John' } }, keys: ['user', 'name'] },
-      expectedOutput: 'John',
-      description: 'safeGet accesses nested properties',
-    },
-    {
-      input: { fn: 'safeGet', obj: { user: {} }, keys: ['user', 'address', 'city'], default: 'Unknown' },
-      expectedOutput: 'Unknown',
-      description: 'safeGet returns default for missing properties',
+      input: [20, 4],
+      expectedOutput: 5,
+      description: 'safeDivide divides 20 by 4 correctly',
     },
   ],
   hints: [

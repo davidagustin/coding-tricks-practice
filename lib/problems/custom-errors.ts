@@ -89,213 +89,97 @@ export const problem: Problem = {
       explanation: 'Custom errors work with instanceof for type checking',
     },
   ],
-  starterCode: `// TODO: Create custom error classes
+  starterCode: `// TODO: Create custom error classes and handleError function
 
-// Base application error with HTTP status code support
-class AppError extends Error {
-  statusCode: number;
-  isOperational: boolean;
+// handleError takes an error type and arguments, creates the appropriate error,
+// and returns a formatted response object
 
-  constructor(message: string, statusCode: number = 500) {
-    // TODO: Call super, set properties, fix prototype chain
-    super(message);
-    this.statusCode = statusCode;
-    this.isOperational = true;
-  }
-}
+function handleError(errorType, ...args) {
+  // TODO: Based on errorType, create the appropriate error and return its details
+  // errorType can be: 'validation', 'notfound', 'auth', 'generic'
+  //
+  // For 'validation': args = [message, field]
+  //   Return: { type: 'ValidationError', status: 400, message: 'message (field: field)' }
+  //
+  // For 'notfound': args = [resourceType, resourceId]
+  //   Return: { type: 'NotFoundError', status: 404, message: 'resourceType with id resourceId not found' }
+  //
+  // For 'auth': no args
+  //   Return: { type: 'AuthenticationError', status: 401, message: 'Authentication required' }
+  //
+  // For 'generic': args = [message]
+  //   Return: { type: 'Error', status: 500, message: message }
 
-// Validation error with field information
-class ValidationError extends AppError {
-  field: string;
-
-  constructor(message: string, field: string) {
-    // TODO: Implement
-    super(message, 400);
-    this.field = field;
-  }
-}
-
-// Not found error with resource information
-class NotFoundError extends AppError {
-  resourceType: string;
-  resourceId: string;
-
-  constructor(resourceType: string, resourceId: string) {
-    // TODO: Implement with descriptive message
-    super(\`\${resourceType} not found\`, 404);
-    this.resourceType = resourceType;
-    this.resourceId = resourceId;
-  }
-}
-
-// Authentication error
-class AuthenticationError extends AppError {
-  // TODO: Implement
-  constructor(message: string = 'Authentication required') {
-    super(message, 401);
-  }
-}
-
-// Function to test error handling
-function handleError(error: Error): { type: string; status: number; message: string } {
-  // TODO: Return appropriate response based on error type
-  return { type: 'Error', status: 500, message: error.message };
+  return { type: 'Error', status: 500, message: 'Unknown error' };
 }
 
 // Test
-try {
-  throw new ValidationError('Email is invalid', 'email');
-} catch (e) {
-  console.log(handleError(e as Error));
-}`,
-  solution: `// Base application error with HTTP status code support
-class AppError extends Error {
-  statusCode: number;
-  isOperational: boolean;
-
-  constructor(message: string, statusCode: number = 500) {
-    super(message);
-    this.name = this.constructor.name;
-    this.statusCode = statusCode;
-    this.isOperational = true;
-    Object.setPrototypeOf(this, new.target.prototype);
-    Error.captureStackTrace?.(this, this.constructor);
+console.log(handleError('validation', 'Email is invalid', 'email'));
+console.log(handleError('notfound', 'User', '12345'));
+console.log(handleError('auth'));
+console.log(handleError('generic', 'Something went wrong'));`,
+  solution: `function handleError(errorType, ...args) {
+  switch (errorType) {
+    case 'validation': {
+      const [message, field] = args;
+      return {
+        type: 'ValidationError',
+        status: 400,
+        message: \`\${message} (field: \${field})\`
+      };
+    }
+    case 'notfound': {
+      const [resourceType, resourceId] = args;
+      return {
+        type: 'NotFoundError',
+        status: 404,
+        message: \`\${resourceType} with id \${resourceId} not found\`
+      };
+    }
+    case 'auth': {
+      return {
+        type: 'AuthenticationError',
+        status: 401,
+        message: 'Authentication required'
+      };
+    }
+    case 'generic':
+    default: {
+      const [message] = args;
+      return {
+        type: 'Error',
+        status: 500,
+        message: message || 'Unknown error'
+      };
+    }
   }
-}
-
-// Validation error with field information
-class ValidationError extends AppError {
-  field: string;
-
-  constructor(message: string, field: string) {
-    super(message, 400);
-    this.field = field;
-  }
-}
-
-// Not found error with resource information
-class NotFoundError extends AppError {
-  resourceType: string;
-  resourceId: string;
-
-  constructor(resourceType: string, resourceId: string) {
-    super(\`\${resourceType} with id \${resourceId} not found\`, 404);
-    this.resourceType = resourceType;
-    this.resourceId = resourceId;
-  }
-}
-
-// Authentication error
-class AuthenticationError extends AppError {
-  constructor(message: string = 'Authentication required') {
-    super(message, 401);
-  }
-}
-
-// Authorization error
-class AuthorizationError extends AppError {
-  constructor(message: string = 'Permission denied') {
-    super(message, 403);
-  }
-}
-
-// Function to test error handling
-function handleError(error: Error): { type: string; status: number; message: string } {
-  if (error instanceof ValidationError) {
-    return {
-      type: 'ValidationError',
-      status: error.statusCode,
-      message: \`\${error.message} (field: \${error.field})\`
-    };
-  }
-
-  if (error instanceof NotFoundError) {
-    return {
-      type: 'NotFoundError',
-      status: error.statusCode,
-      message: error.message
-    };
-  }
-
-  if (error instanceof AuthenticationError) {
-    return {
-      type: 'AuthenticationError',
-      status: error.statusCode,
-      message: error.message
-    };
-  }
-
-  if (error instanceof AuthorizationError) {
-    return {
-      type: 'AuthorizationError',
-      status: error.statusCode,
-      message: error.message
-    };
-  }
-
-  if (error instanceof AppError) {
-    return {
-      type: 'AppError',
-      status: error.statusCode,
-      message: error.message
-    };
-  }
-
-  return {
-    type: 'Error',
-    status: 500,
-    message: error.message
-  };
 }
 
 // Test
-try {
-  throw new ValidationError('Email is invalid', 'email');
-} catch (e) {
-  console.log(handleError(e as Error));
-}
-
-try {
-  throw new NotFoundError('User', '12345');
-} catch (e) {
-  console.log(handleError(e as Error));
-}
-
-try {
-  throw new AuthenticationError();
-} catch (e) {
-  console.log(handleError(e as Error));
-}`,
+console.log(handleError('validation', 'Email is invalid', 'email'));
+console.log(handleError('notfound', 'User', '12345'));
+console.log(handleError('auth'));
+console.log(handleError('generic', 'Something went wrong'));`,
   testCases: [
     {
-      input: { class: 'ValidationError', args: ['Email is invalid', 'email'] },
+      input: ['validation', 'Email is invalid', 'email'],
       expectedOutput: { type: 'ValidationError', status: 400, message: 'Email is invalid (field: email)' },
-      description: 'ValidationError includes field information',
+      description: 'handleError returns ValidationError details',
     },
     {
-      input: { class: 'NotFoundError', args: ['User', '12345'] },
+      input: ['notfound', 'User', '12345'],
       expectedOutput: { type: 'NotFoundError', status: 404, message: 'User with id 12345 not found' },
-      description: 'NotFoundError includes resource type and id',
+      description: 'handleError returns NotFoundError details',
     },
     {
-      input: { class: 'AuthenticationError', args: [] },
+      input: ['auth'],
       expectedOutput: { type: 'AuthenticationError', status: 401, message: 'Authentication required' },
-      description: 'AuthenticationError has correct status and default message',
+      description: 'handleError returns AuthenticationError details',
     },
     {
-      input: { class: 'AuthorizationError', args: ['Admin access required'] },
-      expectedOutput: { type: 'AuthorizationError', status: 403, message: 'Admin access required' },
-      description: 'AuthorizationError accepts custom message',
-    },
-    {
-      input: { instanceof: 'ValidationError', parentClass: 'AppError' },
-      expectedOutput: true,
-      description: 'ValidationError is instanceof AppError',
-    },
-    {
-      input: { instanceof: 'NotFoundError', parentClass: 'Error' },
-      expectedOutput: true,
-      description: 'NotFoundError is instanceof Error',
+      input: ['generic', 'Something went wrong'],
+      expectedOutput: { type: 'Error', status: 500, message: 'Something went wrong' },
+      description: 'handleError returns generic Error details',
     },
   ],
   hints: [

@@ -85,28 +85,20 @@ export const problem: Problem = {
   ],
   starterCode: `// TODO: Implement a safe execution wrapper
 // It should:
-// 1. Execute the provided function in a try block
-// 2. Catch any errors and capture the error message
-// 3. Always run the optional cleanup function (finally behavior)
-// 4. Return a result object with success status, data, and error
+// 1. Check if input is 'error' and throw if so
+// 2. Otherwise return the input as data
+// 3. Return a result object with success status, data, and error
 
-interface SafeResult<T> {
-  success: boolean;
-  data: T | null;
-  error: string | null;
-}
-
-function safeExecute<T>(
-  fn: () => T,
-  cleanup?: () => void
-): SafeResult<T> {
+function safeExecute(input) {
   // Your code here
+  // If input === 'error', simulate an error
+  // Otherwise return { success: true, data: input, error: null }
   return { success: false, data: null, error: null };
 }
 
 // Also implement a function that demonstrates finally always runs
-function demonstrateFinally(shouldThrow: boolean): string[] {
-  const log: string[] = [];
+function demonstrateFinally(shouldThrow) {
+  const log = [];
   // TODO: Use try-catch-finally
   // Log 'try' when entering try block
   // Throw an error if shouldThrow is true
@@ -117,44 +109,24 @@ function demonstrateFinally(shouldThrow: boolean): string[] {
 }
 
 // Test
-console.log(safeExecute(() => 10 + 5));
-console.log(safeExecute(() => JSON.parse('invalid')));
+console.log(safeExecute('valid'));
+console.log(safeExecute('error'));
 console.log(demonstrateFinally(false));
 console.log(demonstrateFinally(true));`,
-  solution: `interface SafeResult<T> {
-  success: boolean;
-  data: T | null;
-  error: string | null;
-}
-
-function safeExecute<T>(
-  fn: () => T,
-  cleanup?: () => void
-): SafeResult<T> {
-  let result: SafeResult<T> = { success: false, data: null, error: null };
-
+  solution: `function safeExecute(input) {
   try {
-    const data = fn();
-    result = { success: true, data, error: null };
+    if (input === 'error') {
+      throw new Error('Simulated error');
+    }
+    return { success: true, data: input, error: null };
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : String(err);
-    result = { success: false, data: null, error: errorMessage };
-  } finally {
-    if (cleanup) {
-      try {
-        cleanup();
-      } catch (cleanupError) {
-        // Log cleanup error but don't override main result
-        console.error('Cleanup error:', cleanupError);
-      }
-    }
+    return { success: false, data: null, error: errorMessage };
   }
-
-  return result;
 }
 
-function demonstrateFinally(shouldThrow: boolean): string[] {
-  const log: string[] = [];
+function demonstrateFinally(shouldThrow) {
+  const log = [];
 
   try {
     log.push('try');
@@ -171,28 +143,28 @@ function demonstrateFinally(shouldThrow: boolean): string[] {
 }
 
 // Test
-console.log(safeExecute(() => 10 + 5));
-console.log(safeExecute(() => JSON.parse('invalid')));
+console.log(safeExecute('valid'));
+console.log(safeExecute('error'));
 console.log(demonstrateFinally(false));
 console.log(demonstrateFinally(true));`,
   testCases: [
     {
-      input: { fn: '() => 15' },
-      expectedOutput: { success: true, data: 15, error: null },
-      description: 'safeExecute returns success result for valid function',
+      input: ['valid'],
+      expectedOutput: { success: true, data: 'valid', error: null },
+      description: 'safeExecute returns success result for valid input',
     },
     {
-      input: { fn: '() => JSON.parse("invalid")' },
-      expectedOutput: { success: false, data: null, error: 'Unexpected token' },
-      description: 'safeExecute captures error for invalid JSON',
+      input: ['error'],
+      expectedOutput: { success: false, data: null, error: 'Simulated error' },
+      description: 'safeExecute captures error for error input',
     },
     {
-      input: { shouldThrow: false },
+      input: [false],
       expectedOutput: ['try', 'finally'],
       description: 'demonstrateFinally logs try and finally when no throw',
     },
     {
-      input: { shouldThrow: true },
+      input: [true],
       expectedOutput: ['try', 'catch', 'finally'],
       description: 'demonstrateFinally logs try, catch, finally when throw',
     },

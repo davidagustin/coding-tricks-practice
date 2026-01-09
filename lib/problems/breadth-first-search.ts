@@ -299,27 +299,27 @@ console.log(shortestPath(graph, 'A', 'F'));
 // Expected: 2`,
   testCases: [
     {
-      input: { fn: 'bfsGraph', args: [{ 'A': ['B', 'C'], 'B': ['D', 'E'], 'C': ['F'], 'D': [], 'E': [], 'F': [] }, 'A'] },
+      input: [{ 'A': ['B', 'C'], 'B': ['D', 'E'], 'C': ['F'], 'D': [], 'E': [], 'F': [] }, 'A'],
       expectedOutput: ['A', 'B', 'C', 'D', 'E', 'F'],
       description: 'bfsGraph visits nodes in level order',
     },
     {
-      input: { fn: 'bfsTreeLevelOrder', args: [{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }] },
+      input: [{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }],
       expectedOutput: [[1], [2, 3]],
       description: 'bfsTreeLevelOrder returns nodes grouped by level',
     },
     {
-      input: { fn: 'bfsTreeLevelOrder', args: [null] },
+      input: [null],
       expectedOutput: [],
       description: 'bfsTreeLevelOrder returns empty array for null tree',
     },
     {
-      input: { fn: 'shortestPath', args: [{ 'A': ['B', 'C'], 'B': ['D'], 'C': ['D'], 'D': [] }, 'A', 'D'] },
+      input: [{ 'A': ['B', 'C'], 'B': ['D'], 'C': ['D'], 'D': [] }, 'A', 'D'],
       expectedOutput: 2,
       description: 'shortestPath finds shortest path length',
     },
     {
-      input: { fn: 'shortestPath', args: [{ 'A': ['B'], 'B': [] }, 'A', 'C'] },
+      input: [{ 'A': ['B'], 'B': [] }, 'A', 'C'],
       expectedOutput: -1,
       description: 'shortestPath returns -1 when no path exists',
     },

@@ -96,53 +96,93 @@ async function fetchWithFallback(primaryUrl, fallbackUrls) {
 // fetchWithFallback('/api/primary', ['/api/backup1', '/api/backup2'])
 //   .then(console.log)
 //   .catch(console.error);`,
-  solution: `async function fetchFromFastest(urls) {
-  // Use Promise.race to get result from fastest URL
-  // Return the first successful response
+  solution: `// Mock fetch for testing without browser APIs
+function mockFetch(url, delay, shouldSucceed, data) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (shouldSucceed) {
+        resolve({ ok: true, json: () => Promise.resolve(data) });
+      } else {
+        reject(new Error(\`Failed to fetch \${url}\`));
+      }
+    }, delay);
+  });
+}
 
-  const fetchPromises = urls.map(url =>
-    fetch(url).then(response => {
-      if (!response.ok) throw new Error(\`HTTP error: \${response.status}\`);
-      return response.json();
-    })
+async function fetchFromFastest(sources) {
+  // Use Promise.race to get result from fastest source
+  // sources is array of { url, delay, success, data }
+  const fetchPromises = sources.map(source =>
+    mockFetch(source.url, source.delay, source.success, source.data)
+      .then(response => {
+        if (!response.ok) throw new Error('HTTP error');
+        return response.json();
+      })
   );
 
   return Promise.race(fetchPromises);
 }
 
-async function fetchWithFallback(primaryUrl, fallbackUrls) {
+async function fetchWithFallback(primary, fallbacks) {
   // Try primary first, if it fails, race the fallbacks
-  // Return first successful result
-
+  // primary and fallbacks are { url, delay, success, data }
   try {
-    const response = await fetch(primaryUrl);
+    const response = await mockFetch(primary.url, primary.delay, primary.success, primary.data);
     if (!response.ok) throw new Error('Primary failed');
     return await response.json();
   } catch (primaryError) {
     // Primary failed, race the fallbacks
-    if (fallbackUrls.length === 0) {
+    if (fallbacks.length === 0) {
       throw primaryError;
     }
 
-    const fallbackPromises = fallbackUrls.map(url =>
-      fetch(url).then(response => {
-        if (!response.ok) throw new Error(\`Fallback failed: \${url}\`);
-        return response.json();
-      })
+    const fallbackPromises = fallbacks.map(fb =>
+      mockFetch(fb.url, fb.delay, fb.success, fb.data)
+        .then(response => {
+          if (!response.ok) throw new Error('Fallback failed');
+          return response.json();
+        })
     );
 
     return Promise.race(fallbackPromises);
   }
 }
 
-// Test (commented out to prevent immediate execution)
-// fetchFromFastest(['/api/slow', '/api/fast', '/api/medium'])
-//   .then(console.log)
-//   .catch(console.error);
-
-// fetchWithFallback('/api/primary', ['/api/backup1', '/api/backup2'])
-//   .then(console.log)
-//   .catch(console.error);`,
+// Test function for test runner
+async function testPromiseRace(testName) {
+  if (testName === 'fastestWins') {
+    const sources = [
+      { url: 'slow', delay: 100, success: true, data: { source: 'slow' } },
+      { url: 'fast', delay: 10, success: true, data: { source: 'fast', time: 'first' } },
+      { url: 'medium', delay: 50, success: true, data: { source: 'medium' } }
+    ];
+    return await fetchFromFastest(sources);
+  }
+  if (testName === 'primarySuccess') {
+    const primary = { url: 'primary', delay: 10, success: true, data: { source: 'primary' } };
+    const fallbacks = [{ url: 'fallback', delay: 10, success: true, data: { source: 'fallback' } }];
+    return await fetchWithFallback(primary, fallbacks);
+  }
+  if (testName === 'fallbackOnPrimaryFail') {
+    const primary = { url: 'primary', delay: 10, success: false, data: null };
+    const fallbacks = [{ url: 'fallback', delay: 10, success: true, data: { source: 'fallback' } }];
+    return await fetchWithFallback(primary, fallbacks);
+  }
+  if (testName === 'raceRejectsFirst') {
+    // When the first to settle rejects, Promise.race rejects
+    const sources = [
+      { url: 'fast-fail', delay: 10, success: false, data: null },
+      { url: 'slow-success', delay: 100, success: true, data: { source: 'slow' } }
+    ];
+    try {
+      await fetchFromFastest(sources);
+      return { rejected: false };
+    } catch (e) {
+      return { rejected: true };
+    }
+  }
+  return null;
+}`,
   testCases: [
     {
       input: 'fastestWins',

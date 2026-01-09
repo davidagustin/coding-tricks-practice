@@ -144,35 +144,43 @@ function getProduct(id: ProductId): string {
   return 'Product ' + id;
 }
 
+// Wrapper function to create userId and get user in one step
+function getUserById(id: number): string {
+  const userId = createUserId(id);
+  return getUser(userId);
+}
+
+// Wrapper function to create productId and get product in one step
+function getProductById(id: number): string {
+  const productId = createProductId(id);
+  return getProduct(productId);
+}
+
 // Test - this should work
 const userId = createUserId(1);
 const productId = createProductId(1);
 console.log(getUser(userId));
-console.log(getProduct(productId));
-
-// This should cause type error (uncomment to test):
-// getUser(productId); // Error!
-// getProduct(userId); // Error!`,
+console.log(getProduct(productId));`,
   testCases: [
     {
-      input: { fn: 'createUserId', args: [1] },
+      input: [1],
       expectedOutput: 1,
-      description: 'createUserId returns a branded UserId',
+      description: 'createUserId returns the id value',
     },
     {
-      input: { fn: 'createProductId', args: [42] },
+      input: [42],
       expectedOutput: 42,
-      description: 'createProductId returns a branded ProductId',
+      description: 'createProductId returns the id value',
     },
     {
-      input: { fn: 'getUser', args: ['userId(1)'] },
+      input: [1],
       expectedOutput: 'User 1',
-      description: 'getUser accepts UserId and returns user string',
+      description: 'getUserById returns user string for id',
     },
     {
-      input: { fn: 'getProduct', args: ['productId(1)'] },
-      expectedOutput: 'Product 1',
-      description: 'getProduct accepts ProductId and returns product string',
+      input: [5],
+      expectedOutput: 'Product 5',
+      description: 'getProductById returns product string for id',
     },
   ],
   hints: [

@@ -127,33 +127,44 @@ class MyClass {
 }
 type Test4 = MyConstructorParameters<typeof MyClass>; // [string, number]
 
-// Runtime tests to verify types work
-const unwrapped: Test1 = 42;
-const first: Test2 = 'hello';
-const last: Test3 = true;
-const constructorParams: Test4 = ['Alice', 30];
+// Runtime functions to demonstrate infer-like behavior
+async function unwrapPromise<T>(promise: Promise<T>): Promise<T> {
+  return await promise;
+}
 
-console.log(unwrapped, first, last, constructorParams);`,
+function getFirstArg<T>(first: T, ...rest: unknown[]): T {
+  return first;
+}
+
+function getLastArg(...args: unknown[]): unknown {
+  return args[args.length - 1];
+}
+
+function getArgCount(...args: unknown[]): number {
+  return args.length;
+}
+
+console.log('Infer keyword types compiled successfully!');`,
   testCases: [
     {
-      input: ['Promise<number>'],
-      expectedOutput: 'number',
-      description: 'UnwrapPromise extracts number from Promise<number>',
+      input: ['first', 'second', 'third'],
+      expectedOutput: 'first',
+      description: 'getFirstArg returns the first argument',
     },
     {
-      input: ['(a: string, b: number) => void'],
-      expectedOutput: 'string',
-      description: 'FirstParameter extracts first parameter type',
+      input: [1, 2, 3, 4, 5],
+      expectedOutput: 5,
+      description: 'getLastArg returns the last argument',
     },
     {
-      input: ['(a: number, b: string, c: boolean) => void'],
-      expectedOutput: 'boolean',
-      description: 'LastParameter extracts last parameter type',
+      input: ['a', 'b', 'c'],
+      expectedOutput: 3,
+      description: 'getArgCount returns the number of arguments',
     },
     {
-      input: ['new (name: string, age: number) => MyClass'],
-      expectedOutput: '[string, number]',
-      description: 'MyConstructorParameters extracts constructor parameter tuple',
+      input: [42],
+      expectedOutput: 42,
+      description: 'getFirstArg works with single argument',
     },
   ],
   hints: [
