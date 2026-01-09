@@ -142,7 +142,45 @@ console.log(state.user.profile.name); // 'Alice' - unchanged
 
 const obj = { a: 1, b: 2, c: 3 };
 console.log(removeProperty(obj, 'b')); // { a: 1, c: 3 }`,
-  solution: `function test() { return true; }`,
+  solution: `// Implement immutable array insert at index
+// Should return a new array with item inserted at specified index
+function insertAt(array, index, item) {
+  return [...array.slice(0, index), item, ...array.slice(index)];
+}
+
+// Implement immutable array removal at index
+// Should return a new array with item at index removed
+function removeAt(array, index) {
+  return [...array.slice(0, index), ...array.slice(index + 1)];
+}
+
+// Implement immutable array update at index
+// Should return a new array with item at index replaced
+function updateAt(array, index, newValue) {
+  return array.map((item, i) => i === index ? newValue : item);
+}
+
+// Implement immutable nested object update
+// Should update a deeply nested property without mutation
+// path is an array of keys, e.g., ['user', 'address', 'city']
+function updateNested(obj, path, value) {
+  if (path.length === 0) return value;
+  if (path.length === 1) {
+    return { ...obj, [path[0]]: value };
+  }
+  const [first, ...rest] = path;
+  return {
+    ...obj,
+    [first]: updateNested(obj[first] || {}, rest, value)
+  };
+}
+
+// Implement immutable object property removal
+// Should return a new object without the specified key
+function removeProperty(obj, key) {
+  const { [key]: removed, ...rest } = obj;
+  return rest;
+}`,
   testCases: [
     {
       input: [],

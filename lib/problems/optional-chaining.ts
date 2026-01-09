@@ -125,7 +125,25 @@ console.log(getFirstItemName({ items: [{ name: 'Widget' }] }));
 console.log(getFirstItemName({ items: [] }));
 console.log(callCallback({ onComplete: x => x * 2 }, 5));
 console.log(callCallback({}, 5));`,
-  solution: `function test() { return true; }`,
+  solution: `// Safely access nested properties using optional chaining
+function getUserCity(user) {
+  // TODO: Use optional chaining to safely access user.address.city
+  // Return the city or undefined if any part is missing
+  return user?.address?.city;
+}
+
+function getFirstItemName(data) {
+  // Safely get data.items[0].name using optional chaining
+  // Return the name or 'No items' if any part is missing
+  return data?.items?.[0]?.name ?? 'No items';
+}
+
+function callCallback(config, value) {
+  // Safely call config.onComplete(value) if it exists
+  // Use optional chaining for function calls
+  // Return the result or undefined
+  return config?.onComplete?.(value);
+}`,
   testCases: [
     {
       input: [],

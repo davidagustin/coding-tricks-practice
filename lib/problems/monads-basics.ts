@@ -205,7 +205,110 @@ console.log(safeDivide(10, 0).fold(e => e, v => v)); // 'Division by zero'
 const data = { user: { address: { city: 'NYC' } } };
 console.log(safeGet(data, 'user', 'address', 'city').getOrElse('Unknown')); // 'NYC'
 console.log(safeGet(data, 'user', 'phone').getOrElse('Unknown')); // 'Unknown'`,
-  solution: `function test() { return true; }`,
+  solution: `// Implement the Maybe monad
+// Maybe represents a value that might not exist (null or undefined)
+class Maybe {
+  constructor(value) {
+    this._value = value;
+  }
+
+  // Static method to create a Maybe
+  static of(value) {
+    return new Maybe(value);
+  }
+
+  // Check if the value is Nothing (null or undefined)
+  isNothing() {
+    return this._value === null || this._value === undefined;
+  }
+
+  // Apply a function to the value if it exists
+  map(fn) {
+    if (this.isNothing()) {
+      return this;
+    }
+    return Maybe.of(fn(this._value));
+  }
+
+  // Apply a function that returns a Maybe, then flatten
+  flatMap(fn) {
+    if (this.isNothing()) {
+      return this;
+    }
+    return fn(this._value);
+  }
+
+  // Get the value or return a default
+  getOrElse(defaultValue) {
+    return this.isNothing() ? defaultValue : this._value;
+  }
+}
+
+// Implement the Either monad
+// Either represents a value that is either a success (Right) or failure (Left)
+class Either {
+  constructor(value, isRight) {
+    this._value = value;
+    this._isRight = isRight;
+  }
+
+  // Create a Right (success) value
+  static right(value) {
+    return new Either(value, true);
+  }
+
+  // Create a Left (failure) value
+  static left(value) {
+    return new Either(value, false);
+  }
+
+  // Check if this is a Right value
+  isRight() {
+    return this._isRight;
+  }
+
+  // Apply a function to Right value only
+  map(fn) {
+    if (this.isRight()) {
+      return Either.right(fn(this._value));
+    }
+    return this;
+  }
+
+  // Apply a function that returns an Either, then flatten
+  flatMap(fn) {
+    if (this.isRight()) {
+      return fn(this._value);
+    }
+    return this;
+  }
+
+  // Handle both cases with separate functions
+  fold(leftFn, rightFn) {
+    return this.isRight() ? rightFn(this._value) : leftFn(this._value);
+  }
+}
+
+// Implement a safe division function using Either
+// Should return Left with error message if dividing by zero
+function safeDivide(a, b) {
+  if (b === 0) {
+    return Either.left('Division by zero');
+  }
+  return Either.right(a / b);
+}
+
+// Implement a safe property access using Maybe
+// Should safely access nested properties like: safeGet(obj, 'user', 'address', 'city')
+function safeGet(obj, ...keys) {
+  return keys.reduce((maybe, key) => {
+    return maybe.flatMap(value => {
+      return value && typeof value === 'object' && key in value
+        ? Maybe.of(value[key])
+        : Maybe.of(null);
+    });
+  }, Maybe.of(obj));
+}`,
   testCases: [
     {
       input: [],

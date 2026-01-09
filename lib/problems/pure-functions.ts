@@ -142,7 +142,41 @@ console.log(calculateTotal(100, 0.1));
 const user = { id: 1, name: 'Alice' };
 console.log(updateUser(user, 'Bob'));
 console.log(user.name); // Should still be 'Alice'`,
-  solution: `function test() { return true; }`,
+  solution: `// Refactor this impure function to be pure
+// It currently modifies the input array
+function addItemImpure(cart, item) {
+  cart.push(item);
+  return cart;
+}
+
+// Implement a pure version that returns a new array
+function addItem(cart, item) {
+  return [...cart, item];
+}
+
+// Refactor this impure function to be pure
+// It currently uses external state
+let taxRate = 0.1;
+function calculateTotalImpure(price) {
+  return price + (price * taxRate);
+}
+
+// Implement a pure version that takes taxRate as parameter
+function calculateTotal(price, taxRate) {
+  return price + (price * taxRate);
+}
+
+// Refactor this impure function to be pure
+// It currently mutates the input object
+function updateUserImpure(user, name) {
+  user.name = name;
+  return user;
+}
+
+// Implement a pure version that returns a new object
+function updateUser(user, name) {
+  return { ...user, name };
+}`,
   testCases: [
     {
       input: [],

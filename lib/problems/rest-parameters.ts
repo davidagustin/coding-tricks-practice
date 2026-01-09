@@ -138,7 +138,35 @@ console.log(mergeArrays([1, 2], [3, 4], [5, 6]));
 const log = createLogger('[INFO]');
 log('Server started', 'on port 3000');
 console.log(callWithArray(Math.max, [3, 1, 4, 1, 5, 9]));`,
-  solution: `function test() { return true; }`,
+  solution: `function sumAll(...numbers) {
+  // Use rest parameter to accept any number of arguments
+  // Return the sum of all numbers
+  // The function signature already uses rest, just implement the body
+  return numbers.reduce((sum, num) => sum + num, 0);
+}
+
+function mergeArrays(first, ...arrays) {
+  // Merge the first array with all other arrays
+  // Use spread to combine them into one array
+  // Example: mergeArrays([1], [2, 3], [4]) => [1, 2, 3, 4]
+  return [...first, ...arrays.flat()];
+}
+
+function createLogger(prefix) {
+  // Return a function that logs prefix + all arguments
+  // The returned function should accept any number of arguments
+  // Use rest to collect args and spread to pass them to console.log
+  return function(...args) {
+    console.log(prefix, ...args);
+  };
+}
+
+function callWithArray(fn, args) {
+  // Call fn with the elements of args array as individual arguments
+  // Use spread to expand the array into arguments
+  // Example: callWithArray(Math.max, [1, 5, 3]) => 5
+  return fn(...args);
+}`,
   testCases: [
     {
       input: [],

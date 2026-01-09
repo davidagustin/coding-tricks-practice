@@ -129,7 +129,34 @@ console.log(getValue(0, 100));
 console.log(getValue(null, 100));
 console.log(incrementCounter(null));
 console.log(incrementCounter(5));`,
-  solution: `function test() { return true; }`,
+  solution: `// Fix the function to use ?? instead of ||
+// The issue: || treats 0, false, '' as falsy and uses default
+// Solution: Use ?? which only treats null/undefined as falsy
+function getConfigWithDefaults(config) {
+  // port: default 3000 (but 0 should be valid)
+  // timeout: default 5000 (but 0 should be valid)
+  // debug: default false (but false should be valid)
+  // name: default 'app' (but empty string '' should be valid)
+
+  return {
+    port: config.port ?? 3000,
+    timeout: config.timeout ?? 5000,
+    debug: config.debug ?? false,
+    name: config.name ?? 'app'
+  };
+}
+
+function getValue(value, defaultValue) {
+  // Return value if it's not null/undefined, otherwise defaultValue
+  // Use the nullish coalescing operator
+  return value ?? defaultValue;
+}
+
+function incrementCounter(current) {
+  // If current is null/undefined, start at 0, then add 1
+  // Use ?? to handle the null/undefined case
+  return (current ?? 0) + 1;
+}`,
   testCases: [
     {
       input: [],

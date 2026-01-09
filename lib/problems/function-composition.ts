@@ -146,7 +146,50 @@ console.log(pipe(addOne, double, square)(2)); // 36
 
 const userData = { name: '  JOHN DOE  ', age: '25' };
 console.log(transformUser(userData));`,
-  solution: `function test() { return true; }`,
+  solution: `// Implement compose - applies functions right-to-left
+// compose(f, g, h)(x) should equal f(g(h(x)))
+function compose(...fns) {
+  return (x) => fns.reduceRight((acc, fn) => fn(acc), x);
+}
+
+// Implement pipe - applies functions left-to-right
+// pipe(f, g, h)(x) should equal h(g(f(x)))
+function pipe(...fns) {
+  return (x) => fns.reduce((acc, fn) => fn(acc), x);
+}
+
+// Implement composeAsync for async functions
+// Should work like compose but handle Promises
+async function composeAsync(...fns) {
+  return async (x) => {
+    let result = await x;
+    for (let i = fns.length - 1; i >= 0; i--) {
+      result = await fns[i](result);
+    }
+    return result;
+  };
+}
+
+// Create a data transformation pipeline using pipe
+// Transform user data: { name: '  JOHN DOE  ', age: '25' }
+// To: { name: 'John Doe', age: 25, isAdult: true }
+const transformUser = pipe(
+  trimName,
+  normalizeName,
+  parseAge,
+  addIsAdult
+);
+
+// Helper functions for the pipeline
+const trimName = user => ({ ...user, name: user.name.trim() });
+const normalizeName = user => ({
+  ...user,
+  name: user.name.toLowerCase().split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+});
+const parseAge = user => ({ ...user, age: parseInt(user.age, 10) });
+const addIsAdult = user => ({ ...user, isAdult: user.age >= 18 });`,
   testCases: [
     {
       input: [],
