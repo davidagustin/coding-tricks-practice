@@ -1,234 +1,342 @@
-# JavaScript & TypeScript Tricks Practice
+<div align="center">
 
-A LeetCode-like application for practicing advanced JavaScript and TypeScript patterns and techniques. Master destructuring, optional chaining, template literal types, discriminated unions, and more through hands-on coding challenges.
+# JavaScript & TypeScript Mastery Platform
 
-## ✨ Features
+### A comprehensive, production-grade learning platform for mastering modern JavaScript and TypeScript
 
-- 🎯 **56+ Practice Problems** covering essential JS/TS patterns
-- 💻 **Interactive Code Editor** with syntax highlighting (Monaco Editor)
-- ✅ **Automated Test Runner** to verify your solutions
-- 📚 **Enhanced Descriptions** with in-depth explanations, importance, and practical applications
-- 🎨 **Modern UI** with dark mode support and smooth animations
-- 🚀 **Next.js & Vercel Ready** for easy deployment
+[![Next.js](https://img.shields.io/badge/Next.js-16.1-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 
-## 🚀 Getting Started
+<br />
+
+[Live Demo](#) · [Report Bug](https://github.com/davidagustin/coding-tricks-practice/issues) · [Request Feature](https://github.com/davidagustin/coding-tricks-practice/issues)
+
+<br />
+
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png" alt="separator" width="100%">
+
+</div>
+
+<br />
+
+## Overview
+
+A **LeetCode-style** interactive coding platform built from the ground up, featuring **155+ hands-on coding challenges** across **19 categories**. This full-stack application demonstrates expertise in modern web development, software architecture, and best practices.
+
+<br />
+
+<div align="center">
+
+| Metric | Value |
+|--------|-------|
+| **Total Problems** | 155+ |
+| **Categories** | 19 |
+| **Test Files** | 40+ |
+| **Lines of Code** | 140,000+ |
+| **Components** | 11 |
+
+</div>
+
+<br />
+
+## Key Features
+
+<table>
+<tr>
+<td width="50%">
+
+### Interactive Code Editor
+- Monaco Editor (VS Code engine) integration
+- Syntax highlighting for JavaScript & TypeScript
+- Real-time code validation
+- Auto-completion and IntelliSense
+
+</td>
+<td width="50%">
+
+### Automated Test Runner
+- Sandboxed code execution environment
+- Comprehensive test case validation
+- Detailed error reporting with stack traces
+- Performance timing for solutions
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### Modern UI/UX
+- Responsive design for all devices
+- Dark/Light theme with system preference detection
+- Smooth animations and transitions
+- Accessibility-first approach (WCAG compliant)
+
+</td>
+<td width="50%">
+
+### Progress Tracking
+- Persistent progress with localStorage
+- Streak tracking system
+- Filter by difficulty, category, and completion status
+- Real-time statistics dashboard
+
+</td>
+</tr>
+</table>
+
+<br />
+
+## Tech Stack
+
+<div align="center">
+
+### Frontend
+![Next.js](https://img.shields.io/badge/Next.js_16-000000?style=flat-square&logo=next.js&logoColor=white)
+![React](https://img.shields.io/badge/React_19-61DAFB?style=flat-square&logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript_5.9-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_4-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)
+
+### Editor & Testing
+![Monaco Editor](https://img.shields.io/badge/Monaco_Editor-007ACC?style=flat-square&logo=visual-studio-code&logoColor=white)
+![Jest](https://img.shields.io/badge/Jest-C21325?style=flat-square&logo=jest&logoColor=white)
+![Testing Library](https://img.shields.io/badge/Testing_Library-E33332?style=flat-square&logo=testing-library&logoColor=white)
+
+### Tooling
+![ESLint](https://img.shields.io/badge/ESLint-4B32C3?style=flat-square&logo=eslint&logoColor=white)
+![Biome](https://img.shields.io/badge/Biome-60A5FA?style=flat-square&logo=biome&logoColor=white)
+![Husky](https://img.shields.io/badge/Husky-000000?style=flat-square&logo=git&logoColor=white)
+
+</div>
+
+<br />
+
+## Architecture Highlights
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         Next.js App Router                       │
+├─────────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐  │
+│  │   Pages     │  │  Components │  │    Context Providers    │  │
+│  │  ─────────  │  │  ─────────  │  │    ─────────────────    │  │
+│  │  • Home     │  │  • CodeEditor│  │  • ThemeProvider       │  │
+│  │  • Problems │  │  • TestResults│ │  • ProgressProvider    │  │
+│  │  • [id]     │  │  • Navbar    │  │                        │  │
+│  └─────────────┘  └─────────────┘  └─────────────────────────┘  │
+├─────────────────────────────────────────────────────────────────┤
+│  ┌─────────────────────────────────────────────────────────────┐│
+│  │                    Test Runner Engine                        ││
+│  │  • Sandboxed execution  • Security validation                ││
+│  │  • Deep equality checks • Timeout protection                 ││
+│  └─────────────────────────────────────────────────────────────┘│
+├─────────────────────────────────────────────────────────────────┤
+│  ┌─────────────────────────────────────────────────────────────┐│
+│  │               Problem Library (155+ Problems)                ││
+│  │  19 Categories • 3 Difficulty Levels • Test Cases            ││
+│  └─────────────────────────────────────────────────────────────┘│
+└─────────────────────────────────────────────────────────────────┘
+```
+
+<br />
+
+## Problem Categories
+
+<div align="center">
+
+| Category | Description |
+|----------|-------------|
+| **JavaScript Basics** | Fundamentals, operators, control flow |
+| **Array Methods** | map, filter, reduce, find, and more |
+| **Async/Promises** | Promises, async/await, error handling |
+| **TypeScript Basics** | Types, interfaces, generics |
+| **TypeScript Advanced** | Conditional types, mapped types, infer |
+| **Functional Programming** | Currying, composition, memoization |
+| **ES6+ Features** | Destructuring, spread, template literals |
+| **Design Patterns** | Factory, singleton, observer, decorator |
+| **Data Structures** | Sets, Maps, WeakMap, WeakSet |
+| **Algorithms** | Sorting, searching, recursion |
+| **DOM/Browser** | Events, storage, intersection observer |
+| **Performance** | Optimization, debounce, throttle |
+| **Testing Patterns** | Mocks, stubs, TDD practices |
+| **Error Handling** | Try/catch, custom errors, boundaries |
+| **Regular Expressions** | Patterns, lookahead, validation |
+| **String Methods** | Manipulation, formatting, parsing |
+| **Object Methods** | Keys, values, entries, freeze |
+| **Date & Time** | Formatting, timezones, calculations |
+| **Numbers & Math** | Precision, formatting, BigInt |
+
+</div>
+
+<br />
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
 
 ### Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/davidagustin/coding-tricks-practice.git
+
+# Navigate to the project
+cd coding-tricks-practice
+
+# Install dependencies
 npm install
-```
 
-### Development
-
-```bash
+# Start development server
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-### Testing
+<br />
+
+## Scripts
 
 ```bash
-# Run all tests
-npm test
+# Development
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
 
-# Run tests in watch mode
-npm run test:watch
+# Testing
+npm test             # Run all tests
+npm run test:watch   # Run tests in watch mode
+npm run test:coverage # Run tests with coverage report
 
-# Run tests with coverage
-npm run test:coverage
-
-# Test specific agent's problems (1-4)
-npm run test:agent 1
-
-# Test a specific problem
-npm run test:agent 1 reduce-grouping
-
-# Test all problems
-npm run test:agent all
+# Code Quality
+npm run lint         # Run ESLint
+npm run format       # Format code with Biome
 ```
 
-## 📁 Project Structure
+<br />
+
+## Project Structure
 
 ```
-├── app/
-│   ├── page.tsx              # Home page
-│   ├── problems/
-│   │   ├── page.tsx          # Problems list
-│   │   └── [id]/
-│   │       └── page.tsx      # Individual problem page
-│   └── layout.tsx            # Root layout
-├── components/
-│   ├── CodeEditor.tsx        # Code editor component
-│   ├── TestResults.tsx       # Test results display
-│   ├── ProblemDescription.tsx # Problem description
-│   └── ErrorHandler.tsx      # Error handling component
-├── lib/
-│   ├── problems.ts           # Problem definitions (56 problems)
-│   └── test-runner.ts        # Test execution logic
-├── scripts/
-│   └── test-problems.ts      # Script to test problems by agent
-└── __tests__/                # Test files
+├── app/                          # Next.js App Router
+│   ├── page.tsx                  # Home page with statistics
+│   ├── layout.tsx                # Root layout with providers
+│   ├── error.tsx                 # Global error boundary
+│   ├── loading.tsx               # Loading skeleton
+│   ├── not-found.tsx             # 404 page
+│   └── problems/
+│       ├── page.tsx              # Problems list with filtering
+│       ├── error.tsx             # Problems error boundary
+│       └── [id]/
+│           ├── page.tsx          # Problem detail page
+│           ├── error.tsx         # Problem error boundary
+│           └── not-found.tsx     # Problem not found page
+│
+├── components/                   # React components
+│   ├── CodeEditor.tsx            # Monaco Editor wrapper
+│   ├── TestResults.tsx           # Test results display
+│   ├── ProblemDescription.tsx    # Problem info with tabs
+│   ├── ProblemTable.tsx          # Problems list table
+│   ├── FilterSidebar.tsx         # Filter controls
+│   ├── Navbar.tsx                # Navigation with settings
+│   ├── ThemeToggle.tsx           # Dark/light mode toggle
+│   ├── ThemeProvider.tsx         # Theme context provider
+│   ├── ProgressProvider.tsx      # Progress tracking context
+│   └── ErrorBoundary.tsx         # Error boundary component
+│
+├── lib/                          # Core libraries
+│   ├── problems/                 # 155+ problem definitions
+│   │   ├── index.ts              # Problem exports
+│   │   └── [problem-name].ts     # Individual problems
+│   ├── problems.ts               # Problem utilities
+│   ├── test-runner.ts            # Sandboxed test execution
+│   └── constants.ts              # App constants
+│
+├── __tests__/                    # Test suites (40+ files)
+│   ├── app/                      # Page tests
+│   ├── components/               # Component tests
+│   └── lib/                      # Library tests
+│
+└── stories/                      # Storybook stories
 ```
 
-## 🎯 Topics Covered
+<br />
 
-### JavaScript Basics
-- Destructuring with defaults, nullish coalescing, optional chaining
-- Array methods: reduce, map, filter, find, some, every
-- Object manipulation: Object.entries, Object.fromEntries
-- Spread operator patterns and tricks
+## Security Features
 
-### Async/Promises
-- Promise.race for timeouts
-- Promise.all vs Promise.allSettled
-- Promise chaining and error handling
-- Async/await patterns
-- Abort Controller
-- Retry patterns
+- **Sandboxed Code Execution**: User code runs in an isolated environment
+- **Input Sanitization**: All inputs validated and sanitized with DOMPurify
+- **Function Name Validation**: Prevents code injection attacks
+- **Timeout Protection**: Prevents infinite loops and resource exhaustion
+- **XSS Prevention**: Content Security Policy compliant
 
-### Advanced JavaScript
-- Proxy API and traps
-- WeakMap & WeakSet
-- Symbol usage
-- Reflect API
-- Object.freeze & Object.seal
-- Property descriptors
-- Generator functions
-- Tagged template literals
+<br />
 
-### TypeScript Basics
-- Basic types and annotations
-- Interfaces and type aliases
-- Generics
-- Union & intersection types
-- Optional & readonly modifiers
-- Type guards
-- Enums
+## Performance Optimizations
 
-### TypeScript Advanced
-- Conditional types
-- Mapped types
-- Infer keyword
-- Branded types
-- Template literal types
+- **React.memo** for expensive component renders
+- **useCallback/useMemo** for stable references
+- **Code splitting** with Next.js dynamic imports
+- **Optimized re-renders** with proper key management
+- **Efficient filtering** with single-pass algorithms
+- **Lazy loading** for Monaco Editor
 
-### Functional Programming
-- Currying
-- Memoization
-- Pipe & compose
-- Debounce & throttle
+<br />
 
-## 📖 How It Works
+## Accessibility
 
-1. **Browse Problems**: Visit `/problems` to see all available challenges
-2. **Select a Problem**: Click on any problem to start practicing
-3. **Write Code**: Use the code editor to implement your solution
-4. **Run Tests**: Click "Run Tests" to verify your solution
-5. **View Solution**: Click "Show Solution" to see the reference implementation
+- **WCAG 2.1 AA** compliant
+- Keyboard navigation support
+- Screen reader announcements with `aria-live`
+- Proper focus management
+- Color contrast ratios maintained
+- Semantic HTML structure
 
-## 🔧 Adding New Problems
+<br />
 
-Problems are defined in `lib/problems.ts`. Each problem includes:
+## Deployment
 
-```typescript
-{
-  id: 'unique-problem-id',
-  title: 'Problem Title',
-  difficulty: 'easy' | 'medium' | 'hard',
-  category: 'Category Name',
-  description: 'Problem description with markdown support',
-  examples: [
-    {
-      input: 'Code example',
-      output: 'Expected output',
-      explanation: 'Optional explanation'
-    }
-  ],
-  starterCode: 'Initial code template',
-  solution: 'Reference solution',
-  testCases: [
-    {
-      input: [...],
-      expectedOutput: {...},
-      description: 'Optional description'
-    }
-  ],
-  hints: ['Hint 1', 'Hint 2', ...]
-}
-```
+### Vercel (Recommended)
 
-## 👥 Agent Review System
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/davidagustin/coding-tricks-practice)
 
-The 56 problems are split into 4 equal groups for parallel review:
+The application is optimized for Vercel's edge network with:
+- Automatic HTTPS
+- Global CDN distribution
+- Zero-config deployment
+- Preview deployments for PRs
 
-### Agent 1: Problems 1-14
-Array Methods & Promises Basics
-- `reduce-grouping`, `map-deduplication`, `object-entries`
-- `promise-race-timeout`, `promise-allsettled`, `find-vs-filter`
-- `array-chaining`, `reduce-right`, `some-every`, `array-from`
-- `partition-pattern`, `chunk-arrays`, `promise-all-vs-allsettled`, `async-generators`
+<br />
 
-### Agent 2: Problems 15-28
-Promises Advanced & TypeScript Basics
-- `abort-controller`, `retry-pattern`, `promise-chaining`
-- `error-boundaries`, `promise-constructor`, `async-await-error`
-- `promise-race-first`, `promise-finally`
-- `basic-typescript-types`, `interfaces`, `type-aliases`
-- `generics-basic`, `union-intersection`, `optional-readonly`
+## Contributing
 
-### Agent 3: Problems 29-42
-Advanced JavaScript Features
-- `type-guards`, `enums`, `proxy-api`, `weakmap-weakset`
-- `symbol-usage`, `reflect-api`, `object-freeze-seal`
-- `property-descriptors`, `computed-property-names`
-- `spread-operator-patterns`, `spread-operator-tricks`
-- `short-circuit-evaluation`, `tagged-template-literals`, `reduce-patterns`
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-### Agent 4: Problems 43-56
-Functional Programming & Advanced TypeScript
-- `array-from-tricks`, `sort-comparators`, `string-padding`
-- `currying`, `memoization`, `pipe-compose`, `debounce-throttle`
-- `mapped-types`, `conditional-types`, `infer-keyword`
-- `branded-types`, `proxy-traps`, `generator-functions`, `weak-collections`
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-### Review Checklist
+<br />
 
-For each problem, agents should verify:
+## License
 
-- ✅ **Runtime Errors**: Code executes without errors
-- ✅ **Code Review**: Solution is correct and follows best practices
-- ✅ **Logic Verification**: Solution logic is sound
-- ✅ **Research**: Solution uses appropriate patterns
-- ✅ **Documentation**: All findings documented
+This project is open source and available under the [MIT License](LICENSE).
 
-## 🚢 Deployment
+<br />
 
-This project is ready to deploy on Vercel:
+---
 
-1. Push your code to GitHub
-2. Import the repository on [Vercel](https://vercel.com)
-3. Deploy with zero configuration
+<div align="center">
 
-The app is fully compatible with Vercel's serverless functions and edge runtime.
+**Built with passion for learning and teaching JavaScript & TypeScript**
 
-## 🛠️ Technologies Used
+<br />
 
-- **Next.js 16** - React framework with App Router
-- **TypeScript** - Type safety
-- **Tailwind CSS** - Styling
-- **React 19** - UI library
-- **Monaco Editor** - Code editor component
-- **Jest** - Testing framework
+[![GitHub stars](https://img.shields.io/github/stars/davidagustin/coding-tricks-practice?style=social)](https://github.com/davidagustin/coding-tricks-practice)
 
-## 📚 Learn More
-
-- [Next.js Documentation](https://nextjs.org/docs)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-- [JavaScript MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-- [React Documentation](https://react.dev)
-
-## 📝 License
-
-This project is open source and available for learning purposes.
+</div>
