@@ -239,7 +239,7 @@ describe('Theme Integration', () => {
       await user.click(toggleButton);
 
       await waitFor(() => {
-        // Should end up in dark mode (3 toggles: dark -> light -> dark -> light)
+        // Should end up in light mode (3 toggles: dark -> light -> dark -> light)
         expect(screen.getByTestId('theme-aware')).toHaveTextContent('Current theme: light');
         expect(localStorageMock.getItem('theme')).toBe('light');
       });

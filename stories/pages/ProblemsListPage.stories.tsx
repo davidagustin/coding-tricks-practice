@@ -640,7 +640,7 @@ export const Default: Story = {
 /**
  * Problems list with difficulty filter applied (showing only easy problems)
  */
-export const WithFiltersApplied: Story = {
+export const WithFilters: Story = {
   args: {
     initialDifficulty: 'easy',
     initialCategory: 'all',
@@ -674,7 +674,7 @@ export const EmptySearchResults: Story = {
 /**
  * Mobile view with sidebar hidden (default mobile state)
  */
-export const MobileSidebarHidden: Story = {
+export const Mobile: Story = {
   args: {
     showMobileFilters: false,
   },
@@ -787,5 +787,87 @@ export const ShowingSolvedOnly: Story = {
         story: 'Problems list filtered to show only solved problems.',
       },
     },
+  },
+};
+
+// ============================================================================
+// Dark Theme Variants
+// ============================================================================
+
+/**
+ * Default (Dark)
+ */
+export const Default_Dark: Story = {
+  ...Default,
+  name: 'Default (Dark)',
+  decorators: [
+    ...(Array.isArray(Default.decorators) ? Default.decorators : []),
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...Default.parameters,
+    backgrounds: { default: 'dark' },
+  },
+};
+
+/**
+ * With Filters (Dark)
+ */
+export const WithFilters_Dark: Story = {
+  ...WithFilters,
+  name: 'With Filters (Dark)',
+  decorators: [
+    ...(Array.isArray(WithFilters.decorators) ? WithFilters.decorators : []),
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...WithFilters.parameters,
+    backgrounds: { default: 'dark' },
+  },
+};
+
+/**
+ * Mobile (Dark)
+ */
+export const Mobile_Dark: Story = {
+  ...Mobile,
+  name: 'Mobile (Dark)',
+  decorators: [
+    ...(Array.isArray(Mobile.decorators) ? Mobile.decorators : []),
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...Mobile.parameters,
+    backgrounds: { default: 'dark' },
   },
 };

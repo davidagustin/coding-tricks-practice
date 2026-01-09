@@ -235,7 +235,7 @@ test.describe('Problem Detail Page', () => {
     const noResultsGone = !(await page
       .getByText(/No test results yet/i)
       .isVisible()
-      .catch(() => true));
+      .catch(() => false));
 
     // At least one of these should be true (tests ran and produced some output)
     expect(

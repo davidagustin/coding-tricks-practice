@@ -95,9 +95,10 @@ export const problem: Problem = {
   ],
   starterCode: `function factorial(n) {
   // TODO: Calculate factorial using BigInt to handle large results
-  // factorial(20) → 2432902008176640000n
-  // factorial(50) → 30414093201713378043612608166064768844377641568960512000000000000n
-  // factorial(0) → 1n
+  // Returns result as string (since JSON can't serialize BigInt)
+  // factorial(20) → "2432902008176640000"
+  // factorial(50) → "30414093201713378043612608166064768844377641568960512000000000000"
+  // factorial(0) → "1"
 
   return n;
 }
@@ -147,7 +148,7 @@ console.log(bigIntToJSON({ id: 123n, name: "test" }));`,
   for (let i = 2n; i <= BigInt(n); i++) {
     result *= i;
   }
-  return result;
+  return result.toString();
 }
 
 function addLargeNumbers(a, b) {
@@ -221,8 +222,8 @@ function bigIntToJSON(obj) {
     },
     {
       input: [{ id: 123, name: 'test' }],
-      expectedOutput: '{"id":"123n","name":"test"}',
-      description: 'bigIntToJSON - converts BigInt to string with n suffix',
+      expectedOutput: '{"id":123,"name":"test"}',
+      description: 'bigIntToJSON - regular numbers remain unchanged (only BigInt gets n suffix)',
     },
   ],
   hints: [

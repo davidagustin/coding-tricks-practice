@@ -1,7 +1,53 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import React from 'react';
+import React, { type ReactNode } from 'react';
 import FilterSidebar from '../components/FilterSidebar';
-import { ProgressProvider } from '../components/ProgressProvider';
+import { ProgressProvider, ProgressContext } from '../components/ProgressProvider';
+
+// ============================================================================
+// Mock Progress Provider for Stories
+// ============================================================================
+
+interface MockProgressProviderProps {
+  children: ReactNode;
+  solvedProblems?: Set<string>;
+  totalProblems?: number;
+}
+
+function MockProgressProvider({
+  children,
+  solvedProblems = new Set<string>(),
+  totalProblems = 38,
+}: MockProgressProviderProps) {
+  const value = {
+    solvedProblems,
+    solvedCount: solvedProblems.size,
+    totalProblems,
+    streak: solvedProblems.size > 0 ? 3 : 0,
+    markSolved: () => {},
+    markUnsolved: () => {},
+    isSolved: (id: string) => solvedProblems.has(id),
+    lastSolvedDate: solvedProblems.size > 0 ? new Date().toISOString() : null,
+  };
+
+  return (
+    <ProgressContext.Provider value={value}>
+      {children}
+    </ProgressContext.Provider>
+  );
+}
+
+// Helper to generate problem IDs for testing
+const generateProblemIds = (count: number): Set<string> => {
+  const ids: string[] = [];
+  for (let i = 1; i <= count; i++) {
+    ids.push(`problem-${i}`);
+  }
+  return new Set(ids);
+};
+
+// Pre-generated problem sets for 50% and 100% progress
+const fiftyPercentSolvedProblems = generateProblemIds(19); // 19/38 = 50%
+const hundredPercentSolvedProblems = generateProblemIds(38); // 38/38 = 100%
 
 // Mock categories data
 const mockCategories = [
@@ -18,6 +64,32 @@ const defaultProblemCounts = {
   medium: 18,
   hard: 8,
   total: 38,
+};
+
+// Helper decorator for dark theme stories
+const darkThemeDecorator = (Story: React.ComponentType) => {
+  React.useEffect(() => {
+    document.documentElement.classList.add('dark');
+    return () => document.documentElement.classList.remove('dark');
+  }, []);
+  return (
+    <div className="dark bg-gray-950 min-h-screen p-4">
+      <Story />
+    </div>
+  );
+};
+
+// Helper decorator for light theme stories (explicit)
+const lightThemeDecorator = (Story: React.ComponentType) => {
+  React.useEffect(() => {
+    document.documentElement.classList.remove('dark');
+    return () => {};
+  }, []);
+  return (
+    <div className="bg-white min-h-screen p-4">
+      <Story />
+    </div>
+  );
 };
 
 const meta: Meta<typeof FilterSidebar> = {
@@ -77,10 +149,25 @@ const meta: Meta<typeof FilterSidebar> = {
 export default meta;
 type Story = StoryObj<typeof FilterSidebar>;
 
-// 1. Default state (no filters selected)
+// ============================================================================
+// LIGHT THEME STORIES
+// ============================================================================
+
+// 1. Default state (no filters selected) - Light
 export const Default: Story = {
   name: 'Default (No Filters)',
+  decorators: [
+    (Story) => (
+      <ProgressProvider>
+        <div className="max-w-xs">
+          <Story />
+        </div>
+      </ProgressProvider>
+    ),
+    lightThemeDecorator,
+  ],
   parameters: {
+    backgrounds: { default: 'light' },
     chromatic: {
       disableSnapshot: false,
     },
@@ -200,7 +287,7 @@ export const StatusUnsolved: Story = {
   },
 };
 
-// 5. Multiple filters active
+// 5. Multiple filters active - Light
 export const MultipleFiltersActive: Story = {
   name: 'Multiple Filters Active',
   args: {
@@ -208,7 +295,18 @@ export const MultipleFiltersActive: Story = {
     selectedCategory: 'Async/Await',
     selectedStatus: 'unsolved',
   },
+  decorators: [
+    (Story) => (
+      <ProgressProvider>
+        <div className="max-w-xs">
+          <Story />
+        </div>
+      </ProgressProvider>
+    ),
+    lightThemeDecorator,
+  ],
   parameters: {
+    backgrounds: { default: 'light' },
     chromatic: {
       disableSnapshot: false,
     },
@@ -247,10 +345,21 @@ export const AllSectionsCollapsed: Story = {
   },
 };
 
-// 7. All sections expanded (same as default, explicit story)
+// 7. All sections expanded (same as default, explicit story) - Light
 export const AllSectionsExpanded: Story = {
   name: 'All Sections Expanded',
+  decorators: [
+    (Story) => (
+      <ProgressProvider>
+        <div className="max-w-xs">
+          <Story />
+        </div>
+      </ProgressProvider>
+    ),
+    lightThemeDecorator,
+  ],
   parameters: {
+    backgrounds: { default: 'light' },
     chromatic: {
       disableSnapshot: false,
     },
@@ -262,10 +371,21 @@ export const AllSectionsExpanded: Story = {
   },
 };
 
-// 8a. Progress bar at 0%
+// 8a. Progress bar at 0% - Light
 export const ProgressZeroPercent: Story = {
   name: 'Progress: 0% Complete',
+  decorators: [
+    (Story) => (
+      <ProgressProvider>
+        <div className="max-w-xs">
+          <Story />
+        </div>
+      </ProgressProvider>
+    ),
+    lightThemeDecorator,
+  ],
   parameters: {
+    backgrounds: { default: 'light' },
     chromatic: {
       disableSnapshot: false,
     },
@@ -279,65 +399,66 @@ export const ProgressZeroPercent: Story = {
   // In a real scenario, we would mock this, but for visual testing the default state shows 0%.
 };
 
-// 8b. Progress bar at 50%
+// 8b. Progress bar at 50% - Light
 export const ProgressFiftyPercent: Story = {
   name: 'Progress: 50% Complete',
+  decorators: [
+    (Story) => (
+      <MockProgressProvider solvedProblems={fiftyPercentSolvedProblems} totalProblems={38}>
+        <div className="max-w-xs">
+          <Story />
+        </div>
+      </MockProgressProvider>
+    ),
+    lightThemeDecorator,
+  ],
   parameters: {
+    backgrounds: { default: 'light' },
     chromatic: {
       disableSnapshot: false,
     },
     docs: {
       description: {
-        story: 'FilterSidebar showing approximately 50% progress. The progress bar should be half filled.',
+        story: 'FilterSidebar showing approximately 50% progress (19/38 problems solved). The progress bar should be half filled.',
       },
     },
   },
-  render: (args) => {
-    // Since useProgress is used internally, we add a visual reference note.
-    // The actual progress would need to be mocked via localStorage or context manipulation.
-    return (
-      <div>
-        <p className="text-sm text-gray-500 mb-4 italic">
-          Progress: 19/38 problems solved (50%)
-        </p>
-        <FilterSidebar {...args} />
-      </div>
-    );
-  },
 };
 
-// 8c. Progress bar at 100%
+// 8c. Progress bar at 100% - Light
 export const ProgressHundredPercent: Story = {
   name: 'Progress: 100% Complete',
+  decorators: [
+    (Story) => (
+      <MockProgressProvider solvedProblems={hundredPercentSolvedProblems} totalProblems={38}>
+        <div className="max-w-xs">
+          <Story />
+        </div>
+      </MockProgressProvider>
+    ),
+    lightThemeDecorator,
+  ],
   parameters: {
+    backgrounds: { default: 'light' },
     chromatic: {
       disableSnapshot: false,
     },
     docs: {
       description: {
-        story: 'FilterSidebar showing 100% progress (all problems solved). The progress bar should be completely filled.',
+        story: 'FilterSidebar showing 100% progress (38/38 problems solved). The progress bar should be completely filled.',
       },
     },
   },
-  render: (args) => {
-    return (
-      <div>
-        <p className="text-sm text-gray-500 mb-4 italic">
-          Progress: 38/38 problems solved (100%)
-        </p>
-        <FilterSidebar {...args} />
-      </div>
-    );
-  },
 };
 
-// 9. Mobile viewport
+// 9. Mobile viewport - Light
 export const MobileViewport: Story = {
   name: 'Mobile Viewport',
   parameters: {
     viewport: {
       defaultViewport: 'mobile1',
     },
+    backgrounds: { default: 'light' },
     chromatic: {
       viewports: [320],
       disableSnapshot: false,
@@ -356,69 +477,207 @@ export const MobileViewport: Story = {
         </div>
       </ProgressProvider>
     ),
+    lightThemeDecorator,
   ],
 };
 
-// 10. Dark theme variant
-export const DarkTheme: Story = {
-  name: 'Dark Theme',
-  parameters: {
-    backgrounds: {
-      default: 'dark',
-    },
-    chromatic: {
-      disableSnapshot: false,
-    },
-    docs: {
-      description: {
-        story: 'FilterSidebar in dark theme mode. Colors and borders adapt to the dark background.',
-      },
-    },
-  },
+// ============================================================================
+// DARK THEME STORIES
+// ============================================================================
+
+// 10. Default (No Filters) - Dark
+export const DefaultDark: Story = {
+  ...Default,
+  name: 'Default (Dark)',
   decorators: [
     (Story) => (
       <ProgressProvider>
-        <div className="dark bg-gray-950 p-4 max-w-xs">
+        <div className="max-w-xs">
           <Story />
         </div>
       </ProgressProvider>
     ),
+    darkThemeDecorator,
   ],
+  parameters: {
+    ...Default.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'The default state of FilterSidebar in dark mode with no filters applied.',
+      },
+    },
+  },
 };
 
-// 10b. Dark theme with filters active
-export const DarkThemeWithFilters: Story = {
-  name: 'Dark Theme with Filters',
+// 11. With Filters Applied - Dark
+export const WithFiltersDark: Story = {
+  ...MultipleFiltersActive,
+  name: 'With Filters (Dark)',
   args: {
     selectedDifficulty: 'hard',
     selectedCategory: 'Destructuring',
     selectedStatus: 'solved',
   },
+  decorators: [
+    (Story) => (
+      <ProgressProvider>
+        <div className="max-w-xs">
+          <Story />
+        </div>
+      </ProgressProvider>
+    ),
+    darkThemeDecorator,
+  ],
   parameters: {
-    backgrounds: {
-      default: 'dark',
+    ...MultipleFiltersActive.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'FilterSidebar in dark mode with multiple filters active, showing the "Clear all" button.',
+      },
     },
+  },
+};
+
+// 12. All Sections Expanded - Dark
+export const AllSectionsExpandedDark: Story = {
+  ...AllSectionsExpanded,
+  name: 'All Sections Expanded (Dark)',
+  decorators: [
+    (Story) => (
+      <ProgressProvider>
+        <div className="max-w-xs">
+          <Story />
+        </div>
+      </ProgressProvider>
+    ),
+    darkThemeDecorator,
+  ],
+  parameters: {
+    ...AllSectionsExpanded.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'FilterSidebar in dark mode with all accordion sections expanded.',
+      },
+    },
+  },
+};
+
+// 13a. Progress 0% - Dark
+export const ProgressZeroPercentDark: Story = {
+  ...ProgressZeroPercent,
+  name: 'Progress: 0% Complete (Dark)',
+  decorators: [
+    (Story) => (
+      <ProgressProvider>
+        <div className="max-w-xs">
+          <Story />
+        </div>
+      </ProgressProvider>
+    ),
+    darkThemeDecorator,
+  ],
+  parameters: {
+    ...ProgressZeroPercent.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'FilterSidebar in dark mode showing 0% progress (no problems solved).',
+      },
+    },
+  },
+};
+
+// 13b. Progress 50% - Dark
+export const ProgressFiftyPercentDark: Story = {
+  name: 'Progress: 50% Complete (Dark)',
+  decorators: [
+    (Story) => (
+      <MockProgressProvider solvedProblems={fiftyPercentSolvedProblems} totalProblems={38}>
+        <div className="max-w-xs">
+          <Story />
+        </div>
+      </MockProgressProvider>
+    ),
+    darkThemeDecorator,
+  ],
+  parameters: {
+    backgrounds: { default: 'dark' },
     chromatic: {
       disableSnapshot: false,
     },
     docs: {
       description: {
-        story: 'FilterSidebar in dark theme with multiple filters active, showing the "Clear all" button.',
+        story: 'FilterSidebar in dark mode showing approximately 50% progress (19/38 problems solved).',
+      },
+    },
+  },
+};
+
+// 13c. Progress 100% - Dark
+export const ProgressHundredPercentDark: Story = {
+  name: 'Progress: 100% Complete (Dark)',
+  decorators: [
+    (Story) => (
+      <MockProgressProvider solvedProblems={hundredPercentSolvedProblems} totalProblems={38}>
+        <div className="max-w-xs">
+          <Story />
+        </div>
+      </MockProgressProvider>
+    ),
+    darkThemeDecorator,
+  ],
+  parameters: {
+    backgrounds: { default: 'dark' },
+    chromatic: {
+      disableSnapshot: false,
+    },
+    docs: {
+      description: {
+        story: 'FilterSidebar in dark mode showing 100% progress (38/38 problems solved).',
+      },
+    },
+  },
+};
+
+// 14. Mobile Viewport - Dark
+export const MobileViewportDark: Story = {
+  ...MobileViewport,
+  name: 'Mobile Viewport (Dark)',
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    backgrounds: { default: 'dark' },
+    chromatic: {
+      viewports: [320],
+      disableSnapshot: false,
+    },
+    docs: {
+      description: {
+        story: 'FilterSidebar in dark mode as it appears on mobile devices.',
       },
     },
   },
   decorators: [
     (Story) => (
       <ProgressProvider>
-        <div className="dark bg-gray-950 p-4 max-w-xs">
+        <div className="w-full max-w-full">
           <Story />
         </div>
       </ProgressProvider>
     ),
+    darkThemeDecorator,
   ],
 };
 
-// 11. With Clear All button visible (when filters applied)
+// ============================================================================
+// ADDITIONAL LIGHT THEME STORIES
+// ============================================================================
+
+// 15. With Clear All button visible (when filters applied)
 export const WithClearAllButton: Story = {
   name: 'Clear All Button Visible',
   args: {
@@ -437,8 +696,6 @@ export const WithClearAllButton: Story = {
     },
   },
 };
-
-// Additional useful stories for comprehensive testing
 
 // Many categories (scrollable list)
 export const ManyCategories: Story = {
@@ -556,6 +813,64 @@ export const HighProblemCounts: Story = {
   },
 };
 
+// ============================================================================
+// ADDITIONAL DARK THEME STORIES
+// ============================================================================
+
+// Many Categories - Dark
+export const ManyCategoriesDark: Story = {
+  ...ManyCategories,
+  name: 'Many Categories (Dark)',
+  decorators: [
+    (Story) => (
+      <ProgressProvider>
+        <div className="max-w-xs">
+          <Story />
+        </div>
+      </ProgressProvider>
+    ),
+    darkThemeDecorator,
+  ],
+  parameters: {
+    ...ManyCategories.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'FilterSidebar in dark mode with many categories, demonstrating the scrollable category list.',
+      },
+    },
+  },
+};
+
+// High Problem Counts - Dark
+export const HighProblemCountsDark: Story = {
+  ...HighProblemCounts,
+  name: 'High Problem Counts (Dark)',
+  decorators: [
+    (Story) => (
+      <ProgressProvider>
+        <div className="max-w-xs">
+          <Story />
+        </div>
+      </ProgressProvider>
+    ),
+    darkThemeDecorator,
+  ],
+  parameters: {
+    ...HighProblemCounts.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'FilterSidebar in dark mode with high problem counts to test number display.',
+      },
+    },
+  },
+};
+
+// ============================================================================
+// INTERACTIVE & CHROMATIC STORIES
+// ============================================================================
+
 // Interactive playground
 export const Playground: Story = {
   name: 'Interactive Playground',
@@ -578,7 +893,18 @@ export const ChromaticLightMode: Story = {
     selectedDifficulty: 'medium',
     selectedStatus: 'solved',
   },
+  decorators: [
+    (Story) => (
+      <ProgressProvider>
+        <div className="max-w-xs">
+          <Story />
+        </div>
+      </ProgressProvider>
+    ),
+    lightThemeDecorator,
+  ],
   parameters: {
+    backgrounds: { default: 'light' },
     chromatic: {
       viewports: [375, 768, 1280],
       disableSnapshot: false,
@@ -593,20 +919,22 @@ export const ChromaticDarkMode: Story = {
     selectedDifficulty: 'hard',
     selectedCategory: 'Optional Chaining',
   },
+  decorators: [
+    (Story) => (
+      <ProgressProvider>
+        <div className="max-w-xs">
+          <Story />
+        </div>
+      </ProgressProvider>
+    ),
+    darkThemeDecorator,
+  ],
   parameters: {
+    backgrounds: { default: 'dark' },
     chromatic: {
       viewports: [375, 768, 1280],
       disableSnapshot: false,
       delay: 300,
     },
   },
-  decorators: [
-    (Story) => (
-      <ProgressProvider>
-        <div className="dark bg-gray-950 p-4 max-w-xs">
-          <Story />
-        </div>
-      </ProgressProvider>
-    ),
-  ],
 };

@@ -89,20 +89,21 @@ export const problem: Problem = {
     },
   ],
   starterCode: `// TODO: Add a specified number of days to a date
-// Return a NEW Date object (don't mutate the original)
+// Return a timestamp (don't mutate the original date)
 function addDays(date, days) {
   // Example: addDays(new Date(2024, 0, 15), 30)
-  // Should return a new Date for February 14, 2024
+  // Should return timestamp for February 14, 2024
 
-  return date;
+  return 0;
 }
 
 // TODO: Subtract days from a date
+// Return a timestamp (don't mutate the original date)
 function subtractDays(date, days) {
   // Example: subtractDays(new Date(2024, 0, 15), 20)
-  // Should return December 26, 2023
+  // Should return timestamp for December 26, 2023
 
-  return date;
+  return 0;
 }
 
 // TODO: Calculate the number of days between two dates
@@ -114,12 +115,13 @@ function daysBetween(date1, date2) {
 }
 
 // TODO: Add months to a date (handle edge cases!)
+// Return a timestamp (don't mutate the original date)
 function addMonths(date, months) {
   // Example: addMonths(new Date(2024, 0, 31), 1)
-  // January 31 + 1 month should be February 29, 2024 (leap year)
+  // Should return timestamp for February 29, 2024 (leap year)
   // NOT March 2! Handle month-end overflow properly.
 
-  return date;
+  return 0;
 }
 
 // TODO: Check if date1 is before date2
@@ -139,11 +141,12 @@ function isSameDay(date1, date2) {
 }
 
 // TODO: Get the start of the day (midnight) for a date
+// Return a timestamp for the beginning of that day
 function startOfDay(date) {
   // Example: startOfDay(new Date(2024, 0, 15, 14, 30, 45))
-  // Should return January 15, 2024 00:00:00.000
+  // Should return timestamp for January 15, 2024 00:00:00.000
 
-  return date;
+  return 0;
 }
 
 // Test
@@ -156,13 +159,15 @@ console.log(isSameDay(new Date(2024, 0, 15, 10, 30), new Date(2024, 0, 15, 22, 4
   solution: `function addDays(date, days) {
   const result = new Date(date);  // Clone to avoid mutation
   result.setDate(result.getDate() + days);
-  return result;
+  // Returns timestamp for easy comparison in tests
+  return result.getTime();
 }
 
 function subtractDays(date, days) {
   const result = new Date(date);
   result.setDate(result.getDate() - days);
-  return result;
+  // Returns timestamp for easy comparison in tests
+  return result.getTime();
 }
 
 function daysBetween(date1, date2) {
@@ -185,7 +190,8 @@ function addMonths(date, months) {
     result.setDate(0);  // Sets to last day of previous month
   }
 
-  return result;
+  // Returns timestamp for easy comparison in tests
+  return result.getTime();
 }
 
 function isBefore(date1, date2) {
@@ -201,7 +207,8 @@ function isSameDay(date1, date2) {
 function startOfDay(date) {
   const result = new Date(date);
   result.setHours(0, 0, 0, 0);
-  return result;
+  // Returns timestamp for easy comparison in tests
+  return result.getTime();
 }`,
   testCases: [
     {
@@ -258,6 +265,11 @@ function startOfDay(date) {
       input: [new Date(2024, 0, 15, 23, 59), new Date(2024, 0, 16, 0, 1)],
       expectedOutput: false,
       description: 'isSameDay: Different days (just after midnight) returns false',
+    },
+    {
+      input: [new Date(2024, 0, 15, 14, 30, 45)],
+      expectedOutput: new Date(2024, 0, 15, 0, 0, 0, 0).getTime(),
+      description: 'startOfDay: Returns timestamp for midnight of the same day',
     },
   ],
   hints: [

@@ -319,7 +319,7 @@ test.describe('Problem Detail Page - Run Tests Button', () => {
     const hasFailedMessage = await page.getByText(/Some tests failed/i).isVisible().catch(() => false);
     const hasError = await page.locator('.bg-red-50, .bg-red-900\\/20').first().isVisible().catch(() => false);
     const hasTestCase = await page.getByText(/Test Case \d+/i).first().isVisible().catch(() => false);
-    const noResultsGone = !(await page.getByText(/No test results yet/i).isVisible().catch(() => true));
+    const noResultsGone = !(await page.getByText(/No test results yet/i).isVisible().catch(() => false));
 
     expect(hasPassedMessage || hasFailedMessage || hasError || hasTestCase || noResultsGone).toBeTruthy();
   });
@@ -639,8 +639,9 @@ test.describe('Problem Detail Page - Solved Badge', () => {
     // We just verify the test runs without error
     const isVisible = await solvedBadge.isVisible().catch(() => false);
 
-    // This test documents current behavior
-    expect(typeof isVisible).toBe('boolean');
+    // This test verifies the badge can be queried without error
+    // The badge visibility depends on localStorage state (if problem was previously solved)
+    expect(isVisible === true || isVisible === false).toBeTruthy();
   });
 
   test('Solved badge should have checkmark icon', async ({ page }) => {
@@ -670,8 +671,8 @@ test.describe('Problem Detail Page - Previous/Next Navigation', () => {
     const prevLink = page.locator('a').filter({ hasText: /Previous/i });
     const hasPrev = await prevLink.isVisible().catch(() => false);
 
-    // Either has previous or is the first problem
-    expect(typeof hasPrev).toBe('boolean');
+    // array-chaining is not the first problem, so Previous link should be visible
+    expect(hasPrev).toBeTruthy();
   });
 
   test('should display Next problem link when not on last problem', async ({ page }) => {
@@ -681,7 +682,8 @@ test.describe('Problem Detail Page - Previous/Next Navigation', () => {
     const nextLink = page.locator('a').filter({ hasText: /Next/i });
     const hasNext = await nextLink.isVisible().catch(() => false);
 
-    expect(hasNext || true).toBeTruthy(); // Should have next or be last problem
+    // abort-controller is not the last problem, so Next link should be visible
+    expect(hasNext).toBeTruthy();
   });
 
   test('should navigate to previous problem when clicking Previous', async ({ page }) => {

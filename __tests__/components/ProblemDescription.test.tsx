@@ -3,11 +3,6 @@ import userEvent from '@testing-library/user-event';
 import ProblemDescription from '@/components/ProblemDescription';
 import type { Problem } from '@/lib/problems';
 
-// Mock html-react-parser to avoid issues with HTML parsing in tests
-jest.mock('html-react-parser', () => {
-  return jest.fn((html: string) => html);
-});
-
 // Helper to create a complete mock problem
 function createMockProblem(overrides: Partial<Problem> = {}): Problem {
   return {
@@ -53,7 +48,7 @@ describe('ProblemDescription', () => {
       const problem = createMockProblem({ difficulty: 'easy' });
       render(<ProblemDescription problem={problem} />);
 
-      const badge = screen.getByText('EASY');
+      const badge = screen.getByText('easy');
       expect(badge).toBeInTheDocument();
       expect(badge).toHaveClass('bg-green-100', 'text-green-800');
     });
@@ -62,7 +57,7 @@ describe('ProblemDescription', () => {
       const problem = createMockProblem({ difficulty: 'medium' });
       render(<ProblemDescription problem={problem} />);
 
-      const badge = screen.getByText('MEDIUM');
+      const badge = screen.getByText('medium');
       expect(badge).toBeInTheDocument();
       expect(badge).toHaveClass('bg-yellow-100', 'text-yellow-800');
     });
@@ -71,13 +66,49 @@ describe('ProblemDescription', () => {
       const problem = createMockProblem({ difficulty: 'hard' });
       render(<ProblemDescription problem={problem} />);
 
-      const badge = screen.getByText('HARD');
+      const badge = screen.getByText('hard');
       expect(badge).toBeInTheDocument();
       expect(badge).toHaveClass('bg-red-100', 'text-red-800');
     });
   });
 
-  describe('Description', () => {
+  describe('Tabs', () => {
+    it('renders three tabs: Description, Examples, Hints', () => {
+      const problem = createMockProblem();
+      render(<ProblemDescription problem={problem} />);
+
+      expect(screen.getByRole('button', { name: /Description/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Examples/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Hints/i })).toBeInTheDocument();
+    });
+
+    it('shows Description tab content by default', () => {
+      const problem = createMockProblem({
+        description: '<p>Default visible description</p>',
+      });
+      render(<ProblemDescription problem={problem} />);
+
+      // Description should be visible by default
+      expect(screen.getByText(/Default visible description/)).toBeInTheDocument();
+    });
+
+    it('shows counts on Examples and Hints tabs', () => {
+      const problem = createMockProblem({
+        examples: [
+          { input: 'a', output: 'b' },
+          { input: 'c', output: 'd' },
+        ],
+        hints: ['hint1', 'hint2', 'hint3'],
+      });
+      render(<ProblemDescription problem={problem} />);
+
+      // Check that counts are displayed
+      expect(screen.getByText('2')).toBeInTheDocument(); // Examples count
+      expect(screen.getByText('3')).toBeInTheDocument(); // Hints count
+    });
+  });
+
+  describe('Description Tab', () => {
     it('renders the problem description', () => {
       const problem = createMockProblem({
         description: '<p>Solve this problem by implementing a function.</p>',
@@ -85,7 +116,7 @@ describe('ProblemDescription', () => {
       render(<ProblemDescription problem={problem} />);
 
       expect(
-        screen.getByText('<p>Solve this problem by implementing a function.</p>')
+        screen.getByText(/Solve this problem by implementing a function/)
       ).toBeInTheDocument();
     });
 
@@ -98,8 +129,9 @@ describe('ProblemDescription', () => {
     });
   });
 
-  describe('Examples Section', () => {
-    it('renders examples section when examples exist', () => {
+  describe('Examples Tab', () => {
+    it('renders examples when Examples tab is clicked', async () => {
+      const user = userEvent.setup();
       const problem = createMockProblem({
         examples: [
           { input: 'input1', output: 'output1' },
@@ -108,23 +140,33 @@ describe('ProblemDescription', () => {
       });
       render(<ProblemDescription problem={problem} />);
 
-      expect(screen.getByRole('heading', { name: /Examples/i })).toBeInTheDocument();
+      // Click the Examples tab
+      await user.click(screen.getByRole('button', { name: /Examples/i }));
+
       expect(screen.getByText('Example 1:')).toBeInTheDocument();
       expect(screen.getByText('Example 2:')).toBeInTheDocument();
     });
 
-    it('does not render examples section when examples array is empty', () => {
+    it('shows "No examples available" message when examples array is empty', async () => {
+      const user = userEvent.setup();
       const problem = createMockProblem({ examples: [] });
       render(<ProblemDescription problem={problem} />);
 
-      expect(screen.queryByRole('heading', { name: /Examples/i })).not.toBeInTheDocument();
+      // Click the Examples tab
+      await user.click(screen.getByRole('button', { name: /Examples/i }));
+
+      expect(screen.getByText('No examples available.')).toBeInTheDocument();
     });
 
-    it('renders input and output for each example', () => {
+    it('renders input and output for each example', async () => {
+      const user = userEvent.setup();
       const problem = createMockProblem({
         examples: [{ input: '[1, 2, 3]', output: '6' }],
       });
       render(<ProblemDescription problem={problem} />);
+
+      // Click the Examples tab
+      await user.click(screen.getByRole('button', { name: /Examples/i }));
 
       expect(screen.getByText('Input:')).toBeInTheDocument();
       expect(screen.getByText('[1, 2, 3]')).toBeInTheDocument();
@@ -132,7 +174,8 @@ describe('ProblemDescription', () => {
       expect(screen.getByText('6')).toBeInTheDocument();
     });
 
-    it('renders explanation when provided', () => {
+    it('renders explanation when provided', async () => {
+      const user = userEvent.setup();
       const problem = createMockProblem({
         examples: [
           {
@@ -144,10 +187,14 @@ describe('ProblemDescription', () => {
       });
       render(<ProblemDescription problem={problem} />);
 
+      // Click the Examples tab
+      await user.click(screen.getByRole('button', { name: /Examples/i }));
+
       expect(screen.getByText('Because this is how it works')).toBeInTheDocument();
     });
 
-    it('does not render explanation when not provided', () => {
+    it('does not render explanation when not provided', async () => {
+      const user = userEvent.setup();
       const problem = createMockProblem({
         examples: [
           {
@@ -159,12 +206,16 @@ describe('ProblemDescription', () => {
       });
       render(<ProblemDescription problem={problem} />);
 
+      // Click the Examples tab
+      await user.click(screen.getByRole('button', { name: /Examples/i }));
+
       // There should be no italic text for explanation
       const italicElements = screen.queryAllByText(/.*/, { selector: '.italic' });
       expect(italicElements.length).toBe(0);
     });
 
-    it('renders multiple examples with correct numbering', () => {
+    it('renders multiple examples with correct numbering', async () => {
+      const user = userEvent.setup();
       const problem = createMockProblem({
         examples: [
           { input: 'a', output: '1' },
@@ -174,68 +225,106 @@ describe('ProblemDescription', () => {
       });
       render(<ProblemDescription problem={problem} />);
 
+      // Click the Examples tab
+      await user.click(screen.getByRole('button', { name: /Examples/i }));
+
       expect(screen.getByText('Example 1:')).toBeInTheDocument();
       expect(screen.getByText('Example 2:')).toBeInTheDocument();
       expect(screen.getByText('Example 3:')).toBeInTheDocument();
     });
   });
 
-  describe('Hints Section', () => {
-    it('renders hints section when hints exist', () => {
+  describe('Hints Tab', () => {
+    it('renders hints when Hints tab is clicked', async () => {
+      const user = userEvent.setup();
       const problem = createMockProblem({
         hints: ['First hint', 'Second hint'],
       });
       render(<ProblemDescription problem={problem} />);
 
-      expect(screen.getByText('Hints')).toBeInTheDocument();
+      // Click the Hints tab
+      await user.click(screen.getByRole('button', { name: /Hints/i }));
+
+      expect(screen.getByText('First hint')).toBeInTheDocument();
+      expect(screen.getByText('Second hint')).toBeInTheDocument();
     });
 
-    it('does not render hints section when hints array is empty', () => {
+    it('shows "No hints available" message when hints array is empty', async () => {
+      const user = userEvent.setup();
       const problem = createMockProblem({ hints: [] });
       render(<ProblemDescription problem={problem} />);
 
-      expect(screen.queryByText('Hints')).not.toBeInTheDocument();
+      // Click the Hints tab
+      await user.click(screen.getByRole('button', { name: /Hints/i }));
+
+      expect(screen.getByText('No hints available.')).toBeInTheDocument();
     });
 
-    it('renders all hints as list items', () => {
+    it('renders all hints as list items', async () => {
+      const user = userEvent.setup();
       const problem = createMockProblem({
         hints: ['Use Array.reduce()', 'Consider edge cases', 'Think about time complexity'],
       });
       render(<ProblemDescription problem={problem} />);
+
+      // Click the Hints tab
+      await user.click(screen.getByRole('button', { name: /Hints/i }));
 
       expect(screen.getByText('Use Array.reduce()')).toBeInTheDocument();
       expect(screen.getByText('Consider edge cases')).toBeInTheDocument();
       expect(screen.getByText('Think about time complexity')).toBeInTheDocument();
     });
 
-    it('hints are inside a details/summary element for collapsibility', () => {
+    it('hints are rendered in a list', async () => {
+      const user = userEvent.setup();
       const problem = createMockProblem({
         hints: ['A hint'],
       });
       const { container } = render(<ProblemDescription problem={problem} />);
 
-      const details = container.querySelector('details');
-      expect(details).toBeInTheDocument();
+      // Click the Hints tab
+      await user.click(screen.getByRole('button', { name: /Hints/i }));
 
-      const summary = container.querySelector('summary');
-      expect(summary).toBeInTheDocument();
-      expect(summary).toHaveTextContent('Hints');
+      const list = container.querySelector('ul');
+      expect(list).toBeInTheDocument();
+
+      const listItems = container.querySelectorAll('li');
+      expect(listItems.length).toBe(1);
     });
+  });
 
-    it('hints section can be expanded via user interaction', async () => {
+  describe('Tab Navigation', () => {
+    it('switches between tabs correctly', async () => {
       const user = userEvent.setup();
       const problem = createMockProblem({
-        hints: ['Hidden hint content'],
+        description: '<p>Description content</p>',
+        examples: [{ input: 'test', output: 'result' }],
+        hints: ['A helpful hint'],
       });
-      const { container } = render(<ProblemDescription problem={problem} />);
+      render(<ProblemDescription problem={problem} />);
 
-      const details = container.querySelector('details') as HTMLDetailsElement;
-      expect(details).not.toHaveAttribute('open');
+      // Initially on Description tab
+      expect(screen.getByText(/Description content/)).toBeInTheDocument();
+      expect(screen.queryByText('Example 1:')).not.toBeInTheDocument();
+      expect(screen.queryByText('A helpful hint')).not.toBeInTheDocument();
 
-      const summary = screen.getByText('Hints');
-      await user.click(summary);
+      // Switch to Examples tab
+      await user.click(screen.getByRole('button', { name: /Examples/i }));
+      expect(screen.queryByText(/Description content/)).not.toBeInTheDocument();
+      expect(screen.getByText('Example 1:')).toBeInTheDocument();
+      expect(screen.queryByText('A helpful hint')).not.toBeInTheDocument();
 
-      expect(details).toHaveAttribute('open');
+      // Switch to Hints tab
+      await user.click(screen.getByRole('button', { name: /Hints/i }));
+      expect(screen.queryByText(/Description content/)).not.toBeInTheDocument();
+      expect(screen.queryByText('Example 1:')).not.toBeInTheDocument();
+      expect(screen.getByText('A helpful hint')).toBeInTheDocument();
+
+      // Switch back to Description tab
+      await user.click(screen.getByRole('button', { name: /Description/i }));
+      expect(screen.getByText(/Description content/)).toBeInTheDocument();
+      expect(screen.queryByText('Example 1:')).not.toBeInTheDocument();
+      expect(screen.queryByText('A helpful hint')).not.toBeInTheDocument();
     });
   });
 
@@ -265,7 +354,8 @@ describe('ProblemDescription', () => {
       expect(screen.getByText(/Test <script> & "quotes"/)).toBeInTheDocument();
     });
 
-    it('handles very long content without breaking layout', () => {
+    it('handles very long content without breaking layout', async () => {
+      const user = userEvent.setup();
       const longText = 'A'.repeat(1000);
       const problem = createMockProblem({
         description: `<p>${longText}</p>`,
@@ -274,6 +364,14 @@ describe('ProblemDescription', () => {
       });
 
       const { container } = render(<ProblemDescription problem={problem} />);
+      expect(container).toBeInTheDocument();
+
+      // Check examples tab with long content
+      await user.click(screen.getByRole('button', { name: /Examples/i }));
+      expect(container).toBeInTheDocument();
+
+      // Check hints tab with long content
+      await user.click(screen.getByRole('button', { name: /Hints/i }));
       expect(container).toBeInTheDocument();
     });
 
@@ -299,27 +397,32 @@ describe('ProblemDescription', () => {
 
       const h1 = screen.getByRole('heading', { level: 1 });
       expect(h1).toBeInTheDocument();
-
-      const h2 = screen.getByRole('heading', { level: 2 });
-      expect(h2).toBeInTheDocument();
     });
 
-    it('hints summary is focusable', () => {
+    it('tab buttons are focusable and clickable', async () => {
+      const user = userEvent.setup();
       const problem = createMockProblem({
         hints: ['A hint'],
       });
-      const { container } = render(<ProblemDescription problem={problem} />);
+      render(<ProblemDescription problem={problem} />);
 
-      const summary = container.querySelector('summary');
-      expect(summary).toBeInTheDocument();
-      // Summary elements are naturally focusable
+      const hintsTab = screen.getByRole('button', { name: /Hints/i });
+      expect(hintsTab).toBeInTheDocument();
+
+      // Click and verify tab switches
+      await user.click(hintsTab);
+      expect(screen.getByText('A hint')).toBeInTheDocument();
     });
 
-    it('code blocks use pre elements for proper semantics', () => {
+    it('code blocks use pre elements for proper semantics', async () => {
+      const user = userEvent.setup();
       const problem = createMockProblem({
         examples: [{ input: 'const x = 1', output: '1' }],
       });
       const { container } = render(<ProblemDescription problem={problem} />);
+
+      // Switch to Examples tab
+      await user.click(screen.getByRole('button', { name: /Examples/i }));
 
       const preElements = container.querySelectorAll('pre');
       expect(preElements.length).toBeGreaterThan(0);

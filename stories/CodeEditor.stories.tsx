@@ -75,6 +75,28 @@ export default meta;
 type Story = StoryObj<typeof CodeEditor>;
 
 // =============================================================================
+// Dark Mode Decorator Helper
+// =============================================================================
+
+/**
+ * Creates a dark mode decorator that applies dark theme to the document
+ * and wraps the story in a dark background container.
+ */
+const darkModeDecorator = (Story: React.ComponentType) => {
+  React.useEffect(() => {
+    document.documentElement.classList.add('dark');
+    return () => document.documentElement.classList.remove('dark');
+  }, []);
+  return (
+    <div className="dark bg-gray-950 min-h-screen p-4">
+      <div style={{ height: '400px', width: '100%' }}>
+        <Story />
+      </div>
+    </div>
+  );
+};
+
+// =============================================================================
 // Basic States
 // =============================================================================
 
@@ -385,8 +407,45 @@ console.log(\`Items in cart: \${cart.itemCount}\`);
 };
 
 // =============================================================================
-// Theme Variants
+// Theme Variants - Light Mode
 // =============================================================================
+
+/**
+ * Light theme variant - shows the editor with VS Light theme.
+ */
+export const LightTheme: Story = {
+  args: {
+    code: `// Light theme example
+interface Config {
+  darkMode: boolean;
+  fontSize: number;
+  fontFamily: string;
+}
+
+const config: Config = {
+  darkMode: false,
+  fontSize: 14,
+  fontFamily: 'Fira Code',
+};
+
+export default config;
+`,
+    language: 'typescript',
+    readOnly: false,
+    onChange: () => {},
+  },
+  globals: {
+    theme: 'light',
+  },
+  parameters: {
+    backgrounds: { default: 'light' },
+    docs: {
+      description: {
+        story: 'Editor with light theme (vs) for bright environments.',
+      },
+    },
+  },
+};
 
 /**
  * Dark theme variant - shows the editor with VS Dark theme.
@@ -425,38 +484,196 @@ export default config;
   },
 };
 
+// =============================================================================
+// Dark Mode Story Variants
+// =============================================================================
+
 /**
- * Light theme variant - shows the editor with VS Light theme.
+ * JavaScript code in dark mode - tests dark theme with JavaScript syntax highlighting.
  */
-export const LightTheme: Story = {
-  args: {
-    code: `// Light theme example
-interface Config {
-  darkMode: boolean;
-  fontSize: number;
-  fontFamily: string;
-}
-
-const config: Config = {
-  darkMode: false,
-  fontSize: 14,
-  fontFamily: 'Fira Code',
-};
-
-export default config;
-`,
-    language: 'typescript',
-    readOnly: false,
-    onChange: () => {},
-  },
-  globals: {
-    theme: 'light',
-  },
+export const WithJavaScriptCode_Dark: Story = {
+  ...WithJavaScriptCode,
+  name: 'JavaScript Code (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen p-4">
+          <div style={{ height: '400px', width: '100%' }}>
+            <Story />
+          </div>
+        </div>
+      );
+    },
+  ],
   parameters: {
-    backgrounds: { default: 'light' },
+    ...WithJavaScriptCode.parameters,
+    backgrounds: { default: 'dark' },
     docs: {
       description: {
-        story: 'Editor with light theme (vs) for bright environments.',
+        story: 'JavaScript code example displayed in dark mode with vs-dark theme.',
+      },
+    },
+  },
+};
+
+/**
+ * TypeScript code in dark mode - tests dark theme with TypeScript syntax highlighting.
+ */
+export const WithTypeScriptCode_Dark: Story = {
+  ...WithTypeScriptCode,
+  name: 'TypeScript Code (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen p-4">
+          <div style={{ height: '400px', width: '100%' }}>
+            <Story />
+          </div>
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...WithTypeScriptCode.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'TypeScript code example displayed in dark mode with vs-dark theme.',
+      },
+    },
+  },
+};
+
+/**
+ * Read-only mode in dark theme - solution display with dark theme styling.
+ */
+export const ReadOnlyMode_Dark: Story = {
+  ...ReadOnlyMode,
+  name: 'Read-Only Mode (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen p-4">
+          <div style={{ height: '400px', width: '100%' }}>
+            <Story />
+          </div>
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...ReadOnlyMode.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Read-only solution display in dark mode. The editor cannot be modified by the user.',
+      },
+    },
+  },
+};
+
+/**
+ * Long code with scrolling in dark mode - tests scrolling behavior with dark theme.
+ */
+export const LongCodeWithScrolling_Dark: Story = {
+  ...LongCodeWithScrolling,
+  name: 'Long Code with Scrolling (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen p-4">
+          <div style={{ height: '400px', width: '100%' }}>
+            <Story />
+          </div>
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...LongCodeWithScrolling.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Long code example with scrolling in dark mode. Tests scrollbar visibility and behavior in dark theme.',
+      },
+    },
+  },
+};
+
+/**
+ * Empty editor in dark mode - initial state with dark theme.
+ */
+export const Empty_Dark: Story = {
+  ...Empty,
+  name: 'Empty Editor (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen p-4">
+          <div style={{ height: '400px', width: '100%' }}>
+            <Story />
+          </div>
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Empty editor in dark mode - the initial state when starting fresh.',
+      },
+    },
+  },
+};
+
+/**
+ * Syntax errors in dark mode - error highlighting visibility in dark theme.
+ */
+export const WithSyntaxErrors_Dark: Story = {
+  ...WithSyntaxErrors,
+  name: 'Syntax Errors (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen p-4">
+          <div style={{ height: '400px', width: '100%' }}>
+            <Story />
+          </div>
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...WithSyntaxErrors.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Syntax errors displayed in dark mode. Tests visibility of error highlighting and gutter markers.',
       },
     },
   },
@@ -504,6 +721,40 @@ console.log(greeting);
       );
     },
   ],
+};
+
+/**
+ * Mobile viewport in dark mode - responsive behavior with dark theme.
+ */
+export const MobileViewport_Dark: Story = {
+  ...MobileViewport,
+  name: 'Mobile Viewport (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 p-4">
+          <ThemeProvider>
+            <div style={{ height: '300px', width: '320px' }}>
+              <Story />
+            </div>
+          </ThemeProvider>
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...MobileViewport.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Editor on a mobile viewport in dark mode to test responsive behavior.',
+      },
+    },
+  },
 };
 
 // =============================================================================
@@ -827,6 +1078,138 @@ console.log(temp.fahrenheit); // 212
 };
 
 // =============================================================================
+// Code Pattern Examples - Dark Mode Variants
+// =============================================================================
+
+/**
+ * Destructuring example in dark mode.
+ */
+export const DestructuringExample_Dark: Story = {
+  ...DestructuringExample,
+  name: 'Destructuring Example (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen p-4">
+          <div style={{ height: '400px', width: '100%' }}>
+            <Story />
+          </div>
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...DestructuringExample.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Object and array destructuring patterns displayed in dark mode.',
+      },
+    },
+  },
+};
+
+/**
+ * Arrow function example in dark mode.
+ */
+export const ArrowFunctionExample_Dark: Story = {
+  ...ArrowFunctionExample,
+  name: 'Arrow Function Example (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen p-4">
+          <div style={{ height: '400px', width: '100%' }}>
+            <Story />
+          </div>
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...ArrowFunctionExample.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Arrow function patterns and use cases displayed in dark mode.',
+      },
+    },
+  },
+};
+
+/**
+ * Async/await example in dark mode.
+ */
+export const AsyncAwaitExample_Dark: Story = {
+  ...AsyncAwaitExample,
+  name: 'Async/Await Example (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen p-4">
+          <div style={{ height: '400px', width: '100%' }}>
+            <Story />
+          </div>
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...AsyncAwaitExample.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Async/await patterns for asynchronous programming displayed in dark mode.',
+      },
+    },
+  },
+};
+
+/**
+ * Class example in dark mode.
+ */
+export const ClassExample_Dark: Story = {
+  ...ClassExample,
+  name: 'Class Example (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen p-4">
+          <div style={{ height: '400px', width: '100%' }}>
+            <Story />
+          </div>
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...ClassExample.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'TypeScript class patterns including inheritance and static members displayed in dark mode.',
+      },
+    },
+  },
+};
+
+// =============================================================================
 // Chromatic-Specific Stories
 // =============================================================================
 
@@ -869,6 +1252,38 @@ runVisualTest(config);
     docs: {
       description: {
         story: 'This story is specifically configured for Chromatic visual regression testing with multiple viewports and theme modes.',
+      },
+    },
+  },
+};
+
+/**
+ * Chromatic visual test in dark mode.
+ */
+export const ChromaticTest_Dark: Story = {
+  ...ChromaticTest,
+  name: 'Chromatic Test (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen p-4">
+          <div style={{ height: '400px', width: '100%' }}>
+            <Story />
+          </div>
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...ChromaticTest.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Chromatic visual regression testing in dark mode with multiple viewports.',
       },
     },
   },

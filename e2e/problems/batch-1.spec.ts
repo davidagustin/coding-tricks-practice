@@ -84,7 +84,7 @@ test.describe('Problems Batch 1 - Page Load and Editor Tests', () => {
         const noResultsGone = !(await page
           .getByText(/No test results yet/i)
           .isVisible()
-          .catch(() => true));
+          .catch(() => false));
 
         // At least one of these should be true (tests ran and produced some output)
         expect(

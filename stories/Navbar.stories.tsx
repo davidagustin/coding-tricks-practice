@@ -104,54 +104,315 @@ const meta: Meta<typeof Navbar> = {
 export default meta;
 type Story = StoryObj<typeof Navbar>;
 
+// ============================================================================
+// LIGHT MODE STORIES
+// ============================================================================
+
 /**
- * Default state with no problems solved.
+ * Default state with no problems solved (Light Mode).
  * Shows the initial state of the navbar when a user first visits.
  */
 export const Default: Story = {
+  name: 'Default (Light)',
   parameters: {
     nextjs: {
       navigation: {
         pathname: '/',
       },
     },
+    backgrounds: { default: 'light' },
   },
   decorators: [
-    (Story) => (
-      <CombinedProviders progressValue={{ solvedCount: 0, totalProblems: 20, streak: 0 }}>
-        <Story />
-      </CombinedProviders>
-    ),
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.remove('dark');
+        return () => {};
+      }, []);
+      return (
+        <div className="bg-white min-h-screen">
+          <CombinedProviders progressValue={{ solvedCount: 0, totalProblems: 20, streak: 0 }} theme="light">
+            <Story />
+          </CombinedProviders>
+        </div>
+      );
+    },
   ],
 };
 
 /**
- * Progress state showing some problems solved.
- * Demonstrates the solved count display with partial progress (5/20).
+ * Default state with no problems solved (Dark Mode).
+ * Shows the initial state of the navbar when a user first visits in dark mode.
  */
-export const WithProgress: Story = {
+export const DefaultDark: Story = {
+  name: 'Default (Dark)',
   parameters: {
     nextjs: {
       navigation: {
         pathname: '/',
       },
     },
+    backgrounds: { default: 'dark' },
   },
   decorators: [
-    (Story) => (
-      <CombinedProviders
-        progressValue={{
-          solvedCount: 5,
-          totalProblems: 20,
-          streak: 0,
-          solvedProblems: new Set(['problem-1', 'problem-2', 'problem-3', 'problem-4', 'problem-5']),
-        }}
-      >
-        <Story />
-      </CombinedProviders>
-    ),
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen">
+          <CombinedProviders progressValue={{ solvedCount: 0, totalProblems: 20, streak: 0 }} theme="dark">
+            <Story />
+          </CombinedProviders>
+        </div>
+      );
+    },
   ],
 };
+
+/**
+ * Progress state showing some problems solved (Light Mode).
+ * Demonstrates the solved count display with partial progress (5/20).
+ */
+export const WithProgress: Story = {
+  name: 'With Progress (Light)',
+  parameters: {
+    nextjs: {
+      navigation: {
+        pathname: '/',
+      },
+    },
+    backgrounds: { default: 'light' },
+  },
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.remove('dark');
+        return () => {};
+      }, []);
+      return (
+        <div className="bg-white min-h-screen">
+          <CombinedProviders
+            progressValue={{
+              solvedCount: 5,
+              totalProblems: 20,
+              streak: 0,
+              solvedProblems: new Set(['problem-1', 'problem-2', 'problem-3', 'problem-4', 'problem-5']),
+            }}
+            theme="light"
+          >
+            <Story />
+          </CombinedProviders>
+        </div>
+      );
+    },
+  ],
+};
+
+/**
+ * Progress state showing some problems solved (Dark Mode).
+ * Demonstrates the solved count display with partial progress (5/20) in dark mode.
+ */
+export const WithProgressDark: Story = {
+  name: 'With Progress (Dark)',
+  parameters: {
+    nextjs: {
+      navigation: {
+        pathname: '/',
+      },
+    },
+    backgrounds: { default: 'dark' },
+  },
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen">
+          <CombinedProviders
+            progressValue={{
+              solvedCount: 5,
+              totalProblems: 20,
+              streak: 0,
+              solvedProblems: new Set(['problem-1', 'problem-2', 'problem-3', 'problem-4', 'problem-5']),
+            }}
+            theme="dark"
+          >
+            <Story />
+          </CombinedProviders>
+        </div>
+      );
+    },
+  ],
+};
+
+/**
+ * With active streak showing (Light Mode).
+ * Demonstrates the streak counter with a 7-day streak.
+ */
+export const WithStreak: Story = {
+  name: 'With Streak (Light)',
+  parameters: {
+    nextjs: {
+      navigation: {
+        pathname: '/',
+      },
+    },
+    backgrounds: { default: 'light' },
+  },
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.remove('dark');
+        return () => {};
+      }, []);
+      return (
+        <div className="bg-white min-h-screen">
+          <CombinedProviders
+            progressValue={{
+              solvedCount: 12,
+              totalProblems: 20,
+              streak: 7,
+              lastSolvedDate: new Date().toISOString().split('T')[0],
+            }}
+            theme="light"
+          >
+            <Story />
+          </CombinedProviders>
+        </div>
+      );
+    },
+  ],
+};
+
+/**
+ * With active streak showing (Dark Mode).
+ * Demonstrates the streak counter with a 7-day streak in dark mode.
+ */
+export const WithStreakDark: Story = {
+  name: 'With Streak (Dark)',
+  parameters: {
+    nextjs: {
+      navigation: {
+        pathname: '/',
+      },
+    },
+    backgrounds: { default: 'dark' },
+  },
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen">
+          <CombinedProviders
+            progressValue={{
+              solvedCount: 12,
+              totalProblems: 20,
+              streak: 7,
+              lastSolvedDate: new Date().toISOString().split('T')[0],
+            }}
+            theme="dark"
+          >
+            <Story />
+          </CombinedProviders>
+        </div>
+      );
+    },
+  ],
+};
+
+/**
+ * Mobile viewport version (Light Mode).
+ * Tests the responsive design on small screens (320px width).
+ */
+export const Mobile: Story = {
+  name: 'Mobile (Light)',
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [320] },
+    nextjs: {
+      navigation: {
+        pathname: '/',
+      },
+    },
+    backgrounds: { default: 'light' },
+  },
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.remove('dark');
+        return () => {};
+      }, []);
+      return (
+        <div className="bg-white min-h-screen">
+          <CombinedProviders
+            progressValue={{
+              solvedCount: 8,
+              totalProblems: 20,
+              streak: 3,
+            }}
+            theme="light"
+          >
+            <Story />
+          </CombinedProviders>
+        </div>
+      );
+    },
+  ],
+};
+
+/**
+ * Mobile viewport version (Dark Mode).
+ * Tests the responsive design on small screens (320px width) in dark mode.
+ */
+export const MobileDark: Story = {
+  name: 'Mobile (Dark)',
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [320] },
+    nextjs: {
+      navigation: {
+        pathname: '/',
+      },
+    },
+    backgrounds: { default: 'dark' },
+  },
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen">
+          <CombinedProviders
+            progressValue={{
+              solvedCount: 8,
+              totalProblems: 20,
+              streak: 3,
+            }}
+            theme="dark"
+          >
+            <Story />
+          </CombinedProviders>
+        </div>
+      );
+    },
+  ],
+};
+
+// ============================================================================
+// ADDITIONAL STORIES
+// ============================================================================
 
 /**
  * All problems completed state.
@@ -172,34 +433,6 @@ export const AllProblemsSolved: Story = {
           solvedCount: 20,
           totalProblems: 20,
           streak: 7,
-        }}
-      >
-        <Story />
-      </CombinedProviders>
-    ),
-  ],
-};
-
-/**
- * With active streak showing.
- * Demonstrates the streak counter with a 7-day streak.
- */
-export const WithStreak: Story = {
-  parameters: {
-    nextjs: {
-      navigation: {
-        pathname: '/',
-      },
-    },
-  },
-  decorators: [
-    (Story) => (
-      <CombinedProviders
-        progressValue={{
-          solvedCount: 12,
-          totalProblems: 20,
-          streak: 7,
-          lastSolvedDate: new Date().toISOString().split('T')[0],
         }}
       >
         <Story />
@@ -237,38 +470,6 @@ export const HighStreak: Story = {
 };
 
 /**
- * Mobile viewport version.
- * Tests the responsive design on small screens (320px width).
- * Note: The logo text is hidden on mobile, progress stats are also hidden.
- */
-export const Mobile: Story = {
-  parameters: {
-    viewport: {
-      defaultViewport: 'mobile1',
-    },
-    chromatic: { viewports: [320] },
-    nextjs: {
-      navigation: {
-        pathname: '/',
-      },
-    },
-  },
-  decorators: [
-    (Story) => (
-      <CombinedProviders
-        progressValue={{
-          solvedCount: 8,
-          totalProblems: 20,
-          streak: 3,
-        }}
-      >
-        <Story />
-      </CombinedProviders>
-    ),
-  ],
-};
-
-/**
  * Tablet viewport version.
  * Tests the responsive design on tablet screens (768px width).
  */
@@ -292,38 +493,6 @@ export const Tablet: Story = {
           totalProblems: 20,
           streak: 3,
         }}
-      >
-        <Story />
-      </CombinedProviders>
-    ),
-  ],
-};
-
-/**
- * Dark theme variant.
- * Tests the navbar appearance in dark mode.
- */
-export const DarkTheme: Story = {
-  parameters: {
-    backgrounds: { default: 'dark' },
-    nextjs: {
-      navigation: {
-        pathname: '/',
-      },
-    },
-  },
-  globals: {
-    theme: 'dark',
-  },
-  decorators: [
-    (Story) => (
-      <CombinedProviders
-        progressValue={{
-          solvedCount: 10,
-          totalProblems: 20,
-          streak: 5,
-        }}
-        theme="dark"
       >
         <Story />
       </CombinedProviders>
@@ -417,6 +586,7 @@ export const ActiveProblemDetail: Story = {
  * Combines dark theme with active state on Problems page.
  */
 export const DarkThemeActiveProblems: Story = {
+  name: 'Active Problems (Dark)',
   parameters: {
     backgrounds: { default: 'dark' },
     nextjs: {
@@ -425,58 +595,27 @@ export const DarkThemeActiveProblems: Story = {
       },
     },
   },
-  globals: {
-    theme: 'dark',
-  },
   decorators: [
-    (Story) => (
-      <CombinedProviders
-        progressValue={{
-          solvedCount: 15,
-          totalProblems: 20,
-          streak: 14,
-        }}
-        theme="dark"
-      >
-        <Story />
-      </CombinedProviders>
-    ),
-  ],
-};
-
-/**
- * Mobile with dark theme.
- * Tests mobile layout in dark mode.
- */
-export const MobileDark: Story = {
-  parameters: {
-    viewport: {
-      defaultViewport: 'mobile1',
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen">
+          <CombinedProviders
+            progressValue={{
+              solvedCount: 15,
+              totalProblems: 20,
+              streak: 14,
+            }}
+            theme="dark"
+          >
+            <Story />
+          </CombinedProviders>
+        </div>
+      );
     },
-    backgrounds: { default: 'dark' },
-    chromatic: { viewports: [320] },
-    nextjs: {
-      navigation: {
-        pathname: '/',
-      },
-    },
-  },
-  globals: {
-    theme: 'dark',
-  },
-  decorators: [
-    (Story) => (
-      <CombinedProviders
-        progressValue={{
-          solvedCount: 8,
-          totalProblems: 20,
-          streak: 3,
-        }}
-        theme="dark"
-      >
-        <Story />
-      </CombinedProviders>
-    ),
   ],
 };
 

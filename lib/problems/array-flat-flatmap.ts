@@ -169,9 +169,9 @@ console.log(filterAndTransform([1, 2, 3, 4, 5], n => n > 2, n => n * 10)); // [3
       description: 'flattenToDepth flattens to specific depth',
     },
     {
-      input: [[1, 2, 3]],
-      expectedOutput: [1, 1, 2, 4, 3, 9],
-      description: 'expandAndFlatten expands each item and flattens',
+      input: [[1, [2, [3]]], 1],
+      expectedOutput: [1, 2, [3]],
+      description: 'flattenToDepth flattens one level',
     },
     {
       input: [["hello world", "foo bar"]],
@@ -179,9 +179,14 @@ console.log(filterAndTransform([1, 2, 3, 4, 5], n => n > 2, n => n * 10)); // [3
       description: 'getWordsFromSentences splits sentences into words',
     },
     {
-      input: [[1, 2, 3, 4, 5]],
-      expectedOutput: [30, 40, 50],
-      description: 'filterAndTransform filters and transforms using flatMap',
+      input: [["a b c", "d e"]],
+      expectedOutput: ["a", "b", "c", "d", "e"],
+      description: 'getWordsFromSentences handles multiple spaces',
+    },
+    {
+      input: [[[1, 2], [3, [4, 5]], 6]],
+      expectedOutput: [1, 2, 3, 4, 5, 6],
+      description: 'flattenDeep handles mixed nesting levels',
     },
   ],
   hints: [

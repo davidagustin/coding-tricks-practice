@@ -741,3 +741,301 @@ export const Playground: Story = {
     },
   },
 };
+
+// =============================================================================
+// DARK THEME STORY VARIANTS
+// =============================================================================
+// These stories explicitly test dark mode rendering with proper document class
+// and dark background styling.
+
+// Dark Theme: Multiple Problems (Mixed Difficulties)
+export const MultipleProblems_Dark: Story = {
+  ...MultipleProblems,
+  name: 'Multiple Problems (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen p-4">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Dark theme variant showing multiple problems with mixed difficulties. Demonstrates dark table background, light text, and colored difficulty badges (green/yellow/red) visible on dark background.',
+      },
+    },
+  },
+};
+
+// Dark Theme: All Solved Problems
+export const AllSolved_Dark: Story = {
+  ...AllSolved,
+  name: 'All Solved (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen p-4">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Dark theme variant showing all problems as solved with green checkmarks. Verifies checkmark visibility on dark background.',
+      },
+    },
+  },
+};
+
+// Dark Theme: Mixed Solved/Unsolved
+export const MixedSolvedUnsolved_Dark: Story = {
+  ...MixedSolvedUnsolved,
+  name: 'Mixed Solved/Unsolved (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen p-4">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Dark theme variant with mix of solved and unsolved problems. Shows green checkmarks for solved and gray circles for unsolved on dark background.',
+      },
+    },
+  },
+};
+
+// Dark Theme: Hover States
+export const HoverStates_Dark: Story = {
+  ...HoverStates,
+  name: 'Hover States (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen p-4">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    backgrounds: { default: 'dark' },
+    pseudo: {
+      hover: ['tr:nth-child(2)'],
+    },
+    docs: {
+      description: {
+        story: 'Dark theme variant demonstrating hover state styling on table rows. Shows subtle background highlight on hover.',
+      },
+    },
+  },
+};
+
+// Dark Theme: Many Problems (Scrolling)
+export const ManyProblems_Dark: Story = {
+  ...ManyProblems,
+  name: 'Many Problems (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen p-4">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    backgrounds: { default: 'dark' },
+    chromatic: {
+      viewports: [1280],
+      delay: 300,
+    },
+    docs: {
+      description: {
+        story: 'Dark theme variant with 25+ problems to test scrolling and performance. Verifies alternating row colors and consistent dark styling throughout long lists.',
+      },
+    },
+  },
+};
+
+// Dark Theme: All Difficulties
+export const AllDifficulties_Dark: Story = {
+  args: {
+    problems: [
+      ...easyProblems.slice(0, 2),
+      ...mediumProblems.slice(0, 2),
+      ...hardProblems.slice(0, 2),
+    ],
+    solvedIds: ['two-sum', 'add-two-numbers', 'median-sorted-arrays'],
+  },
+  name: 'All Difficulties (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen p-4">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Dark theme variant showing all difficulty levels (easy/medium/hard) with their respective color badges. Verifies green, yellow, and red badges are visible on dark background.',
+      },
+    },
+  },
+};
+
+// Dark Theme: Empty State
+export const EmptyState_Dark: Story = {
+  ...EmptyState,
+  name: 'Empty State (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen p-4">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Dark theme variant showing the empty state message when no problems match filters.',
+      },
+    },
+  },
+};
+
+// Dark Theme: Long Titles
+export const LongTitles_Dark: Story = {
+  ...LongTitles,
+  name: 'Long Titles (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen p-4">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Dark theme variant testing text overflow handling with very long problem titles.',
+      },
+    },
+  },
+};
+
+// Dark Theme: Category Badges
+export const CategoryBadges_Dark: Story = {
+  ...CategoryBadges,
+  name: 'Category Badges (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen p-4">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Dark theme variant showing various category badge labels with dark styling.',
+      },
+    },
+  },
+};
+
+// Dark Theme: Scroll Container
+export const ManyProblemsScrollContainer_Dark: Story = {
+  args: {
+    problems: manyProblems,
+    solvedIds: manyProblems.filter((_, i) => i % 4 === 0).map((p) => p.id),
+  },
+  name: 'Scroll Container (Dark)',
+  decorators: [
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen p-4">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  render: (args) => (
+    <div className="h-96 overflow-y-auto border border-gray-700 rounded-lg">
+      <ProblemTableWrapper {...args} />
+    </div>
+  ),
+  parameters: {
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Dark theme variant with table inside a fixed-height container with vertical scrolling. Shows dark border and scroll behavior.',
+      },
+    },
+  },
+};

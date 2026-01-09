@@ -1,3 +1,4 @@
+import React from 'react';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import TestResults from '../components/TestResults';
 import type { TestResult } from '@/lib/test-runner';
@@ -787,5 +788,256 @@ export const TypeScriptCompilationError: Story = {
       },
     },
     chromatic: { disableSnapshot: false },
+  },
+};
+
+// ============================================
+// DARK THEME STORY VARIANTS
+// ============================================
+
+// Dark theme decorator for comprehensive dark mode testing
+const darkThemeDecorator = (Story: React.ComponentType) => {
+  React.useEffect(() => {
+    document.documentElement.classList.add('dark');
+    return () => document.documentElement.classList.remove('dark');
+  }, []);
+  return (
+    <div className="dark bg-gray-950 min-h-screen p-4">
+      <Story />
+    </div>
+  );
+};
+
+// ============================================
+// All Tests Passed (Dark)
+// ============================================
+export const AllTestsPassed_Dark: Story = {
+  ...AllTestsPassed,
+  name: 'All Tests Passed (Dark)',
+  decorators: [darkThemeDecorator],
+  parameters: {
+    ...AllTestsPassed.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Green success indicators on dark background - all test cases passing.',
+      },
+    },
+  },
+};
+
+// ============================================
+// Mixed Results (Dark)
+// ============================================
+export const MixedResults_Dark: Story = {
+  ...MixedResults,
+  name: 'Mixed Results (Dark)',
+  decorators: [darkThemeDecorator],
+  parameters: {
+    ...MixedResults.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Mixed pass/fail indicators on dark background - some tests passing, some failing.',
+      },
+    },
+  },
+};
+
+// ============================================
+// All Tests Failed (Dark)
+// ============================================
+export const AllTestsFailed_Dark: Story = {
+  ...AllTestsFailed,
+  name: 'All Tests Failed (Dark)',
+  decorators: [darkThemeDecorator],
+  parameters: {
+    ...AllTestsFailed.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Red failure indicators on dark background - all test cases failing.',
+      },
+    },
+  },
+};
+
+// ============================================
+// Error State (Dark)
+// ============================================
+export const ErrorState_Dark: Story = {
+  ...ErrorState,
+  name: 'Error State (Dark)',
+  decorators: [darkThemeDecorator],
+  parameters: {
+    ...ErrorState.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Error message readable on dark background - no function found error.',
+      },
+    },
+  },
+};
+
+// ============================================
+// Running State (Dark)
+// ============================================
+export const RunningState_Dark: Story = {
+  ...RunningState,
+  name: 'Running State (Dark)',
+  decorators: [darkThemeDecorator],
+  parameters: {
+    ...RunningState.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Loading spinner visible on dark background while tests are executing.',
+      },
+    },
+  },
+};
+
+// ============================================
+// Many Test Results (Dark)
+// ============================================
+export const ManyTestResults_Dark: Story = {
+  ...ManyTestResults,
+  name: 'Many Test Results (Dark)',
+  decorators: [darkThemeDecorator],
+  parameters: {
+    ...ManyTestResults.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Large number of test results on dark background - verifies scroll behavior and contrast.',
+      },
+    },
+  },
+};
+
+// ============================================
+// Syntax Error (Dark)
+// ============================================
+export const SyntaxError_Dark: Story = {
+  ...SyntaxError,
+  name: 'Syntax Error (Dark)',
+  decorators: [darkThemeDecorator],
+  parameters: {
+    ...SyntaxError.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Syntax error with line information readable on dark background.',
+      },
+    },
+  },
+};
+
+// ============================================
+// Runtime Error (Dark)
+// ============================================
+export const RuntimeError_Dark: Story = {
+  ...RuntimeError,
+  name: 'Runtime Error (Dark)',
+  decorators: [darkThemeDecorator],
+  parameters: {
+    ...RuntimeError.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Runtime errors visible and readable on dark background.',
+      },
+    },
+  },
+};
+
+// ============================================
+// Initial State (Dark)
+// ============================================
+export const InitialState_Dark: Story = {
+  ...InitialState,
+  name: 'Initial State (Dark)',
+  decorators: [darkThemeDecorator],
+  parameters: {
+    ...InitialState.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Initial state prompt visible on dark background.',
+      },
+    },
+  },
+};
+
+// ============================================
+// Long Input/Output (Dark)
+// ============================================
+export const LongInputOutput_Dark: Story = {
+  ...LongInputOutput,
+  name: 'Long Input/Output (Dark)',
+  decorators: [darkThemeDecorator],
+  parameters: {
+    ...LongInputOutput.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Complex objects and long strings properly formatted on dark background.',
+      },
+    },
+  },
+};
+
+// ============================================
+// Console Output (Dark)
+// ============================================
+export const WithConsoleOutput_Dark: Story = {
+  ...WithConsoleOutput,
+  name: 'With Console Output (Dark)',
+  decorators: [darkThemeDecorator],
+  parameters: {
+    ...WithConsoleOutput.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Console output displayed alongside test results on dark background.',
+      },
+    },
+  },
+};
+
+// ============================================
+// Timeout Error (Dark)
+// ============================================
+export const TimeoutError_Dark: Story = {
+  ...TimeoutError,
+  name: 'Timeout Error (Dark)',
+  decorators: [darkThemeDecorator],
+  parameters: {
+    ...TimeoutError.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Timeout error message readable on dark background.',
+      },
+    },
+  },
+};
+
+// ============================================
+// Code Safety Error (Dark)
+// ============================================
+export const CodeSafetyError_Dark: Story = {
+  ...CodeSafetyError,
+  name: 'Code Safety Error (Dark)',
+  decorators: [darkThemeDecorator],
+  parameters: {
+    ...CodeSafetyError.parameters,
+    backgrounds: { default: 'dark' },
+    docs: {
+      description: {
+        story: 'Code safety violation messages readable on dark background.',
+      },
+    },
   },
 };

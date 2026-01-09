@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
+import { userEvent, within, expect, waitFor } from 'storybook/test';
+import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from 'react';
 
 // Mock ThemeContext for Storybook
 type Theme = 'light' | 'dark';
@@ -30,6 +31,18 @@ function MockThemeProvider({
   initialTheme?: Theme;
 }) {
   const [theme, setThemeState] = useState<Theme>(initialTheme);
+
+  // Apply dark class to documentElement when theme changes
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    return () => {
+      document.documentElement.classList.remove('dark');
+    };
+  }, [theme]);
 
   const toggleTheme = useCallback(() => {
     setThemeState((prev) => (prev === 'light' ? 'dark' : 'light'));
@@ -517,4 +530,350 @@ export const AllInteractiveStates: Story = {
       </div>
     </div>
   ),
+};
+
+/**
+ * Interactive Test: Light to Dark - Click the button to switch from light to dark mode.
+ * This story tests that clicking the toggle changes the theme and UI colors.
+ */
+export const ClickLightToDark: Story = {
+  args: {
+    initialTheme: 'light',
+  },
+  parameters: {
+    layout: 'centered',
+    backgrounds: { default: 'light' },
+    chromatic: { disableSnapshot: false },
+  },
+  decorators: [
+    (Story) => (
+      <MockThemeProvider initialTheme="light">
+        <div
+          data-testid="theme-container"
+          className="p-8 rounded-lg transition-colors duration-300 bg-gray-100 dark:bg-gray-900"
+        >
+          <div className="flex flex-col items-center gap-4">
+            <span
+              data-testid="theme-label"
+              className="text-sm font-medium text-gray-700 dark:text-gray-200"
+            >
+              Current Theme: <span data-testid="theme-value">Light</span>
+            </span>
+            <Story />
+            <p
+              data-testid="sample-text"
+              className="text-gray-600 dark:text-gray-300 text-sm"
+            >
+              Sample text that changes color with theme
+            </p>
+          </div>
+        </div>
+      </MockThemeProvider>
+    ),
+  ],
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step('Verify initial light theme state', async () => {
+      const button = canvas.getByRole('button');
+      // Button should have aria-label for switching to dark mode
+      await expect(button).toHaveAttribute('aria-label', 'Switch to dark mode');
+    });
+
+    await step('Click button to switch to dark mode', async () => {
+      const button = canvas.getByRole('button');
+      await userEvent.click(button);
+    });
+
+    await step('Verify dark theme is applied via button state', async () => {
+      await waitFor(async () => {
+        const button = canvas.getByRole('button');
+        // Button should now show aria-label for switching to light mode
+        await expect(button).toHaveAttribute('aria-label', 'Switch to light mode');
+      });
+    });
+  },
+};
+
+/**
+ * Interactive Test: Dark to Light - Click the button to switch from dark to light mode.
+ * This story tests that clicking the toggle changes from dark theme back to light.
+ */
+export const ClickDarkToLight: Story = {
+  args: {
+    initialTheme: 'dark',
+  },
+  parameters: {
+    layout: 'centered',
+    backgrounds: { default: 'dark' },
+    chromatic: { disableSnapshot: false },
+  },
+  decorators: [
+    (Story) => (
+      <MockThemeProvider initialTheme="dark">
+        <div
+          data-testid="theme-container"
+          className="p-8 rounded-lg transition-colors duration-300 bg-gray-100 dark:bg-gray-900"
+        >
+          <div className="flex flex-col items-center gap-4">
+            <span
+              data-testid="theme-label"
+              className="text-sm font-medium text-gray-700 dark:text-gray-200"
+            >
+              Current Theme: <span data-testid="theme-value">Dark</span>
+            </span>
+            <Story />
+            <p
+              data-testid="sample-text"
+              className="text-gray-600 dark:text-gray-300 text-sm"
+            >
+              Sample text that changes color with theme
+            </p>
+          </div>
+        </div>
+      </MockThemeProvider>
+    ),
+  ],
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step('Verify initial dark theme state', async () => {
+      const button = canvas.getByRole('button');
+      // Button should have aria-label for switching to light mode
+      await expect(button).toHaveAttribute('aria-label', 'Switch to light mode');
+    });
+
+    await step('Click button to switch to light mode', async () => {
+      const button = canvas.getByRole('button');
+      await userEvent.click(button);
+    });
+
+    await step('Verify light theme is applied via button state', async () => {
+      await waitFor(async () => {
+        const button = canvas.getByRole('button');
+        // Button should now show aria-label for switching to dark mode
+        await expect(button).toHaveAttribute('aria-label', 'Switch to dark mode');
+      });
+    });
+  },
+};
+
+/**
+ * Interactive Test: Multiple Toggles - Click multiple times to verify toggle cycles correctly.
+ * Tests that rapid clicking works and theme switches back and forth properly.
+ */
+export const MultipleToggles: Story = {
+  args: {
+    initialTheme: 'light',
+  },
+  parameters: {
+    layout: 'centered',
+    backgrounds: { default: 'light' },
+    chromatic: { disableSnapshot: false },
+  },
+  decorators: [
+    (Story) => (
+      <MockThemeProvider initialTheme="light">
+        <div
+          data-testid="theme-container"
+          className="p-8 rounded-lg transition-colors duration-300 bg-gray-100 dark:bg-gray-900"
+        >
+          <div className="flex flex-col items-center gap-4">
+            <span
+              data-testid="toggle-count"
+              className="text-sm font-medium text-gray-700 dark:text-gray-200"
+            >
+              Toggle Test: Multiple Clicks
+            </span>
+            <Story />
+          </div>
+        </div>
+      </MockThemeProvider>
+    ),
+  ],
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole('button');
+
+    await step('Start in light mode', async () => {
+      await expect(button).toHaveAttribute('aria-label', 'Switch to dark mode');
+    });
+
+    await step('Toggle 1: Light -> Dark', async () => {
+      await userEvent.click(button);
+      await waitFor(() => {
+        expect(button).toHaveAttribute('aria-label', 'Switch to light mode');
+      });
+    });
+
+    await step('Toggle 2: Dark -> Light', async () => {
+      await userEvent.click(button);
+      await waitFor(() => {
+        expect(button).toHaveAttribute('aria-label', 'Switch to dark mode');
+      });
+    });
+
+    await step('Toggle 3: Light -> Dark', async () => {
+      await userEvent.click(button);
+      await waitFor(() => {
+        expect(button).toHaveAttribute('aria-label', 'Switch to light mode');
+      });
+    });
+
+    await step('Toggle 4: Dark -> Light', async () => {
+      await userEvent.click(button);
+      await waitFor(() => {
+        expect(button).toHaveAttribute('aria-label', 'Switch to dark mode');
+      });
+    });
+
+    await step('Final state should be light mode', async () => {
+      await expect(button).toHaveAttribute('aria-label', 'Switch to dark mode');
+    });
+  },
+};
+
+/**
+ * Interactive Test: Visual Color Change - Shows the visible background color change.
+ * Captures before and after states for visual regression testing.
+ */
+export const VisualColorChangeTest: Story = {
+  parameters: {
+    layout: 'fullscreen',
+    chromatic: {
+      disableSnapshot: false,
+      delay: 500, // Wait for animations to complete
+    },
+  },
+  render: () => {
+    const [clickCount, setClickCount] = useState(0);
+    const { theme, toggleTheme } = useMockTheme();
+
+    const handleClick = () => {
+      toggleTheme();
+      setClickCount(prev => prev + 1);
+    };
+
+    return (
+      <div
+        data-testid="visual-test-container"
+        className={`min-h-screen p-8 transition-all duration-300 ${
+          theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'
+        }`}
+      >
+        <div className="max-w-md mx-auto">
+          <div
+            className={`p-6 rounded-xl shadow-lg transition-all duration-300 ${
+              theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'
+            }`}
+          >
+            <h2 className="text-xl font-bold mb-4">Theme Toggle Test</h2>
+            <p className={`mb-4 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+              Click the button below to test the theme toggle functionality.
+              The entire background and card should change colors.
+            </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">Current Theme:</p>
+                <p
+                  data-testid="current-theme"
+                  className={`text-lg font-bold ${
+                    theme === 'dark' ? 'text-blue-400' : 'text-blue-600'
+                  }`}
+                >
+                  {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Toggled {clickCount} time{clickCount !== 1 ? 's' : ''}
+                </p>
+              </div>
+              <button
+                onClick={handleClick}
+                data-testid="theme-toggle-btn"
+                className={`p-3 rounded-lg transition-all duration-200 ${
+                  theme === 'dark'
+                    ? 'bg-gray-700 hover:bg-gray-600 text-gray-300'
+                    : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                }`}
+                aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+              >
+                {theme === 'light' ? (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                  </svg>
+                ) : (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Color samples that change with theme */}
+          <div className="mt-6 grid grid-cols-3 gap-4">
+            <div className={`p-4 rounded-lg text-center ${
+              theme === 'dark' ? 'bg-blue-900 text-blue-200' : 'bg-blue-100 text-blue-800'
+            }`}>
+              Primary
+            </div>
+            <div className={`p-4 rounded-lg text-center ${
+              theme === 'dark' ? 'bg-green-900 text-green-200' : 'bg-green-100 text-green-800'
+            }`}>
+              Success
+            </div>
+            <div className={`p-4 rounded-lg text-center ${
+              theme === 'dark' ? 'bg-red-900 text-red-200' : 'bg-red-100 text-red-800'
+            }`}>
+              Danger
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  },
+  decorators: [
+    (Story) => (
+      <MockThemeProvider initialTheme="light">
+        <Story />
+      </MockThemeProvider>
+    ),
+  ],
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step('Verify initial light theme colors', async () => {
+      const container = canvas.getByTestId('visual-test-container');
+      const themeText = canvas.getByTestId('current-theme');
+
+      await expect(container).toHaveClass('bg-gray-50');
+      await expect(themeText).toHaveTextContent('Light Mode');
+    });
+
+    await step('Click to switch to dark mode and verify color change', async () => {
+      const button = canvas.getByTestId('theme-toggle-btn');
+      await userEvent.click(button);
+
+      await waitFor(async () => {
+        const container = canvas.getByTestId('visual-test-container');
+        const themeText = canvas.getByTestId('current-theme');
+
+        await expect(container).toHaveClass('bg-gray-900');
+        await expect(themeText).toHaveTextContent('Dark Mode');
+      });
+    });
+
+    await step('Click again to switch back to light mode', async () => {
+      const button = canvas.getByTestId('theme-toggle-btn');
+      await userEvent.click(button);
+
+      await waitFor(async () => {
+        const container = canvas.getByTestId('visual-test-container');
+        const themeText = canvas.getByTestId('current-theme');
+
+        await expect(container).toHaveClass('bg-gray-50');
+        await expect(themeText).toHaveTextContent('Light Mode');
+      });
+    });
+  },
 };

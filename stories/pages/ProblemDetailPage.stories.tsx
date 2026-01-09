@@ -905,3 +905,137 @@ export const TestsRunning: Story = {
     },
   },
 };
+
+// ============================================================================
+// Dark Theme Variants
+// ============================================================================
+
+/**
+ * Easy Problem (Dark)
+ */
+export const EasyProblem_Dark: Story = {
+  ...EasyProblem,
+  name: 'Easy Problem (Dark)',
+  decorators: [
+    ...(Array.isArray(EasyProblem.decorators) ? EasyProblem.decorators : []),
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...EasyProblem.parameters,
+    backgrounds: { default: 'dark' },
+  },
+};
+
+/**
+ * With Tests Passed (Dark)
+ */
+export const WithTestsPassed_Dark: Story = {
+  ...WithTestsPassed,
+  name: 'With Tests Passed (Dark)',
+  decorators: [
+    ...(Array.isArray(WithTestsPassed.decorators) ? WithTestsPassed.decorators : []),
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...WithTestsPassed.parameters,
+    backgrounds: { default: 'dark' },
+  },
+};
+
+/**
+ * With Tests Failed (Dark)
+ */
+export const WithTestsFailed_Dark: Story = {
+  ...WithTestsFailed,
+  name: 'With Tests Failed (Dark)',
+  decorators: [
+    ...(Array.isArray(WithTestsFailed.decorators) ? WithTestsFailed.decorators : []),
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...WithTestsFailed.parameters,
+    backgrounds: { default: 'dark' },
+  },
+};
+
+/**
+ * With Solution Shown (Dark)
+ */
+export const WithSolutionShown_Dark: Story = {
+  ...WithSolutionShown,
+  name: 'With Solution Shown (Dark)',
+  decorators: [
+    ...(Array.isArray(WithSolutionShown.decorators) ? WithSolutionShown.decorators : []),
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...WithSolutionShown.parameters,
+    backgrounds: { default: 'dark' },
+  },
+};
+
+/**
+ * Mobile (Dark)
+ */
+export const Mobile_Dark: Story = {
+  ...Mobile,
+  name: 'Mobile (Dark)',
+  decorators: [
+    ...(Array.isArray(Mobile.decorators) ? Mobile.decorators : []),
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...Mobile.parameters,
+    backgrounds: { default: 'dark' },
+  },
+};

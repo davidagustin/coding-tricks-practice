@@ -350,7 +350,7 @@ export const ZeroSolved: Story = {
 /**
  * Home page with some problems solved (partial progress)
  */
-export const SomeSolved: Story = {
+export const WithProgress: Story = {
   args: {
     solvedProblems: new Set(['destructuring-patterns', 'optional-chaining', 'array-methods', 'promise-chaining']),
   },
@@ -433,4 +433,112 @@ export const DarkTheme: Story = {
       );
     },
   ],
+};
+
+// ============================================================================
+// Dark Theme Variants
+// ============================================================================
+
+/**
+ * Default home page (Dark)
+ */
+export const Default_Dark: Story = {
+  ...Default,
+  name: 'Default (Dark)',
+  decorators: [
+    ...(Array.isArray(Default.decorators) ? Default.decorators : []),
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...Default.parameters,
+    backgrounds: { default: 'dark' },
+  },
+};
+
+/**
+ * With Progress (Dark)
+ */
+export const WithProgress_Dark: Story = {
+  ...WithProgress,
+  name: 'With Progress (Dark)',
+  decorators: [
+    ...(Array.isArray(WithProgress.decorators) ? WithProgress.decorators : []),
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...WithProgress.parameters,
+    backgrounds: { default: 'dark' },
+  },
+};
+
+/**
+ * All Solved (Dark)
+ */
+export const AllSolved_Dark: Story = {
+  ...AllSolved,
+  name: 'All Solved (Dark)',
+  decorators: [
+    ...(Array.isArray(AllSolved.decorators) ? AllSolved.decorators : []),
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...AllSolved.parameters,
+    backgrounds: { default: 'dark' },
+  },
+};
+
+/**
+ * Mobile (Dark)
+ */
+export const Mobile_Dark: Story = {
+  ...Mobile,
+  name: 'Mobile (Dark)',
+  decorators: [
+    ...(Array.isArray(Mobile.decorators) ? Mobile.decorators : []),
+    (Story) => {
+      React.useEffect(() => {
+        document.documentElement.classList.add('dark');
+        return () => document.documentElement.classList.remove('dark');
+      }, []);
+      return (
+        <div className="dark bg-gray-950 min-h-screen">
+          <Story />
+        </div>
+      );
+    },
+  ],
+  parameters: {
+    ...Mobile.parameters,
+    backgrounds: { default: 'dark' },
+  },
 };

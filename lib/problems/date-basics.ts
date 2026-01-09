@@ -108,11 +108,12 @@ function extractDateParts(date) {
 
 // TODO: Create a Date from individual components
 // month should be 1-indexed (1 = January) for user-friendliness
+// Return a timestamp (milliseconds since Unix Epoch) for easy comparison
 function createDate(year, month, day) {
-  // Example: createDate(2024, 1, 15) should create January 15, 2024
+  // Example: createDate(2024, 1, 15) should return timestamp for January 15, 2024
   // Remember: Date constructor uses 0-indexed months!
 
-  return new Date();
+  return 0;
 }
 
 // TODO: Calculate age in years from a birthdate
@@ -161,7 +162,8 @@ console.log(getDaysInMonth(2024, 2));`,
 
 function createDate(year, month, day) {
   // Convert 1-indexed month to 0-indexed for Date constructor
-  return new Date(year, month - 1, day);
+  // Returns timestamp for easy comparison in tests
+  return new Date(year, month - 1, day).getTime();
 }
 
 function calculateAge(birthDate, currentDate) {
