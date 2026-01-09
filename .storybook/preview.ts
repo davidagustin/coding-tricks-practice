@@ -17,12 +17,7 @@ const preview: Preview = {
         { name: 'dark', value: '#030712' },
       ],
     },
-    chromatic: {
-      modes: {
-        light: { theme: 'light' },
-        dark: { theme: 'dark' },
-      },
-    },
+    // No global chromatic settings - each story defines its own
   },
   globalTypes: {
     theme: {

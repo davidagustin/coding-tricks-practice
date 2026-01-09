@@ -604,11 +604,6 @@ export const DarkTheme: Story = {
   },
   parameters: {
     backgrounds: { default: 'dark' },
-    chromatic: {
-      modes: {
-        dark: { theme: 'dark' },
-      },
-    },
   },
 };
 

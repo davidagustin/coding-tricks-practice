@@ -660,10 +660,7 @@ export const MobileDarkTheme: Story = {
         story: 'Mobile viewport in dark theme.',
       },
     },
-    chromatic: {
-      disableSnapshot: false,
-      viewports: [375],
-      modes: {
+    chromatic: { modes: {
         dark: { theme: 'dark' },
       },
     },

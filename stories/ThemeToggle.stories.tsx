@@ -291,7 +291,6 @@ export const InNavbarContext: Story = {
         light: { theme: 'light' },
         dark: { theme: 'dark' },
       },
-      viewports: [1200],
     },
   },
   decorators: [
@@ -354,9 +353,7 @@ export const MobileSize: Story = {
     },
     layout: 'centered',
     backgrounds: { default: 'light' },
-    chromatic: {
-      viewports: [320, 375],
-      modes: {
+    chromatic: { modes: {
         light: { theme: 'light' },
         dark: { theme: 'dark' },
       },
@@ -387,9 +384,7 @@ export const DesktopSize: Story = {
     },
     layout: 'centered',
     backgrounds: { default: 'light' },
-    chromatic: {
-      viewports: [1200, 1440],
-      modes: {
+    chromatic: { modes: {
         light: { theme: 'light' },
         dark: { theme: 'dark' },
       },

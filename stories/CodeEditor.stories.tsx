@@ -864,10 +864,6 @@ runVisualTest(config);
   parameters: {
     chromatic: {
       delay: 3000,
-      modes: {
-        light: { theme: 'light' },
-        dark: { theme: 'dark' },
-      },
       viewports: [375, 768, 1200],
     },
     docs: {

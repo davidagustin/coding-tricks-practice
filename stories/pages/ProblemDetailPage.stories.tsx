@@ -691,13 +691,6 @@ const meta: Meta<typeof MockProblemDetailPage> = {
   component: MockProblemDetailPage,
   parameters: {
     layout: 'fullscreen',
-    chromatic: {
-      viewports: [375, 768, 1280],
-      modes: {
-        light: { theme: 'light' },
-        dark: { theme: 'dark' },
-      },
-    },
   },
   decorators: [
     (Story, context) => {

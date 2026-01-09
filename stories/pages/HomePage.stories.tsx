@@ -302,13 +302,6 @@ const meta: Meta<typeof MockHomePage> = {
   component: MockHomePage,
   parameters: {
     layout: 'fullscreen',
-    chromatic: {
-      viewports: [375, 768, 1280],
-      modes: {
-        light: { theme: 'light' },
-        dark: { theme: 'dark' },
-      },
-    },
   },
   decorators: [
     (Story, context) => {
