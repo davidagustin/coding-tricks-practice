@@ -228,19 +228,14 @@ function formatDateRange(startDate, endDate, locale) {
     return formatter.formatRange(startDate, endDate);
   }
   return \`\${formatter.format(startDate)} – \${formatter.format(endDate)}\`;
-}`,
+}
+
+function formatRelativeTime(value, unit, locale) {
+  // Format a relative date/time (e.g., "in 2 days", "3 months ago")
+  // Use Intl.RelativeTimeFormat
+  const rtf = new Intl.RelativeTimeFormat(locale);
   return rtf.format(value, unit);
 }
-
-function getMonthNamesUTC() {
-  return ['January', 'February', 'March', 'April', 'May', 'June',
-          'July', 'August', 'September', 'October', 'November', 'December'];
-}
-
-function getMonthNamesShortUTC() {
-  return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-}`,
   testCases: [
     {
       input: ['2024-01-15T00:00:00Z'],

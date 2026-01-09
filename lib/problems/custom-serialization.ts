@@ -183,34 +183,33 @@ function createCircularSafeObject(obj) {
   // Should serialize without throwing, replacing circular refs with '[Circular]'
   const seen = new WeakSet();
 
-  function makeSerializable(target) {
-    if (target === null || typeof target !== 'object') {
-      return target;
-    }
-
-    if (seen.has(target)) {
-      return '[Circular]';
-    }
-
-    seen.add(target);
-
-    if (Array.isArray(target)) {
-      return target.map(item => makeSerializable(item));
-    }
-
-    const result = {};
-    for (const key in target) {
-      if (Object.prototype.hasOwnProperty.call(target, key) && key !== 'toJSON') {
-        result[key] = makeSerializable(target[key]);
-      }
-    }
-
-    return result;
-  }
-
   const resultObj = {
     ...obj,
     toJSON() {
+      function makeSerializable(target) {
+        if (target === null || typeof target !== 'object') {
+          return target;
+        }
+
+        if (seen.has(target)) {
+          return '[Circular]';
+        }
+
+        seen.add(target);
+
+        if (Array.isArray(target)) {
+          return target.map(item => makeSerializable(item));
+        }
+
+        const result = {};
+        for (const key in target) {
+          if (Object.prototype.hasOwnProperty.call(target, key) && key !== 'toJSON') {
+            result[key] = makeSerializable(target[key]);
+          }
+        }
+
+        return result;
+      }
       return makeSerializable(this);
     }
   };

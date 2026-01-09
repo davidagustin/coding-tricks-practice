@@ -168,7 +168,7 @@ function safeStringify(obj, placeholder = '[Circular]') {
   // safeStringify(obj) → '{"a":1,"self":"[Circular]"}'
   const seen = new WeakSet();
 
-  return JSON.stringify(obj, function(key, value) {
+  function replacer(key, value) {
     if (typeof value === 'object' && value !== null) {
       if (seen.has(value)) {
         return placeholder;
@@ -176,7 +176,9 @@ function safeStringify(obj, placeholder = '[Circular]') {
       seen.add(value);
     }
     return value;
-  });
+  }
+
+  return JSON.stringify(obj, replacer);
 }
 
 function stringifyWithDepthLimit(obj, maxDepth = 3) {

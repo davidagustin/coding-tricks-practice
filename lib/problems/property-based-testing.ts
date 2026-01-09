@@ -208,7 +208,138 @@ property(
     return decodeURIComponent(encodeURIComponent(str)) === str;
   }
 );`,
-  solution: `function test() { return true; }`,
+  solution: `// Basic generators
+function integer(min = -1000, max = 1000) {
+  // Return a generator function that produces random integers
+  return function generate(size) {
+    // size can influence the range
+    const range = max - min + 1;
+    return Math.floor(Math.random() * range) + min;
+  };
+}
+
+function boolean() {
+  // Return a generator for booleans
+  return function generate() {
+    return Math.random() < 0.5;
+  };
+}
+
+function string(maxLength = 20) {
+  // Return a generator for strings
+  return function generate(size) {
+    const length = Math.floor(Math.random() * maxLength) + 1;
+    return Array.from({ length }, () => 
+      String.fromCharCode(97 + Math.floor(Math.random() * 26))
+    ).join('');
+  };
+}
+
+function array(elementGenerator, maxLength = 20) {
+  // Return a generator for arrays of elements
+  return function generate(size) {
+    const length = Math.floor(Math.random() * maxLength);
+    return Array.from({ length }, () => elementGenerator(size));
+  };
+}
+
+function object(schema) {
+  // Return a generator based on schema
+  // schema: { name: string(), age: integer(0, 100) }
+  return function generate(size) {
+    const result = {};
+    for (const [key, gen] of Object.entries(schema)) {
+      result[key] = gen(size);
+    }
+    return result;
+  };
+}
+
+function oneOf(...generators) {
+  // Return a generator that picks from options
+  return function generate(size) {
+    const index = Math.floor(Math.random() * generators.length);
+    return generators[index](size);
+  };
+}
+
+// Shrinking - find minimal failing case
+function shrinkInteger(n) {
+  // Return array of smaller integers to try
+  // e.g., for 10: [0, 5, 8, 9]
+  const results = [0];
+  if (n !== 0) {
+    results.push(Math.floor(n / 2));
+    results.push(Math.floor(n * 3 / 4));
+    results.push(n - 1);
+  }
+  return results.filter(x => x !== n);
+}
+
+function shrinkArray(arr, shrinkElement) {
+  // Return array of smaller arrays to try
+  // Strategies: remove elements, shrink elements
+  const results = [];
+  if (arr.length > 0) {
+    results.push([]);
+    results.push(arr.slice(0, Math.floor(arr.length / 2)));
+    results.push(arr.slice(Math.floor(arr.length / 2)));
+    results.push(arr.map(el => shrinkElement(el)[0] || el));
+  }
+  return results;
+}
+
+// Main testing logic
+function forAll(generator, property, options = {}) {
+  const { numTests = 100, seed = Date.now() } = options;
+
+  // Run the property test:
+  // 1. Generate numTests random inputs
+  // 2. Test property for each
+  // 3. If failure found, shrink to minimal case
+  // 4. Return result
+  let passed = true;
+  let counterexample = null;
+  let shrunkExample = null;
+
+  for (let i = 0; i < numTests; i++) {
+    const input = generator(i);
+    if (!property(input)) {
+      passed = false;
+      counterexample = input;
+      // Simple shrinking - just try smaller values
+      shrunkExample = input;
+      break;
+    }
+  }
+
+  return {
+    passed,
+    numTests: passed ? numTests : 0,
+    counterexample,
+    shrunkExample
+  };
+}
+
+// Property helpers
+function property(description, generator, predicate) {
+  // Wrapper for better error messages
+  console.log(\`Testing: \${description}\`);
+  const result = forAll(generator, predicate);
+  if (result.passed) {
+    console.log(\`  PASSED (\${result.numTests} tests)\`);
+  } else {
+    console.log(\`  FAILED\`);
+    console.log(\`  Counterexample: \${JSON.stringify(result.counterexample)}\`);
+    console.log(\`  Shrunk to: \${JSON.stringify(result.shrunkExample)}\`);
+  }
+  return result;
+}
+
+// Helper function for generate
+function generate(generator, size = 10) {
+  return generator(size);
+}`,
   testCases: [
     {
       input: [],

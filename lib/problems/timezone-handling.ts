@@ -264,24 +264,7 @@ function getWorldClocks(timezones, locale = 'en-US') {
       date: dateFormatter.format(now)
     };
   });
-}`,
-
-// Locale-independent helper: get day of week from ISO string (0 = Sunday)
-function getUTCDayOfWeek(isoString) {
-  return new Date(isoString).getUTCDay();
 }
-
-// Known fixed timezone offsets (in minutes) for testing
-function getFixedTimezoneOffset(timezone, isDaylightSaving = false) {
-  const offsets = {
-    'UTC': 0,
-    'America/New_York': isDaylightSaving ? -240 : -300,
-    'America/Los_Angeles': isDaylightSaving ? -420 : -480,
-    'Europe/London': isDaylightSaving ? 60 : 0,
-    'Asia/Tokyo': 540  // Japan doesn't observe DST
-  };
-  return offsets[timezone] !== undefined ? offsets[timezone] : 0;
-}`,
   testCases: [
     {
       input: ['2024-01-15T15:00:00Z'],
