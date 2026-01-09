@@ -98,12 +98,66 @@ async function processWithLock(resource, operation) {
 // fetchWithCleanup('/api/data').then(console.log).catch(console.error);
 // processWithLock('resource', () => Promise.resolve('done'))
 //   .then(console.log).catch(console.error);`,
-  solution: `function test() { return true; }`,
+  solution: `async function fetchWithCleanup(url) {
+  let loading = true;
+
+  // Fetch data, set loading = false in finally
+  // Return the data
+
+  try {
+    const response = await fetch(url);
+    return await response.json();
+  } finally {
+    loading = false;
+    console.log('Loading state reset:', loading);
+  }
+}
+
+async function processWithLock(resource, operation) {
+  let locked = false;
+
+  // Lock resource, run operation, unlock in finally
+  // Return operation result
+
+  try {
+    // Acquire lock
+    locked = true;
+    console.log(\`Lock acquired for \${resource}\`);
+
+    // Run the operation
+    const result = await operation();
+    return result;
+  } finally {
+    // Always release lock
+    locked = false;
+    console.log(\`Lock released for \${resource}\`);
+  }
+}
+
+// Test (commented out to prevent immediate execution)
+// fetchWithCleanup('/api/data').then(console.log).catch(console.error);
+// processWithLock('resource', () => Promise.resolve('done'))
+//   .then(console.log).catch(console.error);`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: 'fetchSuccess',
+      expectedOutput: { data: 'result', loading: false },
+      description: 'Loading is reset after successful fetch',
+    },
+    {
+      input: 'fetchError',
+      expectedOutput: { error: true, loading: false },
+      description: 'Loading is reset even after fetch error',
+    },
+    {
+      input: 'lockSuccess',
+      expectedOutput: { result: 'done', locked: false },
+      description: 'Lock is released after successful operation',
+    },
+    {
+      input: 'lockError',
+      expectedOutput: { error: true, locked: false },
+      description: 'Lock is released even after operation error',
     },
   ],
   hints: [

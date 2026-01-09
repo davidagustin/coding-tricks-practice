@@ -186,12 +186,95 @@ async function runTests() {
 }
 
 runTests();`,
-  solution: `function test() { return true; }`,
+  solution: `// Task 1: Simulate a module that loads config
+async function createConfigModule() {
+  const fetchConfig = () => Promise.resolve({
+    apiUrl: 'https://api.example.com',
+    timeout: 5000,
+    debug: true
+  });
+
+  const config = await fetchConfig();
+  return config;
+}
+
+// Task 2: Implement a fallback pattern
+async function loadWithFallback(primaryLoader, fallbackLoader) {
+  try {
+    return await primaryLoader();
+  } catch (error) {
+    return await fallbackLoader();
+  }
+}
+
+// Task 3: Implement conditional dynamic import pattern
+async function loadImplementation(featureChecker) {
+  const supportsFeature = await featureChecker();
+
+  if (supportsFeature) {
+    return { type: 'modern', features: ['async', 'modules'] };
+  } else {
+    return { type: 'legacy', features: ['callbacks'] };
+  }
+}
+
+// Task 4: Implement parallel async initialization
+async function initializeResources(loaders) {
+  const entries = Object.entries(loaders);
+  const results = await Promise.all(
+    entries.map(async ([key, loader]) => {
+      const result = await loader();
+      return [key, result];
+    })
+  );
+
+  return Object.fromEntries(results);
+}
+
+// Test helpers
+const mockPrimaryLoader = () => Promise.reject(new Error('Primary failed'));
+const mockFallbackLoader = () => Promise.resolve({ source: 'fallback', data: [1, 2, 3] });
+const mockFeatureCheck = (supported) => () => Promise.resolve(supported);
+const mockLoaders = {
+  config: () => Promise.resolve({ apiUrl: 'https://api.test.com' }),
+  data: () => Promise.resolve([1, 2, 3]),
+  user: () => Promise.resolve({ name: 'John', id: 1 })
+};
+
+// Test
+async function runTests() {
+  const config = await createConfigModule();
+  console.log('Config:', config);
+
+  const data = await loadWithFallback(mockPrimaryLoader, mockFallbackLoader);
+  console.log('Fallback data:', data);
+
+  const modernImpl = await loadImplementation(mockFeatureCheck(true));
+  console.log('Modern:', modernImpl);
+
+  const legacyImpl = await loadImplementation(mockFeatureCheck(false));
+  console.log('Legacy:', legacyImpl);
+
+  const resources = await initializeResources(mockLoaders);
+  console.log('Resources:', resources);
+}
+
+runTests();`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: {},
+      expectedOutput: { apiUrl: 'https://api.example.com', timeout: 5000, debug: true },
+      description: 'createConfigModule returns config object',
+    },
+    {
+      input: { primaryFails: true },
+      expectedOutput: { source: 'fallback', data: [1, 2, 3] },
+      description: 'loadWithFallback uses fallback when primary fails',
+    },
+    {
+      input: { featureSupported: true },
+      expectedOutput: { type: 'modern', features: ['async', 'modules'] },
+      description: 'loadImplementation returns modern for supported features',
     },
   ],
   hints: [

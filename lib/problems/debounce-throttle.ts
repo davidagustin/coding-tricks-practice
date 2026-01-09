@@ -108,12 +108,61 @@ for (let i = 0; i < 5; i++) {
   debouncedIncrement();
   throttledIncrement();
 }`,
-  solution: `function test() { return true; }`,
+  solution: `// Debounce: Delays execution until no calls for 'delay' ms
+function debounce(fn, delay) {
+  let timeoutId = null;
+
+  return function(...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      fn.apply(this, args);
+    }, delay);
+  };
+}
+
+// Throttle: Executes at most once per 'interval' ms
+function throttle(fn, interval) {
+  let lastTime = 0;
+
+  return function(...args) {
+    const now = Date.now();
+    if (now - lastTime >= interval) {
+      lastTime = now;
+      return fn.apply(this, args);
+    }
+  };
+}
+
+// Test
+let callCount = 0;
+const incrementCounter = () => ++callCount;
+
+const debouncedIncrement = debounce(incrementCounter, 100);
+const throttledIncrement = throttle(incrementCounter, 100);
+
+// Simulate rapid calls
+for (let i = 0; i < 5; i++) {
+  debouncedIncrement();
+  throttledIncrement();
+}
+
+// After 100ms, debounce fires once
+// Throttle fires immediately on first call, then blocks for 100ms`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: [5, 100],
+      expectedOutput: 1,
+      description: 'Debounce only calls function once after rapid invocations stop',
+    },
+    {
+      input: [5, 100],
+      expectedOutput: 1,
+      description: 'Throttle calls function immediately on first call during rapid invocations',
+    },
+    {
+      input: [3, 50],
+      expectedOutput: { debounced: 1, throttled: 1 },
+      description: 'Both debounce and throttle limit function calls',
     },
   ],
   hints: [

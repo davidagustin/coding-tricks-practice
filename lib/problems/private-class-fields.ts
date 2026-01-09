@@ -189,12 +189,110 @@ console.log(token.isValid());  // true
 new Counter();
 new Counter();
 console.log(Counter.getInstanceCount());  // 2`,
-  solution: `function test() { return true; }`,
+  solution: `// Task 1: BankAccount class with private balance
+class BankAccount {
+  #balance = 0;
+
+  constructor(initialBalance = 0) {
+    this.#balance = initialBalance;
+  }
+
+  deposit(amount) {
+    if (amount > 0) {
+      this.#balance += amount;
+    }
+  }
+
+  withdraw(amount) {
+    if (amount > 0 && amount <= this.#balance) {
+      this.#balance -= amount;
+      return true;
+    }
+    return false;
+  }
+
+  getBalance() {
+    return this.#balance;
+  }
+}
+
+// Task 2: SecureToken class with private token and expiry
+class SecureToken {
+  #token;
+  #expiresAt;
+
+  constructor(expiresInMs = 3600000) {
+    this.#token = Math.random().toString(36).substring(2);
+    this.#expiresAt = Date.now() + expiresInMs;
+  }
+
+  isValid() {
+    return Date.now() < this.#expiresAt;
+  }
+
+  getToken() {
+    return this.isValid() ? this.#token : null;
+  }
+}
+
+// Task 3: Counter class with private static count
+class Counter {
+  static #totalInstances = 0;
+  #id;
+
+  constructor() {
+    Counter.#totalInstances++;
+    this.#id = Counter.#totalInstances;
+  }
+
+  static getInstanceCount() {
+    return Counter.#totalInstances;
+  }
+
+  getId() {
+    return this.#id;
+  }
+}
+
+// Test
+const account = new BankAccount(100);
+account.deposit(50);
+console.log(account.getBalance());  // 150
+console.log(account.withdraw(200)); // false
+console.log(account.withdraw(50));  // true
+console.log(account.getBalance());  // 100
+
+const token = new SecureToken(10000);
+console.log(token.isValid());  // true
+
+new Counter();
+new Counter();
+console.log(Counter.getInstanceCount());  // 2`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: 'bankAccountDeposit',
+      expectedOutput: { balance: 150 },
+      description: 'BankAccount deposit adds to balance',
+    },
+    {
+      input: 'bankAccountWithdrawInsufficient',
+      expectedOutput: { success: false, balance: 100 },
+      description: 'BankAccount withdraw fails with insufficient funds',
+    },
+    {
+      input: 'bankAccountWithdrawSuccess',
+      expectedOutput: { success: true, balance: 50 },
+      description: 'BankAccount withdraw succeeds with sufficient funds',
+    },
+    {
+      input: 'secureTokenValid',
+      expectedOutput: { isValid: true },
+      description: 'SecureToken is valid before expiry',
+    },
+    {
+      input: 'counterInstances',
+      expectedOutput: { count: 2, id1: 1, id2: 2 },
+      description: 'Counter tracks instances correctly',
     },
   ],
   hints: [

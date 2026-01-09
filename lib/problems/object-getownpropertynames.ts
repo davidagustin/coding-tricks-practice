@@ -155,12 +155,94 @@ console.log(inspectObject(testObj));
 
 // Array example (length is non-enumerable)
 console.log(getNonEnumerableProps([1, 2, 3]));`,
-  solution: `function test() { return true; }`,
+  solution: `// Get ALL own properties of an object (strings + symbols)
+function getAllOwnProperties(obj) {
+  return Reflect.ownKeys(obj);
+}
+
+// Get only non-enumerable property names
+function getNonEnumerableProps(obj) {
+  return Object.getOwnPropertyNames(obj).filter(prop => {
+    const descriptor = Object.getOwnPropertyDescriptor(obj, prop);
+    return !descriptor.enumerable;
+  });
+}
+
+// Clone an object including non-enumerable properties
+function deepCloneWithNonEnumerable(obj) {
+  const clone = {};
+  const allProps = Object.getOwnPropertyNames(obj);
+
+  allProps.forEach(prop => {
+    const descriptor = Object.getOwnPropertyDescriptor(obj, prop);
+    Object.defineProperty(clone, prop, descriptor);
+  });
+
+  return clone;
+}
+
+// Find all Symbol properties on an object and its prototype chain
+function getAllSymbols(obj) {
+  const symbols = [];
+  let current = obj;
+
+  while (current !== null) {
+    symbols.push(...Object.getOwnPropertySymbols(current));
+    current = Object.getPrototypeOf(current);
+  }
+
+  return symbols;
+}
+
+// Create an object inspector that categorizes properties
+function inspectObject(obj) {
+  const enumerable = [];
+  const nonEnumerable = [];
+  const symbols = Object.getOwnPropertySymbols(obj);
+
+  Object.getOwnPropertyNames(obj).forEach(prop => {
+    const descriptor = Object.getOwnPropertyDescriptor(obj, prop);
+    if (descriptor.enumerable) {
+      enumerable.push(prop);
+    } else {
+      nonEnumerable.push(prop);
+    }
+  });
+
+  return { enumerable, nonEnumerable, symbols };
+}
+
+// Test your implementations
+const testObj = { visible: 1 };
+Object.defineProperty(testObj, 'hidden', { value: 2, enumerable: false });
+testObj[Symbol.for('meta')] = 'data';
+
+console.log(getAllOwnProperties(testObj));
+console.log(getNonEnumerableProps(testObj));
+console.log(inspectObject(testObj));
+
+// Array example (length is non-enumerable)
+console.log(getNonEnumerableProps([1, 2, 3]));`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: [{ a: 1, b: 2 }],
+      expectedOutput: ['a', 'b'],
+      description: 'getAllOwnProperties returns all string keys',
+    },
+    {
+      input: [[1, 2, 3]],
+      expectedOutput: ['length'],
+      description: 'getNonEnumerableProps finds non-enumerable "length" on arrays',
+    },
+    {
+      input: [{ visible: 1 }],
+      expectedOutput: { enumerable: ['visible'], nonEnumerable: [], symbols: [] },
+      description: 'inspectObject categorizes enumerable properties',
+    },
+    {
+      input: [{}],
+      expectedOutput: [],
+      description: 'getAllSymbols returns empty array for object without symbols',
     },
   ],
   hints: [

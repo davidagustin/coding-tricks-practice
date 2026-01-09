@@ -125,12 +125,76 @@ const json: Json = {
   nested: { deep: { value: true } },
   items: [1, 2, { mixed: 'content' }],
 };`,
-  solution: `function test() { return true; }`,
+  solution: `// Binary tree node type
+type BinaryTree<T> = {
+  value: T;
+  left: BinaryTree<T> | null;
+  right: BinaryTree<T> | null;
+};
+
+// JSON type that represents any valid JSON value
+type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | Json[]
+  | { [key: string]: Json };
+
+// DeepPartial type that makes all properties optional recursively
+type DeepPartial<T> = T extends object
+  ? T extends Array<infer U>
+    ? Array<DeepPartial<U>>
+    : { [K in keyof T]?: DeepPartial<T[K]> }
+  : T;
+
+// File system structure type
+type FileSystemNode =
+  | { name: string; type: 'file'; size: number }
+  | { name: string; type: 'directory'; children: FileSystemNode[] };
+
+// PathOf type that extracts all possible dot-notation paths from an object
+type PathOf<T, K extends keyof T = keyof T> = K extends string
+  ? T[K] extends object
+    ? T[K] extends Array<unknown>
+      ? K
+      : K | \`\${K}.\${PathOf<T[K]>}\`
+    : K
+  : never;
+
+// Test your types
+const tree: BinaryTree<number> = {
+  value: 10,
+  left: { value: 5, left: null, right: null },
+  right: { value: 15, left: null, right: null },
+};
+
+const json: Json = {
+  name: 'John',
+  age: 30,
+  nested: { deep: { value: true } },
+  items: [1, 2, { mixed: 'content' }],
+};`,
   testCases: [
     {
-      input: [],
+      input: { type: 'BinaryTree', tree: { value: 10, left: { value: 5, left: null, right: null }, right: null } },
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'BinaryTree type correctly allows nested tree structure',
+    },
+    {
+      input: { type: 'Json', json: { name: 'John', nested: { value: true }, items: [1, 'two'] } },
+      expectedOutput: true,
+      description: 'Json type correctly allows mixed nested structures',
+    },
+    {
+      input: { type: 'DeepPartial', obj: { a: { b: undefined } } },
+      expectedOutput: true,
+      description: 'DeepPartial allows deeply nested optional properties',
+    },
+    {
+      input: { type: 'FileSystemNode', node: { name: 'folder', type: 'directory', children: [{ name: 'file.txt', type: 'file', size: 100 }] } },
+      expectedOutput: true,
+      description: 'FileSystemNode handles recursive directory structure',
     },
   ],
   hints: [

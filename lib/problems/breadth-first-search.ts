@@ -172,12 +172,156 @@ console.log(bfsTreeLevelOrder(tree));
 
 console.log(shortestPath(graph, 'A', 'F'));
 // Expected: 2`,
-  solution: `function test() { return true; }`,
+  solution: `// Graph represented as adjacency list
+type Graph = { [key: string]: string[] };
+
+// Binary tree node
+interface TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+}
+
+// Implement BFS for graphs
+function bfsGraph(graph: Graph, start: string): string[] {
+  const visited = new Set<string>();
+  const queue: string[] = [start];
+  const result: string[] = [];
+
+  visited.add(start);
+
+  while (queue.length > 0) {
+    const node = queue.shift()!;
+    result.push(node);
+
+    for (const neighbor of graph[node] || []) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push(neighbor);
+      }
+    }
+  }
+
+  return result;
+}
+
+// Implement level-order traversal for binary tree
+// Returns array of arrays, each inner array is one level
+function bfsTreeLevelOrder(root: TreeNode | null): number[][] {
+  if (root === null) {
+    return [];
+  }
+
+  const result: number[][] = [];
+  const queue: TreeNode[] = [root];
+
+  while (queue.length > 0) {
+    const levelSize = queue.length;
+    const currentLevel: number[] = [];
+
+    for (let i = 0; i < levelSize; i++) {
+      const node = queue.shift()!;
+      currentLevel.push(node.val);
+
+      if (node.left) {
+        queue.push(node.left);
+      }
+      if (node.right) {
+        queue.push(node.right);
+      }
+    }
+
+    result.push(currentLevel);
+  }
+
+  return result;
+}
+
+// Implement shortest path finder using BFS
+// Returns the length of shortest path, or -1 if no path exists
+function shortestPath(graph: Graph, start: string, end: string): number {
+  if (start === end) {
+    return 0;
+  }
+
+  const visited = new Set<string>();
+  const queue: [string, number][] = [[start, 0]];
+
+  visited.add(start);
+
+  while (queue.length > 0) {
+    const [node, distance] = queue.shift()!;
+
+    for (const neighbor of graph[node] || []) {
+      if (neighbor === end) {
+        return distance + 1;
+      }
+
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push([neighbor, distance + 1]);
+      }
+    }
+  }
+
+  return -1;
+}
+
+// Test cases
+const graph: Graph = {
+  'A': ['B', 'C'],
+  'B': ['D', 'E'],
+  'C': ['F'],
+  'D': [],
+  'E': [],
+  'F': []
+};
+
+console.log(bfsGraph(graph, 'A'));
+// Expected: ['A', 'B', 'C', 'D', 'E', 'F']
+
+// Binary tree:
+//       1
+//      / \\
+//     2   3
+//    / \\
+//   4   5
+const tree: TreeNode = {
+  val: 1,
+  left: { val: 2, left: { val: 4, left: null, right: null }, right: { val: 5, left: null, right: null } },
+  right: { val: 3, left: null, right: null }
+};
+
+console.log(bfsTreeLevelOrder(tree));
+// Expected: [[1], [2, 3], [4, 5]]
+
+console.log(shortestPath(graph, 'A', 'F'));
+// Expected: 2`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { fn: 'bfsGraph', args: [{ 'A': ['B', 'C'], 'B': ['D', 'E'], 'C': ['F'], 'D': [], 'E': [], 'F': [] }, 'A'] },
+      expectedOutput: ['A', 'B', 'C', 'D', 'E', 'F'],
+      description: 'bfsGraph visits nodes in level order',
+    },
+    {
+      input: { fn: 'bfsTreeLevelOrder', args: [{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }] },
+      expectedOutput: [[1], [2, 3]],
+      description: 'bfsTreeLevelOrder returns nodes grouped by level',
+    },
+    {
+      input: { fn: 'bfsTreeLevelOrder', args: [null] },
+      expectedOutput: [],
+      description: 'bfsTreeLevelOrder returns empty array for null tree',
+    },
+    {
+      input: { fn: 'shortestPath', args: [{ 'A': ['B', 'C'], 'B': ['D'], 'C': ['D'], 'D': [] }, 'A', 'D'] },
+      expectedOutput: 2,
+      description: 'shortestPath finds shortest path length',
+    },
+    {
+      input: { fn: 'shortestPath', args: [{ 'A': ['B'], 'B': [] }, 'A', 'C'] },
+      expectedOutput: -1,
+      description: 'shortestPath returns -1 when no path exists',
     },
   ],
   hints: [

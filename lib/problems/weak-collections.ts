@@ -111,12 +111,73 @@ console.log(user.name); // 'John'
 console.log(user.password); // Should be undefined (private)
 console.log(user.checkPassword('secret123')); // true
 console.log(user.checkPassword('wrong')); // false`,
-  solution: `function test() { return true; }`,
+  solution: `// Private data storage using WeakMap
+const privateData = new WeakMap();
+
+class User {
+  constructor(name, password) {
+    this.name = name;
+    // Store password privately using WeakMap
+    privateData.set(this, { password });
+  }
+
+  checkPassword(password) {
+    const data = privateData.get(this);
+    return data ? data.password === password : false;
+  }
+
+  // Password property returns undefined (it's private)
+  get password() {
+    return undefined;
+  }
+}
+
+// Memoize function using WeakMap for object arguments
+function memoizeByObject(fn) {
+  const cache = new WeakMap();
+
+  return function(obj, ...args) {
+    if (cache.has(obj)) {
+      return cache.get(obj);
+    }
+    const result = fn.call(this, obj, ...args);
+    cache.set(obj, result);
+    return result;
+  };
+}
+
+// Example: expensive computation memoized by object
+const computeForObject = memoizeByObject((obj) => {
+  console.log('Computing for object...');
+  return Object.keys(obj).length * 100;
+});
+
+// Test
+const user = new User('John', 'secret123');
+console.log('Name:', user.name); // 'John'
+console.log('Password:', user.password); // undefined (private)
+console.log('Check correct password:', user.checkPassword('secret123')); // true
+console.log('Check wrong password:', user.checkPassword('wrong')); // false
+
+// Test memoization
+const testObj = { a: 1, b: 2, c: 3 };
+console.log('First call:', computeForObject(testObj)); // Computes
+console.log('Second call:', computeForObject(testObj)); // Uses cache`,
   testCases: [
     {
-      input: [],
+      input: { name: 'John', password: 'secret123' },
+      expectedOutput: undefined,
+      description: 'User.password returns undefined (private)',
+    },
+    {
+      input: { password: 'secret123', check: 'secret123' },
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'checkPassword returns true for correct password',
+    },
+    {
+      input: { password: 'secret123', check: 'wrong' },
+      expectedOutput: false,
+      description: 'checkPassword returns false for wrong password',
     },
   ],
   hints: [

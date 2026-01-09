@@ -102,12 +102,58 @@ async function handleMultipleOperations(operations) {
 //
 // handleMultipleOperations([riskyOp, safeOp, riskyOp])
 //   .then(console.log).catch(console.error);`,
-  solution: `function test() { return true; }`,
+  solution: `async function safeOperation(operation, fallback) {
+  try {
+    return await operation();
+  } catch (error) {
+    console.error('Operation failed:', error);
+    return fallback;
+  }
+}
+
+async function handleMultipleOperations(operations) {
+  const results = await Promise.allSettled(operations.map(op => op()));
+
+  const successes = [];
+  const errors = [];
+
+  results.forEach((result, index) => {
+    if (result.status === 'fulfilled') {
+      successes.push({ index, value: result.value });
+    } else {
+      errors.push({ index, error: result.reason });
+    }
+  });
+
+  return { successes, errors };
+}
+
+// Test
+const riskyOp = () => Promise.reject(new Error('Failed'));
+const safeOp = () => Promise.resolve('Success');
+
+// safeOperation returns fallback on error
+safeOperation(riskyOp, 'fallback').then(console.log); // 'fallback'
+
+// handleMultipleOperations collects successes and errors
+handleMultipleOperations([riskyOp, safeOp, riskyOp])
+  .then(console.log);
+// { successes: [{ index: 1, value: 'Success' }], errors: [{ index: 0, error: ... }, { index: 2, error: ... }] }`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { operation: 'riskyOp', fallback: 'fallback' },
+      expectedOutput: 'fallback',
+      description: 'safeOperation returns fallback when operation throws',
+    },
+    {
+      input: { operation: 'safeOp', fallback: 'fallback' },
+      expectedOutput: 'Success',
+      description: 'safeOperation returns result when operation succeeds',
+    },
+    {
+      input: ['riskyOp', 'safeOp', 'riskyOp'],
+      expectedOutput: { successCount: 1, errorCount: 2 },
+      description: 'handleMultipleOperations collects all successes and errors',
     },
   ],
   hints: [

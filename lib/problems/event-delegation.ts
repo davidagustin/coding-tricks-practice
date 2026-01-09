@@ -115,12 +115,96 @@ const mockContainer = {
 //   console.log('Item clicked:', e.target);
 // });
 // cleanup(); // removes the listener`,
-  solution: `function test() { return true; }`,
+  solution: `// Event delegation helper
+function delegate(parent, eventType, selector, handler) {
+  const listener = (event) => {
+    // Find the closest matching element from target
+    const target = event.target.closest(selector);
+
+    // Verify it's inside the parent
+    if (target && parent.contains(target)) {
+      handler.call(target, event, target);
+    }
+  };
+
+  parent.addEventListener(eventType, listener);
+
+  // Return cleanup function
+  return () => {
+    parent.removeEventListener(eventType, listener);
+  };
+}
+
+// Delegated click handler for a todo list
+function setupTodoList(container) {
+  // Handle toggle button clicks
+  const cleanupToggle = delegate(container, 'click', '.toggle-btn', (event, target) => {
+    const li = target.closest('li');
+    if (li) {
+      li.classList.toggle('completed');
+    }
+  });
+
+  // Handle delete button clicks
+  const cleanupDelete = delegate(container, 'click', '.delete-btn', (event, target) => {
+    const li = target.closest('li');
+    if (li) {
+      li.remove();
+    }
+  });
+
+  // Handle edit button clicks
+  const cleanupEdit = delegate(container, 'click', '.edit-btn', (event, target) => {
+    const li = target.closest('li');
+    if (li) {
+      const todoText = li.querySelector('.todo-text')?.textContent || '';
+      const editEvent = new CustomEvent('edit', { detail: { text: todoText } });
+      container.dispatchEvent(editEvent);
+    }
+  });
+
+  // Return combined cleanup function
+  return () => {
+    cleanupToggle();
+    cleanupDelete();
+    cleanupEdit();
+  };
+}
+
+// Test structure (simulated DOM)
+const mockContainer = {
+  listeners: {},
+  addEventListener(type, fn) { this.listeners[type] = fn; },
+  removeEventListener(type) { delete this.listeners[type]; },
+  querySelector(sel) { return null; },
+  contains(el) { return true; }
+};
+
+// Usage example:
+const cleanup = delegate(mockContainer, 'click', '.item', (e, target) => {
+  console.log('Item clicked:', target);
+});
+// cleanup(); // removes the listener`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { selector: '.item', eventType: 'click' },
+      expectedOutput: { delegated: true, cleanupReturned: true },
+      description: 'delegate attaches event listener and returns cleanup function',
+    },
+    {
+      input: { selector: '.toggle-btn', action: 'click' },
+      expectedOutput: { classToggled: true },
+      description: 'setupTodoList toggles completed class on toggle button click',
+    },
+    {
+      input: { selector: '.delete-btn', action: 'click' },
+      expectedOutput: { elementRemoved: true },
+      description: 'setupTodoList removes li element on delete button click',
+    },
+    {
+      input: { selector: '.edit-btn', action: 'click' },
+      expectedOutput: { customEventDispatched: true },
+      description: 'setupTodoList dispatches edit custom event on edit button click',
     },
   ],
   hints: [

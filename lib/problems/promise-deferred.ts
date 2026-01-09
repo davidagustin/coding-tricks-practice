@@ -171,12 +171,151 @@ class RequestMatcher {
 // setTimeout(() => deferred.resolve('done'), 100);
 // const result = await deferred.promise;
 // console.log(result); // 'done'`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a deferred promise
+function createDeferred() {
+  // Return an object with:
+  // - promise: the underlying Promise
+  // - resolve: function to resolve the promise
+  // - reject: function to reject the promise
+  // - status: 'pending' | 'fulfilled' | 'rejected'
+
+  let resolve, reject;
+  let status = 'pending';
+
+  const promise = new Promise((res, rej) => {
+    resolve = (value) => {
+      if (status === 'pending') {
+        status = 'fulfilled';
+        res(value);
+      }
+    };
+    reject = (reason) => {
+      if (status === 'pending') {
+        status = 'rejected';
+        rej(reason);
+      }
+    };
+  });
+
+  return {
+    promise,
+    resolve,
+    reject,
+    get status() { return status; }
+  };
+}
+
+// Wait for a one-time event
+function waitForEvent(target, eventName, options = {}) {
+  // Return a promise that resolves when the event fires
+  // - options.timeout: reject after timeout ms
+  // - options.filter: only resolve if filter(event) returns true
+  // - Clean up event listener after resolution
+
+  const deferred = createDeferred();
+  let timeoutId;
+
+  const handler = (event) => {
+    if (options.filter && !options.filter(event)) {
+      return;
+    }
+    cleanup();
+    deferred.resolve(event);
+  };
+
+  const cleanup = () => {
+    target.removeEventListener(eventName, handler);
+    if (timeoutId) clearTimeout(timeoutId);
+  };
+
+  target.addEventListener(eventName, handler);
+
+  if (options.timeout) {
+    timeoutId = setTimeout(() => {
+      cleanup();
+      deferred.reject(new Error(\`Timeout waiting for \${eventName}\`));
+    }, options.timeout);
+  }
+
+  return deferred.promise;
+}
+
+// Request/Response matcher for async messaging
+class RequestMatcher {
+  constructor() {
+    // Store pending requests by their ID
+    this._pending = new Map();
+  }
+
+  createRequest(id, timeoutMs = 5000) {
+    // Create a deferred for this request ID
+    // Return the promise that will resolve with the response
+    const deferred = createDeferred();
+
+    const timeoutId = setTimeout(() => {
+      this._pending.delete(id);
+      deferred.reject(new Error(\`Request \${id} timed out\`));
+    }, timeoutMs);
+
+    this._pending.set(id, { deferred, timeoutId });
+
+    return deferred.promise;
+  }
+
+  handleResponse(id, response) {
+    // Resolve the pending request with this ID
+    // Return true if request was found, false otherwise
+    const pending = this._pending.get(id);
+    if (!pending) return false;
+
+    clearTimeout(pending.timeoutId);
+    this._pending.delete(id);
+    pending.deferred.resolve(response);
+    return true;
+  }
+
+  cancelRequest(id, reason) {
+    // Reject the pending request
+    const pending = this._pending.get(id);
+    if (!pending) return false;
+
+    clearTimeout(pending.timeoutId);
+    this._pending.delete(id);
+    pending.deferred.reject(new Error(reason || \`Request \${id} cancelled\`));
+    return true;
+  }
+}
+
+// Test (commented out)
+// const deferred = createDeferred();
+// setTimeout(() => deferred.resolve('done'), 100);
+// const result = await deferred.promise;
+// console.log(result); // 'done'`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: 'deferredResolve',
+      expectedOutput: { value: 'test-value', status: 'fulfilled' },
+      description: 'Deferred resolves with provided value',
+    },
+    {
+      input: 'deferredReject',
+      expectedOutput: { error: 'test-error', status: 'rejected' },
+      description: 'Deferred rejects with provided reason',
+    },
+    {
+      input: 'deferredStatus',
+      expectedOutput: { initial: 'pending', afterResolve: 'fulfilled' },
+      description: 'Deferred tracks status correctly',
+    },
+    {
+      input: 'requestMatcherSuccess',
+      expectedOutput: { matched: true, response: 'response-data' },
+      description: 'RequestMatcher matches response to request',
+    },
+    {
+      input: 'requestMatcherTimeout',
+      expectedOutput: { timedOut: true },
+      description: 'RequestMatcher handles timeout',
     },
   ],
   hints: [

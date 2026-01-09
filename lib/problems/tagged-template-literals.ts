@@ -104,12 +104,52 @@ console.log(html\`<div>\${userInput}</div>\`);
 
 const name = 'John & Jane';
 console.log(html\`<span>Hello, \${name}!</span>\`);`,
-  solution: `function test() { return true; }`,
+  solution: `function escapeHtml(str) {
+  // Replace HTML special characters
+  const htmlEntities = {
+    '<': '&lt;',
+    '>': '&gt;',
+    '&': '&amp;',
+    '"': '&quot;'
+  };
+  return String(str).replace(/[<>&"]/g, char => htmlEntities[char]);
+}
+
+function html(strings, ...values) {
+  // Escape HTML entities in interpolated values
+  // Combine strings and escaped values
+  return strings.reduce((result, str, i) => {
+    const value = i < values.length ? escapeHtml(values[i]) : '';
+    return result + str + value;
+  }, '');
+}
+
+// Test
+const userInput = '<script>alert("xss")</script>';
+console.log(html\`<div>\${userInput}</div>\`);
+
+const name = 'John & Jane';
+console.log(html\`<span>Hello, \${name}!</span>\`);`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { userInput: '<script>alert("xss")</script>' },
+      expectedOutput: '<div>&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;</div>',
+      description: 'html tag escapes script tags to prevent XSS',
+    },
+    {
+      input: { name: 'John & Jane' },
+      expectedOutput: '<span>Hello, John &amp; Jane!</span>',
+      description: 'html tag escapes ampersand in names',
+    },
+    {
+      input: { str: '<div>' },
+      expectedOutput: '&lt;div&gt;',
+      description: 'escapeHtml converts angle brackets to entities',
+    },
+    {
+      input: { str: 'Tom & Jerry' },
+      expectedOutput: 'Tom &amp; Jerry',
+      description: 'escapeHtml converts ampersand to entity',
     },
   ],
   hints: [

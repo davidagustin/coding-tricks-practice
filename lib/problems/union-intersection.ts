@@ -102,12 +102,58 @@ function displayPerson(person: Person) {
 console.log(processValue('hello'));
 console.log(processValue(42));
 displayPerson({ name: 'Alice', age: 30 });`,
-  solution: `function test() { return true; }`,
+  solution: `type StringOrNumber = string | number;
+
+function processValue(value: StringOrNumber): string {
+  if (typeof value === 'string') {
+    return \`String value: \${value.toUpperCase()}\`;
+  } else {
+    return \`Number value: \${value.toFixed(2)}\`;
+  }
+}
+
+type HasName = { name: string };
+type HasAge = { age: number };
+type Person = HasName & HasAge;
+
+function displayPerson(person: Person): string {
+  return \`\${person.name} is \${person.age} years old\`;
+}
+
+// Additional examples of union and intersection types
+type Result<T> =
+  | { success: true; data: T }
+  | { success: false; error: string };
+
+function handleResult<T>(result: Result<T>): string {
+  if (result.success) {
+    return \`Success: \${JSON.stringify(result.data)}\`;
+  } else {
+    return \`Error: \${result.error}\`;
+  }
+}
+
+// Test
+console.log(processValue('hello'));
+console.log(processValue(42));
+console.log(displayPerson({ name: 'Alice', age: 30 }));
+console.log(handleResult({ success: true, data: { id: 1 } }));
+console.log(handleResult({ success: false, error: 'Not found' }));`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { value: 'hello' },
+      expectedOutput: 'String value: HELLO',
+      description: 'processValue handles string with uppercase',
+    },
+    {
+      input: { value: 42 },
+      expectedOutput: 'Number value: 42.00',
+      description: 'processValue handles number with toFixed',
+    },
+    {
+      input: { person: { name: 'Alice', age: 30 } },
+      expectedOutput: 'Alice is 30 years old',
+      description: 'displayPerson formats person info',
     },
   ],
   hints: [

@@ -154,12 +154,124 @@ console.log(expensiveOperation(5)); // 10 (cached, no "Computing...")
 const account = createBankAccount(100);
 console.log(account.deposit(50)); // 150
 console.log(account.withdraw(30)); // 120`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a counter factory that returns an object with:
+// - increment(): increases count and returns new value
+// - decrement(): decreases count and returns new value
+// - getCount(): returns current count
+// - reset(): resets count to initial value
+// The count should be PRIVATE (not accessible directly)
+
+function createCounter(initialValue = 0) {
+  let count = initialValue;
+  const initial = initialValue;
+
+  return {
+    increment: () => ++count,
+    decrement: () => --count,
+    getCount: () => count,
+    reset: () => {
+      count = initial;
+      return count;
+    }
+  };
+}
+
+// Create a memoize function that caches results
+// If the same argument is passed again, return cached result
+// Assume single argument functions for simplicity
+
+function memoize(fn) {
+  const cache = new Map();
+
+  return function(arg) {
+    if (cache.has(arg)) {
+      return cache.get(arg);
+    }
+
+    const result = fn(arg);
+    cache.set(arg, result);
+    return result;
+  };
+}
+
+// Create a createBankAccount function using module pattern
+// - deposit(amount): adds to balance, returns new balance
+// - withdraw(amount): subtracts from balance if sufficient funds, returns new balance or throws error
+// - getBalance(): returns current balance
+// Balance should be PRIVATE
+
+function createBankAccount(initialBalance = 0) {
+  let balance = initialBalance;
+
+  return {
+    deposit: (amount) => {
+      if (amount < 0) {
+        throw new Error('Cannot deposit negative amount');
+      }
+      balance += amount;
+      return balance;
+    },
+    withdraw: (amount) => {
+      if (amount < 0) {
+        throw new Error('Cannot withdraw negative amount');
+      }
+      if (amount > balance) {
+        throw new Error('Insufficient funds');
+      }
+      balance -= amount;
+      return balance;
+    },
+    getBalance: () => balance
+  };
+}
+
+// Test
+const counter = createCounter(5);
+console.log(counter.increment()); // 6
+console.log(counter.getCount()); // 6
+counter.reset();
+console.log(counter.getCount()); // 5
+
+const expensiveOperation = memoize((n) => {
+  console.log('Computing...');
+  return n * 2;
+});
+console.log(expensiveOperation(5)); // Computing... 10
+console.log(expensiveOperation(5)); // 10 (cached, no "Computing...")
+
+const account = createBankAccount(100);
+console.log(account.deposit(50)); // 150
+console.log(account.withdraw(30)); // 120`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { fn: 'createCounter', args: [5], operations: ['increment()', 'getCount()'] },
+      expectedOutput: 6,
+      description: 'Counter increment increases count',
+    },
+    {
+      input: { fn: 'createCounter', args: [10], operations: ['decrement()', 'getCount()'] },
+      expectedOutput: 9,
+      description: 'Counter decrement decreases count',
+    },
+    {
+      input: { fn: 'createCounter', args: [5], operations: ['increment()', 'increment()', 'reset()', 'getCount()'] },
+      expectedOutput: 5,
+      description: 'Counter reset restores initial value',
+    },
+    {
+      input: { fn: 'createBankAccount', args: [100], operations: ['deposit(50)', 'getBalance()'] },
+      expectedOutput: 150,
+      description: 'Bank account deposit increases balance',
+    },
+    {
+      input: { fn: 'createBankAccount', args: [100], operations: ['withdraw(30)', 'getBalance()'] },
+      expectedOutput: 70,
+      description: 'Bank account withdraw decreases balance',
+    },
+    {
+      input: { fn: 'memoize', args: ['n => n * 2'], callWith: [5, 5] },
+      expectedOutput: 10,
+      description: 'Memoized function returns cached result',
     },
   ],
   hints: [

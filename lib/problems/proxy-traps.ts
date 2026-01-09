@@ -114,12 +114,77 @@ console.log(withDefaults.missing); // 'N/A'
 const user = createValidatingProxy({ name: 'John', age: 30 });
 user.name = 'Jane'; // OK
 // user.age = -5; // Should throw error`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a proxy that logs all property access
+function createLoggingProxy(obj) {
+  return new Proxy(obj, {
+    get(target, prop) {
+      console.log(\`Getting \${String(prop)}\`);
+      return target[prop];
+    },
+    set(target, prop, value) {
+      console.log(\`Setting \${String(prop)} to \${value}\`);
+      target[prop] = value;
+      return true;
+    }
+  });
+}
+
+// Create a proxy with default values for missing properties
+function createDefaultProxy(obj, defaultValue) {
+  return new Proxy(obj, {
+    get(target, prop) {
+      return prop in target ? target[prop] : defaultValue;
+    }
+  });
+}
+
+// Create a validating proxy for a user object
+function createValidatingProxy(obj) {
+  return new Proxy(obj, {
+    set(target, prop, value) {
+      if (prop === 'name' && typeof value !== 'string') {
+        throw new Error('name must be a string');
+      }
+      if (prop === 'age' && (typeof value !== 'number' || value < 0)) {
+        throw new Error('age must be a positive number');
+      }
+      target[prop] = value;
+      return true;
+    }
+  });
+}
+
+// Test
+const logged = createLoggingProxy({ x: 1, y: 2 });
+console.log(logged.x); // Should log: "Getting x"
+logged.x = 10; // Should log: "Setting x to 10"
+
+const withDefaults = createDefaultProxy({}, 'N/A');
+console.log(withDefaults.missing); // 'N/A'
+
+const user = createValidatingProxy({ name: 'John', age: 30 });
+user.name = 'Jane'; // OK
+// user.age = -5; // Should throw error`,
   testCases: [
     {
-      input: [],
+      input: { type: 'default-proxy', obj: { a: 1 }, defaultValue: 'N/A', prop: 'missing' },
+      expectedOutput: 'N/A',
+      description: 'Default proxy returns default value for missing properties',
+    },
+    {
+      input: { type: 'default-proxy', obj: { a: 1 }, defaultValue: 'N/A', prop: 'a' },
+      expectedOutput: 1,
+      description: 'Default proxy returns actual value for existing properties',
+    },
+    {
+      input: { type: 'validating-proxy-valid', name: 'Jane' },
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'Validating proxy accepts valid string for name',
+    },
+    {
+      input: { type: 'validating-proxy-invalid-age', age: -5 },
+      expectedOutput: 'error',
+      description: 'Validating proxy throws error for negative age',
     },
   ],
   hints: [

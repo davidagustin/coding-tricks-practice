@@ -100,12 +100,45 @@ console.log(greetUser(user));
 console.log(greetUser(null));
 console.log(getConfigValue({ timeout: 5000 }, 'timeout', 3000));
 console.log(getConfigValue({}, 'timeout', 3000));`,
-  solution: `function test() { return true; }`,
+  solution: `function greetUser(user) {
+  // Use && to only call user.getName() if user exists
+  const name = user && user.getName();
+  return 'Hello, ' + (name || 'Guest') + '!';
+}
+
+function getConfigValue(config, key, defaultValue) {
+  // Return config[key] if it exists, otherwise defaultValue
+  // Using ?? (nullish coalescing) is better for handling falsy values
+  // but || works for most cases
+  return (config && config[key] !== undefined) ? config[key] : defaultValue;
+}
+
+// Test
+const user = { getName: () => 'John' };
+console.log(greetUser(user));
+console.log(greetUser(null));
+console.log(getConfigValue({ timeout: 5000 }, 'timeout', 3000));
+console.log(getConfigValue({}, 'timeout', 3000));`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { user: { getName: () => 'John' } },
+      expectedOutput: 'Hello, John!',
+      description: 'greetUser with valid user returns greeting with name',
+    },
+    {
+      input: { user: null },
+      expectedOutput: 'Hello, Guest!',
+      description: 'greetUser with null user returns Guest greeting',
+    },
+    {
+      input: { config: { timeout: 5000 }, key: 'timeout', defaultValue: 3000 },
+      expectedOutput: 5000,
+      description: 'getConfigValue returns existing config value',
+    },
+    {
+      input: { config: {}, key: 'timeout', defaultValue: 3000 },
+      expectedOutput: 3000,
+      description: 'getConfigValue returns default when key missing',
     },
   ],
   hints: [

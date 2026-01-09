@@ -120,12 +120,137 @@ console.log(getFirst([1, 2, 3, 4, 5]));
 console.log(linearSearch([3, 1, 4, 1, 5], 4));
 console.log(binarySearch([1, 2, 3, 4, 5], 3));
 console.log(findAllPairs([1, 2, 3]));`,
-  solution: `function test() { return true; }`,
+  solution: `// O(1) - Constant time: Get first element
+function getFirst(arr) {
+  return arr[0];
+}
+
+// O(n) - Linear time: Find element in unsorted array
+function linearSearch(arr, target) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === target) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+// O(log n) - Logarithmic time: Binary search in sorted array
+function binarySearch(arr, target) {
+  let left = 0;
+  let right = arr.length - 1;
+
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+
+    if (arr[mid] === target) {
+      return mid;
+    } else if (arr[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
+    }
+  }
+
+  return -1;
+}
+
+// O(n^2) - Quadratic time: Find all pairs
+function findAllPairs(arr) {
+  const pairs = [];
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = i + 1; j < arr.length; j++) {
+      pairs.push([arr[i], arr[j]]);
+    }
+  }
+  return pairs;
+}
+
+// O(n log n) - Sort array using efficient algorithm
+function efficientSort(arr) {
+  return [...arr].sort((a, b) => a - b);
+}
+
+// Analyze the complexity of a given function based on its behavior
+function analyzeComplexity(fn, testSizes = [10, 100, 1000]) {
+  const times = [];
+
+  for (const size of testSizes) {
+    const testArr = Array.from({ length: size }, (_, i) => i);
+    const start = performance.now();
+
+    // Run multiple times for more accurate measurement
+    for (let i = 0; i < 100; i++) {
+      fn(testArr, testArr[Math.floor(size / 2)]);
+    }
+
+    const end = performance.now();
+    times.push(end - start);
+  }
+
+  // Analyze ratios to determine complexity
+  const ratio1 = times[1] / times[0]; // 10x input
+  const ratio2 = times[2] / times[1]; // 10x input
+
+  // O(1): ratios should be ~1
+  if (ratio1 < 2 && ratio2 < 2) {
+    return 'O(1)';
+  }
+
+  // O(log n): ratios should be ~3.3 (log2(10) = 3.32)
+  if (ratio1 < 5 && ratio2 < 5) {
+    return 'O(log n)';
+  }
+
+  // O(n): ratios should be ~10
+  if (ratio1 < 15 && ratio2 < 15) {
+    return 'O(n)';
+  }
+
+  // O(n log n): ratios should be ~33 (10 * 3.3)
+  if (ratio1 < 50 && ratio2 < 50) {
+    return 'O(n log n)';
+  }
+
+  // O(n^2): ratios should be ~100
+  return 'O(n^2)';
+}
+
+// Test your implementations
+console.log(getFirst([1, 2, 3, 4, 5]));
+console.log(linearSearch([3, 1, 4, 1, 5], 4));
+console.log(binarySearch([1, 2, 3, 4, 5], 3));
+console.log(findAllPairs([1, 2, 3]));`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { fn: 'getFirst', args: [[1, 2, 3, 4, 5]] },
+      expectedOutput: 1,
+      description: 'getFirst returns first element (O(1))',
+    },
+    {
+      input: { fn: 'linearSearch', args: [[3, 1, 4, 1, 5], 4] },
+      expectedOutput: 2,
+      description: 'linearSearch finds element index (O(n))',
+    },
+    {
+      input: { fn: 'linearSearch', args: [[3, 1, 4, 1, 5], 9] },
+      expectedOutput: -1,
+      description: 'linearSearch returns -1 when not found',
+    },
+    {
+      input: { fn: 'binarySearch', args: [[1, 2, 3, 4, 5], 3] },
+      expectedOutput: 2,
+      description: 'binarySearch finds element in sorted array (O(log n))',
+    },
+    {
+      input: { fn: 'findAllPairs', args: [[1, 2, 3]] },
+      expectedOutput: [[1, 2], [1, 3], [2, 3]],
+      description: 'findAllPairs returns all unique pairs (O(n^2))',
+    },
+    {
+      input: { fn: 'efficientSort', args: [[5, 2, 8, 1, 9]] },
+      expectedOutput: [1, 2, 5, 8, 9],
+      description: 'efficientSort returns sorted array (O(n log n))',
     },
   ],
   hints: [

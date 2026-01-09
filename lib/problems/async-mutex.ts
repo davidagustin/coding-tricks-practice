@@ -199,12 +199,173 @@ class AsyncSemaphore {
 //   mutex.withLock(async () => { counter++; }),
 // ]);
 // console.log(counter); // 2`,
-  solution: `function test() { return true; }`,
+  solution: `class AsyncMutex {
+  constructor() {
+    this._locked = false;
+    this._queue = [];
+  }
+
+  acquire(timeoutMs = 0) {
+    return new Promise((resolve, reject) => {
+      const tryAcquire = () => {
+        if (!this._locked) {
+          this._locked = true;
+          resolve(() => this._release());
+          return true;
+        }
+        return false;
+      };
+
+      // Try to acquire immediately
+      if (tryAcquire()) return;
+
+      // Queue the request
+      const request = { resolve: () => {
+        this._locked = true;
+        resolve(() => this._release());
+      }};
+      this._queue.push(request);
+
+      // Set up timeout if specified
+      if (timeoutMs > 0) {
+        setTimeout(() => {
+          const index = this._queue.indexOf(request);
+          if (index !== -1) {
+            this._queue.splice(index, 1);
+            reject(new Error(\`Lock acquisition timed out after \${timeoutMs}ms\`));
+          }
+        }, timeoutMs);
+      }
+    });
+  }
+
+  async withLock(fn) {
+    const release = await this.acquire();
+    try {
+      return await fn();
+    } finally {
+      release();
+    }
+  }
+
+  isLocked() {
+    return this._locked;
+  }
+
+  get queueLength() {
+    return this._queue.length;
+  }
+
+  _release() {
+    if (this._queue.length > 0) {
+      const next = this._queue.shift();
+      next.resolve();
+    } else {
+      this._locked = false;
+    }
+  }
+}
+
+// Semaphore: Like mutex but allows N concurrent holders
+class AsyncSemaphore {
+  constructor(permits = 1) {
+    this._permits = permits;
+    this._available = permits;
+    this._queue = [];
+  }
+
+  acquire() {
+    return new Promise(resolve => {
+      const tryAcquire = () => {
+        if (this._available > 0) {
+          this._available--;
+          resolve(() => this.release());
+          return true;
+        }
+        return false;
+      };
+
+      if (tryAcquire()) return;
+
+      this._queue.push({ resolve: () => {
+        this._available--;
+        resolve(() => this.release());
+      }});
+    });
+  }
+
+  release() {
+    if (this._queue.length > 0) {
+      const next = this._queue.shift();
+      next.resolve();
+    } else {
+      this._available = Math.min(this._available + 1, this._permits);
+    }
+  }
+
+  get availablePermits() {
+    return this._available;
+  }
+}
+
+// Test
+async function runTests() {
+  const mutex = new AsyncMutex();
+  let counter = 0;
+
+  // Test mutex serialization
+  await Promise.all([
+    mutex.withLock(async () => {
+      const temp = counter;
+      await new Promise(r => setTimeout(r, 10));
+      counter = temp + 1;
+    }),
+    mutex.withLock(async () => {
+      const temp = counter;
+      await new Promise(r => setTimeout(r, 10));
+      counter = temp + 1;
+    }),
+  ]);
+  console.log('Counter (should be 2):', counter);
+
+  // Test semaphore
+  const semaphore = new AsyncSemaphore(2);
+  console.log('Initial permits:', semaphore.availablePermits);
+
+  const release1 = await semaphore.acquire();
+  console.log('After first acquire:', semaphore.availablePermits);
+
+  const release2 = await semaphore.acquire();
+  console.log('After second acquire:', semaphore.availablePermits);
+
+  release1();
+  console.log('After first release:', semaphore.availablePermits);
+
+  release2();
+  console.log('After second release:', semaphore.availablePermits);
+}
+
+runTests();`,
   testCases: [
     {
-      input: [],
+      input: ['mutex serialization'],
+      expectedOutput: 2,
+      description: 'Mutex ensures counter increments correctly with concurrent access',
+    },
+    {
+      input: ['mutex isLocked'],
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'isLocked returns true when mutex is held',
+    },
+    {
+      input: ['semaphore permits'],
+      expectedOutput: 2,
+      description: 'Semaphore with 2 permits allows 2 concurrent holders',
+    },
+    {
+      input: ['withLock auto-release'],
+      expectedOutput: false,
+      description: 'withLock automatically releases lock after function completes',
     },
   ],
   hints: [

@@ -179,12 +179,134 @@ const tree: TreeNode = {
 
 console.log(dfsTreePreOrder(tree));
 // Expected: [1, 2, 4, 5, 3]`,
-  solution: `function test() { return true; }`,
+  solution: `// Graph represented as adjacency list
+type Graph = { [key: string]: string[] };
+
+// Binary tree node
+interface TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+}
+
+// Recursive DFS for graphs
+function dfsGraphRecursive(
+  graph: Graph,
+  start: string,
+  visited: Set<string> = new Set()
+): string[] {
+  const result: string[] = [];
+
+  function dfs(node: string) {
+    if (visited.has(node)) return;
+    visited.add(node);
+    result.push(node);
+
+    for (const neighbor of graph[node] || []) {
+      dfs(neighbor);
+    }
+  }
+
+  dfs(start);
+  return result;
+}
+
+// Iterative DFS for graphs using a stack
+function dfsGraphIterative(graph: Graph, start: string): string[] {
+  const visited = new Set<string>();
+  const stack: string[] = [start];
+  const result: string[] = [];
+
+  while (stack.length > 0) {
+    const node = stack.pop()!;
+    if (visited.has(node)) continue;
+
+    visited.add(node);
+    result.push(node);
+
+    // Push neighbors in reverse order to maintain left-to-right visiting
+    const neighbors = graph[node] || [];
+    for (let i = neighbors.length - 1; i >= 0; i--) {
+      if (!visited.has(neighbors[i])) {
+        stack.push(neighbors[i]);
+      }
+    }
+  }
+
+  return result;
+}
+
+// DFS for binary tree (pre-order traversal)
+function dfsTreePreOrder(root: TreeNode | null): number[] {
+  const result: number[] = [];
+
+  function dfs(node: TreeNode | null) {
+    if (!node) return;
+    result.push(node.val);
+    dfs(node.left);
+    dfs(node.right);
+  }
+
+  dfs(root);
+  return result;
+}
+
+// DFS for binary tree (in-order traversal)
+function dfsTreeInOrder(root: TreeNode | null): number[] {
+  const result: number[] = [];
+
+  function dfs(node: TreeNode | null) {
+    if (!node) return;
+    dfs(node.left);
+    result.push(node.val);
+    dfs(node.right);
+  }
+
+  dfs(root);
+  return result;
+}
+
+// Test cases
+const graph: Graph = {
+  'A': ['B', 'C'],
+  'B': ['D', 'E'],
+  'C': ['F'],
+  'D': [],
+  'E': [],
+  'F': []
+};
+
+console.log(dfsGraphRecursive(graph, 'A'));
+// ['A', 'B', 'D', 'E', 'C', 'F']
+
+const tree: TreeNode = {
+  val: 1,
+  left: { val: 2, left: { val: 4, left: null, right: null }, right: { val: 5, left: null, right: null } },
+  right: { val: 3, left: null, right: null }
+};
+
+console.log(dfsTreePreOrder(tree));
+// [1, 2, 4, 5, 3]`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { graph: { A: ['B', 'C'], B: ['D', 'E'], C: ['F'], D: [], E: [], F: [] }, start: 'A' },
+      expectedOutput: ['A', 'B', 'D', 'E', 'C', 'F'],
+      description: 'Recursive DFS traverses graph in correct order',
+    },
+    {
+      input: { graph: { A: ['B', 'C'], B: ['D'], C: [], D: [] }, start: 'A' },
+      expectedOutput: ['A', 'B', 'D', 'C'],
+      description: 'Iterative DFS traverses graph in correct order',
+    },
+    {
+      input: { tree: { val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } } },
+      expectedOutput: [1, 2, 3],
+      description: 'Pre-order DFS traverses tree: node, left, right',
+    },
+    {
+      input: { tree: { val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } } },
+      expectedOutput: [2, 1, 3],
+      description: 'In-order DFS traverses tree: left, node, right',
     },
   ],
   hints: [

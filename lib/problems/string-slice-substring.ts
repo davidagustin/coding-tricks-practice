@@ -128,12 +128,70 @@ console.log(getFileExtension('document.pdf'));
 console.log(removeFirstAndLast('[hello]'));
 console.log(extractMiddle('abcdef', 4, 1));
 console.log(truncateWithEllipsis('Hello World', 8));`,
-  solution: `function test() { return true; }`,
+  solution: `function getFileExtension(filename) {
+  // Return the file extension (including the dot) using slice with negative index
+  const dotIndex = filename.lastIndexOf('.');
+  if (dotIndex === -1) return '';
+  return filename.slice(dotIndex);
+}
+
+function removeFirstAndLast(str) {
+  // Remove first and last character using slice()
+  return str.slice(1, -1);
+}
+
+function extractMiddle(str, start, end) {
+  // Extract substring between start and end
+  // Handle case where start > end by swapping (use substring behavior)
+  return str.substring(start, end);
+}
+
+function truncateWithEllipsis(str, maxLength) {
+  // Truncate string to maxLength and add '...' if truncated
+  if (str.length <= maxLength) return str;
+  return str.slice(0, maxLength - 3) + '...';
+}
+
+// Test
+console.log(getFileExtension('document.pdf'));
+console.log(removeFirstAndLast('[hello]'));
+console.log(extractMiddle('abcdef', 4, 1));
+console.log(truncateWithEllipsis('Hello World', 8));`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { filename: 'document.pdf' },
+      expectedOutput: '.pdf',
+      description: 'getFileExtension returns extension with dot',
+    },
+    {
+      input: { filename: 'image.png' },
+      expectedOutput: '.png',
+      description: 'getFileExtension works for .png files',
+    },
+    {
+      input: { str: '[hello]' },
+      expectedOutput: 'hello',
+      description: 'removeFirstAndLast removes brackets',
+    },
+    {
+      input: { str: '"quoted"' },
+      expectedOutput: 'quoted',
+      description: 'removeFirstAndLast removes quotes',
+    },
+    {
+      input: { str: 'abcdef', start: 4, end: 1 },
+      expectedOutput: 'bcd',
+      description: 'extractMiddle swaps arguments when start > end',
+    },
+    {
+      input: { str: 'Hello World', maxLength: 8 },
+      expectedOutput: 'Hello...',
+      description: 'truncateWithEllipsis truncates with ellipsis',
+    },
+    {
+      input: { str: 'Short', maxLength: 10 },
+      expectedOutput: 'Short',
+      description: 'truncateWithEllipsis returns original if shorter than maxLength',
     },
   ],
   hints: [

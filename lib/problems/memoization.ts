@@ -109,12 +109,69 @@ const memoizedFib = memoize(n => {
 
 console.log(memoizedFib(10));
 console.log(fastFib(10));`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a memoize function that caches results
+function memoize(fn) {
+  const cache = new Map();
+
+  return function(...args) {
+    const key = JSON.stringify(args);
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+    const result = fn.apply(this, args);
+    cache.set(key, result);
+    return result;
+  };
+}
+
+// Test with fibonacci
+function slowFib(n) {
+  if (n <= 1) return n;
+  return slowFib(n - 1) + slowFib(n - 2);
+}
+
+// Create memoized fibonacci that's actually fast
+function fastFib(n, memo = {}) {
+  if (n <= 1) return n;
+  if (memo[n] !== undefined) return memo[n];
+  memo[n] = fastFib(n - 1, memo) + fastFib(n - 2, memo);
+  return memo[n];
+}
+
+// Test
+const memoizedFib = memoize(function fib(n) {
+  if (n <= 1) return n;
+  return memoizedFib(n - 1) + memoizedFib(n - 2);
+});
+
+console.log(memoizedFib(10)); // 55
+console.log(fastFib(10)); // 55
+console.log(memoizedFib(40)); // 102334155 (fast due to memoization)`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { fn: 'memoizedFib', arg: 10 },
+      expectedOutput: 55,
+      description: 'memoizedFib(10) returns 55',
+    },
+    {
+      input: { fn: 'memoizedFib', arg: 0 },
+      expectedOutput: 0,
+      description: 'memoizedFib(0) returns 0',
+    },
+    {
+      input: { fn: 'memoizedFib', arg: 1 },
+      expectedOutput: 1,
+      description: 'memoizedFib(1) returns 1',
+    },
+    {
+      input: { fn: 'fastFib', arg: 10 },
+      expectedOutput: 55,
+      description: 'fastFib(10) returns 55',
+    },
+    {
+      input: { fn: 'fastFib', arg: 20 },
+      expectedOutput: 6765,
+      description: 'fastFib(20) returns 6765',
     },
   ],
   hints: [

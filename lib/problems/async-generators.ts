@@ -93,12 +93,80 @@ async function fetchPage(page) {
     console.log(page);
   }
 })();`,
-  solution: `function test() { return true; }`,
+  solution: `// Helper function (simulates API call)
+async function fetchPage(page, pageSize = 10) {
+  // Simulated API call with delay
+  await new Promise(resolve => setTimeout(resolve, 100));
+  return {
+    data: Array.from({ length: pageSize }, (_, i) => page * pageSize + i),
+    hasMore: page < 2
+  };
+}
+
+async function* fetchPages(pageSize = 10) {
+  let page = 0;
+  let hasMore = true;
+
+  while (hasMore) {
+    const result = await fetchPage(page, pageSize);
+    yield result.data;
+    hasMore = result.hasMore;
+    page++;
+  }
+}
+
+// Additional async generator: Fetch items one by one across all pages
+async function* fetchAllItems(pageSize = 10) {
+  for await (const pageData of fetchPages(pageSize)) {
+    for (const item of pageData) {
+      yield item;
+    }
+  }
+}
+
+// Async generator with filtering
+async function* fetchFilteredItems(pageSize = 10, filterFn) {
+  for await (const item of fetchAllItems(pageSize)) {
+    if (filterFn(item)) {
+      yield item;
+    }
+  }
+}
+
+// Test
+(async () => {
+  console.log('Fetching pages:');
+  for await (const page of fetchPages()) {
+    console.log('Page:', page);
+  }
+
+  console.log('\\nFetching all items:');
+  const items = [];
+  for await (const item of fetchAllItems(5)) {
+    items.push(item);
+  }
+  console.log('All items:', items);
+
+  console.log('\\nFetching even items only:');
+  for await (const item of fetchFilteredItems(5, n => n % 2 === 0)) {
+    console.log('Even item:', item);
+  }
+})();`,
   testCases: [
     {
-      input: [],
+      input: [10],
+      expectedOutput: [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [10, 11, 12, 13, 14, 15, 16, 17, 18, 19], [20, 21, 22, 23, 24, 25, 26, 27, 28, 29]],
+      description: 'fetchPages yields arrays of page data',
+    },
+    {
+      input: [5],
+      expectedOutput: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+      description: 'fetchAllItems yields all items across pages',
+    },
+    {
+      input: ['async generator basics'],
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'Async generators use async function* syntax and yield values',
     },
   ],
   hints: [

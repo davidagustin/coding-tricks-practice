@@ -160,12 +160,107 @@ async function collectAsyncIterable(asyncIterable) {
 // Test (commented out)
 // const iterable = createAsyncIterable([1, 2, 3], 100);
 // for await (const value of iterable) console.log(value);`,
-  solution: `function test() { return true; }`,
+  solution: `// Create an async iterable that yields values with delays
+function createAsyncIterable(values, delayMs) {
+  return {
+    [Symbol.asyncIterator]() {
+      let index = 0;
+      return {
+        next() {
+          if (index >= values.length) {
+            return Promise.resolve({ done: true, value: undefined });
+          }
+          const value = values[index];
+          index++;
+          return new Promise(resolve => {
+            setTimeout(() => {
+              resolve({ done: false, value });
+            }, delayMs);
+          });
+        }
+      };
+    }
+  };
+}
+
+// Process paginated API data
+async function processPaginatedData(fetchPage) {
+  const allItems = [];
+  let pageNum = 0;
+  let hasMore = true;
+
+  while (hasMore) {
+    const { data, hasMore: more } = await fetchPage(pageNum);
+    allItems.push(...data);
+    hasMore = more;
+    pageNum++;
+  }
+
+  return allItems;
+}
+
+// Create an async generator that fetches data in batches
+async function* batchFetcher(ids, batchSize, fetchBatch) {
+  for (let i = 0; i < ids.length; i += batchSize) {
+    const batchIds = ids.slice(i, i + batchSize);
+    const results = await fetchBatch(batchIds);
+    for (const result of results) {
+      yield result;
+    }
+  }
+}
+
+// Collect all values from an async iterable
+async function collectAsyncIterable(asyncIterable) {
+  const results = [];
+  for await (const value of asyncIterable) {
+    results.push(value);
+  }
+  return results;
+}
+
+// Test
+async function runTests() {
+  // Test createAsyncIterable
+  const iterable = createAsyncIterable([1, 2, 3], 100);
+  console.log('Async iterable values:');
+  for await (const value of iterable) {
+    console.log(value);
+  }
+
+  // Test collectAsyncIterable
+  const collected = await collectAsyncIterable(createAsyncIterable(['a', 'b', 'c'], 50));
+  console.log('Collected:', collected);
+
+  // Test batchFetcher
+  const mockFetchBatch = async (ids) => ids.map(id => ({ id, data: \`Data for \${id}\` }));
+  console.log('Batch fetcher results:');
+  for await (const item of batchFetcher([1, 2, 3, 4, 5], 2, mockFetchBatch)) {
+    console.log(item);
+  }
+}
+
+runTests();`,
   testCases: [
     {
-      input: [],
+      input: [[1, 2, 3], 100],
+      expectedOutput: [1, 2, 3],
+      description: 'createAsyncIterable yields values with delay',
+    },
+    {
+      input: [['a', 'b', 'c']],
+      expectedOutput: ['a', 'b', 'c'],
+      description: 'collectAsyncIterable collects all values from async iterable',
+    },
+    {
+      input: [[1, 2, 3, 4, 5], 2],
+      expectedOutput: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }],
+      description: 'batchFetcher yields items from batched fetches',
+    },
+    {
+      input: ['Symbol.asyncIterator'],
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'Async iterables implement Symbol.asyncIterator',
     },
   ],
   hints: [

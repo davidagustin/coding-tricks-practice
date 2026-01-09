@@ -114,12 +114,74 @@ const range = new NumberRange(1, 5);
 for (const num of range) {
   console.log(num); // Should iterate 1, 2, 3, 4, 5
 }`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a private property using Symbol
+const ID = Symbol('id');
+
+class User {
+  constructor(name) {
+    this.name = name;
+    // Store ID privately using Symbol
+    this[ID] = Math.random().toString(36).substr(2, 9);
+  }
+
+  getId() {
+    // Return private ID
+    return this[ID];
+  }
+}
+
+// Implement Symbol.iterator for custom iteration
+class NumberRange {
+  constructor(start, end) {
+    this.start = start;
+    this.end = end;
+  }
+
+  [Symbol.iterator]() {
+    let current = this.start;
+    const end = this.end;
+
+    return {
+      next() {
+        if (current <= end) {
+          return { value: current++, done: false };
+        }
+        return { done: true };
+      }
+    };
+  }
+}
+
+// Test
+const user = new User('John');
+console.log(user.name); // 'John'
+console.log(user.id); // Should be undefined (private)
+console.log(user.getId()); // Should return the ID
+
+const range = new NumberRange(1, 5);
+for (const num of range) {
+  console.log(num); // Should iterate 1, 2, 3, 4, 5
+}`,
   testCases: [
     {
-      input: [],
+      input: { name: 'John' },
+      expectedOutput: undefined,
+      description: 'user.id is undefined (private symbol property)',
+    },
+    {
+      input: { name: 'John', checkId: true },
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'user.getId() returns the private ID',
+    },
+    {
+      input: { start: 1, end: 5 },
+      expectedOutput: [1, 2, 3, 4, 5],
+      description: 'NumberRange iterates from start to end inclusive',
+    },
+    {
+      input: { start: 3, end: 6 },
+      expectedOutput: [3, 4, 5, 6],
+      description: 'NumberRange works with different start/end values',
     },
   ],
   hints: [

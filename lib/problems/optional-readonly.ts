@@ -105,12 +105,43 @@ function createUser(data: Partial<User>): User {
 const user = createUser({ id: '123', name: 'Alice' });
 // user.id = '456'; // Should cause error (readonly)
 console.log(user);`,
-  solution: `function test() { return true; }`,
+  solution: `// Interface with readonly and optional properties
+interface User {
+  readonly id: string;
+  name: string;
+  email?: string;
+  age?: number;
+}
+
+function createUser(data: Partial<User>): User {
+  // Return User with defaults for optional properties
+  return {
+    id: data.id ?? crypto.randomUUID(),
+    name: data.name ?? 'Anonymous',
+    email: data.email,
+    age: data.age
+  };
+}
+
+// Test
+const user = createUser({ id: '123', name: 'Alice' });
+// user.id = '456'; // Should cause error (readonly)
+console.log(user);`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: [{ id: '123', name: 'Alice' }],
+      expectedOutput: { id: '123', name: 'Alice', email: undefined, age: undefined },
+      description: 'createUser creates user with provided id and name',
+    },
+    {
+      input: [{ name: 'Bob', email: 'bob@test.com' }],
+      expectedOutput: { name: 'Bob', email: 'bob@test.com' },
+      description: 'createUser includes optional email when provided',
+    },
+    {
+      input: [{}],
+      expectedOutput: { name: 'Anonymous' },
+      description: 'createUser uses default name when not provided',
     },
   ],
   hints: [

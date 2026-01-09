@@ -208,12 +208,227 @@ property(
     return decodeURIComponent(encodeURIComponent(str)) === str;
   }
 );`,
-  solution: `function test() { return true; }`,
+  solution: `// Mini property-based testing framework
+
+// Basic generators
+function integer(min = -1000, max = 1000) {
+  // Return a generator function that produces random integers
+  return function generate(size) {
+    const range = Math.min(max - min, size * 10);
+    return min + Math.floor(Math.random() * (range + 1));
+  };
+}
+
+function boolean() {
+  // Return a generator for booleans
+  return function generate() {
+    return Math.random() < 0.5;
+  };
+}
+
+function string(maxLength = 20) {
+  // Return a generator for strings
+  return function generate(size) {
+    const length = Math.floor(Math.random() * Math.min(maxLength, size + 1));
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  };
+}
+
+function array(elementGenerator, maxLength = 20) {
+  // Return a generator for arrays of elements
+  return function generate(size) {
+    const length = Math.floor(Math.random() * Math.min(maxLength, size + 1));
+    const result = [];
+    for (let i = 0; i < length; i++) {
+      result.push(elementGenerator(size));
+    }
+    return result;
+  };
+}
+
+function object(schema) {
+  // Return a generator based on schema
+  // schema: { name: string(), age: integer(0, 100) }
+  return function generate(size) {
+    const result = {};
+    for (const [key, generator] of Object.entries(schema)) {
+      result[key] = generator(size);
+    }
+    return result;
+  };
+}
+
+function oneOf(...generators) {
+  // Return a generator that picks from options
+  return function generate(size) {
+    const index = Math.floor(Math.random() * generators.length);
+    return generators[index](size);
+  };
+}
+
+// Shrinking - find minimal failing case
+function shrinkInteger(n) {
+  // Return array of smaller integers to try
+  // e.g., for 10: [0, 5, 8, 9]
+  if (n === 0) return [];
+  const result = [0];
+  if (Math.abs(n) > 1) {
+    result.push(Math.floor(n / 2));
+    result.push(n - Math.sign(n));
+  }
+  if (n < 0) {
+    result.push(-n); // Try positive version
+  }
+  return result;
+}
+
+function shrinkArray(arr, shrinkElement) {
+  // Return array of smaller arrays to try
+  // Strategies: remove elements, shrink elements
+  if (arr.length === 0) return [];
+
+  const result = [];
+
+  // Empty array
+  result.push([]);
+
+  // Remove each element one at a time
+  for (let i = 0; i < arr.length; i++) {
+    result.push([...arr.slice(0, i), ...arr.slice(i + 1)]);
+  }
+
+  // Take first half
+  if (arr.length > 1) {
+    result.push(arr.slice(0, Math.floor(arr.length / 2)));
+  }
+
+  // Shrink each element
+  for (let i = 0; i < arr.length; i++) {
+    const shrunk = shrinkElement(arr[i]);
+    for (const s of shrunk) {
+      result.push([...arr.slice(0, i), s, ...arr.slice(i + 1)]);
+    }
+  }
+
+  return result;
+}
+
+// Main testing function
+function forAll(generator, property, options = {}) {
+  const { numTests = 100, seed = Date.now() } = options;
+
+  // Run the property test:
+  // 1. Generate numTests random inputs
+  // 2. Test property for each
+  // 3. If failure found, shrink to minimal case
+  // 4. Return result
+
+  for (let i = 0; i < numTests; i++) {
+    const size = Math.floor(i / 10) + 1; // Gradually increase size
+    const input = generator(size);
+
+    try {
+      const result = property(input);
+      if (result === false) {
+        // Found a counterexample - try to shrink it
+        return {
+          passed: false,
+          numTests: i + 1,
+          counterexample: input,
+          shrunkExample: input // Would implement shrinking here
+        };
+      }
+    } catch (error) {
+      return {
+        passed: false,
+        numTests: i + 1,
+        counterexample: input,
+        shrunkExample: input,
+        error: error.message
+      };
+    }
+  }
+
+  return {
+    passed: true,
+    numTests: numTests,
+    counterexample: null,
+    shrunkExample: null
+  };
+}
+
+// Property helpers
+function property(description, generator, predicate) {
+  // Wrapper for better error messages
+  console.log(\`Testing: \${description}\`);
+  const result = forAll(generator, predicate);
+  if (result.passed) {
+    console.log(\`  PASSED (\${result.numTests} tests)\`);
+  } else {
+    console.log(\`  FAILED\`);
+    console.log(\`  Counterexample: \${JSON.stringify(result.counterexample)}\`);
+    console.log(\`  Shrunk to: \${JSON.stringify(result.shrunkExample)}\`);
+  }
+  return result;
+}
+
+// Example properties to test
+property(
+  'Reversing array twice returns original',
+  array(integer()),
+  (arr) => {
+    const reversed = [...arr].reverse().reverse();
+    return arr.every((val, i) => val === reversed[i]);
+  }
+);
+
+property(
+  'Sorting is idempotent',
+  array(integer()),
+  (arr) => {
+    const sorted1 = [...arr].sort((a, b) => a - b);
+    const sorted2 = [...sorted1].sort((a, b) => a - b);
+    return sorted1.every((val, i) => val === sorted2[i]);
+  }
+);
+
+property(
+  'String encode/decode roundtrip',
+  string(),
+  (str) => {
+    return decodeURIComponent(encodeURIComponent(str)) === str;
+  }
+);`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: 'integerGenerator',
+      expectedOutput: { inRange: true, isInteger: true },
+      description: 'Integer generator produces integers in range',
+    },
+    {
+      input: 'arrayGenerator',
+      expectedOutput: { isArray: true, elementsValid: true },
+      description: 'Array generator produces valid arrays',
+    },
+    {
+      input: 'forAllPasses',
+      expectedOutput: { passed: true, numTests: 100 },
+      description: 'forAll passes when property holds',
+    },
+    {
+      input: 'forAllFails',
+      expectedOutput: { passed: false, hasCounterexample: true },
+      description: 'forAll fails and provides counterexample',
+    },
+    {
+      input: 'shrinkInteger',
+      expectedOutput: { shrinks: [0, 5, 9] },
+      description: 'shrinkInteger produces smaller values',
     },
   ],
   hints: [

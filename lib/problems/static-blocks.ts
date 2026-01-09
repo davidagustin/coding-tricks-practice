@@ -196,12 +196,119 @@ console.log(ColorPalette.primary);  // '#0000FF'
 console.log(Validator.validate('email', 'test@example.com'));  // true
 console.log(Validator.validate('phone', '1234567890'));  // true
 console.log(Validator.validate('age', 25));  // true`,
-  solution: `function test() { return true; }`,
+  solution: `// Task 1: Logger class with static initialization
+class Logger {
+  static #logLevel = 'error';
+  static #initialized = false;
+
+  static {
+    // Set logLevel based on environment (assume 'development')
+    const env = 'development';
+    this.#logLevel = env === 'development' ? 'info' : 'error';
+    this.#initialized = true;
+  }
+
+  static setLevel(level) {
+    this.#logLevel = level;
+  }
+
+  static getLevel() {
+    return this.#logLevel;
+  }
+
+  static isInitialized() {
+    return this.#initialized;
+  }
+}
+
+// Task 2: ColorPalette class
+class ColorPalette {
+  static colors;
+  static primary;
+
+  static {
+    this.colors = {
+      red: '#FF0000',
+      green: '#00FF00',
+      blue: '#0000FF'
+    };
+    this.primary = this.colors.blue;
+  }
+
+  static getColor(name) {
+    return this.colors[name] || '#000000';
+  }
+}
+
+// Task 3: Validator class with validation rules
+class Validator {
+  static #rules = new Map();
+
+  static {
+    this.#rules.set('email', value => value.includes('@'));
+    this.#rules.set('phone', value => /^\\d{10}$/.test(value));
+    this.#rules.set('age', value => value >= 0 && value <= 150);
+  }
+
+  static validate(field, value) {
+    const rule = this.#rules.get(field);
+    return rule ? rule(value) : true;
+  }
+
+  static addRule(field, validationFn) {
+    this.#rules.set(field, validationFn);
+  }
+
+  static hasRule(field) {
+    return this.#rules.has(field);
+  }
+}
+
+// Test
+console.log(Logger.isInitialized());  // true
+console.log(Logger.getLevel());  // 'info'
+
+console.log(ColorPalette.getColor('red'));  // '#FF0000'
+console.log(ColorPalette.primary);  // '#0000FF'
+
+console.log(Validator.validate('email', 'test@example.com'));  // true
+console.log(Validator.validate('phone', '1234567890'));  // true
+console.log(Validator.validate('age', 25));  // true`,
   testCases: [
     {
-      input: [],
+      input: { class: 'Logger', method: 'isInitialized' },
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'Logger.isInitialized() returns true after static block runs',
+    },
+    {
+      input: { class: 'Logger', method: 'getLevel' },
+      expectedOutput: 'info',
+      description: 'Logger.getLevel() returns info in development mode',
+    },
+    {
+      input: { class: 'ColorPalette', method: 'getColor', args: ['red'] },
+      expectedOutput: '#FF0000',
+      description: 'ColorPalette.getColor returns correct hex for red',
+    },
+    {
+      input: { class: 'ColorPalette', property: 'primary' },
+      expectedOutput: '#0000FF',
+      description: 'ColorPalette.primary equals blue color',
+    },
+    {
+      input: { class: 'Validator', method: 'validate', args: ['email', 'test@example.com'] },
+      expectedOutput: true,
+      description: 'Validator validates email with @ symbol',
+    },
+    {
+      input: { class: 'Validator', method: 'validate', args: ['phone', '1234567890'] },
+      expectedOutput: true,
+      description: 'Validator validates 10-digit phone number',
+    },
+    {
+      input: { class: 'Validator', method: 'validate', args: ['age', 25] },
+      expectedOutput: true,
+      description: 'Validator validates age within range',
     },
   ],
   hints: [

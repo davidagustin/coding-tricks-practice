@@ -102,12 +102,77 @@ const validated = createValidatedObject({}, (key, value) => {
 
 validated.age = 25; // OK
 validated.age = 200; // Should throw error`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a proxy that logs all property access
+function createLoggedObject(target) {
+  // Return a Proxy that logs when properties are accessed
+  // Use 'get' trap to log property reads
+  return new Proxy(target, {
+    get(target, prop, receiver) {
+      console.log(\`Accessing property: \${String(prop)}\`);
+      return Reflect.get(target, prop, receiver);
+    },
+    set(target, prop, value, receiver) {
+      console.log(\`Setting property: \${String(prop)} = \${value}\`);
+      return Reflect.set(target, prop, value, receiver);
+    }
+  });
+}
+
+// Create a proxy that validates property assignments
+function createValidatedObject(target, validator) {
+  // Return a Proxy that validates before setting properties
+  // Use 'set' trap to validate and set values
+  // Throw error if validation fails
+  return new Proxy(target, {
+    set(target, prop, value, receiver) {
+      // Run the validator - it should throw if invalid
+      validator(prop, value);
+      return Reflect.set(target, prop, value, receiver);
+    },
+    get(target, prop, receiver) {
+      return Reflect.get(target, prop, receiver);
+    }
+  });
+}
+
+// Test
+const logged = createLoggedObject({ name: 'John', age: 30 });
+console.log(logged.name); // Should log: "Accessing property: name"
+
+const validated = createValidatedObject({}, (key, value) => {
+  if (key === 'age' && (value < 0 || value > 150)) {
+    throw new Error('Invalid age');
+  }
+  return true;
+});
+
+validated.age = 25; // OK
+// validated.age = 200; // Should throw error`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: 'loggedGet',
+      expectedOutput: { logged: true, value: 'John' },
+      description: 'Logged object logs property access',
+    },
+    {
+      input: 'loggedSet',
+      expectedOutput: { logged: true, value: 'Jane' },
+      description: 'Logged object logs property assignment',
+    },
+    {
+      input: 'validatedSuccess',
+      expectedOutput: { age: 25 },
+      description: 'Validated object accepts valid values',
+    },
+    {
+      input: 'validatedFailure',
+      expectedOutput: { error: 'Invalid age' },
+      description: 'Validated object rejects invalid values',
+    },
+    {
+      input: 'proxyTransparent',
+      expectedOutput: { isProxy: false },
+      description: 'Proxy is transparent to code using it',
     },
   ],
   hints: [

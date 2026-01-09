@@ -99,12 +99,47 @@ async function fetchAllWithFailures(urls) {
 // const urls = ['/api/1', '/api/2', '/api/3'];
 // fetchAllOrFail(urls).then(console.log).catch(console.error);
 // fetchAllWithFailures(urls).then(console.log).catch(console.error);`,
-  solution: `function test() { return true; }`,
+  solution: `async function fetchAllOrFail(urls) {
+  // Use Promise.all - should fail if ANY request fails
+  // Return array of responses
+  const promises = urls.map(url => fetch(url));
+  const responses = await Promise.all(promises);
+  return responses;
+}
+
+async function fetchAllWithFailures(urls) {
+  // Use Promise.allSettled - should return all results even if some fail
+  // Return array with { status, value/error }
+  const promises = urls.map(url => fetch(url).then(r => r.json()));
+  const results = await Promise.allSettled(promises);
+  return results.map(result => {
+    if (result.status === 'fulfilled') {
+      return { status: 'fulfilled', value: result.value };
+    } else {
+      return { status: 'rejected', error: result.reason };
+    }
+  });
+}
+
+// Test (commented out to prevent immediate execution)
+// const urls = ['/api/1', '/api/2', '/api/3'];
+// fetchAllOrFail(urls).then(console.log).catch(console.error);
+// fetchAllWithFailures(urls).then(console.log).catch(console.error);`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: 'allSuccess',
+      expectedOutput: { type: 'all', success: true, count: 3 },
+      description: 'Promise.all succeeds when all promises resolve',
+    },
+    {
+      input: 'allFail',
+      expectedOutput: { type: 'all', success: false },
+      description: 'Promise.all fails when any promise rejects',
+    },
+    {
+      input: 'allSettledMixed',
+      expectedOutput: { type: 'allSettled', fulfilled: 2, rejected: 1 },
+      description: 'Promise.allSettled returns all results regardless of outcome',
     },
   ],
   hints: [

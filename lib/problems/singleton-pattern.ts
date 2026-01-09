@@ -128,12 +128,62 @@ const instance2 = Singleton.getInstance();
 instance1.set('name', 'MyApp');
 console.log(instance2.get('name')); // Should print 'MyApp'
 console.log(instance1 === instance2); // Should print true`,
-  solution: `function test() { return true; }`,
+  solution: `class Singleton {
+  // Private static instance
+  static #instance = null;
+
+  // Private data storage
+  #data = new Map();
+
+  // Private constructor (simulated - can't truly prevent in JS)
+  constructor() {
+    if (Singleton.#instance) {
+      return Singleton.#instance;
+    }
+    Singleton.#instance = this;
+  }
+
+  // Static method to get instance
+  static getInstance() {
+    if (!Singleton.#instance) {
+      Singleton.#instance = new Singleton();
+    }
+    return Singleton.#instance;
+  }
+
+  // Set a value
+  set(key, value) {
+    this.#data.set(key, value);
+  }
+
+  // Get a value
+  get(key) {
+    return this.#data.get(key);
+  }
+}
+
+// Test
+const instance1 = Singleton.getInstance();
+const instance2 = Singleton.getInstance();
+
+instance1.set('name', 'MyApp');
+console.log(instance2.get('name')); // Should print 'MyApp'
+console.log(instance1 === instance2); // Should print true`,
   testCases: [
     {
-      input: [],
+      input: {},
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'getInstance returns same instance every time',
+    },
+    {
+      input: { key: 'theme', value: 'dark' },
+      expectedOutput: 'dark',
+      description: 'Data persists across getInstance calls',
+    },
+    {
+      input: { key: 'version', value: '1.0.0' },
+      expectedOutput: '1.0.0',
+      description: 'Can store and retrieve string values',
     },
   ],
   hints: [

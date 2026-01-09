@@ -133,12 +133,186 @@ const mockObserver = {
 //   console.log('Modal added:', modal);
 //   initializeModal(modal);
 // });`,
-  solution: `function test() { return true; }`,
+  solution: `// Watch for elements matching selector to be added to DOM
+function watchForElement(selector, callback, options = {}) {
+  const root = options.root || document.body;
+
+  const observer = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.type === 'childList') {
+        for (const node of mutation.addedNodes) {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            // Check if the added node matches
+            if (node.matches && node.matches(selector)) {
+              callback(node);
+            }
+            // Check descendants of added node
+            if (node.querySelectorAll) {
+              const matches = node.querySelectorAll(selector);
+              matches.forEach(match => callback(match));
+            }
+          }
+        }
+      }
+    }
+  });
+
+  observer.observe(root, {
+    childList: true,
+    subtree: true
+  });
+
+  // Return cleanup function
+  return () => observer.disconnect();
+}
+
+// Watch for attribute changes on a specific element
+function watchAttributes(element, attributeNames, callback) {
+  const observer = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.type === 'attributes') {
+        callback({
+          name: mutation.attributeName,
+          oldValue: mutation.oldValue,
+          newValue: element.getAttribute(mutation.attributeName)
+        });
+      }
+    }
+  });
+
+  observer.observe(element, {
+    attributes: true,
+    attributeFilter: attributeNames,
+    attributeOldValue: true
+  });
+
+  return () => observer.disconnect();
+}
+
+// Create a DOM change recorder for undo/redo
+function createDOMRecorder(root) {
+  const history = [];
+  let undoneHistory = [];
+
+  const observer = new MutationObserver((mutations) => {
+    const records = mutations.map(mutation => ({
+      type: mutation.type,
+      target: mutation.target,
+      addedNodes: [...mutation.addedNodes],
+      removedNodes: [...mutation.removedNodes].map(node => ({
+        node: node.cloneNode(true),
+        nextSibling: mutation.nextSibling
+      })),
+      attributeName: mutation.attributeName,
+      oldValue: mutation.oldValue,
+      newValue: mutation.type === 'attributes'
+        ? mutation.target.getAttribute(mutation.attributeName)
+        : null
+    }));
+
+    history.push(records);
+    undoneHistory = []; // Clear redo history on new change
+  });
+
+  observer.observe(root, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeOldValue: true,
+    characterData: true,
+    characterDataOldValue: true
+  });
+
+  return {
+    undo() {
+      if (history.length === 0) return false;
+
+      const records = history.pop();
+      undoneHistory.push(records);
+
+      // Reverse the mutations
+      for (let i = records.length - 1; i >= 0; i--) {
+        const record = records[i];
+        if (record.type === 'childList') {
+          // Remove added nodes
+          record.addedNodes.forEach(node => node.remove());
+          // Re-add removed nodes
+          record.removedNodes.forEach(({ node, nextSibling }) => {
+            record.target.insertBefore(node, nextSibling);
+          });
+        } else if (record.type === 'attributes') {
+          if (record.oldValue === null) {
+            record.target.removeAttribute(record.attributeName);
+          } else {
+            record.target.setAttribute(record.attributeName, record.oldValue);
+          }
+        }
+      }
+      return true;
+    },
+
+    redo() {
+      if (undoneHistory.length === 0) return false;
+
+      const records = undoneHistory.pop();
+      history.push(records);
+
+      // Re-apply the mutations
+      for (const record of records) {
+        if (record.type === 'childList') {
+          record.removedNodes.forEach(({ node }) => node.remove());
+          record.addedNodes.forEach(node => record.target.appendChild(node));
+        } else if (record.type === 'attributes') {
+          if (record.newValue === null) {
+            record.target.removeAttribute(record.attributeName);
+          } else {
+            record.target.setAttribute(record.attributeName, record.newValue);
+          }
+        }
+      }
+      return true;
+    },
+
+    getHistory() {
+      return history;
+    },
+
+    disconnect() {
+      observer.disconnect();
+    }
+  };
+}
+
+// Test (simulated - MutationObserver doesn't exist in Node)
+const mockObserver = {
+  observe: (target, config) => console.log('Observing:', config),
+  disconnect: () => console.log('Disconnected'),
+  takeRecords: () => []
+};
+
+console.log('watchForElement defined:', typeof watchForElement === 'function');
+console.log('watchAttributes defined:', typeof watchAttributes === 'function');
+console.log('createDOMRecorder defined:', typeof createDOMRecorder === 'function');`,
   testCases: [
     {
-      input: [],
+      input: { fn: 'watchForElement', selector: '.modal' },
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'watchForElement returns cleanup function',
+    },
+    {
+      input: { fn: 'watchAttributes', attributes: ['class', 'disabled'] },
+      expectedOutput: true,
+      description: 'watchAttributes tracks specified attributes',
+    },
+    {
+      input: { fn: 'createDOMRecorder', operation: 'undo' },
+      expectedOutput: true,
+      description: 'createDOMRecorder provides undo capability',
+    },
+    {
+      input: { fn: 'createDOMRecorder', operation: 'redo' },
+      expectedOutput: true,
+      description: 'createDOMRecorder provides redo capability',
     },
   ],
   hints: [

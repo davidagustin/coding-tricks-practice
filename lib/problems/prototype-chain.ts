@@ -156,12 +156,120 @@ console.log(rect instanceof Rectangle); // true
 console.log(greeter.greet()); // Hello, World
 
 console.log(getPrototypeChain([])); // [Array.prototype, Object.prototype, null]`,
-  solution: `function test() { return true; }`,
+  solution: `// Shape constructor function
+function Shape(color) {
+  // Store color on the instance
+  this.color = color;
+}
+
+// Add getColor method to prototype
+Shape.prototype.getColor = function() {
+  return this.color;
+};
+
+// Add describe method to prototype
+Shape.prototype.describe = function() {
+  return \`A \${this.color} shape\`;
+};
+
+// Rectangle that inherits from Shape
+function Rectangle(color, width, height) {
+  // Call Shape constructor with color
+  Shape.call(this, color);
+  // Store width and height
+  this.width = width;
+  this.height = height;
+}
+
+// Set up prototype chain (Rectangle inherits from Shape)
+Rectangle.prototype = Object.create(Shape.prototype);
+Rectangle.prototype.constructor = Rectangle;
+
+// Add getArea method to Rectangle.prototype
+Rectangle.prototype.getArea = function() {
+  return this.width * this.height;
+};
+
+// Override describe method
+Rectangle.prototype.describe = function() {
+  return \`A \${this.color} rectangle with area \${this.getArea()}\`;
+};
+
+// Create an object using Object.create with a custom prototype
+const greeterProto = {
+  greet: function() {
+    return \`Hello, \${this.name}\`;
+  }
+};
+
+const greeter = Object.create(greeterProto);
+greeter.name = 'World';
+
+// Implement a function that returns the prototype chain of an object as an array
+function getPrototypeChain(obj) {
+  // Return array of prototypes in the chain
+  const chain = [];
+  let current = Object.getPrototypeOf(obj);
+
+  while (current !== null) {
+    chain.push(current);
+    current = Object.getPrototypeOf(current);
+  }
+
+  chain.push(null);
+  return chain;
+}
+
+// Test
+const shape = new Shape('red');
+console.log(shape.getColor()); // red
+console.log(shape.describe()); // A red shape
+
+const rect = new Rectangle('blue', 4, 5);
+console.log(rect.getColor()); // blue (inherited)
+console.log(rect.getArea()); // 20
+console.log(rect.describe()); // A blue rectangle with area 20
+console.log(rect instanceof Shape); // true
+console.log(rect instanceof Rectangle); // true
+
+console.log(greeter.greet()); // Hello, World
+
+console.log(getPrototypeChain([])); // [Array.prototype, Object.prototype, null]`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: 'shapeGetColor',
+      expectedOutput: 'red',
+      description: 'Shape getColor returns the color',
+    },
+    {
+      input: 'shapeDescribe',
+      expectedOutput: 'A red shape',
+      description: 'Shape describe returns correct string',
+    },
+    {
+      input: 'rectangleInheritance',
+      expectedOutput: { getColor: 'blue', instanceof: true },
+      description: 'Rectangle inherits from Shape',
+    },
+    {
+      input: 'rectangleGetArea',
+      expectedOutput: 20,
+      description: 'Rectangle getArea calculates correctly',
+    },
+    {
+      input: 'rectangleDescribe',
+      expectedOutput: 'A blue rectangle with area 20',
+      description: 'Rectangle overrides describe method',
+    },
+    {
+      input: 'greeterWorks',
+      expectedOutput: 'Hello, World',
+      description: 'Object.create greeter works',
+    },
+    {
+      input: 'prototypeChain',
+      expectedOutput: { length: 3, endsWithNull: true },
+      description: 'getPrototypeChain returns correct chain',
     },
   ],
   hints: [

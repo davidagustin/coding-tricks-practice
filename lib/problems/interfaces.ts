@@ -107,12 +107,65 @@ function displayPerson(p: Person) {
 }
 
 displayPerson(person);`,
-  solution: `function test() { return true; }`,
+  solution: `// Person interface with required properties
+interface Person {
+  name: string;
+  age: number;
+  email: string;
+}
+
+// Product interface with optional description
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  description?: string;
+}
+
+// Create objects that conform to these interfaces
+const person: Person = {
+  name: 'John Doe',
+  age: 30,
+  email: 'john@example.com'
+};
+
+const product: Product = {
+  id: 1,
+  name: 'Laptop',
+  price: 999.99,
+  description: 'A powerful laptop'
+};
+
+// Another product without optional description
+const product2: Product = {
+  id: 2,
+  name: 'Mouse',
+  price: 29.99
+};
+
+// Test
+function displayPerson(p: Person) {
+  console.log(\`\${p.name}, \${p.age} years old\`);
+}
+
+displayPerson(person);
+console.log(product);
+console.log(product2);`,
   testCases: [
     {
-      input: [],
+      input: [{ name: 'John Doe', age: 30, email: 'john@example.com' }],
+      expectedOutput: 'John Doe, 30 years old',
+      description: 'Person interface has name, age, and email',
+    },
+    {
+      input: [{ id: 1, name: 'Laptop', price: 999.99 }],
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'Product interface works without optional description',
+    },
+    {
+      input: [{ id: 2, name: 'Phone', price: 599.99, description: 'Smartphone' }],
+      expectedOutput: true,
+      description: 'Product interface works with optional description',
     },
   ],
   hints: [

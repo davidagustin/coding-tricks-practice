@@ -145,12 +145,156 @@ console.log('Mock verified:', mock.verify('getUser', [1]));
 const fakeDb = createFakeDatabase();
 fakeDb.save({ id: 1, name: 'Test User' });
 console.log('Fake:', fakeDb.getUser(1));`,
-  solution: `function test() { return true; }`,
+  solution: `// 1. STUB: Returns predefined responses
+function createStub(responses) {
+  const stub = {};
+  for (const [method, response] of Object.entries(responses)) {
+    stub[method] = function() {
+      return response;
+    };
+  }
+  return stub;
+}
+
+// 2. MOCK: Returns responses AND tracks/verifies calls
+function createMock(methods) {
+  const mock = {
+    _calls: {},
+    _expectations: {},
+
+    verify: function(methodName, expectedArgs) {
+      const calls = this._calls[methodName] || [];
+      return calls.some(args =>
+        JSON.stringify(args) === JSON.stringify(expectedArgs)
+      );
+    },
+
+    expect: function(methodName) {
+      const self = this;
+      return {
+        withArgs: function(...args) {
+          self._expectations[methodName] = self._expectations[methodName] || {};
+          self._expectations[methodName].args = args;
+          return this;
+        },
+        toReturn: function(value) {
+          self._expectations[methodName] = self._expectations[methodName] || {};
+          self._expectations[methodName].returnValue = value;
+          return this;
+        },
+        times: function(count) {
+          self._expectations[methodName] = self._expectations[methodName] || {};
+          self._expectations[methodName].times = count;
+          return this;
+        }
+      };
+    }
+  };
+
+  // Add tracking for each method
+  methods.forEach(method => {
+    mock._calls[method] = [];
+    mock[method] = function(...args) {
+      mock._calls[method].push(args);
+      const expectation = mock._expectations[method];
+      if (expectation && expectation.returnValue !== undefined) {
+        return expectation.returnValue;
+      }
+      return undefined;
+    };
+  });
+
+  return mock;
+}
+
+// 3. FAKE: Working implementation with shortcuts
+function createFakeDatabase() {
+  const storage = new Map();
+
+  return {
+    save: function(entity) {
+      storage.set(entity.id, entity);
+      return entity;
+    },
+
+    getUser: function(id) {
+      return storage.get(id) || null;
+    },
+
+    getAllUsers: function() {
+      return Array.from(storage.values());
+    },
+
+    deleteUser: function(id) {
+      const existed = storage.has(id);
+      storage.delete(id);
+      return existed;
+    },
+
+    clear: function() {
+      storage.clear();
+    }
+  };
+}
+
+// 4. SPY: Wraps real object and records calls
+function createSpy(realObject) {
+  const spy = {
+    _calls: {}
+  };
+
+  for (const key of Object.keys(realObject)) {
+    if (typeof realObject[key] === 'function') {
+      spy._calls[key] = [];
+      spy[key] = function(...args) {
+        spy._calls[key].push(args);
+        return realObject[key].apply(realObject, args);
+      };
+    } else {
+      spy[key] = realObject[key];
+    }
+  }
+
+  spy.getCalls = function(methodName) {
+    return spy._calls[methodName] || [];
+  };
+
+  spy.wasCalled = function(methodName) {
+    return (spy._calls[methodName] || []).length > 0;
+  };
+
+  return spy;
+}
+
+// Test implementations
+const stub = createStub({
+  getUser: { id: 1, name: 'Stub User' },
+  getProducts: [{ id: 1, name: 'Product' }]
+});
+console.log('Stub:', stub.getUser());
+
+const mock = createMock(['getUser', 'saveUser']);
+mock.getUser(1);
+console.log('Mock verified:', mock.verify('getUser', [1]));
+
+const fakeDb = createFakeDatabase();
+fakeDb.save({ id: 1, name: 'Test User' });
+console.log('Fake:', fakeDb.getUser(1));`,
   testCases: [
     {
-      input: [],
+      input: { responses: { getUser: { id: 1, name: 'John' } } },
+      expectedOutput: { id: 1, name: 'John' },
+      description: 'Stub returns predefined response',
+    },
+    {
+      input: { methods: ['getUser'], callWith: [1] },
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'Mock verifies method was called with correct args',
+    },
+    {
+      input: { entity: { id: 1, name: 'Alice' } },
+      expectedOutput: { id: 1, name: 'Alice' },
+      description: 'Fake database stores and retrieves entity',
     },
   ],
   hints: [

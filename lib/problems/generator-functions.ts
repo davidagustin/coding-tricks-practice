@@ -115,12 +115,69 @@ const first10Fib = Array.from({ length: 10 }, () => fib.next().value);
 console.log(first10Fib);
 
 console.log([...chunk([1, 2, 3, 4, 5], 2)]);`,
-  solution: `function test() { return true; }`,
+  solution: `// Generator that yields numbers from start to end (inclusive)
+function* range(start, end) {
+  for (let i = start; i <= end; i++) {
+    yield i;
+  }
+}
+
+// Infinite ID generator
+function* idGenerator(prefix = 'id') {
+  let id = 1;
+  while (true) {
+    yield \`\${prefix}-\${id++}\`;
+  }
+}
+
+// Generator that yields Fibonacci numbers
+function* fibonacci() {
+  let a = 0, b = 1;
+  while (true) {
+    yield a;
+    [a, b] = [b, a + b];
+  }
+}
+
+// Generator that chunks an array
+function* chunk(arr, size) {
+  for (let i = 0; i < arr.length; i += size) {
+    yield arr.slice(i, i + size);
+  }
+}
+
+// Test
+console.log([...range(1, 5)]); // [1, 2, 3, 4, 5]
+
+const ids = idGenerator('user');
+console.log(ids.next().value); // 'user-1'
+console.log(ids.next().value); // 'user-2'
+
+const fib = fibonacci();
+const first10Fib = Array.from({ length: 10 }, () => fib.next().value);
+console.log(first10Fib); // [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+
+console.log([...chunk([1, 2, 3, 4, 5], 2)]); // [[1, 2], [3, 4], [5]]`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: [1, 5],
+      expectedOutput: [1, 2, 3, 4, 5],
+      description: 'range generates numbers from start to end',
+    },
+    {
+      input: ['user', 3],
+      expectedOutput: ['user-1', 'user-2', 'user-3'],
+      description: 'idGenerator generates sequential IDs',
+    },
+    {
+      input: [10],
+      expectedOutput: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34],
+      description: 'fibonacci generates first 10 Fibonacci numbers',
+    },
+    {
+      input: [[1, 2, 3, 4, 5], 2],
+      expectedOutput: [[1, 2], [3, 4], [5]],
+      description: 'chunk splits array into groups of specified size',
     },
   ],
   hints: [

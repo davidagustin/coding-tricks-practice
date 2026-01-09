@@ -135,12 +135,102 @@ console.log('Return value:', mock());
 
 mock.mockImplementation((x) => x * 2);
 console.log('Implementation:', mock(5));`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a mock function factory
+function createMock() {
+  let returnValue = undefined;
+  let implementation = null;
+
+  function mockFn(...args) {
+    mockFn.calls.push(args);
+    mockFn.callCount++;
+
+    let result;
+    if (implementation) {
+      result = implementation(...args);
+    } else {
+      result = returnValue;
+    }
+
+    mockFn.returnValues.push(result);
+    return result;
+  }
+
+  // Initialize tracking properties
+  mockFn.calls = [];
+  mockFn.callCount = 0;
+  mockFn.returnValues = [];
+
+  // Add method to set return value
+  mockFn.mockReturnValue = function(value) {
+    returnValue = value;
+    implementation = null;
+    return mockFn;
+  };
+
+  // Add method to set implementation
+  mockFn.mockImplementation = function(fn) {
+    implementation = fn;
+    return mockFn;
+  };
+
+  // Add method to reset the mock
+  mockFn.mockReset = function() {
+    mockFn.calls = [];
+    mockFn.callCount = 0;
+    mockFn.returnValues = [];
+    returnValue = undefined;
+    implementation = null;
+    return mockFn;
+  };
+
+  // Add method to check if called with specific args
+  mockFn.wasCalledWith = function(...expectedArgs) {
+    return mockFn.calls.some(call =>
+      call.length === expectedArgs.length &&
+      call.every((arg, i) => arg === expectedArgs[i])
+    );
+  };
+
+  return mockFn;
+}
+
+// Test your implementation
+const mock = createMock();
+mock('test', 123);
+mock('another');
+console.log('Calls:', mock.calls);
+console.log('Call count:', mock.callCount);
+
+mock.mockReturnValue('mocked!');
+console.log('Return value:', mock());
+
+mock.mockImplementation((x) => x * 2);
+console.log('Implementation:', mock(5));`,
   testCases: [
     {
-      input: [],
+      input: { operation: 'call', args: ['test', 123] },
+      expectedOutput: { calls: [['test', 123]], callCount: 1 },
+      description: 'mock tracks calls and arguments',
+    },
+    {
+      input: { operation: 'mockReturnValue', value: 42 },
+      expectedOutput: 42,
+      description: 'mockReturnValue sets return value',
+    },
+    {
+      input: { operation: 'mockImplementation', fn: 'x => x * 2', arg: 5 },
+      expectedOutput: 10,
+      description: 'mockImplementation uses custom function',
+    },
+    {
+      input: { operation: 'mockReset' },
+      expectedOutput: { calls: [], callCount: 0, returnValues: [] },
+      description: 'mockReset clears all tracking data',
+    },
+    {
+      input: { operation: 'wasCalledWith', calls: [['a', 1], ['b', 2]], check: ['a', 1] },
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'wasCalledWith checks if called with specific args',
     },
   ],
   hints: [

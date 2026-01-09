@@ -103,12 +103,62 @@ async function saveUser(user) {
 
 // Test (commented out to prevent immediate execution)
 // processUser(1).then(console.log).catch(console.error);`,
-  solution: `function test() { return true; }`,
+  solution: `async function processUser(userId) {
+  // Chain promises to:
+  // 1. Fetch user data
+  // 2. Validate user (throw if invalid)
+  // 3. Enrich with additional data
+  // 4. Save to database
+  // Return final result
+
+  return fetchUser(userId)
+    .then(validateUser)
+    .then(enrichUser)
+    .then(saveUser);
+}
+
+// Helper functions (assume these exist)
+async function fetchUser(id) {
+  return { id, name: 'John', email: 'john@example.com' };
+}
+
+async function validateUser(user) {
+  if (!user.email) throw new Error('Invalid user');
+  return user;
+}
+
+async function enrichUser(user) {
+  return { ...user, role: 'admin', permissions: ['read', 'write'] };
+}
+
+async function saveUser(user) {
+  return { ...user, saved: true };
+}
+
+// Test (commented out to prevent immediate execution)
+// processUser(1).then(console.log).catch(console.error);`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: 'validUser',
+      expectedOutput: {
+        id: 1,
+        name: 'John',
+        email: 'john@example.com',
+        role: 'admin',
+        permissions: ['read', 'write'],
+        saved: true
+      },
+      description: 'Processes valid user through entire chain',
+    },
+    {
+      input: 'invalidUser',
+      expectedOutput: { error: 'Invalid user' },
+      description: 'Throws error for invalid user',
+    },
+    {
+      input: 'chainOrder',
+      expectedOutput: ['fetch', 'validate', 'enrich', 'save'],
+      description: 'Executes steps in correct order',
     },
   ],
   hints: [

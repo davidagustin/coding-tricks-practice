@@ -139,12 +139,68 @@ console.log('Peek:', stack.peek());
 console.log('Pop:', stack.pop());
 console.log('Size:', stack.size());
 console.log('isEmpty:', stack.isEmpty());`,
-  solution: `function test() { return true; }`,
+  solution: `class Stack<T> {
+  private items: T[];
+
+  constructor() {
+    this.items = [];
+  }
+
+  push(element: T): void {
+    this.items.push(element);
+  }
+
+  pop(): T | undefined {
+    return this.items.pop();
+  }
+
+  peek(): T | undefined {
+    return this.items[this.items.length - 1];
+  }
+
+  isEmpty(): boolean {
+    return this.items.length === 0;
+  }
+
+  size(): number {
+    return this.items.length;
+  }
+}
+
+// Test your implementation
+const stack = new Stack<number>();
+stack.push(10);
+stack.push(20);
+stack.push(30);
+console.log('Peek:', stack.peek());
+console.log('Pop:', stack.pop());
+console.log('Size:', stack.size());
+console.log('isEmpty:', stack.isEmpty());`,
   testCases: [
     {
-      input: [],
+      input: { operations: ['push(10)', 'push(20)', 'peek()'] },
+      expectedOutput: 20,
+      description: 'peek returns top element without removing it',
+    },
+    {
+      input: { operations: ['push(10)', 'push(20)', 'pop()'] },
+      expectedOutput: 20,
+      description: 'pop returns and removes top element',
+    },
+    {
+      input: { operations: ['push(10)', 'push(20)', 'pop()', 'size()'] },
+      expectedOutput: 1,
+      description: 'size returns correct count after operations',
+    },
+    {
+      input: { operations: ['isEmpty()'] },
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'isEmpty returns true for empty stack',
+    },
+    {
+      input: { operations: ['push(5)', 'isEmpty()'] },
+      expectedOutput: false,
+      description: 'isEmpty returns false for non-empty stack',
     },
   ],
   hints: [

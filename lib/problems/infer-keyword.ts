@@ -104,12 +104,56 @@ class MyClass {
   constructor(name: string, age: number) {}
 }
 type Test4 = MyConstructorParameters<typeof MyClass>; // [string, number]`,
-  solution: `function test() { return true; }`,
+  solution: `// UnwrapPromise - extract type from Promise
+type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
+
+// FirstParameter - get first parameter type of function
+type FirstParameter<T> = T extends (first: infer P, ...args: any[]) => any ? P : never;
+
+// LastParameter - get last parameter type
+type LastParameter<T> = T extends (...args: [...any[], infer L]) => any ? L : never;
+
+// MyConstructorParameters - get constructor parameter types
+type MyConstructorParameters<T> = T extends new (...args: infer P) => any ? P : never;
+
+// Test
+type Test1 = UnwrapPromise<Promise<number>>; // number
+type Test2 = FirstParameter<(a: string, b: number) => void>; // string
+type Fn = (a: number, b: string, c: boolean) => void;
+type Test3 = LastParameter<Fn>; // boolean
+
+class MyClass {
+  constructor(name: string, age: number) {}
+}
+type Test4 = MyConstructorParameters<typeof MyClass>; // [string, number]
+
+// Runtime tests to verify types work
+const unwrapped: Test1 = 42;
+const first: Test2 = 'hello';
+const last: Test3 = true;
+const constructorParams: Test4 = ['Alice', 30];
+
+console.log(unwrapped, first, last, constructorParams);`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: ['Promise<number>'],
+      expectedOutput: 'number',
+      description: 'UnwrapPromise extracts number from Promise<number>',
+    },
+    {
+      input: ['(a: string, b: number) => void'],
+      expectedOutput: 'string',
+      description: 'FirstParameter extracts first parameter type',
+    },
+    {
+      input: ['(a: number, b: string, c: boolean) => void'],
+      expectedOutput: 'boolean',
+      description: 'LastParameter extracts last parameter type',
+    },
+    {
+      input: ['new (name: string, age: number) => MyClass'],
+      expectedOutput: '[string, number]',
+      description: 'MyConstructorParameters extracts constructor parameter tuple',
     },
   ],
   hints: [

@@ -100,12 +100,68 @@ function processData(data: unknown) {
 // Test
 processData({ name: 'Alice', age: 30 });
 processData('not a user');`,
-  solution: `function test() { return true; }`,
+  solution: `interface User {
+  name: string;
+  age: number;
+}
+
+function isUser(obj: unknown): obj is User {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    'name' in obj &&
+    'age' in obj &&
+    typeof (obj as User).name === 'string' &&
+    typeof (obj as User).age === 'number'
+  );
+}
+
+function processData(data: unknown): string {
+  if (isUser(data)) {
+    return \`User: \${data.name}, Age: \${data.age}\`;
+  } else {
+    return 'Not a user';
+  }
+}
+
+// Additional type guards for common scenarios
+function isString(value: unknown): value is string {
+  return typeof value === 'string';
+}
+
+function isNumber(value: unknown): value is number {
+  return typeof value === 'number';
+}
+
+function isArray<T>(value: unknown, itemGuard: (item: unknown) => item is T): value is T[] {
+  return Array.isArray(value) && value.every(itemGuard);
+}
+
+// Test
+console.log(processData({ name: 'Alice', age: 30 }));
+console.log(processData('not a user'));
+console.log(processData({ name: 'Bob' })); // Missing age
+console.log(processData(null));`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { data: { name: 'Alice', age: 30 } },
+      expectedOutput: 'User: Alice, Age: 30',
+      description: 'processData returns user info for valid User',
+    },
+    {
+      input: { data: 'not a user' },
+      expectedOutput: 'Not a user',
+      description: 'processData returns "Not a user" for string',
+    },
+    {
+      input: { data: { name: 'Bob' } },
+      expectedOutput: 'Not a user',
+      description: 'processData returns "Not a user" for incomplete object',
+    },
+    {
+      input: { data: null },
+      expectedOutput: 'Not a user',
+      description: 'processData returns "Not a user" for null',
     },
   ],
   hints: [

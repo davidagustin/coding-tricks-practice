@@ -165,12 +165,146 @@ list.delete(2);
 console.log('After delete:', list.toArray());
 list.insertAfter(1, 1.5);
 console.log('After insertAfter:', list.toArray());`,
-  solution: `function test() { return true; }`,
+  solution: `class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null;
+
+  constructor(value: T) {
+    this.value = value;
+    this.next = null;
+  }
+}
+
+class LinkedList<T> {
+  private head: ListNode<T> | null;
+  private tail: ListNode<T> | null;
+  private length: number;
+
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+
+  append(value: T): void {
+    const newNode = new ListNode(value);
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail!.next = newNode;
+      this.tail = newNode;
+    }
+    this.length++;
+  }
+
+  prepend(value: T): void {
+    const newNode = new ListNode(value);
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      newNode.next = this.head;
+      this.head = newNode;
+    }
+    this.length++;
+  }
+
+  delete(value: T): boolean {
+    if (!this.head) return false;
+
+    if (this.head.value === value) {
+      this.head = this.head.next;
+      if (!this.head) this.tail = null;
+      this.length--;
+      return true;
+    }
+
+    let current = this.head;
+    while (current.next) {
+      if (current.next.value === value) {
+        if (current.next === this.tail) {
+          this.tail = current;
+        }
+        current.next = current.next.next;
+        this.length--;
+        return true;
+      }
+      current = current.next;
+    }
+    return false;
+  }
+
+  find(value: T): ListNode<T> | null {
+    let current = this.head;
+    while (current) {
+      if (current.value === value) return current;
+      current = current.next;
+    }
+    return null;
+  }
+
+  insertAfter(existingValue: T, newValue: T): boolean {
+    const node = this.find(existingValue);
+    if (!node) return false;
+
+    const newNode = new ListNode(newValue);
+    newNode.next = node.next;
+    node.next = newNode;
+    if (node === this.tail) {
+      this.tail = newNode;
+    }
+    this.length++;
+    return true;
+  }
+
+  toArray(): T[] {
+    const result: T[] = [];
+    let current = this.head;
+    while (current) {
+      result.push(current.value);
+      current = current.next;
+    }
+    return result;
+  }
+
+  getLength(): number {
+    return this.length;
+  }
+}
+
+// Test your implementation
+const list = new LinkedList<number>();
+list.append(1);
+list.append(2);
+list.append(3);
+console.log('List:', list.toArray());
+list.prepend(0);
+console.log('After prepend:', list.toArray());
+list.delete(2);
+console.log('After delete:', list.toArray());
+list.insertAfter(1, 1.5);
+console.log('After insertAfter:', list.toArray());`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { operation: 'append', values: [1, 2, 3] },
+      expectedOutput: [1, 2, 3],
+      description: 'append adds elements to the end',
+    },
+    {
+      input: { operation: 'prepend', values: [1, 2, 3] },
+      expectedOutput: [3, 2, 1],
+      description: 'prepend adds elements to the beginning',
+    },
+    {
+      input: { operation: 'delete', values: [1, 2, 3], deleteValue: 2 },
+      expectedOutput: [1, 3],
+      description: 'delete removes the specified value',
+    },
+    {
+      input: { operation: 'insertAfter', values: [1, 3], existingValue: 1, newValue: 2 },
+      expectedOutput: [1, 2, 3],
+      description: 'insertAfter inserts after the specified value',
     },
   ],
   hints: [

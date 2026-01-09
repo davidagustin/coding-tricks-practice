@@ -145,12 +145,97 @@ console.log(isValidIPv4('256.1.1.1'));                // false
 
 console.log(isValidCreditCard('1234-5678-9012-3456')); // true
 console.log(isValidCreditCard('1234567890123456'));    // true`,
-  solution: `function test() { return true; }`,
+  solution: `// Email validator
+function isValidEmail(email) {
+  return /^[\\w.+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$/.test(email);
+}
+
+// US phone number validator
+function isValidUSPhone(phone) {
+  return /^\\(?\\d{3}\\)?[-. ]?\\d{3}[-. ]?\\d{4}$/.test(phone);
+}
+
+// URL validator
+function isValidURL(url) {
+  return /^https?:\\/\\/([\\w-]+\\.)+[\\w-]+(\\/[\\w-./?%&=]*)?$/.test(url);
+}
+
+// IPv4 address validator
+function isValidIPv4(ip) {
+  const octet = '(25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]?\\d)';
+  const regex = new RegExp(\`^\${octet}\\\\.\${octet}\\\\.\${octet}\\\\.\${octet}$\`);
+  return regex.test(ip);
+}
+
+// Credit card number validator (basic format check)
+function isValidCreditCard(cardNum) {
+  // Remove separators and check for 16 digits
+  const cleaned = cardNum.replace(/[-\\s]/g, '');
+  return /^\\d{16}$/.test(cleaned);
+}
+
+// Test your functions
+console.log(isValidEmail('user@example.com'));        // true
+console.log(isValidEmail('user.name+tag@domain.co.uk')); // true
+console.log(isValidEmail('invalid-email'));           // false
+
+console.log(isValidUSPhone('(555) 123-4567'));        // true
+console.log(isValidUSPhone('555.123.4567'));          // true
+console.log(isValidUSPhone('123'));                   // false
+
+console.log(isValidURL('https://example.com/path'));  // true
+console.log(isValidURL('not-a-url'));                 // false
+
+console.log(isValidIPv4('192.168.1.1'));              // true
+console.log(isValidIPv4('256.1.1.1'));                // false
+
+console.log(isValidCreditCard('1234-5678-9012-3456')); // true
+console.log(isValidCreditCard('1234567890123456'));    // true`,
   testCases: [
     {
-      input: [],
+      input: { fn: 'isValidEmail', email: 'user@example.com' },
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'isValidEmail accepts valid email',
+    },
+    {
+      input: { fn: 'isValidEmail', email: 'user.name+tag@domain.co.uk' },
+      expectedOutput: true,
+      description: 'isValidEmail accepts email with dots and plus',
+    },
+    {
+      input: { fn: 'isValidEmail', email: 'invalid-email' },
+      expectedOutput: false,
+      description: 'isValidEmail rejects invalid email',
+    },
+    {
+      input: { fn: 'isValidUSPhone', phone: '(555) 123-4567' },
+      expectedOutput: true,
+      description: 'isValidUSPhone accepts phone with parentheses',
+    },
+    {
+      input: { fn: 'isValidUSPhone', phone: '555.123.4567' },
+      expectedOutput: true,
+      description: 'isValidUSPhone accepts phone with dots',
+    },
+    {
+      input: { fn: 'isValidURL', url: 'https://example.com/path' },
+      expectedOutput: true,
+      description: 'isValidURL accepts valid URL',
+    },
+    {
+      input: { fn: 'isValidIPv4', ip: '192.168.1.1' },
+      expectedOutput: true,
+      description: 'isValidIPv4 accepts valid IP',
+    },
+    {
+      input: { fn: 'isValidIPv4', ip: '256.1.1.1' },
+      expectedOutput: false,
+      description: 'isValidIPv4 rejects octet > 255',
+    },
+    {
+      input: { fn: 'isValidCreditCard', cardNum: '1234-5678-9012-3456' },
+      expectedOutput: true,
+      description: 'isValidCreditCard accepts 16 digits with dashes',
     },
   ],
   hints: [

@@ -196,12 +196,141 @@ console.log('Keys:', ht.keys());
 console.log('Values:', ht.values());
 ht.delete('two');
 console.log('After delete:', ht.keys());`,
-  solution: `function test() { return true; }`,
+  solution: `class HashTable<K, V> {
+  private buckets: Array<Array<[K, V]>>;
+  private size: number;
+  private count: number;
+
+  constructor(size: number = 53) {
+    this.size = size;
+    this.count = 0;
+    this.buckets = new Array(size).fill(null).map(() => []);
+  }
+
+  private hash(key: K): number {
+    const str = String(key);
+    let hash = 0;
+    const PRIME = 31;
+    for (let i = 0; i < Math.min(str.length, 100); i++) {
+      hash = (hash * PRIME + str.charCodeAt(i)) % this.size;
+    }
+    return hash;
+  }
+
+  set(key: K, value: V): void {
+    const index = this.hash(key);
+    const bucket = this.buckets[index];
+
+    // Check if key exists, update if so
+    for (let i = 0; i < bucket.length; i++) {
+      if (bucket[i][0] === key) {
+        bucket[i][1] = value;
+        return;
+      }
+    }
+
+    // Key doesn't exist, add new pair
+    bucket.push([key, value]);
+    this.count++;
+  }
+
+  get(key: K): V | undefined {
+    const index = this.hash(key);
+    const bucket = this.buckets[index];
+
+    for (const [k, v] of bucket) {
+      if (k === key) {
+        return v;
+      }
+    }
+    return undefined;
+  }
+
+  delete(key: K): boolean {
+    const index = this.hash(key);
+    const bucket = this.buckets[index];
+
+    for (let i = 0; i < bucket.length; i++) {
+      if (bucket[i][0] === key) {
+        bucket.splice(i, 1);
+        this.count--;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  has(key: K): boolean {
+    return this.get(key) !== undefined;
+  }
+
+  keys(): K[] {
+    const result: K[] = [];
+    for (const bucket of this.buckets) {
+      for (const [key] of bucket) {
+        result.push(key);
+      }
+    }
+    return result;
+  }
+
+  values(): V[] {
+    const result: V[] = [];
+    for (const bucket of this.buckets) {
+      for (const [, value] of bucket) {
+        result.push(value);
+      }
+    }
+    return result;
+  }
+
+  entries(): Array<[K, V]> {
+    const result: Array<[K, V]> = [];
+    for (const bucket of this.buckets) {
+      for (const pair of bucket) {
+        result.push(pair);
+      }
+    }
+    return result;
+  }
+
+  getSize(): number {
+    return this.count;
+  }
+}
+
+// Test
+const ht = new HashTable<string, number>();
+ht.set('one', 1);
+ht.set('two', 2);
+ht.set('three', 3);
+console.log('Get "two":', ht.get('two')); // 2
+console.log('Has "one":', ht.has('one')); // true
+console.log('Has "four":', ht.has('four')); // false
+console.log('Keys:', ht.keys()); // ['one', 'two', 'three']
+console.log('Values:', ht.values()); // [1, 2, 3]
+ht.delete('two');
+console.log('After delete:', ht.keys()); // ['one', 'three']`,
   testCases: [
     {
-      input: [],
+      input: ['name', 'Alice'],
+      expectedOutput: 'Alice',
+      description: 'get retrieves value for existing key',
+    },
+    {
+      input: ['one', 'two', 'three'],
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'has returns true for existing key',
+    },
+    {
+      input: ['nonexistent'],
+      expectedOutput: false,
+      description: 'has returns false for non-existing key',
+    },
+    {
+      input: ['x', 100, 200],
+      expectedOutput: 200,
+      description: 'set with existing key updates the value',
     },
   ],
   hints: [

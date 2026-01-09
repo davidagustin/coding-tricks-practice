@@ -144,12 +144,186 @@ function fibonacciWorker() {
 
 // Test (conceptual - actual workers need browser environment)
 console.log('Worker patterns ready for implementation');`,
-  solution: `function test() { return true; }`,
+  solution: `// 1. Create an inline worker from a function
+function createInlineWorker(workerFunction) {
+  const functionBody = workerFunction.toString();
+  const workerCode = \`(\${functionBody})()\`;
+  const blob = new Blob([workerCode], { type: 'application/javascript' });
+  const url = URL.createObjectURL(blob);
+  const worker = new Worker(url);
+
+  // Store URL for cleanup
+  worker._blobUrl = url;
+
+  return worker;
+}
+
+// 2. Promise-based worker wrapper for request/response pattern
+function createPromiseWorker(worker) {
+  let messageId = 0;
+  const pending = new Map();
+
+  worker.onmessage = (event) => {
+    const { id, result, error } = event.data;
+    const handlers = pending.get(id);
+    if (handlers) {
+      pending.delete(id);
+      if (error) {
+        handlers.reject(new Error(error));
+      } else {
+        handlers.resolve(result);
+      }
+    }
+  };
+
+  return {
+    postMessage(data) {
+      return new Promise((resolve, reject) => {
+        const id = messageId++;
+        pending.set(id, { resolve, reject });
+        worker.postMessage({ id, ...data });
+      });
+    },
+    terminate() {
+      worker.terminate();
+      if (worker._blobUrl) {
+        URL.revokeObjectURL(worker._blobUrl);
+      }
+    }
+  };
+}
+
+// 3. Worker Pool for parallel task execution
+class WorkerPool {
+  constructor(workerScript, poolSize = 4) {
+    this.workers = [];
+    this.available = [];
+    this.taskQueue = [];
+    this.poolSize = poolSize;
+    this.workerScript = workerScript;
+
+    // Create workers
+    for (let i = 0; i < poolSize; i++) {
+      const worker = typeof workerScript === 'function'
+        ? createInlineWorker(workerScript)
+        : new Worker(workerScript);
+      this.workers.push(worker);
+      this.available.push(worker);
+    }
+  }
+
+  async execute(task) {
+    return new Promise((resolve, reject) => {
+      const runTask = (worker) => {
+        const handler = (event) => {
+          worker.removeEventListener('message', handler);
+          this.available.push(worker);
+          this.processQueue();
+          resolve(event.data);
+        };
+        worker.addEventListener('message', handler);
+        worker.postMessage(task);
+      };
+
+      if (this.available.length > 0) {
+        runTask(this.available.pop());
+      } else {
+        this.taskQueue.push({ task, resolve, reject, runTask });
+      }
+    });
+  }
+
+  processQueue() {
+    if (this.taskQueue.length > 0 && this.available.length > 0) {
+      const { runTask } = this.taskQueue.shift();
+      runTask(this.available.pop());
+    }
+  }
+
+  terminate() {
+    this.workers.forEach(worker => {
+      worker.terminate();
+      if (worker._blobUrl) {
+        URL.revokeObjectURL(worker._blobUrl);
+      }
+    });
+    this.workers = [];
+    this.available = [];
+  }
+}
+
+// 4. Task Queue with Worker
+class TaskQueue {
+  constructor(worker) {
+    this.worker = worker;
+    this.queue = [];
+    this.processing = false;
+    this.promiseWorker = createPromiseWorker(worker);
+  }
+
+  async enqueue(task) {
+    return new Promise((resolve, reject) => {
+      this.queue.push({ task, resolve, reject });
+      this.processNext();
+    });
+  }
+
+  async processNext() {
+    if (this.processing || this.queue.length === 0) return;
+
+    this.processing = true;
+    const { task, resolve, reject } = this.queue.shift();
+
+    try {
+      const result = await this.promiseWorker.postMessage(task);
+      resolve(result);
+    } catch (error) {
+      reject(error);
+    } finally {
+      this.processing = false;
+      this.processNext();
+    }
+  }
+}
+
+// 5. Transferable objects for large data
+function postWithTransfer(worker, data, transferables) {
+  worker.postMessage(data, transferables);
+}
+
+// Example worker function for testing
+function fibonacciWorker() {
+  self.onmessage = function(e) {
+    const { n, id } = e.data;
+    function fib(n) {
+      if (n <= 1) return n;
+      return fib(n - 1) + fib(n - 2);
+    }
+    self.postMessage({ id, result: fib(n) });
+  };
+}
+
+// Test (conceptual - actual workers need browser environment)
+console.log('Worker patterns ready for implementation');
+console.log('createInlineWorker - creates worker from function');
+console.log('createPromiseWorker - wraps worker with promise API');
+console.log('WorkerPool - manages pool of workers for parallel tasks');
+console.log('TaskQueue - queues tasks for sequential processing');`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { workerFunction: 'fibonacci' },
+      expectedOutput: 'Worker created',
+      description: 'createInlineWorker creates worker from function',
+    },
+    {
+      input: { poolSize: 4 },
+      expectedOutput: 4,
+      description: 'WorkerPool creates specified number of workers',
+    },
+    {
+      input: { task: { n: 10 } },
+      expectedOutput: 55,
+      description: 'Worker calculates fibonacci correctly',
     },
   ],
   hints: [

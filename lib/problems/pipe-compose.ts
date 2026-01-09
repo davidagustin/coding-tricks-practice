@@ -101,12 +101,53 @@ console.log(pipeline(2)); // 2 → 3 → 6 → 36
 
 const composed = compose(square, double, addOne);
 console.log(composed(2)); // 2 → 3 → 6 → 36`,
-  solution: `function test() { return true; }`,
+  solution: `// Implement pipe - left to right function composition
+// pipe(f, g, h)(x) = h(g(f(x)))
+function pipe(...fns) {
+  return function(x) {
+    return fns.reduce((acc, fn) => fn(acc), x);
+  };
+}
+
+// Implement compose - right to left function composition
+// compose(f, g, h)(x) = f(g(h(x)))
+function compose(...fns) {
+  return function(x) {
+    return fns.reduceRight((acc, fn) => fn(acc), x);
+  };
+}
+
+// Helper functions for testing
+const addOne = x => x + 1;
+const double = x => x * 2;
+const square = x => x * x;
+
+// Test
+const pipeline = pipe(addOne, double, square);
+console.log(pipeline(2)); // 2 -> 3 -> 6 -> 36
+
+const composed = compose(square, double, addOne);
+console.log(composed(2)); // 2 -> 3 -> 6 -> 36`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: [2],
+      expectedOutput: 36,
+      description: 'pipe(addOne, double, square)(2) = 36 (2->3->6->36)',
+    },
+    {
+      input: [3],
+      expectedOutput: 64,
+      description: 'pipe(addOne, double, square)(3) = 64 (3->4->8->64)',
+    },
+    {
+      input: [2],
+      expectedOutput: 36,
+      description: 'compose(square, double, addOne)(2) = 36 (same result, different order)',
+    },
+    {
+      input: [0],
+      expectedOutput: 4,
+      description: 'pipe(addOne, double, square)(0) = 4 (0->1->2->4)',
     },
   ],
   hints: [

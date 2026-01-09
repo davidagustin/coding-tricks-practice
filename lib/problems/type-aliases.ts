@@ -93,12 +93,42 @@ const userId: ID = 123;
 const point: Coordinates = { x: 10, y: 20 };
 
 console.log(processStatus('success'));`,
-  solution: `function test() { return true; }`,
+  solution: `type Status = 'loading' | 'success' | 'error';
+type ID = string | number;
+type Coordinates = { x: number; y: number };
+
+function processStatus(status: Status): string {
+  switch (status) {
+    case 'loading':
+      return 'Processing...';
+    case 'success':
+      return 'Operation completed successfully!';
+    case 'error':
+      return 'An error occurred.';
+  }
+}
+
+const userId: ID = 123;
+const point: Coordinates = { x: 10, y: 20 };
+
+console.log(processStatus('success'));
+console.log('User ID:', userId);
+console.log('Point:', point);`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { status: 'loading' },
+      expectedOutput: 'Processing...',
+      description: 'processStatus returns loading message',
+    },
+    {
+      input: { status: 'success' },
+      expectedOutput: 'Operation completed successfully!',
+      description: 'processStatus returns success message',
+    },
+    {
+      input: { status: 'error' },
+      expectedOutput: 'An error occurred.',
+      description: 'processStatus returns error message',
     },
   ],
   hints: [

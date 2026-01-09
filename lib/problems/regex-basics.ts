@@ -132,12 +132,70 @@ console.log(isValidHexColor('#FFF'));     // true
 console.log(isValidHexColor('#FFFFFF'));  // true
 console.log(isValidHexColor('#GGG'));     // false
 console.log(countWords('Hello world'));   // 2`,
-  solution: `function test() { return true; }`,
+  solution: `// Check if a string contains only letters
+function isOnlyLetters(str) {
+  return /^[a-zA-Z]+$/.test(str);
+}
+
+// Extract all numbers from a string
+function extractNumbers(str) {
+  return str.match(/\\d+/g) || [];
+}
+
+// Check if a string is a valid hex color
+function isValidHexColor(str) {
+  return /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(str);
+}
+
+// Count how many words are in a string
+function countWords(str) {
+  const matches = str.match(/\\w+/g);
+  return matches ? matches.length : 0;
+}
+
+// Test your functions
+console.log(isOnlyLetters('Hello'));      // true
+console.log(isOnlyLetters('Hello123'));   // false
+console.log(extractNumbers('I have 3 cats and 2 dogs')); // ['3', '2']
+console.log(isValidHexColor('#FFF'));     // true
+console.log(isValidHexColor('#FFFFFF'));  // true
+console.log(isValidHexColor('#GGG'));     // false
+console.log(countWords('Hello world'));   // 2`,
   testCases: [
     {
-      input: [],
+      input: { fn: 'isOnlyLetters', str: 'Hello' },
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'isOnlyLetters returns true for letters only',
+    },
+    {
+      input: { fn: 'isOnlyLetters', str: 'Hello123' },
+      expectedOutput: false,
+      description: 'isOnlyLetters returns false when digits present',
+    },
+    {
+      input: { fn: 'extractNumbers', str: 'I have 3 cats and 2 dogs' },
+      expectedOutput: ['3', '2'],
+      description: 'extractNumbers finds all numbers in string',
+    },
+    {
+      input: { fn: 'isValidHexColor', str: '#FFF' },
+      expectedOutput: true,
+      description: 'isValidHexColor accepts 3-digit hex',
+    },
+    {
+      input: { fn: 'isValidHexColor', str: '#FFFFFF' },
+      expectedOutput: true,
+      description: 'isValidHexColor accepts 6-digit hex',
+    },
+    {
+      input: { fn: 'isValidHexColor', str: '#GGG' },
+      expectedOutput: false,
+      description: 'isValidHexColor rejects invalid hex chars',
+    },
+    {
+      input: { fn: 'countWords', str: 'Hello world' },
+      expectedOutput: 2,
+      description: 'countWords counts words correctly',
     },
   ],
   hints: [

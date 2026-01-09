@@ -208,12 +208,192 @@ async function runTests() {
 }
 
 runTests();`,
-  solution: `function test() { return true; }`,
+  solution: `// Pattern 1: Fallback Chain
+interface FallbackSource<T> {
+  name: string;
+  fetch: () => Promise<T>;
+  priority: number;
+}
+
+class FallbackChain<T> {
+  private sources: FallbackSource<T>[] = [];
+  private lastSuccessfulSource: string | null = null;
+
+  addSource(source: FallbackSource<T>): this {
+    this.sources.push(source);
+    this.sources.sort((a, b) => a.priority - b.priority);
+    return this;
+  }
+
+  async execute(): Promise<{ data: T; source: string }> {
+    const errors: Error[] = [];
+    for (const source of this.sources) {
+      try {
+        const data = await source.fetch();
+        this.lastSuccessfulSource = source.name;
+        return { data, source: source.name };
+      } catch (err) {
+        errors.push(err as Error);
+      }
+    }
+    throw new Error(\`All sources failed: \${errors.map(e => e.message).join(', ')}\`);
+  }
+
+  getLastSuccessfulSource(): string | null {
+    return this.lastSuccessfulSource;
+  }
+}
+
+// Pattern 2: Circuit Breaker
+type CircuitState = 'closed' | 'open' | 'half-open';
+
+interface CircuitBreakerOptions {
+  failureThreshold: number;
+  resetTimeout: number;
+  halfOpenRequests: number;
+}
+
+class CircuitOpenError extends Error {
+  constructor() {
+    super('Circuit breaker is open');
+    this.name = 'CircuitOpenError';
+  }
+}
+
+class CircuitBreaker {
+  private state: CircuitState = 'closed';
+  private failures: number = 0;
+  private lastFailureTime: number = 0;
+  private halfOpenSuccesses: number = 0;
+  private options: CircuitBreakerOptions;
+
+  constructor(options: CircuitBreakerOptions) {
+    this.options = options;
+  }
+
+  async call<T>(fn: () => Promise<T>): Promise<T> {
+    if (this.state === 'open') {
+      if (Date.now() - this.lastFailureTime >= this.options.resetTimeout) {
+        this.state = 'half-open';
+        this.halfOpenSuccesses = 0;
+      } else {
+        throw new CircuitOpenError();
+      }
+    }
+
+    try {
+      const result = await fn();
+      if (this.state === 'half-open') {
+        this.halfOpenSuccesses++;
+        if (this.halfOpenSuccesses >= this.options.halfOpenRequests) {
+          this.state = 'closed';
+          this.failures = 0;
+        }
+      } else {
+        this.failures = 0;
+      }
+      return result;
+    } catch (err) {
+      this.failures++;
+      this.lastFailureTime = Date.now();
+      if (this.failures >= this.options.failureThreshold) {
+        this.state = 'open';
+      }
+      throw err;
+    }
+  }
+
+  getState(): CircuitState {
+    return this.state;
+  }
+
+  getFailureCount(): number {
+    return this.failures;
+  }
+
+  reset(): void {
+    this.state = 'closed';
+    this.failures = 0;
+    this.halfOpenSuccesses = 0;
+  }
+}
+
+// Pattern 3: Cache with Stale-While-Revalidate
+interface CacheOptions {
+  ttl: number;
+  staleWhileRevalidate?: boolean;
+}
+
+class CachedFetcher<T> {
+  private cache: Map<string, { data: T; timestamp: number }> = new Map();
+  private options: CacheOptions;
+
+  constructor(options: CacheOptions) {
+    this.options = options;
+  }
+
+  async fetch(
+    key: string,
+    fetcher: () => Promise<T>
+  ): Promise<{ data: T; stale: boolean; fromCache: boolean }> {
+    const cached = this.cache.get(key);
+    const now = Date.now();
+
+    if (cached) {
+      const isFresh = now - cached.timestamp < this.options.ttl;
+      if (isFresh) {
+        return { data: cached.data, stale: false, fromCache: true };
+      }
+      if (this.options.staleWhileRevalidate) {
+        // Return stale data immediately, refresh in background
+        fetcher().then(data => {
+          this.cache.set(key, { data, timestamp: Date.now() });
+        }).catch(() => {});
+        return { data: cached.data, stale: true, fromCache: true };
+      }
+    }
+
+    const data = await fetcher();
+    this.cache.set(key, { data, timestamp: now });
+    return { data, stale: false, fromCache: false };
+  }
+
+  invalidate(key: string): void {
+    this.cache.delete(key);
+  }
+
+  clear(): void {
+    this.cache.clear();
+  }
+}
+
+// Test
+async function runTests() {
+  const chain = new FallbackChain<string>();
+  chain
+    .addSource({ name: 'primary', fetch: async () => 'primary data', priority: 1 })
+    .addSource({ name: 'secondary', fetch: async () => 'secondary data', priority: 2 });
+
+  const result = await chain.execute();
+  console.log(result);
+}
+
+runTests();`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: ['primary', 'secondary'],
+      expectedOutput: { data: 'primary data', source: 'primary' },
+      description: 'FallbackChain returns data from first successful source',
+    },
+    {
+      input: ['closed'],
+      expectedOutput: 'closed',
+      description: 'CircuitBreaker starts in closed state',
+    },
+    {
+      input: ['cached', true],
+      expectedOutput: { fromCache: true, stale: false },
+      description: 'CachedFetcher returns cached data when fresh',
     },
   ],
   hints: [

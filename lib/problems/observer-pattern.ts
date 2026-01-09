@@ -138,12 +138,83 @@ emitter.emit('message', 'Hello World');
 
 emitter.off('message', handler1);
 emitter.emit('message', 'Second message');`,
-  solution: `function test() { return true; }`,
+  solution: `class EventEmitter {
+  constructor() {
+    this.events = new Map();
+  }
+
+  // Subscribe to an event
+  on(eventName, callback) {
+    if (!this.events.has(eventName)) {
+      this.events.set(eventName, new Set());
+    }
+    this.events.get(eventName).add(callback);
+    return this;
+  }
+
+  // Unsubscribe from an event
+  off(eventName, callback) {
+    if (this.events.has(eventName)) {
+      this.events.get(eventName).delete(callback);
+      // Clean up empty event entries
+      if (this.events.get(eventName).size === 0) {
+        this.events.delete(eventName);
+      }
+    }
+    return this;
+  }
+
+  // Emit an event to all subscribers
+  emit(eventName, data) {
+    if (!this.events.has(eventName)) {
+      return false;
+    }
+    this.events.get(eventName).forEach(callback => callback(data));
+    return true;
+  }
+
+  // Get count of listeners for an event
+  listenerCount(eventName) {
+    if (!this.events.has(eventName)) {
+      return 0;
+    }
+    return this.events.get(eventName).size;
+  }
+}
+
+// Test
+const emitter = new EventEmitter();
+
+const handler1 = (data) => console.log('Handler 1:', data);
+const handler2 = (data) => console.log('Handler 2:', data);
+
+emitter.on('message', handler1);
+emitter.on('message', handler2);
+
+emitter.emit('message', 'Hello World');
+
+emitter.off('message', handler1);
+emitter.emit('message', 'Second message');`,
   testCases: [
     {
       input: [],
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'EventEmitter can subscribe and emit events',
+    },
+    {
+      input: [],
+      expectedOutput: 2,
+      description: 'listenerCount returns correct count after adding 2 listeners',
+    },
+    {
+      input: [],
+      expectedOutput: 1,
+      description: 'listenerCount returns 1 after removing one listener',
+    },
+    {
+      input: [],
+      expectedOutput: false,
+      description: 'emit returns false when no listeners exist',
     },
   ],
   hints: [

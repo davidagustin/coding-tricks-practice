@@ -92,12 +92,49 @@ const users = [
 ];
 
 console.log(deduplicateUsers(users));`,
-  solution: `function test() { return true; }`,
+  solution: `function deduplicateUsers(users) {
+  return [...new Map(users.map(u => [u.id, u])).values()];
+}
+
+const users = [
+  { id: 1, name: 'John' },
+  { id: 2, name: 'Jane' },
+  { id: 1, name: 'John Updated' },
+  { id: 3, name: 'Bob' },
+  { id: 2, name: 'Jane Updated' }
+];
+
+console.log(deduplicateUsers(users));`,
   testCases: [
     {
+      input: [
+        { id: 1, name: 'John' },
+        { id: 2, name: 'Jane' },
+        { id: 1, name: 'John Updated' }
+      ],
+      expectedOutput: [
+        { id: 2, name: 'Jane' },
+        { id: 1, name: 'John Updated' }
+      ],
+      description: 'Last occurrence of duplicate id wins',
+    },
+    {
+      input: [
+        { id: 1, name: 'A' },
+        { id: 2, name: 'B' },
+        { id: 3, name: 'C' }
+      ],
+      expectedOutput: [
+        { id: 1, name: 'A' },
+        { id: 2, name: 'B' },
+        { id: 3, name: 'C' }
+      ],
+      description: 'No duplicates returns same order',
+    },
+    {
       input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      expectedOutput: [],
+      description: 'Empty array returns empty array',
     },
   ],
   hints: [

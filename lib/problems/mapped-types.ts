@@ -108,12 +108,60 @@ type NullableUser = Nullable<User>;
 // Test
 const partialUser: PartialUser = { name: 'John' };
 const requiredUser: RequiredUser = { name: 'John', age: 30, email: 'john@example.com' };`,
-  solution: `function test() { return true; }`,
+  solution: `// MyPartial - make all properties optional
+type MyPartial<T> = { [K in keyof T]?: T[K] };
+
+// MyRequired - make all properties required
+type MyRequired<T> = { [K in keyof T]-?: T[K] };
+
+// MyReadonly - make all properties readonly
+type MyReadonly<T> = { readonly [K in keyof T]: T[K] };
+
+// Nullable - make all properties nullable
+type Nullable<T> = { [K in keyof T]: T[K] | null };
+
+// Test types
+interface User {
+  name: string;
+  age: number;
+  email?: string;
+}
+
+type PartialUser = MyPartial<User>;
+type RequiredUser = MyRequired<User>;
+type ReadonlyUser = MyReadonly<User>;
+type NullableUser = Nullable<User>;
+
+// Test
+const partialUser: PartialUser = { name: 'John' };
+const requiredUser: RequiredUser = { name: 'John', age: 30, email: 'john@example.com' };
+const readonlyUser: ReadonlyUser = { name: 'John', age: 30 };
+const nullableUser: NullableUser = { name: null, age: 30, email: null };
+
+console.log('Partial:', partialUser);
+console.log('Required:', requiredUser);
+console.log('Readonly:', readonlyUser);
+console.log('Nullable:', nullableUser);`,
   testCases: [
     {
-      input: [],
+      input: { type: 'MyPartial', test: { name: 'John' } },
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'MyPartial allows partial objects',
+    },
+    {
+      input: { type: 'MyRequired', test: { name: 'John', age: 30, email: 'test@example.com' } },
+      expectedOutput: true,
+      description: 'MyRequired requires all properties',
+    },
+    {
+      input: { type: 'MyReadonly', test: { name: 'John', age: 30 } },
+      expectedOutput: true,
+      description: 'MyReadonly makes properties readonly',
+    },
+    {
+      input: { type: 'Nullable', test: { name: null, age: 30, email: null } },
+      expectedOutput: true,
+      description: 'Nullable allows null for all properties',
     },
   ],
   hints: [

@@ -101,12 +101,49 @@ const first = getFirst([1, 2, 3]);
 const pair: Pair<string, number> = { first: 'age', second: 30 };
 
 console.log(num, str, first, pair);`,
-  solution: `function test() { return true; }`,
+  solution: `// Generic identity function
+function identity<T>(arg: T): T {
+  return arg;
+}
+
+// Generic function to get first element of array
+function getFirst<T>(arr: T[]): T | undefined {
+  return arr.length > 0 ? arr[0] : undefined;
+}
+
+// Generic Pair type
+type Pair<T, U> = {
+  first: T;
+  second: U;
+};
+
+// Test
+const num = identity<number>(42);
+const str = identity<string>('hello');
+const first = getFirst([1, 2, 3]);
+const pair: Pair<string, number> = { first: 'age', second: 30 };
+
+console.log(num, str, first, pair);`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: [42],
+      expectedOutput: 42,
+      description: 'identity returns the same number',
+    },
+    {
+      input: ['hello'],
+      expectedOutput: 'hello',
+      description: 'identity returns the same string',
+    },
+    {
+      input: [[1, 2, 3]],
+      expectedOutput: 1,
+      description: 'getFirst returns first element of array',
+    },
+    {
+      input: [[]],
+      expectedOutput: undefined,
+      description: 'getFirst returns undefined for empty array',
     },
   ],
   hints: [

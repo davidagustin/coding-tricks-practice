@@ -126,12 +126,74 @@ console.log(sms.send('Your verification code is 123456'));
 
 const push = NotificationFactory.create('push');
 console.log(push.send('You have a new message'));`,
-  solution: `function test() { return true; }`,
+  solution: `// Email notification handler
+class EmailNotification {
+  send(message) {
+    return \`Sending email: \${message}\`;
+  }
+}
+
+// SMS notification handler
+class SMSNotification {
+  send(message) {
+    return \`Sending SMS: \${message}\`;
+  }
+}
+
+// Push notification handler
+class PushNotification {
+  send(message) {
+    return \`Sending push notification: \${message}\`;
+  }
+}
+
+// Notification Factory
+class NotificationFactory {
+  static create(type) {
+    const normalizedType = type.toLowerCase();
+
+    switch (normalizedType) {
+      case 'email':
+        return new EmailNotification();
+      case 'sms':
+        return new SMSNotification();
+      case 'push':
+        return new PushNotification();
+      default:
+        throw new Error(\`Unknown notification type: \${type}\`);
+    }
+  }
+}
+
+// Test
+const email = NotificationFactory.create('email');
+console.log(email.send('Welcome to our service!')); // 'Sending email: Welcome to our service!'
+
+const sms = NotificationFactory.create('sms');
+console.log(sms.send('Your verification code is 123456')); // 'Sending SMS: Your verification code is 123456'
+
+const push = NotificationFactory.create('push');
+console.log(push.send('You have a new message')); // 'Sending push notification: You have a new message'`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { type: 'email', message: 'Welcome!' },
+      expectedOutput: 'Sending email: Welcome!',
+      description: 'EmailNotification.send returns formatted email message',
+    },
+    {
+      input: { type: 'sms', message: 'Code: 1234' },
+      expectedOutput: 'Sending SMS: Code: 1234',
+      description: 'SMSNotification.send returns formatted SMS message',
+    },
+    {
+      input: { type: 'push', message: 'New alert' },
+      expectedOutput: 'Sending push notification: New alert',
+      description: 'PushNotification.send returns formatted push notification',
+    },
+    {
+      input: { type: 'unknown' },
+      expectedOutput: 'Error: Unknown notification type: unknown',
+      description: 'NotificationFactory.create throws error for unknown types',
     },
   ],
   hints: [

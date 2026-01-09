@@ -141,12 +141,79 @@ console.log(wordsWithoutPunctuation('Hello, world! How are you'));
 
 console.log(replaceBetweenMarkers('start[REPLACE]end', 'NEW'));
 // 'start[NEW]end'`,
-  solution: `function test() { return true; }`,
+  solution: `// Validate a strong password
+// Requirements: at least 8 chars, 1 uppercase, 1 lowercase, 1 digit, 1 special char
+function isStrongPassword(password) {
+  return /^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{}|;':",.<>?/]).{8,}$/.test(password);
+}
+
+// Add commas to large numbers
+function addCommas(numStr) {
+  return numStr.replace(/\\B(?=(\\d{3})+$)/g, ',');
+}
+
+// Extract amounts after currency symbols
+function extractAmounts(text) {
+  const matches = text.match(/(?<=\\$|EUR\\s)\\d+\\.\\d{2}/g);
+  return matches || [];
+}
+
+// Find words NOT followed by punctuation
+function wordsWithoutPunctuation(text) {
+  const matches = text.match(/\\b\\w+\\b(?![.,!?;:])/g);
+  return matches || [];
+}
+
+// Replace text only between specific markers
+function replaceBetweenMarkers(text, replacement) {
+  return text.replace(/(?<=\\[)[^\\]]+(?=\\])/, replacement);
+}
+
+// Test your functions
+console.log(isStrongPassword('Abc123!@'));   // true
+console.log(isStrongPassword('weakpass'));   // false
+
+console.log(addCommas('1234567'));           // '1,234,567'
+console.log(addCommas('1000'));              // '1,000'
+
+console.log(extractAmounts('Price: $99.99 or EUR 50.00'));
+// ['99.99', '50.00']
+
+console.log(wordsWithoutPunctuation('Hello, world! How are you'));
+// ['How', 'are', 'you']
+
+console.log(replaceBetweenMarkers('start[REPLACE]end', 'NEW'));
+// 'start[NEW]end'`,
   testCases: [
     {
-      input: [],
+      input: { fn: 'isStrongPassword', password: 'Abc123!@' },
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'isStrongPassword accepts valid strong password',
+    },
+    {
+      input: { fn: 'isStrongPassword', password: 'weakpass' },
+      expectedOutput: false,
+      description: 'isStrongPassword rejects weak password',
+    },
+    {
+      input: { fn: 'addCommas', numStr: '1234567' },
+      expectedOutput: '1,234,567',
+      description: 'addCommas formats large number correctly',
+    },
+    {
+      input: { fn: 'addCommas', numStr: '1000' },
+      expectedOutput: '1,000',
+      description: 'addCommas formats thousands correctly',
+    },
+    {
+      input: { fn: 'extractAmounts', text: 'Price: $99.99 or EUR 50.00' },
+      expectedOutput: ['99.99', '50.00'],
+      description: 'extractAmounts finds amounts after currency symbols',
+    },
+    {
+      input: { fn: 'replaceBetweenMarkers', text: 'start[REPLACE]end', replacement: 'NEW' },
+      expectedOutput: 'start[NEW]end',
+      description: 'replaceBetweenMarkers replaces content between brackets',
     },
   ],
   hints: [

@@ -205,12 +205,143 @@ console.log(safeDivide(10, 0).fold(e => e, v => v)); // 'Division by zero'
 const data = { user: { address: { city: 'NYC' } } };
 console.log(safeGet(data, 'user', 'address', 'city').getOrElse('Unknown')); // 'NYC'
 console.log(safeGet(data, 'user', 'phone').getOrElse('Unknown')); // 'Unknown'`,
-  solution: `function test() { return true; }`,
+  solution: `// Implement the Maybe monad
+class Maybe {
+  constructor(value) {
+    this._value = value;
+  }
+
+  static of(value) {
+    return new Maybe(value);
+  }
+
+  isNothing() {
+    return this._value === null || this._value === undefined;
+  }
+
+  map(fn) {
+    if (this.isNothing()) {
+      return Maybe.of(null);
+    }
+    return Maybe.of(fn(this._value));
+  }
+
+  flatMap(fn) {
+    if (this.isNothing()) {
+      return Maybe.of(null);
+    }
+    return fn(this._value);
+  }
+
+  getOrElse(defaultValue) {
+    if (this.isNothing()) {
+      return defaultValue;
+    }
+    return this._value;
+  }
+}
+
+// Implement the Either monad
+class Either {
+  constructor(value, isRight) {
+    this._value = value;
+    this._isRight = isRight;
+  }
+
+  static right(value) {
+    return new Either(value, true);
+  }
+
+  static left(value) {
+    return new Either(value, false);
+  }
+
+  isRight() {
+    return this._isRight;
+  }
+
+  map(fn) {
+    if (!this._isRight) {
+      return this;
+    }
+    return Either.right(fn(this._value));
+  }
+
+  flatMap(fn) {
+    if (!this._isRight) {
+      return this;
+    }
+    return fn(this._value);
+  }
+
+  fold(leftFn, rightFn) {
+    if (this._isRight) {
+      return rightFn(this._value);
+    }
+    return leftFn(this._value);
+  }
+}
+
+// Implement a safe division function using Either
+function safeDivide(a, b) {
+  if (b === 0) {
+    return Either.left('Division by zero');
+  }
+  return Either.right(a / b);
+}
+
+// Implement a safe property access using Maybe
+function safeGet(obj, ...keys) {
+  return keys.reduce((maybe, key) => {
+    return maybe.flatMap(value => {
+      if (value && typeof value === 'object' && key in value) {
+        return Maybe.of(value[key]);
+      }
+      return Maybe.of(null);
+    });
+  }, Maybe.of(obj));
+}
+
+// Test
+console.log(Maybe.of(5).map(x => x * 2).getOrElse(0)); // 10
+console.log(Maybe.of(null).map(x => x * 2).getOrElse(0)); // 0
+
+console.log(safeDivide(10, 2).fold(e => e, v => v)); // 5
+console.log(safeDivide(10, 0).fold(e => e, v => v)); // 'Division by zero'
+
+const data = { user: { address: { city: 'NYC' } } };
+console.log(safeGet(data, 'user', 'address', 'city').getOrElse('Unknown')); // 'NYC'
+console.log(safeGet(data, 'user', 'phone').getOrElse('Unknown')); // 'Unknown'`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { monad: 'Maybe', value: 5, operations: ['map(x => x * 2)'] },
+      expectedOutput: 10,
+      description: 'Maybe.map transforms value',
+    },
+    {
+      input: { monad: 'Maybe', value: null, operations: ['map(x => x * 2)'], default: 0 },
+      expectedOutput: 0,
+      description: 'Maybe.map on null returns default',
+    },
+    {
+      input: { fn: 'safeDivide', args: [10, 2] },
+      expectedOutput: 5,
+      description: 'safeDivide returns Right with result',
+    },
+    {
+      input: { fn: 'safeDivide', args: [10, 0] },
+      expectedOutput: 'Division by zero',
+      description: 'safeDivide returns Left on division by zero',
+    },
+    {
+      input: { fn: 'safeGet', obj: { user: { name: 'John' } }, keys: ['user', 'name'] },
+      expectedOutput: 'John',
+      description: 'safeGet accesses nested properties',
+    },
+    {
+      input: { fn: 'safeGet', obj: { user: {} }, keys: ['user', 'address', 'city'], default: 'Unknown' },
+      expectedOutput: 'Unknown',
+      description: 'safeGet returns default for missing properties',
     },
   ],
   hints: [

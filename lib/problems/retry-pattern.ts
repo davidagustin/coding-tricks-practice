@@ -102,12 +102,63 @@ async function fetchData() {
 // retryWithBackoff(fetchData, { maxRetries: 3, initialDelay: 100 })
 //   .then(console.log)
 //   .catch(console.error);`,
-  solution: `function test() { return true; }`,
+  solution: `async function retryWithBackoff(fn, options = {}) {
+  const { maxRetries = 3, initialDelay = 100 } = options;
+
+  let lastError;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+
+      if (attempt < maxRetries) {
+        const delay = initialDelay * Math.pow(2, attempt);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+
+  throw lastError;
+}
+
+// Test
+async function fetchData() {
+  // Simulated API that might fail
+  if (Math.random() > 0.5) throw new Error('Failed');
+  return 'Success';
+}
+
+// Example usage:
+// retryWithBackoff(fetchData, { maxRetries: 3, initialDelay: 100 })
+//   .then(console.log)
+//   .catch(console.error);`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { fn: 'retryWithBackoff', successOnAttempt: 1, maxRetries: 3, initialDelay: 10 },
+      expectedOutput: 'Success',
+      description: 'Returns success when function succeeds on first attempt',
+    },
+    {
+      input: { fn: 'retryWithBackoff', successOnAttempt: 3, maxRetries: 3, initialDelay: 10 },
+      expectedOutput: 'Success',
+      description: 'Returns success when function succeeds on third attempt',
+    },
+    {
+      input: { fn: 'retryWithBackoff', successOnAttempt: 5, maxRetries: 3, initialDelay: 10 },
+      expectedOutput: 'error',
+      description: 'Throws error when all retries are exhausted',
+    },
+    {
+      input: { fn: 'retryWithBackoff-delay', attempt: 0, initialDelay: 100 },
+      expectedOutput: 100,
+      description: 'First retry delay is initialDelay (100ms)',
+    },
+    {
+      input: { fn: 'retryWithBackoff-delay', attempt: 2, initialDelay: 100 },
+      expectedOutput: 400,
+      description: 'Third retry delay is initialDelay * 4 (400ms)',
     },
   ],
   hints: [

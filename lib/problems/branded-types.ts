@@ -112,12 +112,67 @@ console.log(getProduct(productId));
 // This should cause type error (uncomment to test):
 // getUser(productId); // Error!
 // getProduct(userId); // Error!`,
-  solution: `function test() { return true; }`,
+  solution: `// Create branded types for UserId and ProductId
+// Both are numbers but should not be interchangeable
+type UserId = number & { readonly __brand: unique symbol };
+type ProductId = number & { readonly __brand: unique symbol };
+
+// Create validation functions that return branded types
+function createUserId(id: number): UserId {
+  // You could add validation here (e.g., check if positive)
+  if (id <= 0) {
+    throw new Error('UserId must be a positive number');
+  }
+  return id as UserId;
+}
+
+function createProductId(id: number): ProductId {
+  // You could add validation here (e.g., check if positive)
+  if (id <= 0) {
+    throw new Error('ProductId must be a positive number');
+  }
+  return id as ProductId;
+}
+
+// Create a function that only accepts UserId
+function getUser(id: UserId): string {
+  return 'User ' + id;
+}
+
+// Create a function that only accepts ProductId
+function getProduct(id: ProductId): string {
+  return 'Product ' + id;
+}
+
+// Test - this should work
+const userId = createUserId(1);
+const productId = createProductId(1);
+console.log(getUser(userId));
+console.log(getProduct(productId));
+
+// This should cause type error (uncomment to test):
+// getUser(productId); // Error!
+// getProduct(userId); // Error!`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { fn: 'createUserId', args: [1] },
+      expectedOutput: 1,
+      description: 'createUserId returns a branded UserId',
+    },
+    {
+      input: { fn: 'createProductId', args: [42] },
+      expectedOutput: 42,
+      description: 'createProductId returns a branded ProductId',
+    },
+    {
+      input: { fn: 'getUser', args: ['userId(1)'] },
+      expectedOutput: 'User 1',
+      description: 'getUser accepts UserId and returns user string',
+    },
+    {
+      input: { fn: 'getProduct', args: ['productId(1)'] },
+      expectedOutput: 'Product 1',
+      description: 'getProduct accepts ProductId and returns product string',
     },
   ],
   hints: [

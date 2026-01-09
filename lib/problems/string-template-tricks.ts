@@ -127,12 +127,85 @@ console.log(pluralize(5, 'apple'));
 console.log(buildUrl('https://api.com', { page: 1, limit: 10 }));
 console.log(generateTable(['Name', 'Age'], [['Alice', 30], ['Bob', 25]]));
 console.log(interpolate('Hello {{name}}!', { name: 'World' }));`,
-  solution: `function test() { return true; }`,
+  solution: `function pluralize(count, singular, plural = singular + 's') {
+  // Return grammatically correct string
+  return \`\${count} \${count === 1 ? singular : plural}\`;
+}
+
+function buildUrl(base, params) {
+  // Build URL with query parameters
+  const entries = Object.entries(params);
+  if (entries.length === 0) return base;
+
+  const queryString = entries
+    .map(([key, value]) => \`\${encodeURIComponent(key)}=\${encodeURIComponent(value)}\`)
+    .join('&');
+
+  return \`\${base}?\${queryString}\`;
+}
+
+function generateTable(headers, rows) {
+  // Generate HTML table string
+  const headerCells = headers.map(h => \`<th>\${h}</th>\`).join('');
+  const headerRow = \`<thead><tr>\${headerCells}</tr></thead>\`;
+
+  const bodyRows = rows.map(row => {
+    const cells = row.map(cell => \`<td>\${cell}</td>\`).join('');
+    return \`<tr>\${cells}</tr>\`;
+  }).join('');
+  const tbody = \`<tbody>\${bodyRows}</tbody>\`;
+
+  return \`<table>\${headerRow}\${tbody}</table>\`;
+}
+
+function interpolate(template, data) {
+  // Replace {{key}} placeholders with values from data object
+  return template.replace(/\\{\\{(\\w+)\\}\\}/g, (match, key) => {
+    return data.hasOwnProperty(key) ? data[key] : match;
+  });
+}
+
+// Test
+console.log(pluralize(1, 'apple'));
+console.log(pluralize(5, 'apple'));
+console.log(buildUrl('https://api.com', { page: 1, limit: 10 }));
+console.log(generateTable(['Name', 'Age'], [['Alice', 30], ['Bob', 25]]));
+console.log(interpolate('Hello {{name}}!', { name: 'World' }));`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { count: 1, singular: 'apple' },
+      expectedOutput: '1 apple',
+      description: 'pluralize returns singular for count of 1',
+    },
+    {
+      input: { count: 5, singular: 'apple' },
+      expectedOutput: '5 apples',
+      description: 'pluralize returns plural for count > 1',
+    },
+    {
+      input: { count: 0, singular: 'cherry', plural: 'cherries' },
+      expectedOutput: '0 cherries',
+      description: 'pluralize uses custom plural form',
+    },
+    {
+      input: { base: 'https://api.com', params: { page: 1, limit: 10 } },
+      expectedOutput: 'https://api.com?page=1&limit=10',
+      description: 'buildUrl creates URL with query params',
+    },
+    {
+      input: { base: 'https://api.com', params: {} },
+      expectedOutput: 'https://api.com',
+      description: 'buildUrl returns base for empty params',
+    },
+    {
+      input: { template: 'Hello {{name}}!', data: { name: 'World' } },
+      expectedOutput: 'Hello World!',
+      description: 'interpolate replaces placeholders with values',
+    },
+    {
+      input: { template: '{{a}} + {{b}} = {{c}}', data: { a: 1, b: 2, c: 3 } },
+      expectedOutput: '1 + 2 = 3',
+      description: 'interpolate handles multiple placeholders',
     },
   ],
   hints: [

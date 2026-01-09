@@ -142,12 +142,72 @@ console.log(state.user.profile.name); // 'Alice' - unchanged
 
 const obj = { a: 1, b: 2, c: 3 };
 console.log(removeProperty(obj, 'b')); // { a: 1, c: 3 }`,
-  solution: `function test() { return true; }`,
+  solution: `// Immutable array insert at index
+function insertAt(array, index, item) {
+  return [...array.slice(0, index), item, ...array.slice(index)];
+}
+
+// Immutable array removal at index
+function removeAt(array, index) {
+  return [...array.slice(0, index), ...array.slice(index + 1)];
+}
+
+// Immutable array update at index
+function updateAt(array, index, newValue) {
+  return array.map((item, i) => (i === index ? newValue : item));
+}
+
+// Immutable nested object update
+function updateNested(obj, path, value) {
+  if (path.length === 0) return value;
+
+  const [head, ...rest] = path;
+  return {
+    ...obj,
+    [head]: rest.length === 0 ? value : updateNested(obj[head] || {}, rest, value)
+  };
+}
+
+// Immutable object property removal
+function removeProperty(obj, key) {
+  const { [key]: removed, ...rest } = obj;
+  return rest;
+}
+
+// Test
+const arr = [1, 2, 3, 4, 5];
+console.log(insertAt(arr, 2, 'x')); // [1, 2, 'x', 3, 4, 5]
+console.log(removeAt(arr, 2)); // [1, 2, 4, 5]
+console.log(updateAt(arr, 2, 'x')); // [1, 2, 'x', 4, 5]
+console.log(arr); // [1, 2, 3, 4, 5] - unchanged
+
+const state = { user: { profile: { name: 'Alice' } } };
+console.log(updateNested(state, ['user', 'profile', 'name'], 'Bob'));
+// { user: { profile: { name: 'Bob' } } }
+console.log(state.user.profile.name); // 'Alice' - unchanged
+
+const obj = { a: 1, b: 2, c: 3 };
+console.log(removeProperty(obj, 'b')); // { a: 1, c: 3 }`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: [[1, 2, 3, 4, 5], 2, 'x'],
+      expectedOutput: [1, 2, 'x', 3, 4, 5],
+      description: 'insertAt inserts item at correct index',
+    },
+    {
+      input: [[1, 2, 3, 4, 5], 2],
+      expectedOutput: [1, 2, 4, 5],
+      description: 'removeAt removes item at index',
+    },
+    {
+      input: [[1, 2, 3, 4, 5], 2, 'x'],
+      expectedOutput: [1, 2, 'x', 4, 5],
+      description: 'updateAt replaces item at index',
+    },
+    {
+      input: [{ a: 1, b: 2, c: 3 }, 'b'],
+      expectedOutput: { a: 1, c: 3 },
+      description: 'removeProperty removes key from object',
     },
   ],
   hints: [

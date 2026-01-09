@@ -126,12 +126,83 @@ console.log(mergeSort([5, 2, 8, 1, 9]));
 
 console.log(merge([1, 3, 5], [2, 4, 6]));
 // Expected: [1, 2, 3, 4, 5, 6]`,
-  solution: `function test() { return true; }`,
+  solution: `// Implement the merge function
+function merge(left: number[], right: number[]): number[] {
+  const result: number[] = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
+
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] <= right[rightIndex]) {
+      result.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      result.push(right[rightIndex]);
+      rightIndex++;
+    }
+  }
+
+  // Add remaining elements
+  while (leftIndex < left.length) {
+    result.push(left[leftIndex]);
+    leftIndex++;
+  }
+
+  while (rightIndex < right.length) {
+    result.push(right[rightIndex]);
+    rightIndex++;
+  }
+
+  return result;
+}
+
+// Implement merge sort
+function mergeSort(arr: number[]): number[] {
+  if (arr.length <= 1) {
+    return arr;
+  }
+
+  const mid = Math.floor(arr.length / 2);
+  const left = arr.slice(0, mid);
+  const right = arr.slice(mid);
+
+  return merge(mergeSort(left), mergeSort(right));
+}
+
+// Test cases
+console.log(mergeSort([38, 27, 43, 3, 9, 82, 10]));
+// Expected: [3, 9, 10, 27, 38, 43, 82]
+
+console.log(mergeSort([5, 2, 8, 1, 9]));
+// Expected: [1, 2, 5, 8, 9]
+
+console.log(merge([1, 3, 5], [2, 4, 6]));
+// Expected: [1, 2, 3, 4, 5, 6]`,
   testCases: [
     {
+      input: [38, 27, 43, 3, 9, 82, 10],
+      expectedOutput: [3, 9, 10, 27, 38, 43, 82],
+      description: 'mergeSort sorts array in ascending order',
+    },
+    {
+      input: [5, 2, 8, 1, 9],
+      expectedOutput: [1, 2, 5, 8, 9],
+      description: 'mergeSort handles smaller array',
+    },
+    {
+      input: [1],
+      expectedOutput: [1],
+      description: 'mergeSort handles single element',
+    },
+    {
       input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      expectedOutput: [],
+      description: 'mergeSort handles empty array',
+    },
+    {
+      input: { fn: 'merge', left: [1, 3, 5], right: [2, 4, 6] },
+      expectedOutput: [1, 2, 3, 4, 5, 6],
+      description: 'merge combines two sorted arrays',
     },
   ],
   hints: [

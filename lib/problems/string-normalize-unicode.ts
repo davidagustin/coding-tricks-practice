@@ -134,12 +134,59 @@ console.log(normalizeAndCompare('cafe\\u0301', 'cafe'));
 console.log(removeAccents('cafe'));
 console.log(safeSlug('Cafe Munchen!'));
 console.log(sortStringsLocale(['a', 'z', 'a']));`,
-  solution: `function test() { return true; }`,
+  solution: `function normalizeAndCompare(str1, str2) {
+  // Compare two strings after normalizing both to NFC
+  return str1.normalize('NFC') === str2.normalize('NFC');
+}
+
+function removeAccents(str) {
+  // NFD decomposes, then remove combining marks (\\u0300-\\u036f)
+  return str.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '');
+}
+
+function safeSlug(str) {
+  // Create URL-safe slug from Unicode string
+  return str
+    .normalize('NFKD')                    // 1. Normalize to NFKD
+    .replace(/[\\u0300-\\u036f]/g, '')     // 2. Remove accents
+    .toLowerCase()                        // 3. Convert to lowercase
+    .replace(/\\s+/g, '-')                 // 4. Replace spaces with hyphens
+    .replace(/[^a-z0-9-]/g, '')           // 5. Remove non-alphanumeric (except hyphens)
+    .replace(/-+/g, '-')                  // Remove multiple consecutive hyphens
+    .replace(/^-|-$/g, '');               // Remove leading/trailing hyphens
+}
+
+function sortStringsLocale(strings, locale = 'en') {
+  // Sort strings using locale-aware comparison
+  const collator = new Intl.Collator(locale, { sensitivity: 'base' });
+  return [...strings].sort((a, b) => collator.compare(a, b));
+}
+
+// Test
+console.log(normalizeAndCompare('cafe\\u0301', 'caf\\u00e9'));
+console.log(removeAccents('caf\\u00e9'));
+console.log(safeSlug('Caf\\u00e9 M\\u00fcnchen!'));
+console.log(sortStringsLocale(['\\u00e0', 'z', 'a']));`,
   testCases: [
     {
-      input: [],
+      input: { str1: 'cafe\u0301', str2: 'caf\u00e9' },
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'normalizeAndCompare returns true for equivalent unicode strings',
+    },
+    {
+      input: { str: 'caf\u00e9' },
+      expectedOutput: 'cafe',
+      description: 'removeAccents removes accent from e',
+    },
+    {
+      input: { str: 'Caf\u00e9 M\u00fcnchen!' },
+      expectedOutput: 'cafe-munchen',
+      description: 'safeSlug creates URL-safe slug from unicode string',
+    },
+    {
+      input: { strings: ['\u00e0', 'z', 'a'], locale: 'en' },
+      expectedOutput: ['a', '\u00e0', 'z'],
+      description: 'sortStringsLocale sorts with locale awareness',
     },
   ],
   hints: [

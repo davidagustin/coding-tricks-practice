@@ -98,12 +98,47 @@ const names: string[] = ['Alice', 'Bob'];
 console.log(greet('John'));
 console.log(calculateArea(10, 5));
 console.log(isEven(4));`,
-  solution: `function test() { return true; }`,
+  solution: `// Add type annotations to functions
+
+function greet(name: string): string {
+  return \`Hello, \${name}!\`;
+}
+
+function calculateArea(width: number, height: number): number {
+  return width * height;
+}
+
+function isEven(num: number): boolean {
+  return num % 2 === 0;
+}
+
+const numbers: number[] = [1, 2, 3, 4, 5];
+const names: string[] = ['Alice', 'Bob'];
+
+// Test
+console.log(greet('John'));
+console.log(calculateArea(10, 5));
+console.log(isEven(4));`,
   testCases: [
     {
-      input: [],
+      input: { fn: 'greet', args: ['John'] },
+      expectedOutput: 'Hello, John!',
+      description: 'greet function returns greeting string',
+    },
+    {
+      input: { fn: 'calculateArea', args: [10, 5] },
+      expectedOutput: 50,
+      description: 'calculateArea returns correct area',
+    },
+    {
+      input: { fn: 'isEven', args: [4] },
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'isEven returns true for even numbers',
+    },
+    {
+      input: { fn: 'isEven', args: [7] },
+      expectedOutput: false,
+      description: 'isEven returns false for odd numbers',
     },
   ],
   hints: [

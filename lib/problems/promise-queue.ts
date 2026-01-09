@@ -166,12 +166,126 @@ const users = await Promise.all(
 // queue.add(() => new Promise(r => setTimeout(() => r(2), 100)));
 // queue.add(() => new Promise(r => setTimeout(() => r(3), 100)));
 // queue.onIdle().then(() => console.log('All done'));`,
-  solution: `function test() { return true; }`,
+  solution: `class PromiseQueue {
+  constructor(concurrency = 1) {
+    // Initialize the queue
+    // - Store the concurrency limit
+    // - Initialize queue array for pending tasks
+    // - Track number of currently running tasks
+    this.concurrency = concurrency;
+    this.queue = [];
+    this.running = 0;
+    this._idleResolvers = [];
+  }
+
+  add(taskFn) {
+    // Add a task to the queue
+    // - Return a promise that resolves when the task completes
+    // - If under concurrency limit, run immediately
+    // - Otherwise, queue it for later execution
+
+    return new Promise((resolve, reject) => {
+      const task = { taskFn, resolve, reject };
+      this.queue.push(task);
+      this._processQueue();
+    });
+  }
+
+  addAll(taskFns) {
+    // Add multiple tasks and return promise of all results
+    // - Results should be in the same order as input
+
+    return Promise.all(taskFns.map(fn => this.add(fn)));
+  }
+
+  async onIdle() {
+    // Return a promise that resolves when queue is empty
+    // and no tasks are running
+
+    if (this.running === 0 && this.queue.length === 0) {
+      return Promise.resolve();
+    }
+
+    return new Promise(resolve => {
+      this._idleResolvers.push(resolve);
+    });
+  }
+
+  get size() {
+    // Return number of pending tasks
+    return this.queue.length;
+  }
+
+  get pending() {
+    // Return number of currently running tasks
+    return this.running;
+  }
+
+  clear() {
+    // Clear all pending tasks (don't affect running ones)
+    this.queue = [];
+  }
+
+  // Private method to process queue
+  _processQueue() {
+    // Start tasks up to concurrency limit
+    while (this.running < this.concurrency && this.queue.length > 0) {
+      const task = this.queue.shift();
+      this.running++;
+
+      Promise.resolve()
+        .then(() => task.taskFn())
+        .then(result => {
+          task.resolve(result);
+        })
+        .catch(error => {
+          task.reject(error);
+        })
+        .finally(() => {
+          this.running--;
+          this._processQueue();
+
+          // Check if idle
+          if (this.running === 0 && this.queue.length === 0) {
+            this._idleResolvers.forEach(resolve => resolve());
+            this._idleResolvers = [];
+          }
+        });
+    }
+  }
+}
+
+// Test (commented out)
+// const queue = new PromiseQueue(2);
+// queue.add(() => new Promise(r => setTimeout(() => r(1), 100)));
+// queue.add(() => new Promise(r => setTimeout(() => r(2), 100)));
+// queue.add(() => new Promise(r => setTimeout(() => r(3), 100)));
+// queue.onIdle().then(() => console.log('All done'));`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: 'concurrencyLimit',
+      expectedOutput: { maxConcurrent: 2 },
+      description: 'Respects concurrency limit of 2',
+    },
+    {
+      input: 'addAll',
+      expectedOutput: { results: [1, 2, 3, 4], inOrder: true },
+      description: 'addAll returns results in original order',
+    },
+    {
+      input: 'onIdle',
+      expectedOutput: { idle: true },
+      description: 'onIdle resolves when all tasks complete',
+    },
+    {
+      input: 'sizeAndPending',
+      expectedOutput: { initialSize: 3, pendingDuring: 2 },
+      description: 'size and pending return correct values',
+    },
+    {
+      input: 'clear',
+      expectedOutput: { clearedSize: 0 },
+      description: 'clear removes pending tasks',
     },
   ],
   hints: [

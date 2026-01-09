@@ -100,12 +100,63 @@ function processStatus(status: Status) {
 // Test
 console.log(processStatus(Status.Pending));
 console.log(Direction.Up);`,
-  solution: `function test() { return true; }`,
+  solution: `// Numeric enum for Status
+enum Status {
+  Pending = 0,
+  Approved = 1,
+  Rejected = 2
+}
+
+// String enum for Direction
+enum Direction {
+  Up = 'UP',
+  Down = 'DOWN',
+  Left = 'LEFT',
+  Right = 'RIGHT'
+}
+
+function processStatus(status: Status): string {
+  switch (status) {
+    case Status.Pending:
+      return 'Request is pending';
+    case Status.Approved:
+      return 'Request has been approved';
+    case Status.Rejected:
+      return 'Request was rejected';
+    default:
+      return 'Unknown status';
+  }
+}
+
+// Test
+console.log(processStatus(Status.Pending)); // 'Request is pending'
+console.log(processStatus(Status.Approved)); // 'Request has been approved'
+console.log(Direction.Up); // 'UP'
+console.log(Direction.Down); // 'DOWN'
+
+// Numeric enum reverse mapping
+console.log(Status[0]); // 'Pending'
+console.log(Status.Pending); // 0`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: 0,
+      expectedOutput: 'Request is pending',
+      description: 'processStatus returns correct message for Pending status',
+    },
+    {
+      input: 1,
+      expectedOutput: 'Request has been approved',
+      description: 'processStatus returns correct message for Approved status',
+    },
+    {
+      input: 2,
+      expectedOutput: 'Request was rejected',
+      description: 'processStatus returns correct message for Rejected status',
+    },
+    {
+      input: 'Direction.Up',
+      expectedOutput: 'UP',
+      description: 'String enum Direction.Up has value UP',
     },
   ],
   hints: [

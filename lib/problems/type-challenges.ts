@@ -137,12 +137,100 @@ type FlattenTest = Flatten<string[]>;
 type TupleTest = TupleToUnion<[1, 'hello', true]>;
 type PickTest = PickByType<{ a: string; b: number; c: boolean }, string>;
 type OmitTest = OmitByType<{ a: string; b: number; c: boolean }, string>;`,
-  solution: `function test() { return true; }`,
+  solution: `// Challenge 1: DeepReadonly
+// Make all properties readonly recursively, including nested objects and arrays
+type DeepReadonly<T> = T extends Function
+  ? T
+  : T extends object
+    ? { readonly [K in keyof T]: DeepReadonly<T[K]> }
+    : T;
+
+// Challenge 2: Flatten
+// Flatten an array type to get its element type
+type Flatten<T> = T extends Array<infer U> ? U : T;
+
+// Challenge 3: TupleToUnion
+// Convert a tuple type to a union of its elements
+type TupleToUnion<T extends readonly unknown[]> = T[number];
+
+// Challenge 4: PickByType
+// Pick all properties from T where the value is of type U
+type PickByType<T, U> = {
+  [K in keyof T as T[K] extends U ? K : never]: T[K]
+};
+
+// Challenge 5: OmitByType
+// Omit all properties from T where the value is of type U
+type OmitByType<T, U> = {
+  [K in keyof T as T[K] extends U ? never : K]: T[K]
+};
+
+// Challenge 6: DeepRequired (Bonus)
+// Make all properties required recursively
+type DeepRequired<T> = T extends Function
+  ? T
+  : T extends object
+    ? { [K in keyof T]-?: DeepRequired<T[K]> }
+    : T;
+
+// Test your types
+type TestObj = {
+  name: string;
+  age: number;
+  address: {
+    city: string;
+    coords: {
+      lat: number;
+      lng: number;
+    };
+  };
+  tags: string[];
+};
+
+type ReadonlyTest = DeepReadonly<TestObj>;
+type FlattenTest = Flatten<string[]>; // string
+type TupleTest = TupleToUnion<[1, 'hello', true]>; // 1 | 'hello' | true
+type PickTest = PickByType<{ a: string; b: number; c: boolean }, string>; // { a: string }
+type OmitTest = OmitByType<{ a: string; b: number; c: boolean }, string>; // { b: number; c: boolean }
+
+// Runtime test to verify types compile correctly
+function testTypes() {
+  const readonlyObj: ReadonlyTest = {
+    name: 'Test',
+    age: 25,
+    address: { city: 'NYC', coords: { lat: 40.7, lng: -74.0 } },
+    tags: ['a', 'b']
+  };
+
+  const flattened: FlattenTest = 'hello';
+  const union: TupleTest = 1; // or 'hello' or true
+  const picked: PickTest = { a: 'test' };
+  const omitted: OmitTest = { b: 42, c: false };
+
+  return { readonlyObj, flattened, union, picked, omitted };
+}
+
+console.log('Type challenges compiled successfully!');`,
   testCases: [
     {
-      input: [],
+      input: { type: 'DeepReadonly' },
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'DeepReadonly makes nested properties readonly',
+    },
+    {
+      input: { type: 'Flatten', arrayType: 'string[]' },
+      expectedOutput: 'string',
+      description: 'Flatten extracts element type from array',
+    },
+    {
+      input: { type: 'TupleToUnion', tuple: [1, 'hello', true] },
+      expectedOutput: '1 | "hello" | true',
+      description: 'TupleToUnion converts tuple to union',
+    },
+    {
+      input: { type: 'PickByType' },
+      expectedOutput: { a: 'string' },
+      description: 'PickByType selects properties by value type',
     },
   ],
   hints: [

@@ -154,12 +154,76 @@ console.log(clampValue(15, 0, 10));
 console.log(getRandomInt(1, 6));
 console.log(roundToDecimal(3.14159, 2));
 console.log(calculateDistance(0, 0, 3, 4));`,
-  solution: `function test() { return true; }`,
+  solution: `function calculatePages(totalItems, itemsPerPage) {
+  if (totalItems === 0) return 0;
+  return Math.ceil(totalItems / itemsPerPage);
+}
+
+function clampValue(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function roundToDecimal(num, decimalPlaces) {
+  const factor = Math.pow(10, decimalPlaces);
+  return Math.round(num * factor) / factor;
+}
+
+function calculateDistance(x1, y1, x2, y2) {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+// Test
+console.log(calculatePages(25, 10)); // 3
+console.log(clampValue(15, 0, 10)); // 10
+console.log(getRandomInt(1, 6)); // random 1-6
+console.log(roundToDecimal(3.14159, 2)); // 3.14
+console.log(calculateDistance(0, 0, 3, 4)); // 5`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { fn: 'calculatePages', args: [25, 10] },
+      expectedOutput: 3,
+      description: 'calculatePages rounds up partial pages',
+    },
+    {
+      input: { fn: 'calculatePages', args: [30, 10] },
+      expectedOutput: 3,
+      description: 'calculatePages exact division',
+    },
+    {
+      input: { fn: 'calculatePages', args: [0, 10] },
+      expectedOutput: 0,
+      description: 'calculatePages with 0 items',
+    },
+    {
+      input: { fn: 'clampValue', args: [5, 0, 10] },
+      expectedOutput: 5,
+      description: 'clampValue within range',
+    },
+    {
+      input: { fn: 'clampValue', args: [-5, 0, 10] },
+      expectedOutput: 0,
+      description: 'clampValue below min',
+    },
+    {
+      input: { fn: 'clampValue', args: [15, 0, 10] },
+      expectedOutput: 10,
+      description: 'clampValue above max',
+    },
+    {
+      input: { fn: 'roundToDecimal', args: [3.14159, 2] },
+      expectedOutput: 3.14,
+      description: 'roundToDecimal to 2 places',
+    },
+    {
+      input: { fn: 'calculateDistance', args: [0, 0, 3, 4] },
+      expectedOutput: 5,
+      description: 'calculateDistance 3-4-5 triangle',
     },
   ],
   hints: [

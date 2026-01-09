@@ -214,12 +214,115 @@ triggerEvent('hover', 'button');
 console.log(translate('en', 'greeting'));
 console.log(translate('es', 'farewell'));
 console.log(translate('fr', 'thanks'));`,
-  solution: `function test() { return true; }`,
+  solution: `// Task 1: Create a type-safe getter function using keyof
+interface Person {
+  name: string;
+  age: number;
+  email: string;
+  isActive: boolean;
+}
+
+function getProperty<K extends keyof Person>(person: Person, key: K): Person[K] {
+  return person[key];
+}
+
+// Task 2: Derive types from a configuration object using typeof
+const appConfig = {
+  apiEndpoint: 'https://api.example.com',
+  timeout: 5000,
+  maxRetries: 3,
+  features: {
+    darkMode: true,
+    notifications: false
+  }
+} as const;
+
+type AppConfig = typeof appConfig;
+type ConfigKey = keyof typeof appConfig;
+type FeatureFlags = typeof appConfig.features;
+type FeatureName = keyof typeof appConfig.features;
+
+function getConfigValue<K extends ConfigKey>(key: K): typeof appConfig[K] {
+  return appConfig[key];
+}
+
+// Task 3: Create a type-safe event system using keyof typeof
+const eventHandlers = {
+  click: (x: number, y: number) => console.log(\`Clicked at \${x}, \${y}\`),
+  hover: (element: string) => console.log(\`Hovered over \${element}\`),
+  submit: (data: object) => console.log('Form submitted', data),
+  resize: (width: number, height: number) => console.log(\`Resized to \${width}x\${height}\`)
+};
+
+type EventName = keyof typeof eventHandlers;
+
+function triggerEvent<E extends EventName>(
+  event: E,
+  ...args: Parameters<typeof eventHandlers[E]>
+): void {
+  (eventHandlers[event] as (...args: any[]) => void)(...args);
+}
+
+// Task 4: Create a translation function using keyof
+const translations = {
+  en: {
+    greeting: 'Hello',
+    farewell: 'Goodbye',
+    thanks: 'Thank you'
+  },
+  es: {
+    greeting: 'Hola',
+    farewell: 'Adios',
+    thanks: 'Gracias'
+  },
+  fr: {
+    greeting: 'Bonjour',
+    farewell: 'Au revoir',
+    thanks: 'Merci'
+  }
+} as const;
+
+type Language = keyof typeof translations;
+type TranslationKey = keyof typeof translations.en;
+
+function translate(lang: Language, key: TranslationKey): string {
+  return translations[lang][key];
+}
+
+// Test
+const person: Person = { name: 'Alice', age: 30, email: 'alice@example.com', isActive: true };
+console.log(getProperty(person, 'name')); // 'Alice'
+console.log(getProperty(person, 'age'));  // 30
+
+console.log(getConfigValue('apiEndpoint')); // 'https://api.example.com'
+console.log(getConfigValue('timeout'));     // 5000
+
+triggerEvent('click', 100, 200);
+triggerEvent('hover', 'button');
+
+console.log(translate('en', 'greeting')); // 'Hello'
+console.log(translate('es', 'farewell')); // 'Adios'
+console.log(translate('fr', 'thanks'));   // 'Merci'`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: [{ name: 'Alice', age: 30, email: 'alice@example.com', isActive: true }, 'name'],
+      expectedOutput: 'Alice',
+      description: 'getProperty returns correct property value',
+    },
+    {
+      input: ['apiEndpoint'],
+      expectedOutput: 'https://api.example.com',
+      description: 'getConfigValue returns config value by key',
+    },
+    {
+      input: ['en', 'greeting'],
+      expectedOutput: 'Hello',
+      description: 'translate returns correct translation',
+    },
+    {
+      input: ['es', 'thanks'],
+      expectedOutput: 'Gracias',
+      description: 'translate works with different languages',
     },
   ],
   hints: [

@@ -131,12 +131,72 @@ console.log(toSlug('Hello World!'));
 console.log(formatPhoneNumber('1234567890'));
 console.log(camelToSnake('helloWorld'));
 console.log(censorWords('hello world', ['world']));`,
-  solution: `function test() { return true; }`,
+  solution: `function toSlug(title) {
+  // Convert title to URL-friendly slug
+  return title
+    .toLowerCase()                    // 1. Convert to lowercase
+    .replace(/\\s+/g, '-')             // 2. Replace spaces with hyphens
+    .replace(/[^a-z0-9-]/g, '')       // 3. Remove non-alphanumeric (except hyphens)
+    .replace(/-+/g, '-')              // 4. Replace multiple hyphens with single
+    .replace(/^-|-$/g, '');           // Remove leading/trailing hyphens
+}
+
+function formatPhoneNumber(phone) {
+  // Format as (XXX) XXX-XXXX
+  const digits = phone.replace(/\\D/g, '');
+  return digits.replace(/(\\d{3})(\\d{3})(\\d{4})/, '($1) $2-$3');
+}
+
+function camelToSnake(str) {
+  // Convert camelCase to snake_case
+  return str.replace(/[A-Z]/g, letter => '_' + letter.toLowerCase());
+}
+
+function censorWords(text, words) {
+  // Replace each word with asterisks matching the word length
+  let result = text;
+  for (const word of words) {
+    const regex = new RegExp(word, 'gi');
+    result = result.replace(regex, match => '*'.repeat(match.length));
+  }
+  return result;
+}
+
+// Test
+console.log(toSlug('Hello World!'));
+console.log(formatPhoneNumber('1234567890'));
+console.log(camelToSnake('helloWorld'));
+console.log(censorWords('hello world', ['world']));`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: { title: 'Hello World!' },
+      expectedOutput: 'hello-world',
+      description: 'toSlug converts title to URL-friendly slug',
+    },
+    {
+      input: { title: 'My   Blog Post!!!' },
+      expectedOutput: 'my-blog-post',
+      description: 'toSlug handles multiple spaces and special chars',
+    },
+    {
+      input: { phone: '1234567890' },
+      expectedOutput: '(123) 456-7890',
+      description: 'formatPhoneNumber formats digits correctly',
+    },
+    {
+      input: { phone: '123-456-7890' },
+      expectedOutput: '(123) 456-7890',
+      description: 'formatPhoneNumber handles existing formatting',
+    },
+    {
+      input: { str: 'helloWorld' },
+      expectedOutput: 'hello_world',
+      description: 'camelToSnake converts camelCase to snake_case',
+    },
+    {
+      input: { text: 'hello world', words: ['world'] },
+      expectedOutput: 'hello *****',
+      description: 'censorWords replaces words with asterisks',
     },
   ],
   hints: [

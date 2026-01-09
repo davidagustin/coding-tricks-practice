@@ -141,12 +141,85 @@ const validatePositive = (a, b) => a > 0 && b > 0;
 const validatedAdd = withValidation(add, validatePositive);
 console.log(validatedAdd(5, 3)); // Works
 console.log(validatedAdd(-1, 3)); // Throws error`,
-  solution: `function test() { return true; }`,
+  solution: `// Decorator that adds logging before and after function execution
+function withLogging(fn) {
+  return function(...args) {
+    console.log(\`Calling \${fn.name || 'anonymous'} with args:\`, args);
+    const result = fn.apply(this, args);
+    console.log(\`\${fn.name || 'anonymous'} returned:\`, result);
+    return result;
+  };
+}
+
+// Decorator that measures and logs execution time
+function withTiming(fn) {
+  return function(...args) {
+    const start = performance.now();
+    const result = fn.apply(this, args);
+    const end = performance.now();
+    console.log(\`Execution time: \${(end - start).toFixed(2)}ms\`);
+    return result;
+  };
+}
+
+// Decorator that adds retry logic for failed operations
+function withRetry(fn, maxRetries = 3) {
+  return function(...args) {
+    let lastError;
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        return fn.apply(this, args);
+      } catch (error) {
+        lastError = error;
+        console.log(\`Attempt \${attempt + 1} failed: \${error.message}\`);
+      }
+    }
+    throw lastError;
+  };
+}
+
+// Decorator that validates arguments before calling function
+function withValidation(fn, validator) {
+  return function(...args) {
+    if (!validator(...args)) {
+      throw new Error('Validation failed');
+    }
+    return fn.apply(this, args);
+  };
+}
+
+// Test
+const add = (a, b) => a + b;
+const loggedAdd = withLogging(add);
+console.log(loggedAdd(5, 3)); // 8
+
+const timedAdd = withTiming(add);
+console.log(timedAdd(10, 20)); // 30
+
+const validatePositive = (a, b) => a > 0 && b > 0;
+const validatedAdd = withValidation(add, validatePositive);
+console.log(validatedAdd(5, 3)); // 8
+// validatedAdd(-1, 3); // Throws error`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: [5, 3],
+      expectedOutput: 8,
+      description: 'withLogging decorator logs and returns correct result',
+    },
+    {
+      input: [10, 20],
+      expectedOutput: 30,
+      description: 'withTiming decorator measures time and returns correct result',
+    },
+    {
+      input: [5, 3],
+      expectedOutput: 8,
+      description: 'withValidation decorator passes for valid inputs',
+    },
+    {
+      input: [-1, 3],
+      expectedOutput: 'Error: Validation failed',
+      description: 'withValidation decorator throws for invalid inputs',
     },
   ],
   hints: [

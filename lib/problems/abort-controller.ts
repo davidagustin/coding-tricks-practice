@@ -97,12 +97,73 @@ function createCancellableFetch(url, timeout = 5000) {
 // Test
 const { promise, cancel } = createCancellableFetch('/api/data', 1000);
 setTimeout(() => cancel(), 500); // Cancel after 500ms`,
-  solution: `function test() { return true; }`,
+  solution: `async function fetchWithCancel(url, signal) {
+  try {
+    const response = await fetch(url, { signal });
+    if (!response.ok) {
+      throw new Error(\`HTTP error! status: \${response.status}\`);
+    }
+    return await response.json();
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      console.log('Fetch was cancelled');
+      return null;
+    }
+    throw error;
+  }
+}
+
+function createCancellableFetch(url, timeout = 5000) {
+  const controller = new AbortController();
+  const signal = controller.signal;
+
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, timeout);
+
+  const promise = fetch(url, { signal })
+    .then(response => {
+      clearTimeout(timeoutId);
+      if (!response.ok) {
+        throw new Error(\`HTTP error! status: \${response.status}\`);
+      }
+      return response.json();
+    })
+    .catch(error => {
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        throw new Error('Request was cancelled or timed out');
+      }
+      throw error;
+    });
+
+  return {
+    promise,
+    cancel: () => {
+      clearTimeout(timeoutId);
+      controller.abort();
+    }
+  };
+}
+
+// Test
+const { promise, cancel } = createCancellableFetch('/api/data', 1000);
+setTimeout(() => cancel(), 500); // Cancel after 500ms`,
   testCases: [
     {
-      input: [],
+      input: 'createCancellableFetch test',
+      expectedOutput: { hasPromise: true, hasCancel: true },
+      description: 'createCancellableFetch returns object with promise and cancel function',
+    },
+    {
+      input: 'AbortController creation',
       expectedOutput: true,
-      description: 'Test passes',
+      description: 'AbortController can be instantiated and has signal property',
+    },
+    {
+      input: 'Signal abort functionality',
+      expectedOutput: 'AbortError',
+      description: 'Aborting signal causes AbortError to be thrown',
     },
   ],
   hints: [

@@ -139,12 +139,104 @@ const testElement = {
 
 // Usage:
 // emitCustomEvent(button, 'cart:add', { productId: 123, quantity: 1 });`,
-  solution: `function test() { return true; }`,
+  solution: `// Emit a custom event with data
+function emitCustomEvent(element, eventName, data) {
+  const event = new CustomEvent(eventName, {
+    detail: data,
+    bubbles: true,
+    cancelable: true
+  });
+  element.dispatchEvent(event);
+  return event;
+}
+
+// Create a simple event bus using custom events
+function createEventBus() {
+  const target = document.createElement('div');
+
+  return {
+    on(eventName, callback) {
+      const handler = (e) => callback(e.detail);
+      target.addEventListener(eventName, handler);
+      return handler;
+    },
+    off(eventName, handler) {
+      target.removeEventListener(eventName, handler);
+    },
+    emit(eventName, data) {
+      const event = new CustomEvent(eventName, { detail: data });
+      target.dispatchEvent(event);
+    }
+  };
+}
+
+// Typed event emitter class
+class TypedEventEmitter {
+  constructor() {
+    this._target = document.createElement('div');
+    this._handlers = new Map();
+  }
+
+  on(eventName, callback) {
+    const handler = (e) => callback(e.detail);
+    this._handlers.set(callback, handler);
+    this._target.addEventListener(eventName, handler);
+  }
+
+  off(eventName, callback) {
+    const handler = this._handlers.get(callback);
+    if (handler) {
+      this._target.removeEventListener(eventName, handler);
+      this._handlers.delete(callback);
+    }
+  }
+
+  emit(eventName, data) {
+    const event = new CustomEvent(eventName, { detail: data });
+    this._target.dispatchEvent(event);
+  }
+
+  once(eventName, callback) {
+    const handler = (e) => {
+      callback(e.detail);
+      this.off(eventName, callback);
+    };
+    this._handlers.set(callback, handler);
+    this._target.addEventListener(eventName, handler);
+  }
+}
+
+// Test with mock element
+const testElement = {
+  listeners: {},
+  addEventListener(type, fn) {
+    this.listeners[type] = this.listeners[type] || [];
+    this.listeners[type].push(fn);
+  },
+  dispatchEvent(event) {
+    const fns = this.listeners[event.type] || [];
+    fns.forEach(fn => fn(event));
+    return true;
+  }
+};
+
+const event = emitCustomEvent(testElement, 'cart:add', { productId: 123 });
+event.type === 'cart:add' && event.detail.productId === 123;`,
   testCases: [
     {
-      input: [],
-      expectedOutput: true,
-      description: 'Test passes',
+      input: ['testElement', 'cart:add', { productId: 123 }],
+      expectedOutput: { type: 'cart:add', detail: { productId: 123 } },
+      description: 'emitCustomEvent creates and dispatches a custom event with the correct type and detail',
+    },
+    {
+      input: ['eventBus', 'message', { text: 'hello' }],
+      expectedOutput: { received: true, data: { text: 'hello' } },
+      description: 'createEventBus allows subscribing to and emitting events with data',
+    },
+    {
+      input: ['emitter', 'once', 'data'],
+      expectedOutput: { calledOnce: true },
+      description: 'TypedEventEmitter.once only fires the callback once',
     },
   ],
   hints: [
