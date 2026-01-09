@@ -100,7 +100,18 @@ console.log(greetUser(user));
 console.log(greetUser(null));
 console.log(getConfigValue({ timeout: 5000 }, 'timeout', 3000));
 console.log(getConfigValue({}, 'timeout', 3000));`,
-  solution: `function test() { return true; }`,
+  solution: `function greetUser(user) {
+  // Use && to only call user.getName() if user exists
+  // Return greeting or 'Hello, Guest!'
+  const name = user && user.getName();
+  return 'Hello, ' + (name || 'Guest') + '!';
+}
+
+function getConfigValue(config, key, defaultValue) {
+  // Return config[key] if it exists, otherwise defaultValue
+  // Use || for this (but be aware of falsy value issues!)
+  return config && config[key] !== undefined ? config[key] : defaultValue;
+}`,
   testCases: [
     {
       input: [],

@@ -83,18 +83,10 @@ const subtractFive = x => x - 5;
 const composed = compose(multiplyByTwo, addOne, subtractFive);
 console.log(composed(10)); // Should be: ((10 - 5) + 1) * 2 = 12`,
   solution: `function compose(...functions) {
+  // Use reduceRight to compose functions
+  // compose(f, g, h)(x) should be f(g(h(x)))
+  // Process from right to left
   return (x) => functions.reduceRight((acc, fn) => fn(acc), x);
-}
-
-// Helper functions for testing
-const addOne = x => x + 1;
-const multiplyByTwo = x => x * 2;
-const subtractFive = x => x - 5;
-
-// Test function that uses compose - accepts input and returns result
-function testCompose(x) {
-  const composed = compose(multiplyByTwo, addOne, subtractFive);
-  return composed(x);
 }`,
   testCases: [
     {

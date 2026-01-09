@@ -102,7 +102,33 @@ const validated = createValidatedObject({}, (key, value) => {
 
 validated.age = 25; // OK
 validated.age = 200; // Should throw error`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a proxy that logs all property access
+function createLoggedObject(target) {
+  // Return a Proxy that logs when properties are accessed
+  // Use 'get' trap to log property reads
+  return new Proxy(target, {
+    get(target, prop) {
+      console.log(\`Accessing property: \${String(prop)}\`);
+      return target[prop];
+    }
+  });
+}
+
+// Create a proxy that validates property assignments
+function createValidatedObject(target, validator) {
+  // Return a Proxy that validates before setting properties
+  // Use 'set' trap to validate and set values
+  // Throw error if validation fails
+  return new Proxy(target, {
+    set(target, prop, value) {
+      if (!validator(prop, value)) {
+        throw new Error(\`Invalid value for \${String(prop)}\`);
+      }
+      target[prop] = value;
+      return true;
+    }
+  });
+}`,
   testCases: [
     {
       input: [],

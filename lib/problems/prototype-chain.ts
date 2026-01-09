@@ -156,7 +156,81 @@ console.log(rect instanceof Rectangle); // true
 console.log(greeter.greet()); // Hello, World
 
 console.log(getPrototypeChainLength([])); // 3 (Array.prototype, Object.prototype, null)`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a Shape constructor function with:
+// - Constructor takes 'color' parameter and stores it as this.color
+// - Shape.prototype.getColor() returns the color
+// - Shape.prototype.describe() returns 'A [color] shape'
+
+function Shape(color) {
+  // Store color on the instance
+  this.color = color;
+}
+
+// Add getColor method to prototype
+Shape.prototype.getColor = function() {
+  return this.color;
+};
+
+// Add describe method to prototype
+Shape.prototype.describe = function() {
+  return \`A \${this.color} shape\`;
+};
+
+// Create a Rectangle that inherits from Shape
+// - Constructor takes color, width, height
+// - Rectangle.prototype.getArea() returns width * height
+// - Rectangle.prototype.describe() returns 'A [color] rectangle with area [area]'
+// Make sure instanceof works: new Rectangle() instanceof Shape === true
+
+function Rectangle(color, width, height) {
+  // Call Shape constructor with color
+  // Store width and height
+  Shape.call(this, color);
+  this.width = width;
+  this.height = height;
+}
+
+// Set up prototype chain (Rectangle inherits from Shape)
+Rectangle.prototype = Object.create(Shape.prototype);
+Rectangle.prototype.constructor = Rectangle;
+
+// Add getArea method to Rectangle.prototype
+Rectangle.prototype.getArea = function() {
+  return this.width * this.height;
+};
+
+// Override describe method
+Rectangle.prototype.describe = function() {
+  return \`A \${this.color} rectangle with area \${this.getArea()}\`;
+};
+
+// Create an object using Object.create with a custom prototype
+// The prototype should have a method 'greet' that returns 'Hello, ' + this.name
+// Create an instance with name 'World'
+
+const greeterProto = {
+  // Add greet method
+  greet: function() {
+    return 'Hello, ' + this.name;
+  }
+};
+
+const greeter = Object.create(greeterProto);
+greeter.name = 'World';
+
+// Implement a function that returns the length of the prototype chain
+// Example: getPrototypeChainLength([]) should return 3 (Array.prototype, Object.prototype, null)
+
+function getPrototypeChainLength(obj) {
+  // Return count of prototypes in the chain (including null)
+  let count = 0;
+  let current = obj;
+  while (current !== null) {
+    count++;
+    current = Object.getPrototypeOf(current);
+  }
+  return count;
+}`,
   testCases: [
     {
       input: [],

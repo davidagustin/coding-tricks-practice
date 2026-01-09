@@ -91,7 +91,31 @@ const requests = [
 
 // Test (commented out to prevent immediate execution)
 // processMultipleRequests(requests).then(console.log).catch(console.error);`,
-  solution: `function test() { return true; }`,
+  solution: `async function processMultipleRequests(requests) {
+  // Use Promise.allSettled to process all requests
+  // Separate successes and failures
+  // Return { successes: [], failures: [] }
+  const results = await Promise.allSettled(requests);
+  
+  const successes = [];
+  const failures = [];
+  
+  for (const result of results) {
+    if (result.status === 'fulfilled') {
+      successes.push(result.value);
+    } else {
+      failures.push(result.reason);
+    }
+  }
+  
+  return { successes, failures };
+}
+
+// Helper function to check if result is fulfilled
+function isFulfilled(result) {
+  // Check if result.status === 'fulfilled'
+  return result.status === 'fulfilled';
+}`,
   testCases: [
     {
       input: [],

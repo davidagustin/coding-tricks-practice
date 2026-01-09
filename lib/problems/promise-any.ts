@@ -126,7 +126,59 @@ async function findAvailableService(serviceChecks) {
 // Test functions (commented out to prevent immediate execution)
 // const urls = ['https://api1.com/data', 'https://api2.com/data'];
 // fetchFromFirstAvailable(urls).then(console.log).catch(console.error);`,
-  solution: `function test() { return true; }`,
+  solution: `// Fetch data from the first available source
+async function fetchFromFirstAvailable(urls) {
+  // Use Promise.any() to fetch from multiple URLs
+  // Return the first successful response data
+  // If all fail, throw a meaningful error message
+  try {
+    const promises = urls.map(url => fetch(url).then(r => r.json()));
+    return await Promise.any(promises);
+  } catch (error) {
+    if (error instanceof AggregateError) {
+      throw new Error(\`All requests failed: \${error.errors.length} errors\`);
+    }
+    throw error;
+  }
+}
+
+// Load a resource with fallback sources
+async function loadWithFallback(primaryUrl, fallbackUrls) {
+  // Try primary URL first, then fallback URLs using Promise.any()
+  // Return { source: 'primary' | 'fallback', data: ... }
+  try {
+    const data = await fetch(primaryUrl).then(r => r.json());
+    return { source: 'primary', data };
+  } catch (error) {
+    try {
+      const promises = fallbackUrls.map(url => fetch(url).then(r => r.json()));
+      const data = await Promise.any(promises);
+      return { source: 'fallback', data };
+    } catch (fallbackError) {
+      throw new Error('All sources failed');
+    }
+  }
+}
+
+// Find first available service
+async function findAvailableService(serviceChecks) {
+  // serviceChecks is an array of { name: string, check: () => Promise<boolean> }
+  // Use Promise.any() to find the first service that returns true
+  // Return the name of the first available service
+  // If none available, return null
+  try {
+    const promises = serviceChecks.map(async ({ name, check }) => {
+      const available = await check();
+      if (available) {
+        return name;
+      }
+      throw new Error(\`Service \${name} unavailable\`);
+    });
+    return await Promise.any(promises);
+  } catch (error) {
+    return null;
+  }
+}`,
   testCases: [
     {
       input: [],

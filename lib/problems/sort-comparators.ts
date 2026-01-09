@@ -112,7 +112,45 @@ console.log(sortByMultiple([...users], [
   { key: 'name', order: 'asc' }
 ]));
 console.log(sortWithNulls([3, null, 1, null, 2], true));`,
-  solution: `function test() { return true; }`,
+  solution: `function sortByProperty(arr, property, order = 'asc') {
+  // Sort array of objects by property
+  // order: 'asc' or 'desc'
+  return [...arr].sort((a, b) => {
+    const aVal = a[property];
+    const bVal = b[property];
+    if (order === 'asc') {
+      return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+    } else {
+      return aVal > bVal ? -1 : aVal < bVal ? 1 : 0;
+    }
+  });
+}
+
+function sortByMultiple(arr, sortKeys) {
+  // Sort by multiple properties in order
+  // sortKeys: [{ key: 'age', order: 'asc' }, { key: 'name', order: 'desc' }]
+  return [...arr].sort((a, b) => {
+    for (const { key, order } of sortKeys) {
+      const aVal = a[key];
+      const bVal = b[key];
+      if (aVal !== bVal) {
+        const comparison = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+        return order === 'asc' ? comparison : -comparison;
+      }
+    }
+    return 0;
+  });
+}
+
+function sortWithNulls(arr, nullsFirst = true) {
+  // Sort numbers, putting nulls first or last
+  return [...arr].sort((a, b) => {
+    if (a === null && b === null) return 0;
+    if (a === null) return nullsFirst ? -1 : 1;
+    if (b === null) return nullsFirst ? 1 : -1;
+    return a - b;
+  });
+}`,
   testCases: [
     {
       input: [],

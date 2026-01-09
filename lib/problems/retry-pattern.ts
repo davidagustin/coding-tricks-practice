@@ -102,7 +102,30 @@ async function fetchData() {
 // retryWithBackoff(fetchData, { maxRetries: 3, initialDelay: 100 })
 //   .then(console.log)
 //   .catch(console.error);`,
-  solution: `function test() { return true; }`,
+  solution: `async function retryWithBackoff(fn, options = {}) {
+  // Retry function with exponential backoff
+  // options: { maxRetries: 3, initialDelay: 100 }
+  // Calculate delay: initialDelay * 2^attempt
+  const { maxRetries = 3, initialDelay = 100 } = options;
+  
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (attempt === maxRetries) {
+        throw error;
+      }
+      const delay = initialDelay * Math.pow(2, attempt);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+}
+
+async function fetchData() {
+  // Simulated API that might fail
+  if (Math.random() > 0.5) throw new Error('Failed');
+  return 'Success';
+}`,
   testCases: [
     {
       input: [],

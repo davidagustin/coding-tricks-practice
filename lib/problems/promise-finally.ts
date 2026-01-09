@@ -98,7 +98,31 @@ async function processWithLock(resource, operation) {
 // fetchWithCleanup('/api/data').then(console.log).catch(console.error);
 // processWithLock('resource', () => Promise.resolve('done'))
 //   .then(console.log).catch(console.error);`,
-  solution: `function test() { return true; }`,
+  solution: `async function fetchWithCleanup(url) {
+  let loading = true;
+  
+  // Fetch data, set loading = false in finally
+  // Return the data
+  try {
+    const response = await fetch(url);
+    return await response.json();
+  } finally {
+    loading = false;
+  }
+}
+
+async function processWithLock(resource, operation) {
+  let locked = false;
+  
+  // Lock resource, run operation, unlock in finally
+  // Return operation result
+  try {
+    locked = true;
+    return await operation();
+  } finally {
+    locked = false;
+  }
+}`,
   testCases: [
     {
       input: [],

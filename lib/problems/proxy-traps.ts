@@ -114,7 +114,52 @@ console.log(withDefaults.missing); // 'N/A'
 const user = createValidatingProxy({ name: 'John', age: 30 });
 user.name = 'Jane'; // OK
 // user.age = -5; // Should throw error`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a proxy that logs all property access
+function createLoggingProxy(obj) {
+  // Return a Proxy that logs get and set operations
+  return new Proxy(obj, {
+    get(target, prop) {
+      console.log(\`Getting \${String(prop)}\`);
+      return target[prop];
+    },
+    set(target, prop, value) {
+      console.log(\`Setting \${String(prop)} to \${value}\`);
+      target[prop] = value;
+      return true;
+    }
+  });
+}
+
+// Create a proxy with default values for missing properties
+function createDefaultProxy(obj, defaultValue) {
+  // Return defaultValue for any missing property
+  return new Proxy(obj, {
+    get(target, prop) {
+      if (prop in target) {
+        return target[prop];
+      }
+      return defaultValue;
+    }
+  });
+}
+
+// Create a validating proxy for a user object
+function createValidatingProxy(obj) {
+  // Validate: name must be string, age must be positive number
+  // Throw error on invalid values
+  return new Proxy(obj, {
+    set(target, prop, value) {
+      if (prop === 'name' && typeof value !== 'string') {
+        throw new Error('Name must be a string');
+      }
+      if (prop === 'age' && (typeof value !== 'number' || value < 0)) {
+        throw new Error('Age must be a positive number');
+      }
+      target[prop] = value;
+      return true;
+    }
+  });
+}`,
   testCases: [
     {
       input: [],

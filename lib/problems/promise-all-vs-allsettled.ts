@@ -99,7 +99,24 @@ async function fetchAllWithFailures(urls) {
 // const urls = ['/api/1', '/api/2', '/api/3'];
 // fetchAllOrFail(urls).then(console.log).catch(console.error);
 // fetchAllWithFailures(urls).then(console.log).catch(console.error);`,
-  solution: `function test() { return true; }`,
+  solution: `async function fetchAllOrFail(urls) {
+  // Use Promise.all - should fail if ANY request fails
+  // Return array of responses
+  const promises = urls.map(url => fetch(url).then(r => r.json()));
+  return Promise.all(promises);
+}
+
+async function fetchAllWithFailures(urls) {
+  // Use Promise.allSettled - should return all results even if some fail
+  // Return array with { status, value/error }
+  const promises = urls.map(url => 
+    fetch(url)
+      .then(r => r.json())
+      .then(value => ({ status: 'fulfilled', value }))
+      .catch(reason => ({ status: 'rejected', reason }))
+  );
+  return Promise.allSettled(promises);
+}`,
   testCases: [
     {
       input: [],

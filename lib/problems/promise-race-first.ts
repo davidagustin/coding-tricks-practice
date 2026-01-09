@@ -96,7 +96,24 @@ async function fetchWithFallback(primaryUrl, fallbackUrls) {
 // fetchWithFallback('/api/primary', ['/api/backup1', '/api/backup2'])
 //   .then(console.log)
 //   .catch(console.error);`,
-  solution: `function test() { return true; }`,
+  solution: `async function fetchFromFastest(urls) {
+  // Use Promise.race to get result from fastest URL
+  // Return the first successful response
+  const promises = urls.map(url => fetch(url).then(r => r.json()));
+  return Promise.race(promises);
+}
+
+async function fetchWithFallback(primaryUrl, fallbackUrls) {
+  // Try primary first, if it fails, race the fallbacks
+  // Return first successful result
+  try {
+    const response = await fetch(primaryUrl);
+    return await response.json();
+  } catch (error) {
+    const promises = fallbackUrls.map(url => fetch(url).then(r => r.json()));
+    return Promise.race(promises);
+  }
+}`,
   testCases: [
     {
       input: [],

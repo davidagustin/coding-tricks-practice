@@ -171,7 +171,65 @@ class RequestMatcher {
 // setTimeout(() => deferred.resolve('done'), 100);
 // const result = await deferred.promise;
 // console.log(result); // 'done'`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a deferred promise
+function createDeferred() {
+  // Return an object with:
+  // - promise: the underlying Promise
+  // - resolve: function to resolve the promise
+  // - reject: function to reject the promise
+  // - status: 'pending' | 'fulfilled' | 'rejected'
+  let resolveFn;
+  let rejectFn;
+  let status = 'pending';
+  
+  const promise = new Promise((resolve, reject) => {
+    resolveFn = (value) => {
+      status = 'fulfilled';
+      resolve(value);
+    };
+    rejectFn = (reason) => {
+      status = 'rejected';
+      reject(reason);
+    };
+  });
+  
+  return {
+    promise,
+    resolve: resolveFn,
+    reject: rejectFn,
+    get status() { return status; }
+  };
+}
+
+// Wait for a one-time event
+function waitForEvent(target, eventName, options = {}) {
+  // Return a promise that resolves when the event fires
+  // - options.timeout: reject after timeout ms
+  // - options.filter: only resolve if filter(event) returns true
+  // - Clean up event listener after resolution
+  return new Promise((resolve, reject) => {
+    let timeoutId;
+    let handler;
+    
+    if (options.timeout) {
+      timeoutId = setTimeout(() => {
+        target.removeEventListener(eventName, handler);
+        reject(new Error('Event timeout'));
+      }, options.timeout);
+    }
+    
+    handler = (event) => {
+      if (options.filter && !options.filter(event)) {
+        return;
+      }
+      if (timeoutId) clearTimeout(timeoutId);
+      target.removeEventListener(eventName, handler);
+      resolve(event);
+    };
+    
+    target.addEventListener(eventName, handler);
+  });
+}`,
   testCases: [
     {
       input: [],
