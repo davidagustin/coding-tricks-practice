@@ -155,7 +155,69 @@ console.log(processor.pay(50));
 
 processor.setStrategy(crypto);
 console.log(processor.pay(75));`,
-  solution: `function test() { return true; }`,
+  solution: `// Credit card payment strategy
+class CreditCardStrategy {
+  constructor(cardNumber, cvv) {
+    this.cardNumber = cardNumber;
+    this.cvv = cvv;
+  }
+
+  pay(amount) {
+    // Return: "Paid $[amount] using Credit Card ending in [last 4 digits]"
+    const last4 = this.cardNumber.slice(-4);
+    return \`Paid $\${amount} using Credit Card ending in \${last4}\`;
+  }
+}
+
+// PayPal payment strategy
+class PayPalStrategy {
+  constructor(email) {
+    this.email = email;
+  }
+
+  pay(amount) {
+    // Return: "Paid $[amount] using PayPal account [email]"
+    return \`Paid $\${amount} using PayPal account \${this.email}\`;
+  }
+}
+
+// Cryptocurrency payment strategy
+class CryptoStrategy {
+  constructor(walletAddress, currency = 'BTC') {
+    this.walletAddress = walletAddress;
+    this.currency = currency;
+  }
+
+  pay(amount) {
+    // Return: "Paid $[amount] using [currency] to wallet [first 6 chars]..."
+    const shortAddress = this.walletAddress.slice(0, 6) + '...';
+    return \`Paid $\${amount} using \${this.currency} to wallet \${shortAddress}\`;
+  }
+}
+
+// Implement the PaymentProcessor context
+class PaymentProcessor {
+  private strategy: CreditCardStrategy | PayPalStrategy | CryptoStrategy | null = null;
+
+  constructor(strategy) {
+    // Set initial strategy
+    this.strategy = strategy;
+  }
+
+  setStrategy(strategy) {
+    // Allow changing strategy at runtime
+    this.strategy = strategy;
+  }
+
+  pay(amount) {
+    // Delegate to current strategy
+    // Throw error if no strategy set
+    if (!this.strategy) {
+      throw new Error('No payment strategy set');
+    }
+    return this.strategy.pay(amount);
+  }
+}`,
   testCases: [
     {
       input: [],

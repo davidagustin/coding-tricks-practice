@@ -115,7 +115,44 @@ const first10Fib = Array.from({ length: 10 }, () => fib.next().value);
 console.log(first10Fib);
 
 console.log([...chunk([1, 2, 3, 4, 5], 2)]);`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a generator that yields numbers in a range
+function* range(start, end) {
+  // yield numbers from start to end (inclusive)
+  // range(1, 5) → 1, 2, 3, 4, 5
+  for (let i = start; i <= end; i++) {
+    yield i;
+  }
+}
+
+// Create a generator that yields unique IDs
+function* idGenerator(prefix = 'id') {
+  // yield 'prefix-1', 'prefix-2', 'prefix-3', ...
+  let counter = 1;
+  while (true) {
+    yield \`\${prefix}-\${counter++}\`;
+  }
+}
+
+// Create a generator that yields Fibonacci numbers
+function* fibonacci() {
+  // yield infinite Fibonacci sequence: 0, 1, 1, 2, 3, 5, 8...
+  let a = 0, b = 1;
+  yield a;
+  yield b;
+  while (true) {
+    [a, b] = [b, a + b];
+    yield b;
+  }
+}
+
+// Create a generator that chunks an array
+function* chunk(arr, size) {
+  // yield arrays of 'size' elements
+  // chunk([1,2,3,4,5], 2) → [1,2], [3,4], [5]
+  for (let i = 0; i < arr.length; i += size) {
+    yield arr.slice(i, i + size);
+  }
+}`,
   testCases: [
     {
       input: [],

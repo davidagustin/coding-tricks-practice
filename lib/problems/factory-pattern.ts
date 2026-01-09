@@ -126,7 +126,49 @@ console.log(sms.send('Your verification code is 123456'));
 
 const push = NotificationFactory.create('push');
 console.log(push.send('You have a new message'));`,
-  solution: `function test() { return true; }`,
+  solution: `// Email notification handler
+class EmailNotification {
+  send(message) {
+    // Return formatted string: "Sending email to <email>: <message>"
+    return \`Sending email: \${message}\`;
+  }
+}
+
+// SMS notification handler
+class SMSNotification {
+  send(message) {
+    // Return formatted string: "Sending SMS: <message>"
+    return \`Sending SMS: \${message}\`;
+  }
+}
+
+// Push notification handler
+class PushNotification {
+  send(message) {
+    // Return formatted string: "Sending push notification: <message>"
+    return \`Sending push notification: \${message}\`;
+  }
+}
+
+// Implement the NotificationFactory
+class NotificationFactory {
+  // Static method to create notifications based on type
+  static create(type) {
+    // Return the appropriate notification handler based on type
+    // Types: 'email', 'sms', 'push'
+    // Throw error for unknown types
+    switch (type.toLowerCase()) {
+      case 'email':
+        return new EmailNotification();
+      case 'sms':
+        return new SMSNotification();
+      case 'push':
+        return new PushNotification();
+      default:
+        throw new Error(\`Unknown notification type: \${type}\`);
+    }
+  }
+}`,
   testCases: [
     {
       input: [],

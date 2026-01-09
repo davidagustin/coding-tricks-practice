@@ -128,7 +128,43 @@ const instance2 = Singleton.getInstance();
 instance1.set('name', 'MyApp');
 console.log(instance2.get('name')); // Should print 'MyApp'
 console.log(instance1 === instance2); // Should print true`,
-  solution: `function test() { return true; }`,
+  solution: `class Singleton {
+  // Private static instance
+  private static _instance: Singleton | null = null;
+
+  // Private data storage
+  private _data: Map<string, unknown> = new Map();
+
+  // Private constructor
+  constructor() {
+    // Initialize data storage
+    if (Singleton._instance) {
+      return Singleton._instance;
+    }
+    this._data = new Map();
+  }
+
+  // Static method to get instance
+  static getInstance() {
+    // Return existing instance or create new one
+    if (!Singleton._instance) {
+      Singleton._instance = new Singleton();
+    }
+    return Singleton._instance;
+  }
+
+  // Set a value
+  set(key: string, value: unknown) {
+    // Store key-value pair
+    this._data.set(key, value);
+  }
+
+  // Get a value
+  get(key: string) {
+    // Retrieve value by key
+    return this._data.get(key);
+  }
+}`,
   testCases: [
     {
       input: [],

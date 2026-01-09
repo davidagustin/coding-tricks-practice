@@ -166,7 +166,66 @@ const users = await Promise.all(
 // queue.add(() => new Promise(r => setTimeout(() => r(2), 100)));
 // queue.add(() => new Promise(r => setTimeout(() => r(3), 100)));
 // queue.onIdle().then(() => console.log('All done'));`,
-  solution: `function test() { return true; }`,
+  solution: `class PromiseQueue {
+  constructor(concurrency = 1) {
+    // Initialize the queue
+    // - Store the concurrency limit
+    // - Initialize queue array for pending tasks
+    // - Track number of currently running tasks
+    this.concurrency = concurrency;
+    this.queue = [];
+    this.running = 0;
+  }
+
+  add(taskFn) {
+    // Add a task to the queue
+    // - Return a promise that resolves when the task completes
+    // - If under concurrency limit, run immediately
+    // - Otherwise, queue it for later execution
+    return new Promise((resolve, reject) => {
+      this.queue.push({ taskFn, resolve, reject });
+      this.process();
+    });
+  }
+
+  addAll(taskFns) {
+    // Add multiple tasks and return promise of all results
+    // - Results should be in the same order as input
+    return Promise.all(taskFns.map(fn => this.add(fn)));
+  }
+
+  async process() {
+    if (this.running >= this.concurrency || this.queue.length === 0) {
+      return;
+    }
+    
+    this.running++;
+    const { taskFn, resolve, reject } = this.queue.shift();
+    
+    try {
+      const result = await taskFn();
+      resolve(result);
+    } catch (error) {
+      reject(error);
+    } finally {
+      this.running--;
+      this.process();
+    }
+  }
+
+  async onIdle() {
+    // Return a promise that resolves when queue is empty
+    // and no tasks are running
+    while (this.running > 0 || this.queue.length > 0) {
+      await new Promise(resolve => setTimeout(resolve, 10));
+    }
+  }
+
+  get size() {
+    // Return number of pending tasks
+    return this.queue.length;
+  }
+}`,
   testCases: [
     {
       input: [],

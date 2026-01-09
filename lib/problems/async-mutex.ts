@@ -199,7 +199,69 @@ class AsyncSemaphore {
 //   mutex.withLock(async () => { counter++; }),
 // ]);
 // console.log(counter); // 2`,
-  solution: `function test() { return true; }`,
+  solution: `class AsyncMutex {
+  constructor() {
+    // Initialize the mutex state
+    // - Track if lock is currently held
+    // - Queue for waiting acquirers
+    this._locked = false;
+    this._queue = [];
+  }
+
+  acquire(timeoutMs = 0) {
+    // Return a promise that resolves with a release function
+    // If already locked, queue the request
+    // If timeout > 0, reject after timeout if still waiting
+    return new Promise((resolve, reject) => {
+      if (!this._locked) {
+        this._locked = true;
+        resolve(() => {
+          this._locked = false;
+          if (this._queue.length > 0) {
+            const next = this._queue.shift();
+            this._locked = true;
+            next.resolve(() => {
+              this._locked = false;
+              if (this._queue.length > 0) {
+                const next = this._queue.shift();
+                this._locked = true;
+                next.resolve(next.release);
+              }
+            });
+          }
+        });
+      } else {
+        const entry = {
+          resolve,
+          reject,
+          release: null
+        };
+        this._queue.push(entry);
+        
+        if (timeoutMs > 0) {
+          setTimeout(() => {
+            const index = this._queue.indexOf(entry);
+            if (index > -1) {
+              this._queue.splice(index, 1);
+              reject(new Error('Mutex acquisition timeout'));
+            }
+          }, timeoutMs);
+        }
+      }
+    });
+  }
+
+  async withLock(fn) {
+    // Acquire lock, execute fn, release lock
+    // Handle errors and ensure release is always called
+    const release = await this.acquire();
+    try {
+      return await fn();
+    } finally {
+      release();
+    }
+  }
+}`,
   testCases: [
     {
       input: [],
