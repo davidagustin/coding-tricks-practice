@@ -105,17 +105,23 @@ console.log(formatTime(9, 5, 3));
 console.log(maskCardNumber('1234567890123456'));
 console.log(formatCurrency(42.5, 10));`,
   solution: `function formatTime(hours, minutes, seconds) {
+  // Format as HH:MM:SS with leading zeros
+  // formatTime(9, 5, 3) → '09:05:03'
   return [hours, minutes, seconds]
     .map(n => String(n).padStart(2, '0'))
     .join(':');
 }
 
 function maskCardNumber(cardNumber) {
+  // Show only last 4 digits, mask rest with *
+  // '1234567890123456' → '************3456'
   const last4 = cardNumber.slice(-4);
   return last4.padStart(cardNumber.length, '*');
 }
 
 function formatCurrency(amount, width = 10) {
+  // Right-align currency with $ prefix
+  // formatCurrency(42.5, 10) → '    $42.50'
   const formatted = '$' + amount.toFixed(2);
   return formatted.padStart(width, ' ');
 }`,

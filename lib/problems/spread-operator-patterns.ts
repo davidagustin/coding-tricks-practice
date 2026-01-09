@@ -115,15 +115,22 @@ console.log(updated); // { a: { b: 2 } }
 
 const omitted = omitProperty({ a: 1, b: 2, c: 3 }, 'b');
 console.log(omitted); // { a: 1, c: 3 }`,
-  solution: `function shallowClone(obj) {
+  solution: `// Deep clone an object (shallow clone with spread)
+function shallowClone(obj) {
+  // Use spread operator to clone object
   return { ...obj };
 }
 
+// Merge objects with override
 function mergeObjects(...objects) {
+  // Merge all objects, later ones override earlier ones
   return objects.reduce((acc, obj) => ({ ...acc, ...obj }), {});
 }
 
+// Update nested property immutably
 function updateNested(obj, path, value) {
+  // Update nested property without mutating original
+  // updateNested({ a: { b: 1 } }, 'a.b', 2) => { a: { b: 2 } }
   const keys = path.split('.');
   if (keys.length === 1) {
     return { ...obj, [keys[0]]: value };
@@ -135,7 +142,10 @@ function updateNested(obj, path, value) {
   };
 }
 
+// Remove property immutably
 function omitProperty(obj, key) {
+  // Return new object without the specified key
+  // Use destructuring and rest
   const { [key]: omitted, ...rest } = obj;
   return rest;
 }`,

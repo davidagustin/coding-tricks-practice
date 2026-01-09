@@ -88,10 +88,12 @@ console.log('Has high score:', hasHighScore(scores1));
 console.log('All passing:', allPassing(scores1));
 console.log('All passing (scores2):', allPassing(scores2));`,
   solution: `function hasHighScore(scores) {
+  // Use some() to check if any score >= 90
   return scores.some(score => score >= 90);
 }
 
 function allPassing(scores) {
+  // Use every() to check if all scores >= 70
   return scores.every(score => score >= 70);
 }`,
   testCases: [

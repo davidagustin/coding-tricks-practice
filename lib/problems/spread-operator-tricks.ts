@@ -110,14 +110,17 @@ console.log(mergeObjects({ a: 1, b: 2 }, { b: 3, c: 4 }));
 console.log(cloneAndPush([1, 2, 3], 4));
 console.log(uniqueValues([1, 2, 2, 3, 3, 3]));`,
   solution: `function mergeObjects(obj1, obj2) {
+  // Merge two objects, obj2 properties override obj1
   return { ...obj1, ...obj2 };
 }
 
 function cloneAndPush(arr, newItem) {
+  // Clone array and add new item without mutating original
   return [...arr, newItem];
 }
 
 function uniqueValues(arr) {
+  // Return array with unique values using Set and spread
   return [...new Set(arr)];
 }`,
   testCases: [

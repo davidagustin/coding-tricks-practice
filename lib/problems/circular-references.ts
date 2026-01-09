@@ -131,7 +131,10 @@ console.log(hasCircularReference({ normal: 'object' }));
 console.log(safeStringify(circular));
 console.log(stringifyWithDepthLimit({ a: { b: { c: { d: 1 } } } }, 2));
 console.log(getCircularPath(nested));`,
-  solution: `function hasCircularReference(obj) {
+  solution: `// Check if object has circular references
+function hasCircularReference(obj) {
+  // Use WeakSet to track visited objects
+  // Return true if circular reference found
   const seen = new WeakSet();
 
   function detect(value) {
@@ -160,6 +163,9 @@ console.log(getCircularPath(nested));`,
 }
 
 function safeStringify(obj, placeholder = '[Circular]') {
+  // Stringify object, replacing circular references with placeholder
+  // const obj = { a: 1 }; obj.self = obj;
+  // safeStringify(obj) → '{"a":1,"self":"[Circular]"}'
   const seen = new WeakSet();
 
   return JSON.stringify(obj, function(key, value) {
@@ -174,6 +180,10 @@ function safeStringify(obj, placeholder = '[Circular]') {
 }
 
 function stringifyWithDepthLimit(obj, maxDepth = 3) {
+  // Stringify object but stop at maxDepth
+  // Replace deeper objects with '[Max Depth]'
+  // stringifyWithDepthLimit({ a: { b: { c: { d: 1 } } } }, 2)
+  // → '{"a":{"b":"[Max Depth]"}}'
   function replacer(depth) {
     const seen = new WeakSet();
 
@@ -188,7 +198,6 @@ function stringifyWithDepthLimit(obj, maxDepth = 3) {
         }
         seen.add(value);
 
-        // Create a new object with reduced depth
         const newObj = Array.isArray(value) ? [] : {};
         for (const k in value) {
           if (Object.prototype.hasOwnProperty.call(value, k)) {
@@ -210,6 +219,10 @@ function stringifyWithDepthLimit(obj, maxDepth = 3) {
 }
 
 function getCircularPath(obj) {
+  // Return the path to the first circular reference found
+  // const obj = { a: { b: {} } }; obj.a.b.c = obj.a;
+  // getCircularPath(obj) → 'a.b.c'
+  // Return null if no circular reference
   const seen = new WeakMap();
 
   function detect(value, path) {

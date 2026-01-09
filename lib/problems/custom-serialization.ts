@@ -141,6 +141,9 @@ console.log(JSON.stringify(money));
 const selective = createSelectiveSerializer({ a: 1, b: 2, c: 3, d: 4 }, ['a', 'c']);
 console.log(JSON.stringify(selective));`,
   solution: `function createSecureUser(name, email, password) {
+  // Create user object with toJSON that excludes password
+  // JSON.stringify(user) should NOT include password
+  // { name: 'John', email: 'john@example.com' }
   const obj = {
     name,
     email,
@@ -152,10 +155,12 @@ console.log(JSON.stringify(selective));`,
       };
     }
   };
-  return JSON.stringify(obj);
+  return obj;
 }
 
 function createVersionedData(data, version = 1) {
+  // Create object that includes version and timestamp when serialized
+  // JSON.stringify result should include: { ...data, _version: 1, _serializedAt: <timestamp> }
   const obj = {
     ...data,
     toJSON() {
@@ -170,10 +175,12 @@ function createVersionedData(data, version = 1) {
       return result;
     }
   };
-  return JSON.stringify(obj);
+  return obj;
 }
 
 function createCircularSafeObject(obj) {
+  // Add toJSON to an object that might have circular refs
+  // Should serialize without throwing, replacing circular refs with '[Circular]'
   const seen = new WeakSet();
 
   function makeSerializable(target) {
@@ -207,10 +214,13 @@ function createCircularSafeObject(obj) {
       return makeSerializable(this);
     }
   };
-  return JSON.stringify(resultObj);
+  return resultObj;
 }
 
 function createMoneyObject(cents, currency = 'USD') {
+  // Create money object that serializes to formatted string
+  // createMoneyObject(1999, 'USD') → serializes to '"$19.99"'
+  // createMoneyObject(1500, 'EUR') → serializes to '"€15.00"'
   const symbols = { USD: '$', EUR: '€', GBP: '£', JPY: '¥' };
 
   const obj = {
@@ -222,10 +232,13 @@ function createMoneyObject(cents, currency = 'USD') {
       return symbol + amount;
     }
   };
-  return JSON.stringify(obj);
+  return obj;
 }
 
 function createSelectiveSerializer(obj, publicKeys) {
+  // Add toJSON that only includes keys listed in publicKeys
+  // createSelectiveSerializer({ a: 1, b: 2, c: 3 }, ['a', 'c'])
+  // Serializes to '{"a":1,"c":3}'
   const resultObj = {
     ...obj,
     toJSON() {
@@ -238,7 +251,7 @@ function createSelectiveSerializer(obj, publicKeys) {
       return result;
     }
   };
-  return JSON.stringify(resultObj);
+  return resultObj;
 }`,
   testCases: [
     {

@@ -98,6 +98,8 @@ console.log(groupBy([
 ], 'type'));
 console.log(runningTotal([1, 2, 3, 4, 5]));`,
   solution: `function countOccurrences(arr) {
+  // Count how many times each item appears
+  // countOccurrences(['a', 'b', 'a', 'c', 'b', 'a']) → { a: 3, b: 2, c: 1 }
   return arr.reduce((acc, item) => {
     acc[item] = (acc[item] || 0) + 1;
     return acc;
@@ -105,6 +107,8 @@ console.log(runningTotal([1, 2, 3, 4, 5]));`,
 }
 
 function groupBy(arr, key) {
+  // Group array of objects by a key
+  // Return object like { keyValue: [items] }
   return arr.reduce((acc, item) => {
     const groupKey = item[key];
     acc[groupKey] = acc[groupKey] || [];
@@ -114,6 +118,8 @@ function groupBy(arr, key) {
 }
 
 function runningTotal(numbers) {
+  // Return array of running totals
+  // [1, 2, 3] → [1, 3, 6]
   let sum = 0;
   return numbers.reduce((acc, num) => {
     sum += num;
