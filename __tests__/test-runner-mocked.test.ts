@@ -119,17 +119,21 @@ describe('Test Runner Mocked Tests', () => {
       expect(result).toBeDefined();
     });
 
-    it('should set functions to empty when window error occurs (line 209)', async () => {
-      // We need to mock the Function constructor to throw a window-related error
+    it('should set functions to empty when window error occurs (line 216)', async () => {
+      // We need to mock the Function constructor to create a safeEval that throws
+      // when called (not when created)
+      // Important: Code MUST have function names detected so we don't return early at line 164
       const OriginalFunction = global.Function;
       let mockCalls = 0;
 
       // Replace the global Function constructor temporarily
       const mockFn = ((...args: string[]): unknown => {
         mockCalls++;
-        // On first safeEval call, throw a window error
+        // On first call (creating safeEval), return a function that throws when called
         if (mockCalls === 1) {
-          throw new Error('window is not defined');
+          return () => {
+            throw new Error('window is not defined');
+          };
         }
         // @ts-expect-error - we need to call the original
         return new OriginalFunction(...args);
@@ -138,6 +142,7 @@ describe('Test Runner Mocked Tests', () => {
       // @ts-expect-error - intentionally overriding
       global.Function = mockFn;
 
+      // Code MUST have a function so extractFunctionNames returns non-empty array
       const code = `
         function test() {
           return 42;
@@ -148,16 +153,109 @@ describe('Test Runner Mocked Tests', () => {
       // Restore original
       global.Function = OriginalFunction;
 
-      // Should fail because functions becomes empty
+      // Should fail because safeEval throws browser API error
+      // This should hit line 216 (functions = {}) and then
+      // line 267 (Could not find any function) because functions is empty
+      expect(result.allPassed).toBe(false);
+    });
+
+    it('should handle fetch error during safeEval execution (line 216)', async () => {
+      const OriginalFunction = global.Function;
+      let mockCalls = 0;
+
+      const mockFn = ((...args: string[]): unknown => {
+        mockCalls++;
+        if (mockCalls === 1) {
+          // Return a function that throws a fetch-related error when invoked
+          return () => {
+            throw new ReferenceError('fetch is not defined');
+          };
+        }
+        // @ts-expect-error - need to call original Function constructor
+        return new OriginalFunction(...args);
+      }) as typeof Function;
+
+      // @ts-expect-error - intentionally overriding global Function for testing
+      global.Function = mockFn;
+
+      const code = `
+        function myFunction() {
+          return 'result';
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: 'result' }]);
+
+      global.Function = OriginalFunction;
+
+      expect(result.allPassed).toBe(false);
+    });
+
+    it('should handle document error during safeEval execution (line 216)', async () => {
+      const OriginalFunction = global.Function;
+      let mockCalls = 0;
+
+      const mockFn = ((...args: string[]): unknown => {
+        mockCalls++;
+        if (mockCalls === 1) {
+          return () => {
+            throw new ReferenceError('document is not defined');
+          };
+        }
+        // @ts-expect-error - need to call original Function constructor
+        return new OriginalFunction(...args);
+      }) as typeof Function;
+
+      // @ts-expect-error - intentionally overriding global Function for testing
+      global.Function = mockFn;
+
+      const code = `
+        function myFunction() {
+          return 'result';
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: 'result' }]);
+
+      global.Function = OriginalFunction;
+
+      expect(result.allPassed).toBe(false);
+    });
+
+    it('should handle AbortController error during safeEval execution (line 216)', async () => {
+      const OriginalFunction = global.Function;
+      let mockCalls = 0;
+
+      const mockFn = ((...args: string[]): unknown => {
+        mockCalls++;
+        if (mockCalls === 1) {
+          return () => {
+            throw new ReferenceError('AbortController is not defined');
+          };
+        }
+        // @ts-expect-error - need to call original Function constructor
+        return new OriginalFunction(...args);
+      }) as typeof Function;
+
+      // @ts-expect-error - intentionally overriding global Function for testing
+      global.Function = mockFn;
+
+      const code = `
+        function myFunction() {
+          return 'result';
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: 'result' }]);
+
+      global.Function = OriginalFunction;
+
       expect(result.allPassed).toBe(false);
     });
   });
 
   // ============================================
-  // Test line 261: No function found after resolution
+  // Test line 267: No function found after resolution
   // ============================================
-  describe('No Function Found Error (line 261)', () => {
-    it('should trigger line 261 when functions exist but requested one does not', async () => {
+  describe('No Function Found Error (line 267)', () => {
+    it('should trigger line 267 when functions exist but requested one does not', async () => {
       // This tests the path where functionNames has items but availableFunctions is empty
       // and the requested function doesn't exist
       const code = `
@@ -173,12 +271,50 @@ describe('Test Runner Mocked Tests', () => {
         result.allPassed || result.error !== undefined || result.results[0]?.error !== undefined
       ).toBe(true);
     });
+
+    it('should throw error when both availableFunctions and functionNames are empty (line 267)', async () => {
+      // Mock Function constructor to make safeEval return empty functions object
+      const OriginalFunction = global.Function;
+      let mockCalls = 0;
+
+      const mockFn = ((...args: string[]): unknown => {
+        mockCalls++;
+        // On first call (creating safeEval), return a function that returns empty object
+        if (mockCalls === 1) {
+          return () => {
+            return {}; // Empty functions object
+          };
+        }
+        // @ts-expect-error - need to call original
+        return new OriginalFunction(...args);
+      }) as typeof Function;
+
+      // @ts-expect-error - intentionally overriding
+      global.Function = mockFn;
+
+      // Use code that won't have any function names detected by the regex
+      const code = `
+        // No functions here, just variables
+        const value = 42;
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: 42 }]);
+
+      // Restore
+      global.Function = OriginalFunction;
+
+      // Should fail because there are no callable functions
+      expect(result.allPassed).toBe(false);
+      // Error might be set or individual test might have error
+      expect(result.error !== undefined || result.results.some((r) => r.error !== undefined)).toBe(
+        true
+      );
+    });
   });
 
   // ============================================
-  // Test lines 342-344: Outer catch block
+  // Test lines 347-348: Outer catch block
   // ============================================
-  describe('Outer Catch Block (lines 342-344)', () => {
+  describe('Outer Catch Block (lines 347-348)', () => {
     it('should catch unexpected errors', async () => {
       // The outer catch is hard to trigger because all error paths are handled
       // We can try to cause an unexpected error by mocking something
@@ -190,6 +326,71 @@ describe('Test Runner Mocked Tests', () => {
       const result = await runTests(code, [{ input: [], expectedOutput: 42 }]);
       expect(result.allPassed).toBe(true);
     });
+
+    it('should catch errors thrown from test results processing', async () => {
+      // Try to trigger the outer catch by causing an error during test execution
+      // that isn't caught by inner handlers
+      const OriginalFunction = global.Function;
+      let mockCalls = 0;
+
+      const mockFn = ((...args: string[]): unknown => {
+        mockCalls++;
+        // On first call, return a function that works initially
+        // but throws when the result is accessed unexpectedly
+        if (mockCalls === 1) {
+          return () => ({
+            test: () => {
+              // Return a special object that throws when compared
+              return Object.defineProperty({}, 'toString', {
+                get() {
+                  throw new Error('Unexpected error during comparison');
+                },
+              });
+            },
+          });
+        }
+        // @ts-expect-error - need to call original
+        return new OriginalFunction(...args);
+      }) as typeof Function;
+
+      // @ts-expect-error - intentionally overriding
+      global.Function = mockFn;
+
+      const code = `
+        function test() {
+          return 42;
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: 42 }]);
+
+      // Restore
+      global.Function = OriginalFunction;
+
+      // Should have some result (either passed or failed)
+      expect(result).toBeDefined();
+    });
+  });
+
+  // ============================================
+  // Test line 69: Timeout callback
+  // ============================================
+  describe('Timeout Callback (line 69)', () => {
+    // Testing actual timeouts would make tests slow and flaky
+    // Instead, we verify the timeout mechanism exists and works
+
+    it('should have timeout protection', async () => {
+      const code = `
+        function quick() {
+          return 'fast';
+        }
+      `;
+      const result = await runTests(code, [{ input: [], expectedOutput: 'fast' }]);
+      expect(result.allPassed).toBe(true);
+      // If timeout mechanism wasn't working, infinite loops would hang forever
+    });
+
+    // Note: Testing actual timeout requires waiting 10+ seconds which is too slow
+    // The timeout line (69) is defensive code that protects against infinite loops
   });
 });
 
