@@ -988,5 +988,39 @@ describe('Problem Page Edge Cases', () => {
     expect(mockRunTests).not.toHaveBeenCalled();
   });
 
+  it('should handle multiple solution toggle clicks', async () => {
+    // Reset to test-problem
+    mockParams.id = 'test-problem';
 
+    renderWithProgress(<ProblemPage />);
+
+    // Find the solution button
+    const buttons = screen.getAllByRole('button');
+    const solutionButton = buttons.find((btn) => btn.textContent?.includes('Solution'));
+    expect(solutionButton).toBeDefined();
+
+    // Click the solution button multiple times to exercise both branches of handleToggleSolution
+    // First click - shows solution (else branch)
+    await act(async () => {
+      fireEvent.click(solutionButton!);
+    });
+
+    // Wait a tick for React to process
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    // Second click - should attempt to hide solution (if branch - line 122)
+    await act(async () => {
+      fireEvent.click(solutionButton!);
+    });
+
+    // Third click - just to make sure component is stable
+    await act(async () => {
+      fireEvent.click(solutionButton!);
+    });
+
+    // Verify the component is still functional
+    expect(screen.getByTestId('code-editor')).toBeInTheDocument();
+  });
 });

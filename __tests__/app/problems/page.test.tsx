@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ProblemsPage from '@/app/problems/page';
 import { ProgressContext } from '@/components/ProgressProvider';
@@ -33,7 +33,7 @@ jest.mock('next/link', () => {
 });
 
 // Mock the problems data
-const mockProblems = [
+const _mockProblems = [
   {
     id: 'problem-1',
     title: 'Array Destructuring',
@@ -145,34 +145,54 @@ jest.mock('@/components/FilterSidebar', () => {
         <div data-testid="problem-counts">
           {problemCounts.easy}/{problemCounts.medium}/{problemCounts.hard}/{problemCounts.total}
         </div>
-        <button onClick={() => onDifficultyChange('easy')} data-testid="filter-easy">
+        <button type="button" onClick={() => onDifficultyChange('easy')} data-testid="filter-easy">
           Filter Easy
         </button>
-        <button onClick={() => onDifficultyChange('medium')} data-testid="filter-medium">
+        <button
+          type="button"
+          onClick={() => onDifficultyChange('medium')}
+          data-testid="filter-medium"
+        >
           Filter Medium
         </button>
-        <button onClick={() => onDifficultyChange('hard')} data-testid="filter-hard">
+        <button type="button" onClick={() => onDifficultyChange('hard')} data-testid="filter-hard">
           Filter Hard
         </button>
-        <button onClick={() => onDifficultyChange('all')} data-testid="filter-all-difficulty">
+        <button
+          type="button"
+          onClick={() => onDifficultyChange('all')}
+          data-testid="filter-all-difficulty"
+        >
           All Difficulties
         </button>
-        <button onClick={() => onCategoryChange('TypeScript')} data-testid="filter-typescript">
+        <button
+          type="button"
+          onClick={() => onCategoryChange('TypeScript')}
+          data-testid="filter-typescript"
+        >
           Filter TypeScript
         </button>
-        <button onClick={() => onCategoryChange('all')} data-testid="filter-all-category">
+        <button
+          type="button"
+          onClick={() => onCategoryChange('all')}
+          data-testid="filter-all-category"
+        >
           All Categories
         </button>
-        <button onClick={() => onStatusChange('solved')} data-testid="filter-solved">
+        <button type="button" onClick={() => onStatusChange('solved')} data-testid="filter-solved">
           Filter Solved
         </button>
-        <button onClick={() => onStatusChange('unsolved')} data-testid="filter-unsolved">
+        <button
+          type="button"
+          onClick={() => onStatusChange('unsolved')}
+          data-testid="filter-unsolved"
+        >
           Filter Unsolved
         </button>
-        <button onClick={() => onStatusChange('all')} data-testid="filter-all-status">
+        <button type="button" onClick={() => onStatusChange('all')} data-testid="filter-all-status">
           All Status
         </button>
-        <button onClick={onClearFilters} data-testid="clear-filters">
+        <button type="button" onClick={onClearFilters} data-testid="clear-filters">
           Clear Filters
         </button>
       </div>
@@ -885,6 +905,95 @@ describe('ProblemsPage Memoization', () => {
       expect(screen.getAllByTestId('categories')[0]).toHaveTextContent(
         'Async Patterns,JavaScript Basics,TypeScript'
       );
+    });
+  });
+});
+
+describe('ProblemsPage Mobile Filter Callbacks', () => {
+  beforeEach(() => {
+    mockSearchParams.delete('category');
+    mockGet.mockClear();
+  });
+
+  it('should apply difficulty filter through mobile filter sidebar', async () => {
+    const user = userEvent.setup();
+    renderWithProgress(<ProblemsPage />);
+
+    // Toggle mobile filters to show them
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /^Filters$/i })).toBeInTheDocument();
+    });
+
+    const filterButton = screen.getByRole('button', { name: /^Filters$/i });
+    await user.click(filterButton);
+
+    // Wait for mobile sidebar to appear (should be the second one)
+    await waitFor(() => {
+      const sidebars = screen.getAllByTestId('filter-sidebar');
+      expect(sidebars.length).toBe(2);
+    });
+
+    // Get the mobile sidebar's easy filter (should be the second one)
+    const easyButtons = screen.getAllByTestId('filter-easy');
+    // The second filter-easy should be in the mobile sidebar
+    await user.click(easyButtons[1]);
+
+    await waitFor(() => {
+      const problemCount = screen.getByTestId('problem-count');
+      expect(problemCount).toHaveTextContent('2');
+    });
+  });
+
+  it('should apply category filter through mobile filter sidebar', async () => {
+    const user = userEvent.setup();
+    renderWithProgress(<ProblemsPage />);
+
+    // Toggle mobile filters
+    const filterButton = screen.getByRole('button', { name: /^Filters$/i });
+    await user.click(filterButton);
+
+    // Wait for mobile sidebar
+    await waitFor(() => {
+      const sidebars = screen.getAllByTestId('filter-sidebar');
+      expect(sidebars.length).toBe(2);
+    });
+
+    // Use the mobile sidebar's category filter (second one)
+    const typeScriptButtons = screen.getAllByTestId('filter-typescript');
+    await user.click(typeScriptButtons[1]);
+
+    await waitFor(() => {
+      const problemCount = screen.getByTestId('problem-count');
+      expect(problemCount).toHaveTextContent('2');
+    });
+  });
+
+  it('should apply status filter through mobile filter sidebar', async () => {
+    const user = userEvent.setup();
+    const isSolved = jest.fn((id: string) => ['problem-1', 'problem-2'].includes(id));
+
+    renderWithProgress(<ProblemsPage />, {
+      isSolved,
+      solvedCount: 2,
+    });
+
+    // Toggle mobile filters
+    const filterButton = screen.getByRole('button', { name: /^Filters$/i });
+    await user.click(filterButton);
+
+    // Wait for mobile sidebar
+    await waitFor(() => {
+      const sidebars = screen.getAllByTestId('filter-sidebar');
+      expect(sidebars.length).toBe(2);
+    });
+
+    // Use the mobile sidebar's status filter (second one)
+    const solvedButtons = screen.getAllByTestId('filter-solved');
+    await user.click(solvedButtons[1]);
+
+    await waitFor(() => {
+      const problemCount = screen.getByTestId('problem-count');
+      expect(problemCount).toHaveTextContent('2');
     });
   });
 });

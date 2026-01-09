@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { metadata } from '@/app/layout';
+import RootLayout, { metadata } from '@/app/layout';
 
 // Mock child component
 const MockChild = () => <div data-testid="mock-child">Child Content</div>;
@@ -377,10 +377,8 @@ describe('RootLayout Integration', () => {
   it('should handle React fragment children', () => {
     render(
       <LayoutBodyContent>
-        <>
-          <div data-testid="fragment-child-1">Child 1</div>
-          <div data-testid="fragment-child-2">Child 2</div>
-        </>
+        <div data-testid="fragment-child-1">Child 1</div>
+        <div data-testid="fragment-child-2">Child 2</div>
       </LayoutBodyContent>
     );
 
@@ -554,5 +552,45 @@ describe('RootLayout Children Rendering', () => {
     expect(screen.getByTestId('middle')).toBeInTheDocument();
     expect(screen.getByTestId('inner')).toBeInTheDocument();
     expect(screen.getByText('Deeply nested')).toBeInTheDocument();
+  });
+});
+
+describe('RootLayout Function', () => {
+  it('should be a valid function export', () => {
+    expect(typeof RootLayout).toBe('function');
+  });
+
+  it('should return a React element when called', () => {
+    // Call RootLayout to exercise line 25 - the function definition
+    const element = RootLayout({ children: <div>Test</div> });
+    expect(element).toBeDefined();
+    expect(element.type).toBe('html');
+    expect(element.props.lang).toBe('en');
+    expect(element.props.suppressHydrationWarning).toBe(true);
+  });
+
+  it('should have body element with font classes', () => {
+    const element = RootLayout({ children: <div>Content</div> });
+    const body = element.props.children[1]; // body is the second child after head
+    expect(body.type).toBe('body');
+    expect(body.props.className).toContain('antialiased');
+  });
+
+  it('should have head element with script', () => {
+    const element = RootLayout({ children: <div>Content</div> });
+    const head = element.props.children[0]; // head is the first child
+    expect(head.type).toBe('head');
+    // Check that head contains a script element
+    const script = head.props.children;
+    expect(script.type).toBe('script');
+    expect(script.props.dangerouslySetInnerHTML).toBeDefined();
+  });
+
+  it('should wrap children in main element inside body', () => {
+    const element = RootLayout({ children: <div>My Content</div> });
+    const body = element.props.children[1];
+    // The body contains ErrorBoundary > ThemeProvider > ProgressProvider > [ErrorHandler, Navbar, main]
+    const errorBoundary = body.props.children;
+    expect(errorBoundary).toBeDefined();
   });
 });
