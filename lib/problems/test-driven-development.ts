@@ -448,28 +448,23 @@ describe('Stack', () => {
 
 runTests();
 
-// Testable toBe assertion - returns true if values match
-function testToBe(actual, expected) {
+// Testable strict equality check - returns true if values match
+function checkStrictEqual(actual, expected) {
   return actual === expected;
 }
 
-// Testable toEqual assertion - deep equality check
-function testToEqual(actual, expected) {
+// Testable deep equality check
+function checkDeepEqual(actual, expected) {
   return JSON.stringify(actual) === JSON.stringify(expected);
 }
 
-// Testable toBeTruthy assertion
-function testToBeTruthy(value) {
+// Testable truthy assertion
+function checkTruthy(value) {
   return !!value;
 }
 
-// Testable toBeFalsy assertion
-function testToBeFalsy(value) {
-  return !value;
-}
-
 // Testable test result tracker
-function testResultTracker(testOutcomes) {
+function trackTestResults(testOutcomes) {
   const results = {
     passed: 0,
     failed: 0,
@@ -492,27 +487,27 @@ function testResultTracker(testOutcomes) {
     {
       input: [5, 5],
       expectedOutput: true,
-      description: 'testToBe returns true for equal values',
+      description: 'checkStrictEqual returns true for equal values',
     },
     {
       input: [5, 6],
       expectedOutput: false,
-      description: 'testToBe returns false for different values',
+      description: 'checkStrictEqual returns false for different values',
     },
     {
       input: [[1, 2, 3], [1, 2, 3]],
       expectedOutput: true,
-      description: 'testToEqual returns true for deeply equal arrays',
+      description: 'checkDeepEqual returns true for deeply equal arrays',
     },
     {
       input: [1],
       expectedOutput: true,
-      description: 'testToBeTruthy returns true for truthy value',
+      description: 'checkTruthy returns true for truthy value',
     },
     {
       input: [[true, true, false, true]],
       expectedOutput: { passed: 3, failed: 1 },
-      description: 'testResultTracker counts passed and failed correctly',
+      description: 'trackTestResults counts passed and failed correctly',
     },
   ],
   hints: [

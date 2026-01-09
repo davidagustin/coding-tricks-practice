@@ -126,8 +126,8 @@ console.log(mergeSort([5, 2, 8, 1, 9]));
 
 console.log(merge([1, 3, 5], [2, 4, 6]));
 // Expected: [1, 2, 3, 4, 5, 6]`,
-  solution: `// Merge helper - combines two sorted arrays
-function merge(left: number[], right: number[]): number[] {
+  solution: `// Helper to combine two sorted arrays
+function mergeSortedArrays(left: number[], right: number[]): number[] {
   const result: number[] = [];
   let leftIndex = 0;
   let rightIndex = 0;
@@ -166,7 +166,7 @@ function mergeSort(arr: number[]): number[] {
   const left = arr.slice(0, mid);
   const right = arr.slice(mid);
 
-  return merge(mergeSort(left), mergeSort(right));
+  return mergeSortedArrays(mergeSort(left), mergeSort(right));
 }
 
 // Test cases

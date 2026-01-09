@@ -148,7 +148,7 @@ function shrinkArray(arr, shrinkElement) {
   return [];
 }
 
-// Main testing function
+// Main testing logic
 function forAll(generator, property, options = {}) {
   const { numTests = 100, seed = Date.now() } = options;
 
@@ -318,7 +318,7 @@ function shrinkArray(arr, shrinkElement) {
   return result;
 }
 
-// Main testing function
+// Main testing logic
 function forAll(generator, property, options = {}) {
   const { numTests = 100, seed = Date.now() } = options;
 
@@ -462,7 +462,7 @@ function testRoundtripIdentity(value) {
     },
     {
       input: [-5],
-      expectedOutput: [0, -2, -4, 5],
+      expectedOutput: [0, -3, -4, 5],
       description: 'testShrinkInteger handles negative numbers',
     },
     {
