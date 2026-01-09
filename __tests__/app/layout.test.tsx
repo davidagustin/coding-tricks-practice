@@ -49,27 +49,30 @@ jest.mock('@/components/Navbar', () => {
   };
 });
 
+// Get mocked components outside of render
+const MockedErrorBoundary = jest.requireMock('@/components/ErrorBoundary');
+const { ThemeProvider: MockedThemeProvider } = jest.requireMock('@/components/ThemeProvider');
+const { ProgressProvider: MockedProgressProvider } = jest.requireMock(
+  '@/components/ProgressProvider'
+);
+const MockedErrorHandler = jest.requireMock('@/components/ErrorHandler');
+const MockedNavbar = jest.requireMock('@/components/Navbar');
+
 // Create a testable version of the layout body content
 // Since RootLayout renders html/body which can't be rendered in jsdom directly,
 // we create a component that represents the body content structure
 function LayoutBodyContent({ children }: { children: React.ReactNode }) {
-  const ErrorBoundary = jest.requireMock('@/components/ErrorBoundary');
-  const { ThemeProvider } = jest.requireMock('@/components/ThemeProvider');
-  const { ProgressProvider } = jest.requireMock('@/components/ProgressProvider');
-  const ErrorHandler = jest.requireMock('@/components/ErrorHandler');
-  const Navbar = jest.requireMock('@/components/Navbar');
-
   return (
     <div className="--font-geist-sans --font-geist-mono antialiased">
-      <ErrorBoundary>
-        <ThemeProvider>
-          <ProgressProvider>
-            <ErrorHandler />
-            <Navbar />
+      <MockedErrorBoundary>
+        <MockedThemeProvider>
+          <MockedProgressProvider>
+            <MockedErrorHandler />
+            <MockedNavbar />
             <main>{children}</main>
-          </ProgressProvider>
-        </ThemeProvider>
-      </ErrorBoundary>
+          </MockedProgressProvider>
+        </MockedThemeProvider>
+      </MockedErrorBoundary>
     </div>
   );
 }
@@ -490,9 +493,7 @@ describe('RootLayout Component Order', () => {
     const errorHandlerIndex = children.findIndex(
       (el) => el.getAttribute('data-testid') === 'error-handler'
     );
-    const navbarIndex = children.findIndex(
-      (el) => el.getAttribute('data-testid') === 'navbar'
-    );
+    const navbarIndex = children.findIndex((el) => el.getAttribute('data-testid') === 'navbar');
 
     expect(errorHandlerIndex).toBeLessThan(navbarIndex);
   });
@@ -507,12 +508,8 @@ describe('RootLayout Component Order', () => {
     const progressProvider = screen.getByTestId('progress-provider');
     const children = Array.from(progressProvider.children);
 
-    const navbarIndex = children.findIndex(
-      (el) => el.getAttribute('data-testid') === 'navbar'
-    );
-    const mainIndex = children.findIndex(
-      (el) => el.tagName.toLowerCase() === 'main'
-    );
+    const navbarIndex = children.findIndex((el) => el.getAttribute('data-testid') === 'navbar');
+    const mainIndex = children.findIndex((el) => el.tagName.toLowerCase() === 'main');
 
     expect(navbarIndex).toBeLessThan(mainIndex);
   });
