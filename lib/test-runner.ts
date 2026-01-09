@@ -1,7 +1,7 @@
 import ts from 'typescript';
-import { TEST_CONFIG, BROWSER_API_KEYWORDS } from './constants';
-import { getErrorMessage, isError } from './utils/type-guards';
+import { BROWSER_API_KEYWORDS, TEST_CONFIG } from './constants';
 import { analyzeCodeSafety, sanitizeErrorMessage } from './utils/code-safety';
+import { getErrorMessage, isError } from './utils/type-guards';
 
 export interface TestResult {
   passed: boolean;
@@ -64,7 +64,7 @@ export async function runTests(
   solutionFunctionName?: string
 ): Promise<TestRunnerResult> {
   // Wrap everything in a promise to catch all errors
-  return new Promise((resolve) => {
+  return new Promise(async (resolve) => {
     // Add timeout protection
     const timeoutId = setTimeout(() => {
       resolve({
@@ -109,9 +109,10 @@ export async function runTests(
       }
 
       // Show warnings if any (but don't block execution)
-      const warnings = safetyAnalysis.warnings.length > 0
-        ? `\n⚠️ Warnings: ${safetyAnalysis.warnings.join(', ')}`
-        : '';
+      const warnings =
+        safetyAnalysis.warnings.length > 0
+          ? `\n⚠️ Warnings: ${safetyAnalysis.warnings.join(', ')}`
+          : '';
 
       const consoleOutput: string[] = [];
       if (warnings) {
