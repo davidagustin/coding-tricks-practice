@@ -125,7 +125,37 @@ console.log(getSecondToLast(['a', 'b', 'c', 'd']));
 console.log(getNthFromEnd([10, 20, 30, 40, 50], 3));
 console.log(getFirstAndLast(['start', 'middle', 'end']));
 console.log(safeAt([1, 2, 3], 100, -1));`,
-  solution: `function test() { return true; }`,
+  solution: `function getLastElement(arr) {
+  // Return the last element using at()
+  // getLastElement([1, 2, 3, 4, 5]) → 5
+  return arr.at(-1);
+}
+
+function getSecondToLast(arr) {
+  // Return the second-to-last element using at()
+  // getSecondToLast([1, 2, 3, 4]) → 3
+  return arr.at(-2);
+}
+
+function getNthFromEnd(arr, n) {
+  // Return the nth element from the end (1-indexed)
+  // getNthFromEnd([1, 2, 3, 4, 5], 2) → 4 (2nd from end)
+  return arr.at(-n);
+}
+
+function getFirstAndLast(arr) {
+  // Return an object with first and last elements
+  // getFirstAndLast([1, 2, 3]) → { first: 1, last: 3 }
+  return { first: arr.at(0), last: arr.at(-1) };
+}
+
+function safeAt(arr, index, defaultValue) {
+  // Return element at index, or defaultValue if undefined
+  // safeAt([1, 2, 3], 10, 0) → 0
+  // safeAt([1, 2, 3], -1, 0) → 3
+  const value = arr.at(index);
+  return value !== undefined ? value : defaultValue;
+}`,
   testCases: [
     {
       input: [],

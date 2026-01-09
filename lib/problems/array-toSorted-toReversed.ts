@@ -144,7 +144,42 @@ console.log('Remove at index 2:', removeAtIndex([10, 20, 30, 40], 2));
 console.log('Insert at index 1:', insertAtIndex(['a', 'd'], 1, 'b', 'c'));
 console.log('Replace at index 1:', replaceAtIndex([1, 2, 3], 1, 'X'));
 console.log('Sort descending:', sortDescending([1, 5, 3, 2, 4]));`,
-  solution: `function test() { return true; }`,
+  solution: `function getSortedCopy(arr) {
+  // Return a sorted copy without modifying the original
+  // getSortedCopy(original) → [1, 2, 3]
+  // original is still [3, 1, 2]
+  return arr.toSorted();
+}
+
+function getReversedCopy(arr) {
+  // Return a reversed copy without modifying the original
+  return arr.toReversed();
+}
+
+function removeAtIndex(arr, index) {
+  // Return new array with element at index removed
+  // removeAtIndex([1, 2, 3, 4], 1) → [1, 3, 4]
+  return arr.toSpliced(index, 1);
+}
+
+function insertAtIndex(arr, index, ...items) {
+  // Return new array with items inserted at index
+  // insertAtIndex([1, 4], 1, 2, 3) → [1, 2, 3, 4]
+  return arr.toSpliced(index, 0, ...items);
+}
+
+function replaceAtIndex(arr, index, newValue) {
+  // Return new array with element at index replaced
+  // replaceAtIndex([1, 2, 3], 1, 'two') → [1, 'two', 3]
+  // Hint: Use the with() method
+  return arr.with(index, newValue);
+}
+
+function sortDescending(numbers) {
+  // Return new array sorted in descending order
+  // sortDescending([1, 5, 3, 2, 4]) → [5, 4, 3, 2, 1]
+  return numbers.toSorted((a, b) => b - a);
+}`,
   testCases: [
     {
       input: [],

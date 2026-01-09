@@ -126,7 +126,35 @@ console.log(flattenToDepth([1, [2, [3, [4]]]], 2));
 console.log(expandAndFlatten([1, 2, 3], n => [n, n * n]));
 console.log(getWordsFromSentences(["hello world", "foo bar"]));
 console.log(filterAndTransform([1, 2, 3, 4, 5], n => n > 2, n => n * 10));`,
-  solution: `function test() { return true; }`,
+  solution: `function flattenDeep(nestedArray) {
+  // Flatten array completely (any depth)
+  // flattenDeep([1, [2, [3, [4, [5]]]]]) → [1, 2, 3, 4, 5]
+  return nestedArray.flat(Infinity);
+}
+
+function flattenToDepth(nestedArray, depth) {
+  // Flatten array to a specific depth
+  // flattenToDepth([1, [2, [3]]], 1) → [1, 2, [3]]
+  return nestedArray.flat(depth);
+}
+
+function expandAndFlatten(items, expandFn) {
+  // Use flatMap to expand each item using expandFn
+  // expandAndFlatten([1, 2], n => [n, n*2]) → [1, 2, 2, 4]
+  return items.flatMap(expandFn);
+}
+
+function getWordsFromSentences(sentences) {
+  // Split each sentence into words and flatten
+  // getWordsFromSentences(["hello world", "foo bar"]) → ["hello", "world", "foo", "bar"]
+  return sentences.flatMap(sentence => sentence.split(' '));
+}
+
+function filterAndTransform(numbers, filterFn, transformFn) {
+  // Use flatMap to filter (return [] to exclude) and transform
+  // filterAndTransform([1, 2, 3, 4], n => n % 2 === 0, n => n * 10) → [20, 40]
+  return numbers.flatMap(n => filterFn(n) ? [transformFn(n)] : []);
+}`,
   testCases: [
     {
       input: [],

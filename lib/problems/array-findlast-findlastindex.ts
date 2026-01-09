@@ -129,7 +129,40 @@ console.log(findLastObjectByProperty(
 ));
 console.log(findLastGreaterThan([10, 5, 20, 8, 15, 3], 10));
 console.log(findLastWithIndex([1, 2, 3, 2, 1], n => n === 2));`,
-  solution: `function test() { return true; }`,
+  solution: `function findLastEven(numbers) {
+  // Find the last even number in the array
+  // findLastEven([1, 2, 3, 4, 5, 7, 8]) → 8
+  return numbers.findLast(n => n % 2 === 0);
+}
+
+function findLastIndexOf(arr, predicate) {
+  // Find the index of the last element matching predicate
+  // findLastIndexOf([1, 2, 3, 2, 1], n => n === 2) → 3
+  return arr.findLastIndex(predicate);
+}
+
+function findLastObjectByProperty(objects, key, value) {
+  // Find the last object where obj[key] === value
+  // findLastObjectByProperty([{id: 1}, {id: 2}, {id: 1}], 'id', 1) → {id: 1} (the last one)
+  return objects.findLast(obj => obj[key] === value);
+}
+
+function findLastGreaterThan(numbers, threshold) {
+  // Find the last number greater than threshold
+  // findLastGreaterThan([5, 10, 3, 8, 2], 4) → 8
+  return numbers.findLast(n => n > threshold);
+}
+
+function findLastWithIndex(arr, predicate) {
+  // Return both the element and its index as { element, index }
+  // Return { element: undefined, index: -1 } if not found
+  // findLastWithIndex([1, 2, 3, 2], n => n === 2) → { element: 2, index: 3 }
+  const index = arr.findLastIndex(predicate);
+  return {
+    element: index !== -1 ? arr[index] : undefined,
+    index
+  };
+}`,
   testCases: [
     {
       input: [],
