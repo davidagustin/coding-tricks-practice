@@ -10,7 +10,7 @@ interface ThemeContextType {
   setTheme: (theme: Theme) => void;
 }
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 // Helper function to get initial theme (works on both client and server)
 function getInitialTheme(): Theme {

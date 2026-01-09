@@ -229,3 +229,61 @@ Please review and fix these E2E tests manually.
 *This issue was automatically created by the daily test workflow.*`,
               labels: ['bug', 'automated', 'tests', 'e2e', 'ui']
             });
+
+  chromatic-visual-tests:
+    runs-on: ubuntu-latest
+    name: Chromatic Visual Tests
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Storybook
+        run: npm run build-storybook
+
+      - name: Run Chromatic
+        id: chromatic
+        uses: chromaui/action@latest
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          storybookBuildDir: storybook-static
+          exitOnceUploaded: true
+          onlyChanged: true
+          autoAcceptChanges: main
+        continue-on-error: true
+
+      - name: Create issue if visual changes detected
+        if: steps.chromatic.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[Auto] Visual regression detected - ${new Date().toISOString().split('T')[0]}`,
+              body: `## Chromatic Visual Test Run
+
+Visual changes were detected in the UI components.
+
+### Review Required
+Please review the Chromatic build to approve or reject the visual changes.
+
+### Chromatic Build
+Check the Chromatic dashboard for detailed visual diffs.
+
+---
+*This issue was automatically created by the daily test workflow.*`,
+              labels: ['bug', 'automated', 'visual-regression', 'ui']
+            });

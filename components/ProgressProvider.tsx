@@ -14,7 +14,7 @@ interface ProgressContextType {
   lastSolvedDate: string | null;
 }
 
-const ProgressContext = createContext<ProgressContextType | undefined>(undefined);
+export const ProgressContext = createContext<ProgressContextType | undefined>(undefined);
 
 const STORAGE_KEY = 'js-ts-tricks-progress';
 const STREAK_KEY = 'js-ts-tricks-streak';
