@@ -129,7 +129,56 @@ console.log(flipName('Doe, John'));
 
 console.log(parseQueryString('name=John&age=30&city=NYC'));
 // { name: 'John', age: '30', city: 'NYC' }`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a function that parses a date string
+// Should extract year, month, day using named groups
+function parseDate(dateStr) {
+  // Hint: Use named groups (?<year>\\d{4}) etc.
+  const match = dateStr.match(/(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})/);
+  if (match && match.groups) {
+    return {
+      year: parseInt(match.groups.year, 10),
+      month: parseInt(match.groups.month, 10),
+      day: parseInt(match.groups.day, 10)
+    };
+  }
+  return { year: 0, month: 0, day: 0 };
+}
+
+// Create a function that extracts the protocol, domain, and path from a URL
+// "https://example.com/path/to/page" -> { protocol: 'https', domain: 'example.com', path: '/path/to/page' }
+function parseURL(url) {
+  // Hint: Protocol is letters before ://, domain is after //, path starts with /
+  const match = url.match(/(?<protocol>https?):\\/\\/(?<domain>[^/]+)(?<path>\\/.*)?/);
+  if (match && match.groups) {
+    return {
+      protocol: match.groups.protocol,
+      domain: match.groups.domain,
+      path: match.groups.path || ''
+    };
+  }
+  return { protocol: '', domain: '', path: '' };
+}
+
+// Create a function that converts "lastName, firstName" to "firstName lastName"
+// "Doe, John" -> "John Doe"
+function flipName(name) {
+  // Hint: Use replace with capturing groups and backreferences $1, $2
+  return name.replace(/(\\w+),\\s*(\\w+)/, '$2 $1');
+}
+
+// Create a function that extracts all key-value pairs from a query string
+// "name=John&age=30&city=NYC" -> { name: 'John', age: '30', city: 'NYC' }
+function parseQueryString(queryStr) {
+  // Hint: Use matchAll with global flag and named groups
+  const result = {};
+  const regex = /(?<key>\\w+)=(?<value>\\w+)/g;
+  for (const match of queryStr.matchAll(regex)) {
+    if (match.groups) {
+      result[match.groups.key] = match.groups.value;
+    }
+  }
+  return result;
+}`,
   testCases: [
     {
       input: [],

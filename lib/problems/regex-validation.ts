@@ -145,7 +145,42 @@ console.log(isValidIPv4('256.1.1.1'));                // false
 
 console.log(isValidCreditCard('1234-5678-9012-3456')); // true
 console.log(isValidCreditCard('1234567890123456'));    // true`,
-  solution: `function test() { return true; }`,
+  solution: `// Create an email validator
+// Should handle: user@domain.com, user.name@domain.co.uk, user+tag@domain.org
+function isValidEmail(email) {
+  // Hint: Local part can have letters, digits, dots, underscores, hyphens, plus
+  // Domain has letters, digits, hyphens, with 2-6 letter TLD
+  return /^[\\w.+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$/.test(email);
+}
+
+// Create a US phone number validator
+// Should handle: (555) 123-4567, 555-123-4567, 555.123.4567, 5551234567
+function isValidUSPhone(phone) {
+  // Hint: Area code can be in (), digits separated by -, ., space, or nothing
+  return /^(\\(?\\d{3}\\)?[-.\\s]?)?\\d{3}[-.\\s]?\\d{4}$/.test(phone);
+}
+
+// Create a URL validator
+// Should handle: http://example.com, https://sub.domain.org/path?query=1
+function isValidURL(url) {
+  // Hint: Protocol (http/https), optional www, domain, optional port/path/query
+  return /^https?:\\/\\/(www\\.)?[\\w.-]+(\\.[\\w.-]+)*(:\\d+)?(\\/[\\w.\\-~!*'();:@&=+$,/?#[\\]]*)?$/.test(url);
+}
+
+// Create an IPv4 address validator
+// Each octet should be 0-255: 192.168.1.1, 0.0.0.0, 255.255.255.255
+function isValidIPv4(ip) {
+  // Hint: Each octet is 0-9, 10-99, 100-199, 200-249, or 250-255
+  return /^(?:(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d?)$/.test(ip);
+}
+
+// Create a credit card number validator (basic format check)
+// Should accept 16 digits with optional spaces/dashes: 1234-5678-9012-3456
+function isValidCreditCard(cardNum) {
+  // Hint: 16 digits, optionally grouped by 4 with separators
+  const cleaned = cardNum.replace(/[-\\s]/g, '');
+  return /^\\d{16}$/.test(cleaned);
+}`,
   testCases: [
     {
       input: [],

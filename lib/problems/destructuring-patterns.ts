@@ -123,7 +123,33 @@ function swapValues(a, b) {
 console.log(extractUserInfo({ name: 'Alice', email: 'alice@example.com', age: 28 }));
 console.log(getFirstAndLast([1, 2, 3, 4, 5]));
 console.log(swapValues(10, 20));`,
-  solution: `function test() { return true; }`,
+  solution: `// Extract user information using object destructuring
+function extractUserInfo(user) {
+  // TODO: Use destructuring to extract name, email, and age
+  // Return an object with greeting and contact
+  const { name, email, age } = user;
+
+  return {
+    greeting: \`Hello, \${name}! You are \${age} years old.\`,
+    contact: email
+  };
+}
+
+function getFirstAndLast(arr) {
+  // Use array destructuring to get first and last elements
+  // Hint: Use rest pattern to get everything in between
+  const [first, ...rest] = arr;
+  const last = rest.length > 0 ? rest[rest.length - 1] : first;
+
+  return { first, last };
+}
+
+function swapValues(a, b) {
+  // Use array destructuring to swap a and b
+  // Return an array [b, a] (swapped values)
+  [a, b] = [b, a];
+  return [a, b];
+}`,
   testCases: [
     {
       input: [],

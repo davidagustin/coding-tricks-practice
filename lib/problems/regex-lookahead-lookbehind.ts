@@ -141,7 +141,43 @@ console.log(wordsWithoutPunctuation('Hello, world! How are you'));
 
 console.log(replaceBetweenMarkers('start[REPLACE]end', 'NEW'));
 // 'start[NEW]end'`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a function that validates a strong password
+// Must have: uppercase, lowercase, digit, special char, min 8 chars
+function isStrongPassword(password) {
+  // Hint: Use multiple positive lookaheads (?=.*[pattern])
+  return /^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,}$/.test(password);
+}
+
+// Create a function that adds commas to large numbers
+// "1234567" -> "1,234,567"
+function addCommas(numStr) {
+  // Hint: Use lookahead to find positions where commas should go
+  // (?=(...)+$) matches positions followed by groups of 3 digits
+  return numStr.replace(/\\B(?=(\\d{3})+(?!\\d))/g, ',');
+}
+
+// Create a function that extracts amounts after currency symbols
+// "Price: $99.99 or EUR 50.00" -> ['99.99', '50.00']
+function extractAmounts(text) {
+  // Hint: Use lookbehind for $ and currency codes
+  const matches = text.match(/(?<=\\$|EUR\\s)\\d+\\.\\d+/g);
+  return matches || [];
+}
+
+// Create a function that finds words NOT followed by punctuation
+// "Hello, world! How are you" -> ['How', 'are']
+function wordsWithoutPunctuation(text) {
+  // Hint: Use negative lookahead (?![.,!?])
+  const matches = text.match(/\\b\\w+(?![.,!?])/g);
+  return matches || [];
+}
+
+// Create a function that replaces text only between specific markers
+// "start[REPLACE]end" with marker [] should replace REPLACE
+function replaceBetweenMarkers(text, replacement) {
+  // Hint: Use lookbehind for [ and lookahead for ]
+  return text.replace(/(?<=\\[).*?(?=\\])/, replacement);
+}`,
   testCases: [
     {
       input: [],

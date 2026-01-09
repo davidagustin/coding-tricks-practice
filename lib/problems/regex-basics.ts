@@ -132,7 +132,34 @@ console.log(isValidHexColor('#FFF'));     // true
 console.log(isValidHexColor('#FFFFFF'));  // true
 console.log(isValidHexColor('#GGG'));     // false
 console.log(countWords('Hello world'));   // 2`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a function that checks if a string contains only letters
+// Should return true for "Hello", false for "Hello123"
+function isOnlyLetters(str) {
+  // Hint: Use ^ and $ for start/end, [a-zA-Z] for letters
+  return /^[a-zA-Z]+$/.test(str);
+}
+
+// Create a function that extracts all numbers from a string
+// "I have 3 cats and 2 dogs" should return ["3", "2"]
+function extractNumbers(str) {
+  // Hint: Use \\d+ with the global flag
+  return str.match(/\\d+/g) || [];
+}
+
+// Create a function that checks if a string is a valid hex color
+// Should match #FFF or #FFFFFF (case insensitive)
+function isValidHexColor(str) {
+  // Hint: Hex digits are [0-9A-Fa-f]
+  return /^#[0-9A-Fa-f]{3}([0-9A-Fa-f]{3})?$/.test(str);
+}
+
+// Create a function that counts how many words are in a string
+// "Hello world" should return 2
+function countWords(str) {
+  // Hint: Use \\w+ to match words
+  const matches = str.match(/\\w+/g);
+  return matches ? matches.length : 0;
+}`,
   testCases: [
     {
       input: [],
