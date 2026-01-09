@@ -1,5 +1,5 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 import { ProgressContext, ProgressProvider, useProgress } from '@/components/ProgressProvider';
 
 // Mock the problems module
@@ -1011,10 +1011,11 @@ describe('ProgressProvider', () => {
     });
 
     it('should provide all expected functions from the hook', async () => {
-      const hookResultRef = { current: null as ReturnType<typeof useProgress> | null };
+      let hookResultRef: { current: ReturnType<typeof useProgress> | null } = { current: null };
 
       function HookInspectorComponent() {
-        hookResultRef.current = useProgress();
+        const result = useProgress();
+        hookResultRef.current = result;
 
         return (
           <div>
