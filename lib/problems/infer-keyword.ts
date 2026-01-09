@@ -104,7 +104,25 @@ class MyClass {
   constructor(name: string, age: number) {}
 }
 type Test4 = MyConstructorParameters<typeof MyClass>; // [string, number]`,
-  solution: `function test() { return true; }`,
+  solution: `// Extract the resolved type from a Promise
+// UnwrapPromise<Promise<number>> should be number
+type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
+
+// Extract the first parameter type from a function
+// FirstParameter<(a: string, b: number) => void> should be string
+type FirstParameter<T> = T extends (first: infer P, ...args: any[]) => any ? P : never;
+
+// Extract the last parameter type from a function
+// LastParameter<(a: number, b: string, c: boolean) => void> should be boolean
+type LastParameter<T> = T extends (...args: any[]) => any
+  ? T extends (...args: [...any[], infer Last]) => any
+    ? Last
+    : never
+  : never;
+
+// Extract constructor parameters
+// MyConstructorParameters<typeof MyClass> should be [string, number]
+type MyConstructorParameters<T> = T extends new (...args: infer P) => any ? P : never;`,
   testCases: [
     {
       input: [],

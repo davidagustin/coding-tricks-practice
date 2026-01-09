@@ -98,7 +98,21 @@ type Test2 = IsArray<string>; // should be false
 type Test3 = ExtractArrayType<number[]>; // should be number
 type Test4 = MyNonNullable<string | null | undefined>; // should be string
 type Test5 = FunctionReturnType<() => string>; // should be string`,
-  solution: `function test() { return true; }`,
+  solution: `// Check if T is an array type
+// IsArray<string[]> should be true, IsArray<string> should be false
+type IsArray<T> = T extends any[] ? true : false;
+
+// Extract the element type from an array
+// ExtractArrayType<number[]> should be number
+type ExtractArrayType<T> = T extends (infer U)[] ? U : never;
+
+// Create a NonNullable type (remove null and undefined)
+// MyNonNullable<string | null | undefined> should be string
+type MyNonNullable<T> = T extends null | undefined ? never : T;
+
+// Extract the return type of a function
+// FunctionReturnType<() => string> should be string
+type FunctionReturnType<T> = T extends (...args: any[]) => infer R ? R : never;`,
   testCases: [
     {
       input: [],

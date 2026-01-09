@@ -108,7 +108,29 @@ type NullableUser = Nullable<User>;
 // Test
 const partialUser: PartialUser = { name: 'John' };
 const requiredUser: RequiredUser = { name: 'John', age: 30, email: 'john@example.com' };`,
-  solution: `function test() { return true; }`,
+  solution: `// Implement Partial utility type
+// Makes all properties optional
+type MyPartial<T> = {
+  [K in keyof T]?: T[K];
+};
+
+// Implement Required utility type
+// Makes all properties required
+type MyRequired<T> = {
+  [K in keyof T]-?: T[K];
+};
+
+// Implement Readonly utility type
+// Makes all properties readonly
+type MyReadonly<T> = {
+  readonly [K in keyof T]: T[K];
+};
+
+// Create a Nullable type that makes all properties nullable
+// Nullable<{ a: string }> = { a: string | null }
+type Nullable<T> = {
+  [K in keyof T]: T[K] | null;
+};`,
   testCases: [
     {
       input: [],

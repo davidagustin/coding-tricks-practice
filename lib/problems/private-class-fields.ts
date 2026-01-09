@@ -189,7 +189,72 @@ console.log(token.isValid());  // true
 new Counter();
 new Counter();
 console.log(Counter.getInstanceCount());  // 2`,
-  solution: `function test() { return true; }`,
+  solution: `// Task 1: Create a BankAccount class with private balance
+// - Private #balance field initialized to 0
+// - deposit(amount): adds to balance (only positive amounts)
+// - withdraw(amount): subtracts from balance (only if sufficient funds)
+// - getBalance(): returns current balance
+
+class BankAccount {
+  // Add private #balance field
+  #balance = 0;
+
+  constructor(initialBalance = 0) {
+    // Initialize balance
+    this.#balance = initialBalance;
+  }
+
+  deposit(amount) {
+    // Add to balance if amount > 0
+    if (amount > 0) {
+      this.#balance += amount;
+    }
+  }
+
+  withdraw(amount) {
+    // Subtract from balance if sufficient funds
+    // Return true if successful, false otherwise
+    if (amount > 0 && this.#balance >= amount) {
+      this.#balance -= amount;
+      return true;
+    }
+    return false;
+  }
+
+  getBalance() {
+    // Return current balance
+    return this.#balance;
+  }
+}
+
+// Task 2: Create a SecureToken class with private token and expiry
+// - Private #token and #expiresAt fields
+// - Constructor generates random token and sets expiry (milliseconds from now)
+// - isValid(): returns true if token hasn't expired
+// - getToken(): returns token only if valid, otherwise null
+
+class SecureToken {
+  // Add private fields
+  #token = '';
+  #expiresAt = 0;
+
+  constructor(expiresInMs = 3600000) {
+    // Generate random token and set expiry
+    // Hint: Math.random().toString(36).substring(2) for random string
+    this.#token = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
+    this.#expiresAt = Date.now() + expiresInMs;
+  }
+
+  isValid() {
+    // Return true if token hasn't expired
+    return Date.now() < this.#expiresAt;
+  }
+
+  getToken() {
+    // Return token only if valid, otherwise null
+    return this.isValid() ? this.#token : null;
+  }
+}`,
   testCases: [
     {
       input: [],

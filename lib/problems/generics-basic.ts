@@ -101,7 +101,26 @@ const first = getFirst([1, 2, 3]);
 const pair: Pair<string, number> = { first: 'age', second: 30 };
 
 console.log(num, str, first, pair);`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a generic identity function
+// identity<number>(42) should return 42
+// identity<string>('hello') should return 'hello'
+function identity<T>(value: T): T {
+  return value;
+}
+
+// Create a generic function to get first element of array
+// getFirst<number>([1, 2, 3]) should return 1
+// getFirst<string>(['a', 'b']) should return 'a'
+function getFirst<T>(arr: T[]): T | undefined {
+  return arr[0];
+}
+
+// Create a generic Pair type
+// Pair<string, number> represents { first: string, second: number }
+type Pair<T, U> = {
+  first: T;
+  second: U;
+};`,
   testCases: [
     {
       input: [],

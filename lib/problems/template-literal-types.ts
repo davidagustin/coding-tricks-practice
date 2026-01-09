@@ -119,7 +119,32 @@ type Test2 = SetterName<'value'>; // should be 'setValue'
 type Test3 = BEMClass<'card', 'header', 'active'>; // should be 'card__header--active'
 type Test4 = ExtractEvent<'onClick'>; // should be 'click'
 type Test5 = Endpoint<'users', 'get'>; // should be 'GET /api/users'`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a type that generates getter method names
+// GetterName<'name'> should be 'getName'
+type GetterName<T extends string> = \`get\${Capitalize<T>}\`;
+
+// Create a type that generates setter method names
+// SetterName<'name'> should be 'setName'
+type SetterName<T extends string> = \`set\${Capitalize<T>}\`;
+
+// Create a type for CSS class names with BEM convention
+// BEMClass<'button', 'icon', 'large'> should be 'button__icon--large'
+type BEMClass<Block extends string, Element extends string, Modifier extends string> = 
+  \`\${Block}__\${Element}--\${Modifier}\`;
+
+// Create a type that extracts the event name from handler name
+// ExtractEvent<'onClick'> should be 'click'
+// ExtractEvent<'onMouseOver'> should be 'mouseOver'
+type ExtractEvent<T extends string> = T extends \`on\${infer E}\` 
+  ? Uncapitalize<E> 
+  : never;
+
+// Create a type for HTTP endpoints
+// Endpoint<'users', 'get'> should be 'GET /api/users'
+// Endpoint<'posts', 'post'> should be 'POST /api/posts'
+type HttpMethod = 'get' | 'post' | 'put' | 'delete';
+type Endpoint<Resource extends string, Method extends HttpMethod> = 
+  \`\${Uppercase<Method>} /api/\${Resource}\`;`,
   testCases: [
     {
       input: [],

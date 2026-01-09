@@ -196,7 +196,68 @@ console.log(ColorPalette.primary);  // '#0000FF'
 console.log(Validator.validate('email', 'test@example.com'));  // true
 console.log(Validator.validate('phone', '1234567890'));  // true
 console.log(Validator.validate('age', 25));  // true`,
-  solution: `function test() { return true; }`,
+  solution: `// Task 1: Create a Logger class with static initialization
+// - static #logLevel (private): 'info' | 'warn' | 'error'
+// - static #initialized (private): boolean
+// - Static block should set logLevel based on environment
+//   (use 'development' to set 'info', otherwise 'error')
+// - Provide static methods: setLevel(level), getLevel(), isInitialized()
+
+class Logger {
+  // Add static private fields
+  static #logLevel = 'error';
+  static #initialized = false;
+
+  // Add static initialization block
+  // Set #logLevel based on environment (assume 'development')
+  // Set #initialized to true
+  static {
+    const env = 'development'; // In real code, this would come from process.env
+    this.#logLevel = env === 'development' ? 'info' : 'error';
+    this.#initialized = true;
+  }
+
+  static setLevel(level) {
+    // Set log level
+    this.#logLevel = level;
+  }
+
+  static getLevel() {
+    // Return current log level
+    return this.#logLevel;
+  }
+
+  static isInitialized() {
+    // Return initialization status
+    return this.#initialized;
+  }
+}
+
+// Task 2: Create a Config class that loads configuration in static block
+// - static #config (private): object
+// - Static block should initialize config from a mock function
+// - Provide static get(key) method
+
+class Config {
+  // Add static private field
+  static #config = {};
+
+  // Static initialization block
+  static {
+    // Mock config loader
+    const loadConfig = () => ({
+      apiUrl: 'https://api.example.com',
+      timeout: 5000,
+      retries: 3
+    });
+    this.#config = loadConfig();
+  }
+
+  static get(key) {
+    // Return config value for key
+    return this.#config[key];
+  }
+}`,
   testCases: [
     {
       input: [],

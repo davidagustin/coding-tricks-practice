@@ -114,7 +114,48 @@ const range = new NumberRange(1, 5);
 for (const num of range) {
   console.log(num); // Should iterate 1, 2, 3, 4, 5
 }`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a User class with private ID using Symbol
+// - Private id property using Symbol
+// - Constructor sets id to a unique Symbol
+// - getId() method returns the id
+// - id should not be accessible directly
+
+const idSymbol = Symbol('id');
+
+class User {
+  [idSymbol]: symbol;
+  name: string;
+
+  constructor(name: string) {
+    this.name = name;
+    this[idSymbol] = Symbol('user-id');
+  }
+
+  getId() {
+    return this[idSymbol];
+  }
+}
+
+// Implement Symbol.iterator for custom iteration
+class NumberRange {
+  constructor(start, end) {
+    this.start = start;
+    this.end = end;
+  }
+  // Add [Symbol.iterator] method
+  [Symbol.iterator]() {
+    let current = this.start;
+    const end = this.end;
+    return {
+      next() {
+        if (current <= end) {
+          return { value: current++, done: false };
+        }
+        return { done: true };
+      }
+    };
+  }
+}`,
   testCases: [
     {
       input: [],

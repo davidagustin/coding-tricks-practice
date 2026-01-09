@@ -137,7 +137,45 @@ type FlattenTest = Flatten<string[]>;
 type TupleTest = TupleToUnion<[1, 'hello', true]>;
 type PickTest = PickByType<{ a: string; b: number; c: boolean }, string>;
 type OmitTest = OmitByType<{ a: string; b: number; c: boolean }, string>;`,
-  solution: `function test() { return true; }`,
+  solution: `// Challenge 1: DeepReadonly
+// Make all properties readonly recursively
+// DeepReadonly<{ a: { b: string } }> = { readonly a: { readonly b: string } }
+type DeepReadonly<T> = {
+  readonly [K in keyof T]: T[K] extends object ? DeepReadonly<T[K]> : T[K];
+};
+
+// Challenge 2: Flatten
+// Flatten an array type to get its element type
+// If not an array, return the type as-is
+// Flatten<string[]> = string
+// Flatten<number[][]> = number[] (one level only)
+// Flatten<string> = string
+type Flatten<T> = T extends (infer U)[] ? U : T;
+
+// Challenge 3: TupleToUnion
+// Convert a tuple type to a union of its elements
+// TupleToUnion<[string, number, boolean]> = string | number | boolean
+type TupleToUnion<T extends readonly unknown[]> = T[number];
+
+// Challenge 4: PickByType
+// Pick all properties from T where the value is of type U
+// PickByType<{ a: string; b: number; c: string }, string> = { a: string; c: string }
+type PickByType<T, U> = {
+  [K in keyof T as T[K] extends U ? K : never]: T[K];
+};
+
+// Challenge 5: OmitByType
+// Omit all properties from T where the value is of type U
+// OmitByType<{ a: string; b: number; c: string }, string> = { b: number }
+type OmitByType<T, U> = {
+  [K in keyof T as T[K] extends U ? never : K]: T[K];
+};
+
+// Challenge 6: DeepRequired (Bonus)
+// Make all properties required recursively (opposite of DeepPartial)
+type DeepRequired<T> = {
+  [K in keyof T]-?: T[K] extends object ? DeepRequired<T[K]> : T[K];
+};`,
   testCases: [
     {
       input: [],

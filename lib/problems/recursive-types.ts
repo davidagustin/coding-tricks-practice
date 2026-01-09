@@ -125,7 +125,55 @@ const json: Json = {
   nested: { deep: { value: true } },
   items: [1, 2, { mixed: 'content' }],
 };`,
-  solution: `function test() { return true; }`,
+  solution: `// Create a BinaryTree type that can be null or have value and left/right subtrees
+// BinaryTree<number> represents a tree of numbers
+type BinaryTree<T> = {
+  value: T;
+  left: BinaryTree<T> | null;
+  right: BinaryTree<T> | null;
+} | null;
+
+// Create a JSON type that represents any valid JSON value
+// JSON can be: string, number, boolean, null, array of JSON, or object with JSON values
+type Json = 
+  | string 
+  | number 
+  | boolean 
+  | null 
+  | Json[] 
+  | { [key: string]: Json };
+
+// Create a DeepPartial type that makes all properties optional recursively
+// DeepPartial<{ a: { b: string } }> = { a?: { b?: string } }
+type DeepPartial<T> = T extends object
+  ? { [K in keyof T]?: DeepPartial<T[K]> }
+  : T;
+
+// Create a type for a file system structure
+// A FileSystemNode can be a file (with name and size) or a directory (with name and children)
+type FileSystemNode =
+  | {
+      name: string;
+      type: 'file';
+      size: number;
+    }
+  | {
+      name: string;
+      type: 'directory';
+      children: FileSystemNode[];
+    };
+
+// Create a PathOf type that extracts all possible dot-notation paths from an object
+// PathOf<{ a: { b: string } }> = 'a' | 'a.b'
+type PathOf<T> = T extends object
+  ? {
+      [K in keyof T]: K extends string
+        ? T[K] extends object
+          ? K | \`\${K}.\${PathOf<T[K]>}\`
+          : K
+        : never;
+    }[keyof T]
+  : never;`,
   testCases: [
     {
       input: [],
