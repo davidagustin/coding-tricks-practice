@@ -950,12 +950,12 @@ export const ManyTestResults_Dark: Story = {
 // ============================================
 // Syntax Error (Dark)
 // ============================================
-export const SyntaxError_Dark: Story = {
-  ...SyntaxError,
+export const SyntaxErrorDisplay_Dark: Story = {
+  ...SyntaxErrorDisplay,
   name: 'Syntax Error (Dark)',
   decorators: [darkThemeDecorator],
   parameters: {
-    ...SyntaxError.parameters,
+    ...SyntaxErrorDisplay.parameters,
     backgrounds: { default: 'dark' },
     docs: {
       description: {
