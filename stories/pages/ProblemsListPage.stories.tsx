@@ -620,7 +620,7 @@ const meta: Meta<typeof MockProblemsListPage> = {
   },
   decorators: [
     (Story, context) => {
-      const solvedProblems = context.args?.solvedProblems || new Set(['destructuring-patterns', 'optional-chaining']);
+      const solvedProblems = (context.args as { solvedProblems?: Set<string> })?.solvedProblems || new Set(['destructuring-patterns', 'optional-chaining']);
       return (
         <MockProgressProvider solvedProblems={solvedProblems}>
           <Story />
@@ -744,7 +744,7 @@ export const DarkTheme: Story = {
   },
   decorators: [
     (Story, context) => {
-      const solvedProblems = context.args?.solvedProblems || new Set(['destructuring-patterns', 'optional-chaining']);
+      const solvedProblems = (context.args as { solvedProblems?: Set<string> })?.solvedProblems || new Set(['destructuring-patterns', 'optional-chaining']);
       return (
         <div className="dark bg-gray-950 min-h-screen">
           <MockProgressProvider solvedProblems={solvedProblems}>

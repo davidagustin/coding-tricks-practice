@@ -177,7 +177,7 @@ console.log(callCallback({}, 5));`,
       description: 'getFirstItemName returns default for empty array',
     },
     {
-      input: [{ onComplete: (x) => x * 2 }, 5],
+      input: [{ onComplete: (x: number) => x * 2 }, 5],
       expectedOutput: 10,
       description: 'callCallback calls function and returns result',
     },

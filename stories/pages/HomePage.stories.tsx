@@ -312,7 +312,7 @@ const meta: Meta<typeof MockHomePage> = {
   },
   decorators: [
     (Story, context) => {
-      const solvedProblems = context.args?.solvedProblems || new Set<string>();
+      const solvedProblems = (context.args as { solvedProblems?: Set<string> })?.solvedProblems || new Set<string>();
       return (
         <MockProgressProvider solvedProblems={solvedProblems}>
           <Story />
@@ -430,7 +430,7 @@ export const DarkTheme: Story = {
   },
   decorators: [
     (Story, context) => {
-      const solvedProblems = context.args?.solvedProblems || new Set<string>();
+      const solvedProblems = (context.args as { solvedProblems?: Set<string> })?.solvedProblems || new Set<string>();
       return (
         <div className="dark bg-gray-950 min-h-screen">
           <MockProgressProvider solvedProblems={solvedProblems}>

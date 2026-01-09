@@ -243,7 +243,7 @@ console.log(groupByMultiple(employees, 'dept', 'role'));`,
       description: 'groupByFirstLetter groups by uppercase first letter',
     },
     {
-      input: [[1, 2, 3, 4, 5], (n) => n % 2 === 0 ? 'even' : 'odd'],
+      input: [[1, 2, 3, 4, 5]],
       expectedOutput: { odd: [1, 3, 5], even: [2, 4] },
       description: 'groupByPolyfill works like Object.groupBy',
     },

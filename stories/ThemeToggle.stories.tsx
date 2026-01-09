@@ -117,7 +117,7 @@ const meta: Meta<typeof ThemeToggleComponent> = {
   tags: ['autodocs'],
   decorators: [
     (Story, context) => {
-      const initialTheme = context.args.initialTheme || 'light';
+      const initialTheme = (context.args as { initialTheme?: 'light' | 'dark' }).initialTheme || 'light';
       return (
         <MockThemeProvider initialTheme={initialTheme}>
           <Story />
@@ -296,7 +296,7 @@ export const InNavbarContext: Story = {
   },
   decorators: [
     (Story, context) => (
-      <MockThemeProvider initialTheme={context.args.initialTheme || 'light'}>
+      <MockThemeProvider initialTheme={(context.args as { initialTheme?: 'light' | 'dark' }).initialTheme || 'light'}>
         <nav className="flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
           <div className="flex items-center gap-4">
             <div className="text-xl font-bold text-gray-900 dark:text-white">
@@ -364,7 +364,7 @@ export const MobileSize: Story = {
   },
   decorators: [
     (Story, context) => (
-      <MockThemeProvider initialTheme={context.args.initialTheme || 'light'}>
+      <MockThemeProvider initialTheme={(context.args as { initialTheme?: 'light' | 'dark' }).initialTheme || 'light'}>
         <div className="p-4 min-h-[100px] flex items-center justify-center">
           <Story />
         </div>
@@ -417,7 +417,7 @@ export const WithTooltip: Story = {
   },
   decorators: [
     (Story, context) => (
-      <MockThemeProvider initialTheme={context.args.initialTheme || 'light'}>
+      <MockThemeProvider initialTheme={(context.args as { initialTheme?: 'light' | 'dark' }).initialTheme || 'light'}>
         <div className="relative">
           <Story />
           {/* Simulated tooltip since native title tooltips cannot be captured in screenshots */}
@@ -425,7 +425,7 @@ export const WithTooltip: Story = {
             className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-1.5 text-sm bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded-md shadow-lg whitespace-nowrap z-10"
             role="tooltip"
           >
-            Switch to {context.args.initialTheme === 'light' ? 'dark' : 'light'} mode
+            Switch to {(context.args as { initialTheme?: 'light' | 'dark' }).initialTheme === 'light' ? 'dark' : 'light'} mode
             <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-b-gray-900 dark:border-b-gray-100" />
           </div>
         </div>
