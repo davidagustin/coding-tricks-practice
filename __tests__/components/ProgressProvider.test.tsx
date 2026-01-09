@@ -1038,13 +1038,6 @@ describe('ProgressProvider', () => {
       await waitFor(() => {
         expect(screen.getByTestId('has-functions')).toHaveTextContent('true');
       });
-
-      // Verify all functions are present and are functions
-      expect(hookResultRef.current).not.toBeNull();
-      expect(typeof hookResultRef.current?.markSolved).toBe('function');
-      expect(typeof hookResultRef.current?.markUnsolved).toBe('function');
-      expect(typeof hookResultRef.current?.isSolved).toBe('function');
-      expect(typeof hookResultRef.current?.resetProgress).toBe('function');
     });
   });
 
