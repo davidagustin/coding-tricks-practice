@@ -1,30 +1,55 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Production Theme Toggle Test', () => {
-  test('Test dark mode on production after fix', async ({ page }) => {
+  test('Should default to dark mode for new users', async ({ page }) => {
+    // Clear localStorage to simulate new user
     await page.goto('https://coding-tricks-practice.vercel.app/');
     await page.evaluate(() => localStorage.clear());
     await page.reload();
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1000);
 
-    console.log('\n=== STEP 1: Initial State ===');
-    await page.screenshot({ path: 'test-results/prod-fix-1-initial.png', fullPage: true });
-
-    const toggleButton = page.getByRole('button', { name: /switch to/i });
-    await expect(toggleButton).toBeVisible();
-
-    console.log('\n=== STEP 2: Click to toggle to dark ===');
-    await toggleButton.click();
-    await page.waitForTimeout(1000);
-
+    // Check that it defaults to dark mode
     const isDark = await page.evaluate(() => document.documentElement.classList.contains('dark'));
+    const theme = await page.evaluate(() => localStorage.getItem('theme'));
     const bg = await page.evaluate(() => window.getComputedStyle(document.body).backgroundColor);
-    console.log('Dark mode:', isDark, '| Background:', bg);
 
-    await page.screenshot({ path: 'test-results/prod-fix-2-dark.png', fullPage: true });
+    console.log('Default dark mode:', isDark);
+    console.log('localStorage theme:', theme);
+    console.log('Background:', bg);
+
+    await page.screenshot({ path: 'test-results/prod-default-dark.png', fullPage: true });
 
     expect(isDark).toBe(true);
-    console.log('\n=== TEST PASSED ===');
+    expect(theme).toBe('dark');
+  });
+
+  test('Should be able to toggle to light mode', async ({ page }) => {
+    await page.goto('https://coding-tricks-practice.vercel.app/');
+    await page.evaluate(() => localStorage.clear());
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(500);
+
+    // Should start in dark mode
+    let isDark = await page.evaluate(() => document.documentElement.classList.contains('dark'));
+    expect(isDark).toBe(true);
+
+    // Click toggle to switch to light
+    const toggleButton = page.getByRole('button', { name: /switch to light/i });
+    await toggleButton.click();
+    await page.waitForTimeout(500);
+
+    // Should now be light mode
+    isDark = await page.evaluate(() => document.documentElement.classList.contains('dark'));
+    const theme = await page.evaluate(() => localStorage.getItem('theme'));
+
+    console.log('After toggle - dark mode:', isDark);
+    console.log('After toggle - theme:', theme);
+
+    await page.screenshot({ path: 'test-results/prod-toggled-light.png', fullPage: true });
+
+    expect(isDark).toBe(false);
+    expect(theme).toBe('light');
   });
 });
