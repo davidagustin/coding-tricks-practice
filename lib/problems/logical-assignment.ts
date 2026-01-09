@@ -203,7 +203,88 @@ console.log(counter.getCounts());  // { hello: 2, world: 1 }
 
 console.log(simplifyCode({ value: null, items: null, name: '  hello  ' }));
 // { value: 'default', items: [], name: 'hello' }`,
-  solution: `function test() { return true; }`,
+  solution: `// Task 1: Implement a function that sets default values on an options object
+// Use ??= to set defaults only for null/undefined values
+function setDefaults(options) {
+  // Set these defaults using ??=
+  // timeout: 5000
+  // retries: 3
+  // debug: false
+  // name: 'default'
+  options.timeout ??= 5000;
+  options.retries ??= 3;
+  options.debug ??= false;
+  options.name ??= 'default';
+  return options;
+}
+
+// Task 2: Implement lazy initialization using ||=
+// The cache should only be computed once
+function createLazyCache() {
+  const obj = {
+    _cache: null,
+
+    getData() {
+      // Use ||= to initialize _cache only if falsy
+      // When initializing, set it to { computed: true, timestamp: Date.now() }
+      this._cache ||= { computed: true, timestamp: Date.now() };
+      return this._cache;
+    }
+  };
+  return obj;
+}
+
+// Task 3: Implement conditional transformation using &&=
+// Only transform values if they are truthy
+function transformIfPresent(data) {
+  // Use &&= to transform properties only if they exist and are truthy
+  // name: uppercase it (str.toUpperCase())
+  // email: lowercase it (str.toLowerCase())
+  // age: double it (n * 2)
+  // Don't transform if the value is falsy (null, undefined, '', 0, etc.)
+  data.name &&= data.name.toUpperCase();
+  data.email &&= data.email.toLowerCase();
+  data.age &&= data.age * 2;
+  return data;
+}
+
+// Task 4: Implement a counter object using ??=
+function createWordCounter() {
+  const counts = {};
+
+  return {
+    count(word) {
+      // Use ??= to initialize counts[word] to 0 if not exists
+      // Then increment it
+      counts[word] ??= 0;
+      counts[word]++;
+      return counts[word];
+    },
+
+    getCounts() {
+      return { ...counts };
+    }
+  };
+}
+
+// Task 5: Rewrite these if statements using logical assignment
+function simplifyCode(obj) {
+  // Rewrite each of these using logical assignment operators
+
+  // Original: if (obj.value === null || obj.value === undefined) obj.value = 'default';
+  // Use ??=
+  obj.value ??= 'default';
+
+  // Original: if (!obj.items) obj.items = [];
+  // Use ||=
+  obj.items ||= [];
+
+  // Original: if (obj.name) obj.name = obj.name.trim();
+  // Use &&=
+  obj.name &&= obj.name.trim();
+
+  return obj;
+}`,
   testCases: [
     {
       input: [],

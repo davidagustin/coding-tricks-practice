@@ -186,7 +186,104 @@ async function runTests() {
 }
 
 runTests();`,
-  solution: `function test() { return true; }`,
+  solution: `// Note: Top-level await requires ES modules
+// In real code, this would be in a .mjs file or with "type": "module"
+
+// For this exercise, we'll simulate the patterns that top-level await enables
+// by writing functions that demonstrate the concepts
+
+// Task 1: Simulate a module that loads config
+// Write an async function that demonstrates how top-level await
+// would load configuration before exporting
+async function createConfigModule() {
+  // Simulate fetching config (use the mock function below)
+  // Return an object with the loaded config
+
+  // Mock fetch function (pretend this is a real API call)
+  const fetchConfig = () => Promise.resolve({
+    apiUrl: 'https://api.example.com',
+    timeout: 5000,
+    debug: true
+  });
+
+  // Load config and return it
+  const config = await fetchConfig();
+  return config;
+}
+
+// Task 2: Implement a fallback pattern
+// Try to load primary data, fall back to default if it fails
+async function loadWithFallback(primaryLoader, fallbackLoader) {
+  // Try primaryLoader(), if it throws/rejects, use fallbackLoader()
+  // Return the successfully loaded data
+  try {
+    return await primaryLoader();
+  } catch (error) {
+    return await fallbackLoader();
+  }
+}
+
+// Task 3: Implement conditional dynamic import pattern
+// Based on an async condition, return different implementations
+async function loadImplementation(featureChecker) {
+  // Call featureChecker() (returns Promise<boolean>)
+  // If true, return { type: 'modern', features: ['async', 'modules'] }
+  // If false, return { type: 'legacy', features: ['callbacks'] }
+  const supported = await featureChecker();
+  if (supported) {
+    return { type: 'modern', features: ['async', 'modules'] };
+  }
+  return { type: 'legacy', features: ['callbacks'] };
+}
+
+// Task 4: Implement parallel async initialization
+// Load multiple resources in parallel and return when all are ready
+async function initializeResources(loaders) {
+  // loaders is an object like { config: fn, data: fn, user: fn }
+  // Load all in parallel and return object with results
+  // { config: result1, data: result2, user: result3 }
+  const keys = Object.keys(loaders);
+  const promises = keys.map(key => loaders[key]());
+  const results = await Promise.all(promises);
+  
+  const resource = {};
+  keys.forEach((key, index) => {
+    resource[key] = results[index];
+  });
+  
+  return resource;
+}
+
+// Test helpers (mock async operations)
+const mockPrimaryLoader = () => Promise.reject(new Error('Primary failed'));
+const mockFallbackLoader = () => Promise.resolve({ source: 'fallback', data: [1, 2, 3] });
+const mockFeatureCheck = (supported) => () => Promise.resolve(supported);
+const mockLoaders = {
+  config: () => Promise.resolve({ apiUrl: 'https://api.test.com' }),
+  data: () => Promise.resolve([1, 2, 3]),
+  user: () => Promise.resolve({ name: 'John', id: 1 })
+};
+
+// Test
+async function runTests() {
+  const config = await createConfigModule();
+  console.log('Config:', config);
+
+  const data = await loadWithFallback(mockPrimaryLoader, mockFallbackLoader);
+  console.log('Fallback data:', data);
+
+  const modernImpl = await loadImplementation(mockFeatureCheck(true));
+  console.log('Modern:', modernImpl);
+
+  const legacyImpl = await loadImplementation(mockFeatureCheck(false));
+  console.log('Legacy:', legacyImpl);
+
+  const resources = await initializeResources(mockLoaders);
+  console.log('Resources:', resources);
+}
+
+// Helper functions for testing
+const fetchConfig = () => Promise.resolve({ apiUrl: 'https://api.example.com', timeout: 5000, debug: true });`,
   testCases: [
     {
       input: [],

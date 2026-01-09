@@ -162,7 +162,81 @@ const revIter = reverseIterator([1, 2, 3]);
 console.log(revIter.next());  // { value: 3, done: false }
 
 console.log([...fibonacci(21)]);  // [1, 1, 2, 3, 5, 8, 13, 21]`,
-  solution: `function test() { return true; }`,
+  solution: `// Task 1: Create a range function that returns an iterable
+// range(start, end) should be usable with for...of and spread
+function range(start, end) {
+  // Return an iterable object
+  // Hint: Use [Symbol.iterator] method
+  return {
+    [Symbol.iterator]() {
+      let current = start;
+      return {
+        next() {
+          if (current <= end) {
+            return { value: current++, done: false };
+          }
+          return { done: true };
+        }
+      };
+    }
+  };
+}
+
+// Task 2: Create a class that is iterable
+// The Collection class should store items and be iterable
+class Collection {
+  constructor(items = []) {
+    this.items = items;
+  }
+
+  add(item) {
+    this.items.push(item);
+    return this;
+  }
+
+  // Make this class iterable
+  // Implement [Symbol.iterator]() method
+  [Symbol.iterator]() {
+    return this.items[Symbol.iterator]();
+  }
+}
+
+// Task 3: Create an iterator that iterates in reverse
+// reverseIterator(array) returns an iterator (not iterable)
+function reverseIterator(array) {
+  // Return an iterator object with next() method
+  // that iterates through array in reverse order
+  let index = array.length - 1;
+  return {
+    next() {
+      if (index >= 0) {
+        return { value: array[index--], done: false };
+      }
+      return { done: true };
+    }
+  };
+}
+
+// Task 4: Create an iterable that generates Fibonacci numbers up to max
+function fibonacci(max) {
+  // Return an iterable that yields Fibonacci numbers
+  // until the value exceeds max
+  return {
+    [Symbol.iterator]() {
+      let a = 1, b = 1;
+      return {
+        next() {
+          if (a > max) {
+            return { done: true };
+          }
+          const value = a;
+          [a, b] = [b, a + b];
+          return { value, done: false };
+        }
+      };
+    }
+  };
+}`,
   testCases: [
     {
       input: [],

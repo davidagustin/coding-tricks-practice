@@ -144,7 +144,160 @@ function fibonacciWorker() {
 
 // Test (conceptual - actual workers need browser environment)
 console.log('Worker patterns ready for implementation');`,
-  solution: `function test() { return true; }`,
+  solution: `// 1. Create inline worker from function string
+function createInlineWorker(workerFunction) {
+  // Convert function to string and create Blob URL
+  // Return Worker instance
+  const code = \`(\${workerFunction.toString()})();\`;
+  const blob = new Blob([code], { type: 'application/javascript' });
+  const url = URL.createObjectURL(blob);
+  return new Worker(url);
+}
+
+// 2. Wrap worker to return promises for each message
+function createPromiseWorker(worker) {
+  // Wrap worker to return promises for each message
+  let messageId = 0;
+  const pending = new Map();
+  
+  worker.onmessage = (e) => {
+    const { id, result, error } = e.data;
+    const { resolve, reject } = pending.get(id);
+    pending.delete(id);
+    if (error) {
+      reject(new Error(error));
+    } else {
+      resolve(result);
+    }
+  };
+  
+  return {
+    post: (data) => {
+      return new Promise((resolve, reject) => {
+        const id = messageId++;
+        pending.set(id, { resolve, reject });
+        worker.postMessage({ id, data });
+      });
+    },
+    terminate: () => worker.terminate()
+  };
+}
+
+// 3. Worker Pool for parallel task execution
+class WorkerPool {
+  constructor(workerScript, poolSize = navigator.hardwareConcurrency || 4) {
+    // Create pool of workers
+    // Track which workers are busy
+    this.workers = [];
+    this.queue = [];
+    this.available = [];
+    
+    for (let i = 0; i < poolSize; i++) {
+      const worker = new Worker(workerScript);
+      this.workers.push(worker);
+      this.available.push(worker);
+    }
+  }
+
+  async execute(task) {
+    // Get available worker or wait
+    // Send task and return result
+    return new Promise((resolve, reject) => {
+      this.queue.push({ task, resolve, reject });
+      this.processQueue();
+    });
+  }
+  
+  async processQueue() {
+    if (this.queue.length === 0 || this.available.length === 0) return;
+    
+    const { task, resolve, reject } = this.queue.shift();
+    const worker = this.available.shift();
+    
+    worker.onmessage = (e) => {
+      resolve(e.data);
+      this.available.push(worker);
+      this.processQueue();
+    };
+    
+    worker.onerror = (e) => {
+      reject(e);
+      this.available.push(worker);
+      this.processQueue();
+    };
+    
+    worker.postMessage(task);
+  }
+
+  terminate() {
+    // Terminate all workers
+    this.workers.forEach(worker => worker.terminate());
+    this.workers = [];
+    this.available = [];
+  }
+}
+
+// 4. Task Queue with Worker
+class TaskQueue {
+  constructor(worker) {
+    // Queue tasks and process sequentially
+    this.worker = worker;
+    this.queue = [];
+    this.processing = false;
+  }
+
+  enqueue(task) {
+    // Add task to queue, return promise for result
+    return new Promise((resolve, reject) => {
+      this.queue.push({ task, resolve, reject });
+      this.process();
+    });
+  }
+  
+  async process() {
+    if (this.processing || this.queue.length === 0) return;
+    this.processing = true;
+    
+    while (this.queue.length > 0) {
+      const { task, resolve, reject } = this.queue.shift();
+      try {
+        const result = await new Promise((res, rej) => {
+          this.worker.onmessage = (e) => res(e.data);
+          this.worker.onerror = (e) => rej(e);
+          this.worker.postMessage(task);
+        });
+        resolve(result);
+      } catch (error) {
+        reject(error);
+      }
+    }
+    
+    this.processing = false;
+  }
+}
+
+// 5. Transferable objects for large data
+function postWithTransfer(worker, data, transferables) {
+  // Post message with transferable objects for zero-copy transfer
+  worker.postMessage(data, transferables);
+}
+
+// Example worker function for testing
+function fibonacciWorker() {
+  self.onmessage = function(e) {
+    const { n } = e.data;
+    function fib(n) {
+      if (n <= 1) return n;
+      return fib(n - 1) + fib(n - 2);
+    }
+    self.postMessage({ result: fib(n) });
+  };
+}
+
+function fib(n) {
+  if (n <= 1) return n;
+  return fib(n - 1) + fib(n - 2);
+}`,
   testCases: [
     {
       input: [],

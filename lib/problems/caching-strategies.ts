@@ -151,7 +151,153 @@ lru.set('b', 2);
 lru.set('c', 3);
 lru.get('a'); // Access 'a'
 lru.set('d', 4); // Should evict 'b' (least recently used)`,
-  solution: `function test() { return true; }`,
+  solution: `// 1. TTL (Time-To-Live) Cache
+class TTLCache {
+  constructor(ttl) {
+    // Initialize with TTL in milliseconds
+    this.ttl = ttl;
+    this.cache = new Map();
+  }
+
+  set(key, value) {
+    // Store value with expiration timestamp
+    this.cache.set(key, {
+      value,
+      expires: Date.now() + this.ttl
+    });
+  }
+
+  get(key) {
+    // Return value if not expired, null otherwise
+    const entry = this.cache.get(key);
+    if (!entry) return null;
+    if (Date.now() > entry.expires) {
+      this.cache.delete(key);
+      return null;
+    }
+    return entry.value;
+  }
+
+  has(key) {
+    // Check if key exists and is not expired
+    return this.get(key) !== null;
+  }
+
+  delete(key) {
+    // Remove key from cache
+    return this.cache.delete(key);
+  }
+
+  clear() {
+    // Clear all entries
+    this.cache.clear();
+  }
+}
+
+// 2. LRU (Least Recently Used) Cache
+class LRUCache {
+  constructor(maxSize) {
+    // Initialize with max size limit
+    this.maxSize = maxSize;
+    this.cache = new Map();
+  }
+
+  get(key) {
+    // Return value and mark as recently used
+    if (!this.cache.has(key)) return null;
+    const value = this.cache.get(key);
+    this.cache.delete(key);
+    this.cache.set(key, value);
+    return value;
+  }
+
+  set(key, value) {
+    // Add/update value, evict LRU if at capacity
+    if (this.cache.has(key)) {
+      this.cache.delete(key);
+    } else if (this.cache.size >= this.maxSize) {
+      const firstKey = this.cache.keys().next().value;
+      this.cache.delete(firstKey);
+    }
+    this.cache.set(key, value);
+  }
+}
+
+// 3. Stale-While-Revalidate Cache
+class SWRCache {
+  constructor(fetcher, options = {}) {
+    // options: { ttl, staleTime }
+    // fetcher: async function to fetch fresh data
+    this.fetcher = fetcher;
+    this.ttl = options.ttl || 5000;
+    this.staleTime = options.staleTime || 10000;
+    this.cache = new Map();
+  }
+
+  async get(key) {
+    // Return cached data immediately if available
+    // Revalidate in background if stale
+    // Fetch and wait if no cache
+    const entry = this.cache.get(key);
+    const now = Date.now();
+    
+    if (!entry) {
+      const value = await this.fetcher(key);
+      this.cache.set(key, { value, timestamp: now });
+      return value;
+    }
+    
+    const age = now - entry.timestamp;
+    if (age < this.ttl) {
+      return entry.value;
+    }
+    
+    if (age < this.staleTime) {
+      this.fetcher(key).then(value => {
+        this.cache.set(key, { value, timestamp: Date.now() });
+      });
+      return entry.value;
+    }
+    
+    const value = await this.fetcher(key);
+    this.cache.set(key, { value, timestamp: now });
+    return value;
+  }
+}
+
+// 4. Memoize with cache options
+function memoizeWithCache(fn, options = {}) {
+  // options: { maxSize, ttl, keyGenerator }
+  // Return memoized function with configurable cache
+  const cache = options.ttl ? new TTLCache(options.ttl) : new Map();
+  const keyGenerator = options.keyGenerator || ((...args) => JSON.stringify(args));
+  const maxSize = options.maxSize;
+  
+  return function(...args) {
+    const key = keyGenerator(...args);
+    
+    if (cache instanceof TTLCache) {
+      const cached = cache.get(key);
+      if (cached !== null) return cached;
+    } else {
+      if (cache.has(key)) return cache.get(key);
+    }
+    
+    const result = fn(...args);
+    
+    if (cache instanceof TTLCache) {
+      cache.set(key, result);
+    } else {
+      if (maxSize && cache.size >= maxSize) {
+        const firstKey = cache.keys().next().value;
+        cache.delete(firstKey);
+      }
+      cache.set(key, result);
+    }
+    
+    return result;
+  };
+}`,
   testCases: [
     {
       input: [],
