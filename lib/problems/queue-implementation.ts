@@ -171,7 +171,83 @@ function queueSize(values: number[]): number {
   for (const v of values) queue.enqueue(v);
   return queue.size();
 }`,
-  solution: `function test() { return true; }`,
+  solution: `class Queue<T> {
+  private items: { [key: number]: T };
+  private headIndex: number;
+  private tailIndex: number;
+
+  constructor() {
+    // Initialize items object and head/tail indices
+    this.items = {};
+    this.headIndex = 0;
+    this.tailIndex = 0;
+  }
+
+  enqueue(element: T): void {
+    // Add element to the back of the queue
+    // Hint: Add at tailIndex, then increment tailIndex
+    this.items[this.tailIndex] = element;
+    this.tailIndex++;
+  }
+
+  dequeue(): T | undefined {
+    // Remove and return the front element
+    // Hint: Get item at headIndex, delete it, increment headIndex
+    // Return undefined if queue is empty
+    if (this.isEmpty()) {
+      return undefined;
+    }
+    const item = this.items[this.headIndex];
+    delete this.items[this.headIndex];
+    this.headIndex++;
+    return item;
+  }
+
+  front(): T | undefined {
+    // Return the front element without removing it
+    // Return undefined if queue is empty
+    if (this.isEmpty()) {
+      return undefined;
+    }
+    return this.items[this.headIndex];
+  }
+
+  isEmpty(): boolean {
+    // Return true if queue has no elements
+    // Hint: Compare headIndex with tailIndex
+    return this.headIndex === this.tailIndex;
+  }
+
+  size(): number {
+    // Return the number of elements in the queue
+    return this.tailIndex - this.headIndex;
+  }
+}
+
+// Helper functions for testing
+function queueFront(values: number[]): number | undefined {
+  const queue = new Queue<number>();
+  for (const v of values) queue.enqueue(v);
+  return queue.front();
+}
+
+function queueDequeue(values: number[]): number | undefined {
+  const queue = new Queue<number>();
+  for (const v of values) queue.enqueue(v);
+  return queue.dequeue();
+}
+
+function queueIsEmpty(values: number[]): boolean {
+  const queue = new Queue<number>();
+  for (const v of values) queue.enqueue(v);
+  return queue.isEmpty();
+}
+
+function queueSize(values: number[]): number {
+  const queue = new Queue<number>();
+  for (const v of values) queue.enqueue(v);
+  return queue.size();
+}`,
   testCases: [
     {
       input: [],

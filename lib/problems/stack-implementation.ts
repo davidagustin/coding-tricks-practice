@@ -164,7 +164,66 @@ function stackIsEmpty(values: number[]): boolean {
   for (const v of values) stack.push(v);
   return stack.isEmpty();
 }`,
-  solution: `function test() { return true; }`,
+  solution: `class Stack<T> {
+  private items: T[];
+
+  constructor() {
+    // Initialize the items array
+    this.items = [];
+  }
+
+  push(element: T): void {
+    // Add element to the top of the stack
+    this.items.push(element);
+  }
+
+  pop(): T | undefined {
+    // Remove and return the top element
+    // Return undefined if stack is empty
+    return this.items.pop();
+  }
+
+  peek(): T | undefined {
+    // Return the top element without removing it
+    // Return undefined if stack is empty
+    return this.items.length > 0 ? this.items[this.items.length - 1] : undefined;
+  }
+
+  isEmpty(): boolean {
+    // Return true if stack has no elements
+    return this.items.length === 0;
+  }
+
+  size(): number {
+    // Return the number of elements in the stack
+    return this.items.length;
+  }
+}
+
+// Helper functions for testing
+function stackPeek(values: number[]): number | undefined {
+  const stack = new Stack<number>();
+  for (const v of values) stack.push(v);
+  return stack.peek();
+}
+
+function stackPop(values: number[]): number | undefined {
+  const stack = new Stack<number>();
+  for (const v of values) stack.push(v);
+  return stack.pop();
+}
+
+function stackSize(values: number[]): number {
+  const stack = new Stack<number>();
+  for (const v of values) stack.push(v);
+  return stack.size();
+}
+
+function stackIsEmpty(values: number[]): boolean {
+  const stack = new Stack<number>();
+  for (const v of values) stack.push(v);
+  return stack.isEmpty();
+}`,
   testCases: [
     {
       input: [],

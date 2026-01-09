@@ -227,7 +227,146 @@ function htDelete(keys: string[], deleteKey: string): string[] {
   ht.delete(deleteKey);
   return ht.keys().sort();
 }`,
-  solution: `function test() { return true; }`,
+  solution: `class HashTable<K, V> {
+  private buckets: Array<Array<[K, V]>>;
+  private size: number;
+  private count: number;
+
+  constructor(size: number = 53) {
+    // Initialize buckets array with given size
+    // Each bucket will hold an array of [key, value] pairs
+    this.size = size;
+    this.count = 0;
+    this.buckets = Array(size).fill(null).map(() => []);
+  }
+
+  private hash(key: K): number {
+    // Implement a hash function
+    // Convert key to string, then compute hash
+    // Return index within bounds of buckets array
+    // Hint: Sum char codes and use modulo
+    const str = String(key);
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = (hash + str.charCodeAt(i)) % this.size;
+    }
+    return hash;
+  }
+
+  set(key: K, value: V): void {
+    // Add or update a key-value pair
+    // 1. Compute hash to find bucket index
+    // 2. Check if key already exists in bucket - update if so
+    // 3. If not, add new [key, value] pair to bucket
+    const index = this.hash(key);
+    const bucket = this.buckets[index];
+    const existing = bucket.find(([k]) => k === key);
+    
+    if (existing) {
+      existing[1] = value;
+    } else {
+      bucket.push([key, value]);
+      this.count++;
+    }
+  }
+
+  get(key: K): V | undefined {
+    // Retrieve value for given key
+    // 1. Compute hash to find bucket
+    // 2. Search bucket for matching key
+    // 3. Return value if found, undefined otherwise
+    const index = this.hash(key);
+    const bucket = this.buckets[index];
+    const pair = bucket.find(([k]) => k === key);
+    return pair ? pair[1] : undefined;
+  }
+
+  delete(key: K): boolean {
+    // Remove key-value pair
+    // Return true if deleted, false if key not found
+    const index = this.hash(key);
+    const bucket = this.buckets[index];
+    const pairIndex = bucket.findIndex(([k]) => k === key);
+    
+    if (pairIndex !== -1) {
+      bucket.splice(pairIndex, 1);
+      this.count--;
+      return true;
+    }
+    return false;
+  }
+
+  has(key: K): boolean {
+    // Check if key exists
+    return this.get(key) !== undefined;
+  }
+
+  keys(): K[] {
+    // Return array of all keys
+    const result: K[] = [];
+    for (const bucket of this.buckets) {
+      for (const [key] of bucket) {
+        result.push(key);
+      }
+    }
+    return result;
+  }
+
+  values(): V[] {
+    // Return array of all values
+    const result: V[] = [];
+    for (const bucket of this.buckets) {
+      for (const [, value] of bucket) {
+        result.push(value);
+      }
+    }
+    return result;
+  }
+
+  entries(): Array<[K, V]> {
+    // Return array of all [key, value] pairs
+    const result: Array<[K, V]> = [];
+    for (const bucket of this.buckets) {
+      result.push(...bucket);
+    }
+    return result;
+  }
+
+  getSize(): number {
+    return this.count;
+  }
+}
+
+// Helper functions for testing
+function htGet(key: string, value: string): string | undefined {
+  const ht = new HashTable<string, string>();
+  ht.set(key, value);
+  return ht.get(key);
+}
+
+function htHas(keys: string[], checkKey: string): boolean {
+  const ht = new HashTable<string, number>();
+  for (let i = 0; i < keys.length; i++) {
+    ht.set(keys[i], i);
+  }
+  return ht.has(checkKey);
+}
+
+function htUpdate(key: string, value1: number, value2: number): number | undefined {
+  const ht = new HashTable<string, number>();
+  ht.set(key, value1);
+  ht.set(key, value2);
+  return ht.get(key);
+}
+
+function htDelete(keys: string[], deleteKey: string): string[] {
+  const ht = new HashTable<string, number>();
+  for (let i = 0; i < keys.length; i++) {
+    ht.set(keys[i], i);
+  }
+  ht.delete(deleteKey);
+  return ht.keys().sort();
+}`,
   testCases: [
     {
       input: [],

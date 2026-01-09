@@ -192,7 +192,157 @@ function listInsertAfter(values: number[], existingValue: number, newValue: numb
   list.insertAfter(existingValue, newValue);
   return list.toArray();
 }`,
-  solution: `function test() { return true; }`,
+  solution: `class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null;
+
+  constructor(value: T) {
+    // Initialize value and next
+    this.value = value;
+    this.next = null;
+  }
+}
+
+class LinkedList<T> {
+  private head: ListNode<T> | null;
+  private tail: ListNode<T> | null;
+  private length: number;
+
+  constructor() {
+    // Initialize head, tail, and length
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+
+  append(value: T): void {
+    // Add a new node to the end of the list
+    // Consider: What if the list is empty?
+    const newNode = new ListNode(value);
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail!.next = newNode;
+      this.tail = newNode;
+    }
+    this.length++;
+  }
+
+  prepend(value: T): void {
+    // Add a new node to the beginning of the list
+    // Consider: What if the list is empty?
+    const newNode = new ListNode(value);
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      newNode.next = this.head;
+      this.head = newNode;
+    }
+    this.length++;
+  }
+
+  delete(value: T): boolean {
+    // Delete the first node with the given value
+    // Return true if deleted, false if not found
+    // Consider: Deleting head, tail, or middle node
+    if (!this.head) return false;
+    
+    if (this.head.value === value) {
+      this.head = this.head.next;
+      if (!this.head) this.tail = null;
+      this.length--;
+      return true;
+    }
+    
+    let current = this.head;
+    while (current.next) {
+      if (current.next.value === value) {
+        current.next = current.next.next;
+        if (!current.next) this.tail = current;
+        this.length--;
+        return true;
+      }
+      current = current.next;
+    }
+    
+    return false;
+  }
+
+  find(value: T): ListNode<T> | null {
+    // Find and return the node with the given value
+    // Return null if not found
+    let current = this.head;
+    while (current) {
+      if (current.value === value) {
+        return current;
+      }
+      current = current.next;
+    }
+    return null;
+  }
+
+  insertAfter(existingValue: T, newValue: T): boolean {
+    // Insert a new node after the node with existingValue
+    // Return true if inserted, false if existingValue not found
+    const existing = this.find(existingValue);
+    if (!existing) return false;
+    
+    const newNode = new ListNode(newValue);
+    newNode.next = existing.next;
+    existing.next = newNode;
+    
+    if (existing === this.tail) {
+      this.tail = newNode;
+    }
+    
+    this.length++;
+    return true;
+  }
+
+  toArray(): T[] {
+    // Convert the linked list to an array
+    const result: T[] = [];
+    let current = this.head;
+    while (current) {
+      result.push(current.value);
+      current = current.next;
+    }
+    return result;
+  }
+
+  getLength(): number {
+    return this.length;
+  }
+}
+
+// Helper functions for testing
+function listAppend(values: number[]): number[] {
+  const list = new LinkedList<number>();
+  for (const v of values) list.append(v);
+  return list.toArray();
+}
+
+function listPrepend(values: number[]): number[] {
+  const list = new LinkedList<number>();
+  for (const v of values) list.prepend(v);
+  return list.toArray();
+}
+
+function listDelete(values: number[], deleteValue: number): number[] {
+  const list = new LinkedList<number>();
+  for (const v of values) list.append(v);
+  list.delete(deleteValue);
+  return list.toArray();
+}
+
+function listInsertAfter(values: number[], existingValue: number, newValue: number): number[] {
+  const list = new LinkedList<number>();
+  for (const v of values) list.append(v);
+  list.insertAfter(existingValue, newValue);
+  return list.toArray();
+}`,
   testCases: [
     {
       input: [],
