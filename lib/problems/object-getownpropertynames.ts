@@ -155,7 +155,79 @@ console.log(inspectObject(testObj));
 
 // Array example (length is non-enumerable)
 console.log(getNonEnumerableProps([1, 2, 3]));`,
-  solution: `function test() { return true; }`,
+  solution: `// Get ALL own properties of an object (strings + symbols)
+function getAllOwnProperties(obj) {
+  // Combine getOwnPropertyNames and getOwnPropertySymbols
+  // Or use Reflect.ownKeys() as a shortcut
+  return Reflect.ownKeys(obj);
+}
+
+// Get only non-enumerable property names
+function getNonEnumerableProps(obj) {
+  // Get all property names, then filter out enumerable ones
+  // Hint: Use Object.getOwnPropertyDescriptor to check enumerable
+  const allProps = Object.getOwnPropertyNames(obj);
+  return allProps.filter(prop => {
+    const descriptor = Object.getOwnPropertyDescriptor(obj, prop);
+    return descriptor && !descriptor.enumerable;
+  });
+}
+
+// Clone an object including non-enumerable properties
+function deepCloneWithNonEnumerable(obj) {
+  // Create a new object with all properties preserved
+  // Including non-enumerable properties with their descriptors
+  const cloned = {};
+  const allKeys = Reflect.ownKeys(obj);
+  
+  for (const key of allKeys) {
+    const descriptor = Object.getOwnPropertyDescriptor(obj, key);
+    if (descriptor) {
+      Object.defineProperty(cloned, key, descriptor);
+    }
+  }
+  
+  return cloned;
+}
+
+// Find all Symbol properties on an object and its prototype chain
+function getAllSymbols(obj) {
+  // Walk up the prototype chain and collect all Symbol properties
+  const symbols = [];
+  let current = obj;
+  
+  while (current !== null) {
+    const ownSymbols = Object.getOwnPropertySymbols(current);
+    symbols.push(...ownSymbols);
+    current = Object.getPrototypeOf(current);
+  }
+  
+  return symbols;
+}
+
+// Create an object inspector that categorizes properties
+function inspectObject(obj) {
+  // Return: {
+  //   enumerable: string[],
+  //   nonEnumerable: string[],
+  //   symbols: symbol[]
+  // }
+  const enumerable = [];
+  const nonEnumerable = [];
+  const symbols = Object.getOwnPropertySymbols(obj);
+  
+  const allProps = Object.getOwnPropertyNames(obj);
+  for (const prop of allProps) {
+    const descriptor = Object.getOwnPropertyDescriptor(obj, prop);
+    if (descriptor && descriptor.enumerable) {
+      enumerable.push(prop);
+    } else {
+      nonEnumerable.push(prop);
+    }
+  }
+  
+  return { enumerable, nonEnumerable, symbols };
+}`,
   testCases: [
     {
       input: [],

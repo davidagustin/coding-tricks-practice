@@ -101,7 +101,21 @@ console.log(pipeline(2)); // 2 → 3 → 6 → 36
 
 const composed = compose(square, double, addOne);
 console.log(composed(2)); // 2 → 3 → 6 → 36`,
-  solution: `function test() { return true; }`,
+  solution: `// Implement pipe - left to right function composition
+// pipe(f, g, h)(x) = h(g(f(x)))
+function pipe(...fns) {
+  return function(x) {
+    return fns.reduce((acc, fn) => fn(acc), x);
+  };
+}
+
+// Implement compose - right to left function composition
+// compose(f, g, h)(x) = f(g(h(x)))
+function compose(...fns) {
+  return function(x) {
+    return fns.reduceRight((acc, fn) => fn(acc), x);
+  };
+}`,
   testCases: [
     {
       input: [],

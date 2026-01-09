@@ -156,7 +156,75 @@ console.log('Original after shallow mod:', original.address.city); // Still 'NYC
 
 deep.address.city = 'Chicago';
 console.log('Original after deep mod:', original.address.city); // Should be unchanged`,
-  solution: `function test() { return true; }`,
+  solution: `// Shallow clone an object using Object.assign
+function shallowCloneAssign(obj) {
+  // Use Object.assign to create a shallow copy
+  return Object.assign({}, obj);
+}
+
+// Shallow clone using spread operator
+function shallowCloneSpread(obj) {
+  // Use spread operator
+  return { ...obj };
+}
+
+// Deep clone using structuredClone
+function deepCloneStructured(obj) {
+  // Use the modern structuredClone API
+  return structuredClone(obj);
+}
+
+// Deep clone using JSON (with limitations)
+function deepCloneJSON(obj) {
+  // Use JSON.parse(JSON.stringify())
+  // Note: This loses functions, undefined, symbols, dates become strings
+  return JSON.parse(JSON.stringify(obj));
+}
+
+// Implement a recursive deep clone function
+function deepCloneRecursive(obj) {
+  // Handle: null, primitives, arrays, objects, dates
+  // Recursively clone nested structures
+  if (obj === null || typeof obj !== 'object') {
+    return obj;
+  }
+  
+  if (obj instanceof Date) {
+    return new Date(obj.getTime());
+  }
+  
+  if (Array.isArray(obj)) {
+    return obj.map(item => deepCloneRecursive(item));
+  }
+  
+  const cloned = {};
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      cloned[key] = deepCloneRecursive(obj[key]);
+    }
+  }
+  return cloned;
+}
+
+// Merge objects deeply (not just shallow merge)
+function deepMerge(target, source) {
+  // Recursively merge source into target
+  // Create new objects, don't mutate target
+  const result = { ...target };
+  
+  for (const key in source) {
+    if (source.hasOwnProperty(key)) {
+      if (typeof source[key] === 'object' && source[key] !== null && !Array.isArray(source[key]) &&
+          typeof target[key] === 'object' && target[key] !== null && !Array.isArray(target[key])) {
+        result[key] = deepMerge(target[key], source[key]);
+      } else {
+        result[key] = source[key];
+      }
+    }
+  }
+  
+  return result;
+}`,
   testCases: [
     {
       input: [],

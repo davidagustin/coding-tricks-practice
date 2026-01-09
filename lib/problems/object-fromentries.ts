@@ -122,7 +122,33 @@ console.log(mapToObject(myMap));
 console.log(parseQueryString('?page=1&sort=name&order=asc'));
 
 console.log(zipToObject(['x', 'y', 'z'], [10, 20, 30]));`,
-  solution: `function test() { return true; }`,
+  solution: `// Convert array of [key, value] pairs to an object
+function arrayToObject(pairs) {
+  // Use Object.fromEntries()
+  return Object.fromEntries(pairs);
+}
+
+// Convert a Map to an object
+function mapToObject(map) {
+  // Maps are iterable, so Object.fromEntries works directly
+  return Object.fromEntries(map);
+}
+
+// Parse URL search params to an object
+function parseQueryString(queryString) {
+  // Use URLSearchParams and Object.fromEntries
+  // Example: '?name=John&age=30' -> { name: 'John', age: '30' }
+  const params = new URLSearchParams(queryString);
+  return Object.fromEntries(params);
+}
+
+// Create an object from two arrays (keys and values)
+function zipToObject(keys, values) {
+  // Combine keys and values arrays into an object
+  // Example: ['a', 'b'], [1, 2] -> { a: 1, b: 2 }
+  const pairs = keys.map((key, index) => [key, values[index]]);
+  return Object.fromEntries(pairs);
+}`,
   testCases: [
     {
       input: [],

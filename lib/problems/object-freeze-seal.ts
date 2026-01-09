@@ -114,7 +114,41 @@ sealed.x = 2; // Should work
 
 const deep = deepFreeze({ a: { b: { c: 1 } } });
 // deep.a.b.c = 2; // Should fail`,
-  solution: `function test() { return true; }`,
+  solution: `// Create an immutable object using Object.freeze
+function createImmutableObject(obj) {
+  // Use Object.freeze
+  return Object.freeze(obj);
+}
+
+// Create a sealed object using Object.seal
+function createSealedObject(obj) {
+  // Use Object.seal
+  return Object.seal(obj);
+}
+
+// Check if object is frozen
+function isFrozen(obj) {
+  // Use Object.isFrozen
+  return Object.isFrozen(obj);
+}
+
+// Deep freeze nested objects
+function deepFreeze(obj) {
+  // Freeze object and recursively freeze all properties
+  // Return the frozen object
+  Object.freeze(obj);
+  
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      const value = obj[key];
+      if (typeof value === 'object' && value !== null) {
+        deepFreeze(value);
+      }
+    }
+  }
+  
+  return obj;
+}`,
   testCases: [
     {
       input: [],

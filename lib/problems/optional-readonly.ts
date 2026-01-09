@@ -108,7 +108,33 @@ function createUser(id: string, name: string, email?: string, age?: number): Use
 const user = createUser('123', 'Alice');
 // user.id = '456'; // Should cause error (readonly)
 console.log(user);`,
-  solution: `function test() { return true; }`,
+  solution: `// Use optional and readonly modifiers
+// 1. Create an interface with readonly and optional properties
+// 2. Create a function that handles optional properties
+
+interface User {
+  // id should be readonly
+  // name is required
+  // email should be optional
+  // age should be optional
+  readonly id: string;
+  name: string;
+  email?: string;
+  age?: number;
+}
+
+function createUser(id: string, name: string, email?: string, age?: number): User {
+  // Return User with provided values
+  // Only include email and age if they are provided
+  const user: User = { id, name };
+  if (email !== undefined) {
+    user.email = email;
+  }
+  if (age !== undefined) {
+    user.age = age;
+  }
+  return user;
+}`,
   testCases: [
     {
       input: [],

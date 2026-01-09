@@ -137,7 +137,57 @@ console.log(mergeDefaults({ a: 1 }, { a: 100, b: 2, c: 3 }));
 
 console.log(hasAllProperties({ x: 1, y: 2 }, ['x', 'y'])); // true
 console.log(hasAllProperties({ x: 1 }, ['x', 'y'])); // false`,
-  solution: `function test() { return true; }`,
+  solution: `// Check if object has own property (not inherited)
+function hasProperty(obj, prop) {
+  // Use Object.hasOwn() - modern replacement for hasOwnProperty
+  // Works even with null prototype objects
+  return Object.hasOwn(obj, prop);
+}
+
+// Get all own properties of an object
+function getOwnProps(obj) {
+  // Return an array of own property names
+  // Hint: You can also use Object.keys() which only returns own enumerable properties
+  return Object.keys(obj);
+}
+
+// Safely merge defaults only for missing properties
+function mergeDefaults(obj, defaults) {
+  // Create a new object with properties from defaults
+  // only if they don't exist in obj
+  // Use Object.hasOwn() to check
+  const result = { ...obj };
+  for (const key in defaults) {
+    if (!Object.hasOwn(result, key)) {
+      result[key] = defaults[key];
+    }
+  }
+  return result;
+}
+
+// Check if object has ALL specified properties
+function hasAllProperties(obj, props) {
+  // Return true if obj has all properties in the props array as own properties
+  return props.every(prop => Object.hasOwn(obj, prop));
+}
+
+// Count own properties vs inherited properties
+function countProperties(obj) {
+  // Return { own: number, inherited: number }
+  // Use Object.hasOwn to distinguish own from inherited
+  let own = 0;
+  let inherited = 0;
+  
+  for (const key in obj) {
+    if (Object.hasOwn(obj, key)) {
+      own++;
+    } else {
+      inherited++;
+    }
+  }
+  
+  return { own, inherited };
+}`,
   testCases: [
     {
       input: [],
