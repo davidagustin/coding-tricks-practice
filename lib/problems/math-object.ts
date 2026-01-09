@@ -154,7 +154,45 @@ console.log(clampValue(15, 0, 10));
 console.log(getRandomInt(1, 6));
 console.log(roundToDecimal(3.14159, 2));
 console.log(calculateDistance(0, 0, 3, 4));`,
-  solution: `function test() { return true; }`,
+  solution: `function calculatePages(totalItems, itemsPerPage) {
+  // Calculate the number of pages needed
+  // calculatePages(25, 10) → 3
+  // calculatePages(30, 10) → 3
+  // calculatePages(0, 10) → 0
+  return Math.ceil(totalItems / itemsPerPage);
+}
+
+function clampValue(value, min, max) {
+  // Clamp a value between min and max
+  // clampValue(5, 0, 10) → 5
+  // clampValue(-5, 0, 10) → 0
+  // clampValue(15, 0, 10) → 10
+  return Math.min(Math.max(value, min), max);
+}
+
+function getRandomInt(min, max) {
+  // Return a random integer between min (inclusive) and max (inclusive)
+  // getRandomInt(1, 6) → random number 1-6 (like a die roll)
+  // Note: For testing, we'll verify the result is in range
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function roundToDecimal(num, decimalPlaces) {
+  // Round a number to specified decimal places
+  // roundToDecimal(3.14159, 2) → 3.14
+  // roundToDecimal(2.555, 2) → 2.56
+  // roundToDecimal(10, 2) → 10
+  const factor = Math.pow(10, decimalPlaces);
+  return Math.round(num * factor) / factor;
+}
+
+function calculateDistance(x1, y1, x2, y2) {
+  // Calculate the Euclidean distance between two points
+  // calculateDistance(0, 0, 3, 4) → 5
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  return Math.sqrt(dx * dx + dy * dy);
+}`,
   testCases: [
     {
       input: [],

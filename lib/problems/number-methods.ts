@@ -136,7 +136,45 @@ console.log(parseUserInput('42.5kg'));
 console.log(hexToDecimal('FF'));
 console.log(formatSignificantDigits(123.456, 4));
 console.log(decimalToHex(255));`,
-  solution: `function test() { return true; }`,
+  solution: `function formatPrice(price) {
+  // Format price to 2 decimal places with dollar sign
+  // formatPrice(19.9) → '$19.90'
+  return '$' + price.toFixed(2);
+}
+
+function parseUserInput(input) {
+  // Parse a user input string that may contain units
+  // Return the numeric value or NaN if invalid
+  // parseUserInput('42.5kg') → 42.5
+  // parseUserInput('$99.99') → 99.99
+  // parseUserInput('abc') → NaN
+  const match = input.match(/[\\d.]+/);
+  return match ? parseFloat(match[0]) : NaN;
+}
+
+function hexToDecimal(hexString) {
+  // Convert a hexadecimal string to a decimal number
+  // hexToDecimal('FF') → 255
+  // hexToDecimal('10') → 16
+  // hexToDecimal('A5') → 165
+  return parseInt(hexString, 16);
+}
+
+function formatSignificantDigits(num, digits) {
+  // Format a number to the specified significant digits
+  // formatSignificantDigits(123.456, 4) → '123.5'
+  // formatSignificantDigits(0.001234, 2) → '0.0012'
+  // formatSignificantDigits(9876, 2) → '9900'
+  return num.toPrecision(digits);
+}
+
+function decimalToHex(decimal) {
+  // Convert a decimal number to a hexadecimal string (uppercase)
+  // decimalToHex(255) → 'FF'
+  // decimalToHex(16) → '10'
+  // decimalToHex(165) → 'A5'
+  return decimal.toString(16).toUpperCase();
+}`,
   testCases: [
     {
       input: [],

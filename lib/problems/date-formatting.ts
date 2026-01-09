@@ -162,51 +162,73 @@ console.log(formatTime(testDate, 'en-US', false));
 console.log(formatTime(testDate, 'en-US', true));
 console.log(formatRelativeTime(-1, 'day', 'en-US'));
 console.log(getMonthNames('en-US', 'short'));`,
-  solution: `// Locale-independent helper: convert date to ISO string (always UTC)
-function formatDateUTC(date) {
-  return new Date(date).toISOString();
+  solution: `// Format a date for display in different locales
+function formatDateForLocale(date, locale) {
+  // Example: formatDateForLocale(new Date(2024, 0, 15), 'en-US') => "1/15/2024"
+  // Example: formatDateForLocale(new Date(2024, 0, 15), 'en-GB') => "15/01/2024"
+  const formatter = new Intl.DateTimeFormat(locale);
+  return formatter.format(date);
 }
 
-// Locale-independent helper: extract UTC date parts
-function getDateParts(isoString) {
-  const d = new Date(isoString);
-  return {
-    year: d.getUTCFullYear(),
-    month: d.getUTCMonth() + 1,
-    day: d.getUTCDate()
-  };
+// Format a date with full details (weekday, month name, day, year)
+function formatFullDate(date, locale) {
+  // Example: formatFullDate(new Date(2024, 0, 15), 'en-US')
+  // => "Monday, January 15, 2024"
+  const formatter = new Intl.DateTimeFormat(locale, { dateStyle: 'full' });
+  return formatter.format(date);
 }
 
-// Locale-independent helper: extract UTC time parts
-function getTimeParts(isoString) {
-  const d = new Date(isoString);
-  return {
-    hours: d.getUTCHours(),
-    minutes: d.getUTCMinutes(),
-    seconds: d.getUTCSeconds()
-  };
+// Format time only (hours, minutes, seconds with AM/PM or 24-hour)
+function formatTime(date, locale, use24Hour = false) {
+  // Example: formatTime(new Date(2024, 0, 15, 14, 30, 0), 'en-US', false)
+  // => "2:30:00 PM"
+  // Example: formatTime(new Date(2024, 0, 15, 14, 30, 0), 'en-US', true)
+  // => "14:30:00"
+  const formatter = new Intl.DateTimeFormat(locale, {
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: !use24Hour
+  });
+  return formatter.format(date);
 }
 
-// Locale-independent helper: format date as YYYY-MM-DD
-function formatDateISO(date) {
-  const d = new Date(date);
-  const year = d.getUTCFullYear();
-  const month = String(d.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(d.getUTCDate()).padStart(2, '0');
-  return \`\${year}-\${month}-\${day}\`;
-}
-
-// Locale-independent helper: format time as HH:MM:SS
-function formatTimeISO(date) {
-  const d = new Date(date);
-  const hours = String(d.getUTCHours()).padStart(2, '0');
-  const minutes = String(d.getUTCMinutes()).padStart(2, '0');
-  const seconds = String(d.getUTCSeconds()).padStart(2, '0');
-  return \`\${hours}:\${minutes}:\${seconds}\`;
-}
-
+// Format a relative date/time (e.g., "in 2 days", "3 months ago")
+// Use Intl.RelativeTimeFormat
 function formatRelativeTime(value, unit, locale) {
-  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'always' });
+  // Example: formatRelativeTime(-1, 'day', 'en-US') => "1 day ago"
+  // Example: formatRelativeTime(2, 'month', 'en-US') => "in 2 months"
+  // unit can be: 'second', 'minute', 'hour', 'day', 'week', 'month', 'year'
+  const rtf = new Intl.RelativeTimeFormat(locale);
+  return rtf.format(value, unit);
+}
+
+// Get month names in a specific locale
+function getMonthNames(locale, style = 'long') {
+  // Example: getMonthNames('en-US', 'long')
+  // => ['January', 'February', ..., 'December']
+  // Example: getMonthNames('en-US', 'short')
+  // => ['Jan', 'Feb', ..., 'Dec']
+  const formatter = new Intl.DateTimeFormat(locale, { month: style });
+  const months = [];
+  for (let i = 0; i < 12; i++) {
+    const date = new Date(2024, i, 1);
+    months.push(formatter.formatToParts(date).find(part => part.type === 'month').value);
+  }
+  return months;
+}
+
+// Format a date range (from date to date)
+function formatDateRange(startDate, endDate, locale) {
+  // Example: formatDateRange(new Date(2024, 0, 15), new Date(2024, 0, 20), 'en-US')
+  // => "1/15/2024 – 1/20/2024"
+  // Use formatRange if available, otherwise format both and join
+  const formatter = new Intl.DateTimeFormat(locale);
+  if (formatter.formatRange) {
+    return formatter.formatRange(startDate, endDate);
+  }
+  return \`\${formatter.format(startDate)} – \${formatter.format(endDate)}\`;
+}`,
   return rtf.format(value, unit);
 }
 

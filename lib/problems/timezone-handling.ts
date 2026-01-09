@@ -163,49 +163,108 @@ console.log(formatInTimezone(testDate, 'America/New_York'));
 console.log(formatInTimezone(testDate, 'Asia/Tokyo'));
 console.log(parseISO('2024-01-15T14:30:00-05:00'));
 console.log(isDST(new Date('2024-07-15'), 'America/New_York'));`,
-  solution: `// Locale-independent helper: convert date to ISO string (always UTC)
-function toISOString(date) {
-  return new Date(date).toISOString();
+  solution: `// Convert a local date to UTC (return Date object in UTC)
+function toUTC(date) {
+  // Example: If local time is Jan 15, 2024 10:00 AM EST (UTC-5)
+  // Return the equivalent UTC time: Jan 15, 2024 3:00 PM UTC
+  const utcTime = date.getTime() + (date.getTimezoneOffset() * 60000);
+  return new Date(utcTime);
 }
 
-// Locale-independent helper: parse ISO string and return timestamp
-function parseISOToTimestamp(isoString) {
-  return new Date(isoString).getTime();
+// Format a date in a specific timezone using Intl.DateTimeFormat
+function formatInTimezone(date, timezone, locale = 'en-US') {
+  // Example: formatInTimezone(date, 'America/New_York', 'en-US')
+  // Returns the date/time string in the specified timezone
+  // Supported timezones: 'UTC', 'America/New_York', 'Europe/London', 'Asia/Tokyo', etc.
+  const formatter = new Intl.DateTimeFormat(locale, {
+    timeZone: timezone,
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric'
+  });
+  return formatter.format(date);
 }
 
-// Locale-independent helper: get UTC date parts from ISO string
-function getUTCDateParts(isoString) {
-  const d = new Date(isoString);
+// Parse an ISO 8601 date string and return a Date object
+function parseISO(isoString) {
+  // Example: parseISO('2024-01-15T14:30:00Z') => Date object
+  // Example: parseISO('2024-01-15T14:30:00-05:00') => Date object
+  return new Date(isoString);
+}
+
+// Get the timezone offset for a specific timezone at a given date
+// Returns offset in minutes (like getTimezoneOffset but for any timezone)
+function getTimezoneOffsetForZone(date, timezone) {
+  // Example: getTimezoneOffsetForZone(new Date('2024-01-15'), 'America/New_York')
+  // Returns -300 (UTC-5 = -300 minutes) in winter
+  // Returns -240 (UTC-4 = -240 minutes) during DST
+  const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
+  const tzDate = new Date(date.toLocaleString('en-US', { timeZone: timezone }));
+  return (tzDate.getTime() - utcDate.getTime()) / 60000;
+}
+
+// Convert a date from one timezone to another
+function convertTimezone(date, fromTimezone, toTimezone) {
+  // Example: Convert 10:00 AM in New York to Tokyo time
+  // Input: date representing 10:00 AM, 'America/New_York', 'Asia/Tokyo'
+  // Output: object with date and formatted string in Tokyo time
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: toTimezone,
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric'
+  });
   return {
-    year: d.getUTCFullYear(),
-    month: d.getUTCMonth() + 1,
-    day: d.getUTCDate(),
-    hours: d.getUTCHours(),
-    minutes: d.getUTCMinutes(),
-    seconds: d.getUTCSeconds()
+    date: new Date(formatter.format(date)),
+    formatted: formatter.format(date)
   };
 }
 
-// Locale-independent helper: calculate offset between two timestamps in minutes
-function getTimestampOffsetMinutes(timestamp1, timestamp2) {
-  return Math.round((timestamp1 - timestamp2) / 60000);
+// Check if a timezone is currently observing Daylight Saving Time
+function isDST(date, timezone) {
+  // Example: isDST(new Date('2024-07-15'), 'America/New_York') => true
+  // Example: isDST(new Date('2024-01-15'), 'America/New_York') => false
+  const jan = new Date(date.getFullYear(), 0, 1);
+  const jul = new Date(date.getFullYear(), 6, 1);
+  const janOffset = getTimezoneOffsetForZone(jan, timezone);
+  const julOffset = getTimezoneOffsetForZone(jul, timezone);
+  const currentOffset = getTimezoneOffsetForZone(date, timezone);
+  return currentOffset !== Math.max(janOffset, julOffset);
 }
 
-// Locale-independent helper: check if two ISO dates are the same UTC day
-function isSameUTCDay(isoString1, isoString2) {
-  const d1 = new Date(isoString1);
-  const d2 = new Date(isoString2);
-  return d1.getUTCFullYear() === d2.getUTCFullYear() &&
-         d1.getUTCMonth() === d2.getUTCMonth() &&
-         d1.getUTCDate() === d2.getUTCDate();
-}
-
-// Locale-independent helper: add hours to ISO date
-function addHoursToISO(isoString, hours) {
-  const d = new Date(isoString);
-  d.setTime(d.getTime() + hours * 60 * 60 * 1000);
-  return d.toISOString();
-}
+// Get the current time in multiple timezones
+function getWorldClocks(timezones, locale = 'en-US') {
+  // Example: getWorldClocks(['America/New_York', 'Europe/London', 'Asia/Tokyo'])
+  // Returns: [
+  //   { timezone: 'America/New_York', time: '10:30 AM', date: '1/15/2024' },
+  //   { timezone: 'Europe/London', time: '3:30 PM', date: '1/15/2024' },
+  //   { timezone: 'Asia/Tokyo', time: '12:30 AM', date: '1/16/2024' }
+  // ]
+  const now = new Date();
+  return timezones.map(tz => {
+    const timeFormatter = new Intl.DateTimeFormat(locale, {
+      timeZone: tz,
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    });
+    const dateFormatter = new Intl.DateTimeFormat(locale, {
+      timeZone: tz,
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric'
+    });
+    return {
+      timezone: tz,
+      time: timeFormatter.format(now),
+      date: dateFormatter.format(now)
+    };
+  });
+}`,
 
 // Locale-independent helper: get day of week from ISO string (0 = Sunday)
 function getUTCDayOfWeek(isoString) {
