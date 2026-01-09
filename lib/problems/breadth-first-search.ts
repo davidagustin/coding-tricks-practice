@@ -172,7 +172,102 @@ console.log(bfsTreeLevelOrder(tree));
 
 console.log(shortestPath(graph, 'A', 'F'));
 // Expected: 2`,
-  solution: `function test() { return true; }`,
+  solution: `// Graph represented as adjacency list
+type Graph = { [key: string]: string[] };
+
+// Binary tree node
+interface TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+}
+
+// Implement BFS for graphs
+function bfsGraph(graph: Graph, start: string): string[] {
+  // Create visited set and queue
+  // Enqueue start node and mark visited
+  // While queue not empty:
+  //   Dequeue node, add to result
+  //   Enqueue all unvisited neighbors
+  const visited = new Set<string>();
+  const queue: string[] = [start];
+  const result: string[] = [];
+  
+  visited.add(start);
+  
+  while (queue.length > 0) {
+    const node = queue.shift()!;
+    result.push(node);
+    
+    for (const neighbor of graph[node] || []) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push(neighbor);
+      }
+    }
+  }
+  
+  return result;
+}
+
+// Implement level-order traversal for binary tree
+// Returns array of arrays, each inner array is one level
+function bfsTreeLevelOrder(root: TreeNode | null): number[][] {
+  // Handle null root
+  // Use queue to process level by level
+  // Track nodes at each level
+  if (!root) return [];
+  
+  const result: number[][] = [];
+  const queue: TreeNode[] = [root];
+  
+  while (queue.length > 0) {
+    const levelSize = queue.length;
+    const level: number[] = [];
+    
+    for (let i = 0; i < levelSize; i++) {
+      const node = queue.shift()!;
+      level.push(node.val);
+      
+      if (node.left) queue.push(node.left);
+      if (node.right) queue.push(node.right);
+    }
+    
+    result.push(level);
+  }
+  
+  return result;
+}
+
+// Implement shortest path finder using BFS
+// Returns the length of shortest path, or -1 if no path exists
+function shortestPath(graph: Graph, start: string, end: string): number {
+  // BFS naturally finds shortest path in unweighted graphs
+  // Track distance from start to each node
+  if (start === end) return 0;
+  
+  const visited = new Set<string>();
+  const queue: [string, number][] = [[start, 0]];
+  
+  visited.add(start);
+  
+  while (queue.length > 0) {
+    const [node, distance] = queue.shift()!;
+    
+    for (const neighbor of graph[node] || []) {
+      if (neighbor === end) {
+        return distance + 1;
+      }
+      
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push([neighbor, distance + 1]);
+      }
+    }
+  }
+  
+  return -1;
+}`,
   testCases: [
     {
       input: [],

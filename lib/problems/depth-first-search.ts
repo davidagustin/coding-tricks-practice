@@ -179,7 +179,87 @@ const tree: TreeNode = {
 
 console.log(dfsTreePreOrder(tree));
 // Expected: [1, 2, 4, 5, 3]`,
-  solution: `function test() { return true; }`,
+  solution: `// Graph represented as adjacency list
+type Graph = { [key: string]: string[] };
+
+// Binary tree node
+interface TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+}
+
+// Implement recursive DFS for graphs
+function dfsGraphRecursive(
+  graph: Graph,
+  start: string,
+  visited: Set<string> = new Set()
+): string[] {
+  // Mark current node as visited
+  // Add to result
+  // Recursively visit all unvisited neighbors
+  if (visited.has(start)) {
+    return [];
+  }
+  
+  visited.add(start);
+  const result = [start];
+  
+  for (const neighbor of graph[start] || []) {
+    if (!visited.has(neighbor)) {
+      result.push(...dfsGraphRecursive(graph, neighbor, visited));
+    }
+  }
+  
+  return result;
+}
+
+// Implement iterative DFS for graphs using a stack
+function dfsGraphIterative(graph: Graph, start: string): string[] {
+  // Create visited set and stack
+  // Push start node onto stack
+  // While stack not empty:
+  //   Pop node, if not visited: visit it, push neighbors
+  const visited = new Set<string>();
+  const stack: string[] = [start];
+  const result: string[] = [];
+  
+  while (stack.length > 0) {
+    const node = stack.pop()!;
+    
+    if (!visited.has(node)) {
+      visited.add(node);
+      result.push(node);
+      
+      for (const neighbor of (graph[node] || []).reverse()) {
+        if (!visited.has(neighbor)) {
+          stack.push(neighbor);
+        }
+      }
+    }
+  }
+  
+  return result;
+}
+
+// Implement DFS for binary tree (pre-order traversal)
+function dfsTreePreOrder(root: TreeNode | null): number[] {
+  // Base case: null node
+  // Visit current node
+  // Recursively visit left then right
+  if (!root) return [];
+  return [root.val, ...dfsTreePreOrder(root.left), ...dfsTreePreOrder(root.right)];
+}
+
+// Implement DFS for binary tree (in-order traversal)
+function dfsTreeInOrder(root: TreeNode | null): number[] {
+  // Base case: null node
+  // Recursively visit left
+  // Visit current node
+  // Recursively visit right
+  if (!root) return [];
+  return [...dfsTreeInOrder(root.left), root.val, ...dfsTreeInOrder(root.right)];
+}`,
   testCases: [
     {
       input: [],

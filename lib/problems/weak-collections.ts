@@ -111,7 +111,36 @@ console.log(user.name); // 'John'
 console.log(user.password); // Should be undefined (private)
 console.log(user.checkPassword('secret123')); // true
 console.log(user.checkPassword('wrong')); // false`,
-  solution: `function test() { return true; }`,
+  solution: `// Use WeakMap to store private data
+class User {
+  private static privateData = new WeakMap<User, { password: string }>();
+  
+  constructor(public name: string, password: string) {
+    // Store password in WeakMap
+    User.privateData.set(this, { password });
+  }
+  
+  checkPassword(password) {
+    // Check against private password
+    const data = User.privateData.get(this);
+    return data ? data.password === password : false;
+  }
+}
+
+// Create a memoize function using WeakMap for object arguments
+function memoizeByObject(fn) {
+  // Cache results by object reference
+  // WeakMap allows garbage collection of unused cache entries
+  const cache = new WeakMap();
+  return function(obj, ...args) {
+    if (cache.has(obj)) {
+      return cache.get(obj);
+    }
+    const result = fn(obj, ...args);
+    cache.set(obj, result);
+    return result;
+  };
+}`,
   testCases: [
     {
       input: [],

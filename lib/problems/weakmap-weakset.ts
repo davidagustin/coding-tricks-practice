@@ -114,7 +114,34 @@ const obj2 = {};
 markVisited(obj1, visited);
 console.log(isVisited(obj1, visited)); // true
 console.log(isVisited(obj2, visited)); // false`,
-  solution: `function test() { return true; }`,
+  solution: `// Use WeakMap to store private data
+class User {
+  private static privateData = new WeakMap<User, { privateId: string }>();
+  
+  constructor(public name: string) {}
+  
+  setPrivateId(id: string) {
+    // Store private ID in WeakMap
+    User.privateData.set(this, { privateId: id });
+  }
+  
+  getPrivateId(): string | undefined {
+    // Retrieve private ID from WeakMap
+    const data = User.privateData.get(this);
+    return data ? data.privateId : undefined;
+  }
+}
+
+// Use WeakSet to track visited objects
+function markVisited(obj, visited) {
+  // Add object to WeakSet
+  visited.add(obj);
+}
+
+function isVisited(obj, visited) {
+  // Check if object is in WeakSet
+  return visited.has(obj);
+}`,
   testCases: [
     {
       input: [],

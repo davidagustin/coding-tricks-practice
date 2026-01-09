@@ -136,7 +136,50 @@ console.log(quickSort([...arr1]));
 const arr2 = [3, 6, 2, 7, 1];
 console.log(quickSort([...arr2]));
 // Expected: [1, 2, 3, 6, 7]`,
-  solution: `function test() { return true; }`,
+  solution: `// Implement partition function (Lomuto scheme)
+// Chooses last element as pivot, places it in correct position
+// Returns the index where pivot ends up
+function partition(arr: number[], low: number, high: number): number {
+  // Choose pivot (last element)
+  // Track index of smaller element
+  // Loop through array, swap elements smaller than pivot
+  // Place pivot in correct position
+  // Return pivot's final index
+  const pivot = arr[high];
+  let i = low - 1;
+  
+  for (let j = low; j < high; j++) {
+    if (arr[j] <= pivot) {
+      i++;
+      swap(arr, i, j);
+    }
+  }
+  
+  swap(arr, i + 1, high);
+  return i + 1;
+}
+
+// Implement quick sort
+// Recursively partitions and sorts the array in-place
+function quickSort(arr: number[], low: number = 0, high: number = arr.length - 1): number[] {
+  // Base case: low >= high means section is sorted
+  // Partition the array
+  // Recursively sort left and right of pivot
+  if (low < high) {
+    const pivotIndex = partition(arr, low, high);
+    quickSort(arr, low, pivotIndex - 1);
+    quickSort(arr, pivotIndex + 1, high);
+  }
+  return arr;
+}
+
+// Helper function to swap elements
+function swap(arr: number[], i: number, j: number): void {
+  // Implement swap
+  const temp = arr[i];
+  arr[i] = arr[j];
+  arr[j] = temp;
+}`,
   testCases: [
     {
       input: [],

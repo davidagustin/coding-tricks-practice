@@ -126,7 +126,58 @@ console.log(mergeSort([5, 2, 8, 1, 9]));
 
 console.log(merge([1, 3, 5], [2, 4, 6]));
 // Expected: [1, 2, 3, 4, 5, 6]`,
-  solution: `function test() { return true; }`,
+  solution: `// Implement the merge function
+// Takes two sorted arrays and merges them into one sorted array
+function merge(left: number[], right: number[]): number[] {
+  // Create result array
+  // Use two pointers to track position in each array
+  // Compare elements and add smaller one to result
+  // Add remaining elements from either array
+  const result: number[] = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
+  
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] <= right[rightIndex]) {
+      result.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      result.push(right[rightIndex]);
+      rightIndex++;
+    }
+  }
+  
+  while (leftIndex < left.length) {
+    result.push(left[leftIndex]);
+    leftIndex++;
+  }
+  
+  while (rightIndex < right.length) {
+    result.push(right[rightIndex]);
+    rightIndex++;
+  }
+  
+  return result;
+}
+
+// Implement merge sort
+// Recursively divides array and merges sorted halves
+function mergeSort(arr: number[]): number[] {
+  // Base case: arrays of length 0 or 1 are already sorted
+  // Find middle index
+  // Divide into left and right halves
+  // Recursively sort each half
+  // Merge the sorted halves
+  if (arr.length <= 1) {
+    return arr;
+  }
+  
+  const mid = Math.floor(arr.length / 2);
+  const left = mergeSort(arr.slice(0, mid));
+  const right = mergeSort(arr.slice(mid));
+  
+  return merge(left, right);
+}`,
   testCases: [
     {
       input: [],
