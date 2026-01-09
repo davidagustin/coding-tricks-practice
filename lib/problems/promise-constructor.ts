@@ -112,14 +112,14 @@ function waitForEvent(element, eventName) {
 }`,
   testCases: [
     {
-      input: [100],
+      input: [],
       expectedOutput: undefined,
-      description: 'delay returns a Promise that resolves after the specified time',
+      description: 'delay returns a Promise',
     },
     {
       input: [],
       expectedOutput: undefined,
-      description: 'waitForEvent returns a Promise that resolves when the event fires',
+      description: 'waitForEvent returns a Promise',
     },
   ],
   hints: [
