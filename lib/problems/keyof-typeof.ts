@@ -214,7 +214,91 @@ triggerEvent('hover', 'button');
 console.log(translate('en', 'greeting'));
 console.log(translate('es', 'farewell'));
 console.log(translate('fr', 'thanks'));`,
-  solution: `function test() { return true; }`,
+  solution: `// Practice using keyof and typeof operators
+
+// Task 1: Create a type-safe getter function using keyof
+interface Person {
+  name: string;
+  age: number;
+  email: string;
+  isActive: boolean;
+}
+
+// Implement getProperty that only accepts valid Person keys
+// and returns the correct type for each key
+function getProperty<K extends keyof Person>(person: Person, key: K): Person[K] {
+  return person[key];
+}
+
+// Task 2: Derive types from a configuration object using typeof
+const appConfig = {
+  apiEndpoint: 'https://api.example.com',
+  timeout: 5000,
+  maxRetries: 3,
+  features: {
+    darkMode: true,
+    notifications: false
+  }
+} as const;
+
+// Create types from the config object
+type AppConfig = typeof appConfig;
+type ConfigKey = keyof typeof appConfig;
+type FeatureFlags = typeof appConfig.features;
+type FeatureName = keyof typeof appConfig.features;
+
+function getConfigValue<K extends ConfigKey>(key: K): typeof appConfig[K] {
+  // Return the config value for the given key
+  return appConfig[key];
+}
+
+// Task 3: Create a type-safe event system using keyof typeof
+const eventHandlers = {
+  click: (x: number, y: number) => console.log(\`Clicked at \${x}, \${y}\`),
+  hover: (element: string) => console.log(\`Hovered over \${element}\`),
+  submit: (data: object) => console.log('Form submitted', data),
+  resize: (width: number, height: number) => console.log(\`Resized to \${width}x\${height}\`)
+};
+
+// Create EventName type from the eventHandlers object keys
+type EventName = keyof typeof eventHandlers;
+
+function triggerEvent<E extends EventName>(
+  event: E,
+  ...args: Parameters<typeof eventHandlers[E]>
+): void {
+  // Call the appropriate event handler with the provided arguments
+  const handler = eventHandlers[event];
+  handler(...args as any);
+}
+
+// Task 4: Create a translation function using keyof
+const translations = {
+  en: {
+    greeting: 'Hello',
+    farewell: 'Goodbye',
+    thanks: 'Thank you'
+  },
+  es: {
+    greeting: 'Hola',
+    farewell: 'Adiós',
+    thanks: 'Gracias'
+  },
+  fr: {
+    greeting: 'Bonjour',
+    farewell: 'Au revoir',
+    thanks: 'Merci'
+  }
+} as const;
+
+// Create types from the translations object
+type Language = keyof typeof translations;
+type TranslationKey = keyof typeof translations.en;
+
+function translate(lang: Language, key: TranslationKey): string {
+  // Return the translation for the given language and key
+  return translations[lang][key];
+}`,
   testCases: [
     {
       input: [],

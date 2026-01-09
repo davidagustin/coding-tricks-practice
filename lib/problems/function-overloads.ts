@@ -185,7 +185,88 @@ console.log(find([1, 2, 3], x => x > 10, 0));                // Should return 0
 console.log(combine('Hello, ', 'World!'));   // Should return 'Hello, World!'
 console.log(combine(10, 20));                // Should return 30
 console.log(combine([1, 2], [3, 4]));        // Should return [1, 2, 3, 4]`,
-  solution: `function test() { return true; }`,
+  solution: `// Practice function overloads in TypeScript
+
+// Task 1: Create a parse function with overloads
+// - parse(value: string, type: 'number') should return number
+// - parse(value: string, type: 'boolean') should return boolean
+// - parse(value: string, type: 'json') should return object
+
+// Add overload signatures
+function parse(value: string, type: 'number'): number;
+function parse(value: string, type: 'boolean'): boolean;
+function parse(value: string, type: 'json'): object;
+// Add implementation signature and function body
+function parse(value: string, type: 'number' | 'boolean' | 'json'): number | boolean | object {
+  if (type === 'number') {
+    return Number(value);
+  } else if (type === 'boolean') {
+    return value === 'true';
+  } else {
+    return JSON.parse(value);
+  }
+}
+
+// Task 2: Create a find function with overloads
+// - find(arr: T[], predicate): returns T | undefined
+// - find(arr: T[], predicate, defaultValue: T): returns T (guaranteed)
+
+// Add overload signatures and implementation
+function find<T>(arr: T[], predicate: (item: T) => boolean): T | undefined;
+function find<T>(arr: T[], predicate: (item: T) => boolean, defaultValue: T): T;
+function find<T>(arr: T[], predicate: (item: T) => boolean, defaultValue?: T): T | undefined {
+  const found = arr.find(predicate);
+  return found !== undefined ? found : defaultValue;
+}
+
+// Task 3: Create a makeRequest function with overloads
+// Different return types based on response type parameter
+interface User { id: number; name: string; }
+interface Product { id: number; title: string; price: number; }
+
+// Add overload signatures
+function makeRequest(endpoint: '/users'): Promise<User[]>;
+function makeRequest(endpoint: '/users', id: number): Promise<User>;
+function makeRequest(endpoint: '/products'): Promise<Product[]>;
+function makeRequest(endpoint: '/products', id: number): Promise<Product>;
+// Add implementation signature and function body
+function makeRequest(
+  endpoint: '/users' | '/products',
+  id?: number
+): Promise<User[] | User | Product[] | Product> {
+  // Simulate API response
+  if (endpoint === '/users') {
+    if (id !== undefined) {
+      return Promise.resolve({ id, name: 'User ' + id });
+    }
+    return Promise.resolve([{ id: 1, name: 'User 1' }]);
+  } else {
+    if (id !== undefined) {
+      return Promise.resolve({ id, title: 'Product ' + id, price: 99.99 });
+    }
+    return Promise.resolve([{ id: 1, title: 'Product 1', price: 99.99 }]);
+  }
+}
+
+// Task 4: Create a combine function with overloads
+// - combine(a: string, b: string) returns string (concatenation)
+// - combine(a: number, b: number) returns number (addition)
+// - combine(a: any[], b: any[]) returns any[] (array concatenation)
+
+// Add overload signatures and implementation
+function combine(a: string, b: string): string;
+function combine(a: number, b: number): number;
+function combine<T>(a: T[], b: T[]): T[];
+function combine<T>(a: string | number | T[], b: string | number | T[]): string | number | T[] {
+  if (typeof a === 'string' && typeof b === 'string') {
+    return a + b;
+  } else if (typeof a === 'number' && typeof b === 'number') {
+    return a + b;
+  } else if (Array.isArray(a) && Array.isArray(b)) {
+    return [...a, ...b] as T[];
+  }
+  throw new Error('Invalid arguments');
+}`,
   testCases: [
     {
       input: [],

@@ -198,7 +198,86 @@ console.log(createProduct({
   inStock: true
 }));
 console.log(validateConfig({ apiUrl: 'https://api.example.com' }));`,
-  solution: `function test() { return true; }`,
+  solution: `// Practice using Partial, Required, Pick, and Omit utility types
+
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  inStock: boolean;
+  createdAt: Date;
+}
+
+// Task 1: Create an update function using Partial
+// Allow updating any subset of product fields (except id)
+type ProductUpdate = Omit<Partial<Product>, 'id'>;
+
+function updateProduct(id: number, updates: ProductUpdate): Product {
+  // Simulate existing product
+  const existingProduct: Product = {
+    id,
+    name: 'Original Product',
+    description: 'Original description',
+    price: 99.99,
+    category: 'electronics',
+    inStock: true,
+    createdAt: new Date()
+  };
+
+  // Merge updates with existing product and return
+  return { ...existingProduct, ...updates };
+}
+
+// Task 2: Create a product preview type using Pick
+// Only include: id, name, price, inStock
+type ProductPreview = Pick<Product, 'id' | 'name' | 'price' | 'inStock'>;
+
+function getProductPreview(product: Product): ProductPreview {
+  // Return object with only the preview fields
+  return {
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    inStock: product.inStock
+  };
+}
+
+// Task 3: Create a type for creating new products using Omit
+// Exclude id and createdAt (these are auto-generated)
+type CreateProductInput = Omit<Product, 'id' | 'createdAt'>;
+
+function createProduct(input: CreateProductInput): Product {
+  // Create and return a new product with generated id and createdAt
+  return {
+    ...input,
+    id: Math.floor(Math.random() * 1000),
+    createdAt: new Date()
+  };
+}
+
+// Task 4: Configuration with Required
+interface AppConfig {
+  apiUrl?: string;
+  timeout?: number;
+  retries?: number;
+  debug?: boolean;
+}
+
+// Create ValidatedConfig type that makes all properties required
+type ValidatedConfig = Required<AppConfig>;
+
+function validateConfig(config: AppConfig): ValidatedConfig {
+  // Return config with default values for missing properties
+  // Defaults: apiUrl = 'http://localhost', timeout = 5000, retries = 3, debug = false
+  return {
+    apiUrl: config.apiUrl ?? 'http://localhost',
+    timeout: config.timeout ?? 5000,
+    retries: config.retries ?? 3,
+    debug: config.debug ?? false
+  };
+}`,
   testCases: [
     {
       input: [],
