@@ -63,31 +63,36 @@ const defaultProblemCounts = {
   total: 38,
 };
 
-// Helper decorator for dark theme stories
-const darkThemeDecorator = (Story: React.ComponentType) => {
+// Helper component for dark theme stories
+function DarkThemeWrapper({ children }: { children: React.ReactNode }): React.ReactElement {
   React.useEffect(() => {
     document.documentElement.classList.add('dark');
     return () => document.documentElement.classList.remove('dark');
   }, []);
-  return (
-    <div className="dark bg-gray-950 min-h-screen p-4">
-      <Story />
-    </div>
-  );
-};
+  return <div className="dark bg-gray-950 min-h-screen p-4">{children}</div>;
+}
 
-// Helper decorator for light theme stories (explicit)
-const lightThemeDecorator = (Story: React.ComponentType) => {
+// Helper component for light theme stories (explicit)
+function LightThemeWrapper({ children }: { children: React.ReactNode }): React.ReactElement {
   React.useEffect(() => {
     document.documentElement.classList.remove('dark');
     return () => {};
   }, []);
-  return (
-    <div className="bg-white min-h-screen p-4">
-      <Story />
-    </div>
-  );
-};
+  return <div className="bg-white min-h-screen p-4">{children}</div>;
+}
+
+// Decorator functions that use the wrapper components
+const darkThemeDecorator = (Story: React.ComponentType) => (
+  <DarkThemeWrapper>
+    <Story />
+  </DarkThemeWrapper>
+);
+
+const lightThemeDecorator = (Story: React.ComponentType) => (
+  <LightThemeWrapper>
+    <Story />
+  </LightThemeWrapper>
+);
 
 const meta: Meta<typeof FilterSidebar> = {
   title: 'Components/FilterSidebar',

@@ -237,7 +237,7 @@ export const ErrorState: Story = {
 // ============================================
 // 9. Syntax Error Display
 // ============================================
-export const SyntaxError: Story = {
+export const SyntaxErrorDisplay: Story = {
   name: '9. Syntax Error',
   args: {
     results: [],
@@ -822,18 +822,21 @@ export const TypeScriptCompilationError: Story = {
 // DARK THEME STORY VARIANTS
 // ============================================
 
-// Dark theme decorator for comprehensive dark mode testing
-const darkThemeDecorator = (Story: React.ComponentType) => {
+// Helper component for dark theme stories
+function DarkThemeWrapper({ children }: { children: React.ReactNode }): React.ReactElement {
   React.useEffect(() => {
     document.documentElement.classList.add('dark');
     return () => document.documentElement.classList.remove('dark');
   }, []);
-  return (
-    <div className="dark bg-gray-950 min-h-screen p-4">
-      <Story />
-    </div>
-  );
-};
+  return <div className="dark bg-gray-950 min-h-screen p-4">{children}</div>;
+}
+
+// Dark theme decorator for comprehensive dark mode testing
+const darkThemeDecorator = (Story: React.ComponentType) => (
+  <DarkThemeWrapper>
+    <Story />
+  </DarkThemeWrapper>
+);
 
 // ============================================
 // All Tests Passed (Dark)

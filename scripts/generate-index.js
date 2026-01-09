@@ -1,5 +1,6 @@
-const fs = require('fs');
-const path = require('path');
+/* eslint-disable @typescript-eslint/no-require-imports */
+const fs = require('node:fs');
+const path = require('node:path');
 
 const problemsDir = path.join(__dirname, '..', 'lib', 'problems');
 const files = fs
