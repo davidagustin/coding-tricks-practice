@@ -4,14 +4,14 @@
  */
 
 import {
-  isError,
-  isObject,
-  hasProperty,
-  isStringArray,
-  isNumberArray,
   getErrorMessage,
+  hasProperty,
+  isError,
   isFunction,
+  isNumberArray,
+  isObject,
   isPromise,
+  isStringArray,
 } from '../../lib/utils/type-guards';
 
 describe('type-guards utilities', () => {
@@ -432,7 +432,7 @@ describe('type-guards utilities', () => {
     });
 
     it('should return true for function expression', () => {
-      const fn = function() {};
+      const fn = () => {};
       expect(isFunction(fn)).toBe(true);
     });
 
@@ -520,7 +520,9 @@ describe('type-guards utilities', () => {
     });
 
     it('should return true for async function result', () => {
-      async function asyncFn() { return 1; }
+      async function asyncFn() {
+        return 1;
+      }
       expect(isPromise(asyncFn())).toBe(true);
     });
 
@@ -578,9 +580,15 @@ describe('type-guards utilities', () => {
 
     it('should return true for object that looks like a promise', () => {
       const fakePomise = {
-        then: function() { return this; },
-        catch: function() { return this; },
-        finally: function() { return this; },
+        then: function () {
+          return this;
+        },
+        catch: function () {
+          return this;
+        },
+        finally: function () {
+          return this;
+        },
       };
       expect(isPromise(fakePomise)).toBe(true);
     });

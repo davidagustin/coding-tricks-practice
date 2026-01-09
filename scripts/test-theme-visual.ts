@@ -27,7 +27,7 @@ async function testThemeVisual() {
       console.log('  ☀️  Testing Light Mode...');
       const lightPage = await context.newPage();
       await lightPage.goto(`${BASE_URL}${pageInfo.path}`);
-      
+
       // Set light mode
       await lightPage.evaluate(() => {
         localStorage.setItem('theme', 'light');
@@ -53,7 +53,9 @@ async function testThemeVisual() {
         return window.getComputedStyle(body).color;
       });
 
-      console.log(`    Dark class: ${hasDarkClassLight ? '❌ Present (should be absent)' : '✅ Absent'}`);
+      console.log(
+        `    Dark class: ${hasDarkClassLight ? '❌ Present (should be absent)' : '✅ Absent'}`
+      );
       console.log(`    Background: ${bgColorLight}`);
       console.log(`    Text color: ${textColorLight}`);
 
@@ -61,7 +63,7 @@ async function testThemeVisual() {
       console.log('  🌙 Testing Dark Mode...');
       const darkPage = await context.newPage();
       await darkPage.goto(`${BASE_URL}${pageInfo.path}`);
-      
+
       // Set dark mode
       await darkPage.evaluate(() => {
         localStorage.setItem('theme', 'dark');
@@ -87,13 +89,17 @@ async function testThemeVisual() {
         return window.getComputedStyle(body).color;
       });
 
-      console.log(`    Dark class: ${hasDarkClassDark ? '✅ Present' : '❌ Absent (should be present)'}`);
+      console.log(
+        `    Dark class: ${hasDarkClassDark ? '✅ Present' : '❌ Absent (should be present)'}`
+      );
       console.log(`    Background: ${bgColorDark}`);
       console.log(`    Text color: ${textColorDark}`);
 
       // Check if colors are different
       const colorsDifferent = bgColorLight !== bgColorDark;
-      console.log(`    Colors change: ${colorsDifferent ? '✅ Yes' : '❌ No (theme not working!)'}`);
+      console.log(
+        `    Colors change: ${colorsDifferent ? '✅ Yes' : '❌ No (theme not working!)'}`
+      );
 
       // Check specific elements
       const headingColorLight = await lightPage.evaluate(() => {
@@ -106,7 +112,9 @@ async function testThemeVisual() {
         return heading ? window.getComputedStyle(heading).color : null;
       });
 
-      console.log(`    Heading colors different: ${headingColorLight !== headingColorDark ? '✅ Yes' : '❌ No'}`);
+      console.log(
+        `    Heading colors different: ${headingColorLight !== headingColorDark ? '✅ Yes' : '❌ No'}`
+      );
 
       await lightPage.close();
       await darkPage.close();

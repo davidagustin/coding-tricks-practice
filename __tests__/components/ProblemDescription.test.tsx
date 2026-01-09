@@ -115,9 +115,7 @@ describe('ProblemDescription', () => {
       });
       render(<ProblemDescription problem={problem} />);
 
-      expect(
-        screen.getByText(/Solve this problem by implementing a function/)
-      ).toBeInTheDocument();
+      expect(screen.getByText(/Solve this problem by implementing a function/)).toBeInTheDocument();
     });
 
     it('handles empty description', () => {

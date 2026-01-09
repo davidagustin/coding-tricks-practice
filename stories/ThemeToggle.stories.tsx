@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { userEvent, within, expect, waitFor } from 'storybook/test';
-import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 // Mock ThemeContext for Storybook
 type Theme = 'light' | 'dark';
@@ -25,7 +25,7 @@ function useMockTheme() {
 // Mock ThemeProvider for stories
 function MockThemeProvider({
   children,
-  initialTheme = 'light'
+  initialTheme = 'light',
 }: {
   children: React.ReactNode;
   initialTheme?: Theme;
@@ -57,11 +57,7 @@ function MockThemeProvider({
     [theme, toggleTheme, setTheme]
   );
 
-  return (
-    <MockThemeContext.Provider value={contextValue}>
-      {children}
-    </MockThemeContext.Provider>
-  );
+  return <MockThemeContext.Provider value={contextValue}>{children}</MockThemeContext.Provider>;
 }
 
 // Standalone ThemeToggle component for stories (avoids import issues with useTheme)
@@ -117,7 +113,8 @@ const meta: Meta<typeof ThemeToggleComponent> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A theme toggle button that switches between light and dark modes. Shows a moon icon in light mode (to switch to dark) and a sun icon in dark mode (to switch to light).',
+        component:
+          'A theme toggle button that switches between light and dark modes. Shows a moon icon in light mode (to switch to dark) and a sun icon in dark mode (to switch to light).',
       },
     },
     chromatic: {
@@ -130,7 +127,8 @@ const meta: Meta<typeof ThemeToggleComponent> = {
   tags: ['autodocs'],
   decorators: [
     (Story, context) => {
-      const initialTheme = (context.args as { initialTheme?: 'light' | 'dark' }).initialTheme || 'light';
+      const initialTheme =
+        (context.args as { initialTheme?: 'light' | 'dark' }).initialTheme || 'light';
       return (
         <MockThemeProvider initialTheme={initialTheme}>
           <Story />
@@ -308,17 +306,23 @@ export const InNavbarContext: Story = {
   },
   decorators: [
     (Story, context) => (
-      <MockThemeProvider initialTheme={(context.args as { initialTheme?: 'light' | 'dark' }).initialTheme || 'light'}>
+      <MockThemeProvider
+        initialTheme={(context.args as { initialTheme?: 'light' | 'dark' }).initialTheme || 'light'}
+      >
         <nav className="flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
           <div className="flex items-center gap-4">
-            <div className="text-xl font-bold text-gray-900 dark:text-white">
-              Coding Tricks
-            </div>
+            <div className="text-xl font-bold text-gray-900 dark:text-white">Coding Tricks</div>
             <div className="hidden md:flex items-center gap-4">
-              <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <a
+                href="#"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+              >
                 Problems
               </a>
-              <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <a
+                href="#"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+              >
                 Topics
               </a>
             </div>
@@ -366,7 +370,8 @@ export const MobileSize: Story = {
     },
     layout: 'centered',
     backgrounds: { default: 'light' },
-    chromatic: { modes: {
+    chromatic: {
+      modes: {
         light: { theme: 'light' },
         dark: { theme: 'dark' },
       },
@@ -374,7 +379,9 @@ export const MobileSize: Story = {
   },
   decorators: [
     (Story, context) => (
-      <MockThemeProvider initialTheme={(context.args as { initialTheme?: 'light' | 'dark' }).initialTheme || 'light'}>
+      <MockThemeProvider
+        initialTheme={(context.args as { initialTheme?: 'light' | 'dark' }).initialTheme || 'light'}
+      >
         <div className="p-4 min-h-[100px] flex items-center justify-center">
           <Story />
         </div>
@@ -397,7 +404,8 @@ export const DesktopSize: Story = {
     },
     layout: 'centered',
     backgrounds: { default: 'light' },
-    chromatic: { modes: {
+    chromatic: {
+      modes: {
         light: { theme: 'light' },
         dark: { theme: 'dark' },
       },
@@ -425,7 +433,9 @@ export const WithTooltip: Story = {
   },
   decorators: [
     (Story, context) => (
-      <MockThemeProvider initialTheme={(context.args as { initialTheme?: 'light' | 'dark' }).initialTheme || 'light'}>
+      <MockThemeProvider
+        initialTheme={(context.args as { initialTheme?: 'light' | 'dark' }).initialTheme || 'light'}
+      >
         <div className="relative">
           <Story />
           {/* Simulated tooltip since native title tooltips cannot be captured in screenshots */}
@@ -433,7 +443,11 @@ export const WithTooltip: Story = {
             className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-1.5 text-sm bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded-md shadow-lg whitespace-nowrap z-10"
             role="tooltip"
           >
-            Switch to {(context.args as { initialTheme?: 'light' | 'dark' }).initialTheme === 'light' ? 'dark' : 'light'} mode
+            Switch to{' '}
+            {(context.args as { initialTheme?: 'light' | 'dark' }).initialTheme === 'light'
+              ? 'dark'
+              : 'light'}{' '}
+            mode
             <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-b-gray-900 dark:border-b-gray-100" />
           </div>
         </div>
@@ -560,10 +574,7 @@ export const ClickLightToDark: Story = {
               Current Theme: <span data-testid="theme-value">Light</span>
             </span>
             <Story />
-            <p
-              data-testid="sample-text"
-              className="text-gray-600 dark:text-gray-300 text-sm"
-            >
+            <p data-testid="sample-text" className="text-gray-600 dark:text-gray-300 text-sm">
               Sample text that changes color with theme
             </p>
           </div>
@@ -623,10 +634,7 @@ export const ClickDarkToLight: Story = {
               Current Theme: <span data-testid="theme-value">Dark</span>
             </span>
             <Story />
-            <p
-              data-testid="sample-text"
-              className="text-gray-600 dark:text-gray-300 text-sm"
-            >
+            <p data-testid="sample-text" className="text-gray-600 dark:text-gray-300 text-sm">
               Sample text that changes color with theme
             </p>
           </div>
@@ -751,7 +759,7 @@ export const VisualColorChangeTest: Story = {
 
     const handleClick = () => {
       toggleTheme();
-      setClickCount(prev => prev + 1);
+      setClickCount((prev) => prev + 1);
     };
 
     return (
@@ -769,8 +777,8 @@ export const VisualColorChangeTest: Story = {
           >
             <h2 className="text-xl font-bold mb-4">Theme Toggle Test</h2>
             <p className={`mb-4 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-              Click the button below to test the theme toggle functionality.
-              The entire background and card should change colors.
+              Click the button below to test the theme toggle functionality. The entire background
+              and card should change colors.
             </p>
             <div className="flex items-center justify-between">
               <div>
@@ -799,11 +807,21 @@ export const VisualColorChangeTest: Story = {
               >
                 {theme === 'light' ? (
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                    />
                   </svg>
                 ) : (
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                    />
                   </svg>
                 )}
               </button>
@@ -812,19 +830,25 @@ export const VisualColorChangeTest: Story = {
 
           {/* Color samples that change with theme */}
           <div className="mt-6 grid grid-cols-3 gap-4">
-            <div className={`p-4 rounded-lg text-center ${
-              theme === 'dark' ? 'bg-blue-900 text-blue-200' : 'bg-blue-100 text-blue-800'
-            }`}>
+            <div
+              className={`p-4 rounded-lg text-center ${
+                theme === 'dark' ? 'bg-blue-900 text-blue-200' : 'bg-blue-100 text-blue-800'
+              }`}
+            >
               Primary
             </div>
-            <div className={`p-4 rounded-lg text-center ${
-              theme === 'dark' ? 'bg-green-900 text-green-200' : 'bg-green-100 text-green-800'
-            }`}>
+            <div
+              className={`p-4 rounded-lg text-center ${
+                theme === 'dark' ? 'bg-green-900 text-green-200' : 'bg-green-100 text-green-800'
+              }`}
+            >
               Success
             </div>
-            <div className={`p-4 rounded-lg text-center ${
-              theme === 'dark' ? 'bg-red-900 text-red-200' : 'bg-red-100 text-red-800'
-            }`}>
+            <div
+              className={`p-4 rounded-lg text-center ${
+                theme === 'dark' ? 'bg-red-900 text-red-200' : 'bg-red-100 text-red-800'
+              }`}
+            >
               Danger
             </div>
           </div>

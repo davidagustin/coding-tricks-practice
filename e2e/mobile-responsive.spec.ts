@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 
 // Viewport sizes
 const MOBILE_VIEWPORT = { width: 375, height: 667 }; // iPhone SE
@@ -84,9 +84,7 @@ test.describe('Mobile Responsiveness - iPhone SE (375x667)', () => {
       ).toBeVisible();
 
       // Start Practicing button should be visible
-      await expect(
-        page.getByRole('link', { name: /Start Practicing/i })
-      ).toBeVisible();
+      await expect(page.getByRole('link', { name: /Start Practicing/i })).toBeVisible();
 
       // Progress card should be visible
       await expect(page.getByText('Your Progress')).toBeVisible();
@@ -190,7 +188,9 @@ test.describe('Mobile Responsiveness - iPhone SE (375x667)', () => {
       await expect(titleHeader).toBeVisible();
 
       // Difficulty column should be hidden on mobile (hidden sm:table-cell)
-      const difficultyHeader = page.locator('th.hidden.sm\\:table-cell').filter({ hasText: 'Difficulty' });
+      const difficultyHeader = page
+        .locator('th.hidden.sm\\:table-cell')
+        .filter({ hasText: 'Difficulty' });
       await expect(difficultyHeader).not.toBeVisible();
 
       // Acceptance column should be hidden on mobile (hidden md:table-cell)

@@ -1,11 +1,11 @@
 'use client';
 
-import { useMemo, useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { problems } from '@/lib/problems';
-import { useProgress } from '@/components/ProgressProvider';
-import ProblemTable from '@/components/ProblemTable';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import FilterSidebar from '@/components/FilterSidebar';
+import ProblemTable from '@/components/ProblemTable';
+import { useProgress } from '@/components/ProgressProvider';
+import { problems } from '@/lib/problems';
 
 type Difficulty = 'easy' | 'medium' | 'hard';
 type SortOption = 'default' | 'difficulty' | 'category' | 'title' | 'acceptance';
@@ -29,15 +29,13 @@ function ProblemsPageContent() {
       const decodedCategory = decodeURIComponent(categoryParam);
       const categories = Array.from(new Set(problems.map((p) => p.category)));
       if (categories.includes(decodedCategory)) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         setSelectedCategory(decodedCategory);
       }
     }
   }, [searchParams]);
 
-  const categories = useMemo(
-    () => Array.from(new Set(problems.map((p) => p.category))).sort(),
-    []
-  );
+  const categories = useMemo(() => Array.from(new Set(problems.map((p) => p.category))).sort(), []);
 
   const problemCounts = useMemo(
     () => ({

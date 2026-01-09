@@ -6,8 +6,8 @@
 import {
   analyzeCodeSafety,
   hasBrowserAPIs,
-  sanitizeErrorMessage,
   SafetyAnalysisResult,
+  sanitizeErrorMessage,
 } from '../../lib/utils/code-safety';
 
 describe('code-safety utilities', () => {
@@ -86,13 +86,17 @@ describe('code-safety utilities', () => {
       it('should detect Function constructor', () => {
         const result = analyzeCodeSafety('new Function("return 1")');
         expect(result.safe).toBe(false);
-        expect(result.issues).toContain('Use of Function constructor detected - this is a security risk');
+        expect(result.issues).toContain(
+          'Use of Function constructor detected - this is a security risk'
+        );
       });
 
       it('should detect Function constructor without new', () => {
         const result = analyzeCodeSafety('Function("return x")');
         expect(result.safe).toBe(false);
-        expect(result.issues).toContain('Use of Function constructor detected - this is a security risk');
+        expect(result.issues).toContain(
+          'Use of Function constructor detected - this is a security risk'
+        );
       });
 
       it('should detect Function with whitespace', () => {
@@ -134,7 +138,9 @@ describe('code-safety utilities', () => {
 
       it('should not warn about innerHTML reading', () => {
         const result = analyzeCodeSafety('const content = element.innerHTML;');
-        expect(result.warnings).not.toContain('innerHTML usage detected - be careful with user input');
+        expect(result.warnings).not.toContain(
+          'innerHTML usage detected - be careful with user input'
+        );
       });
     });
 
@@ -173,12 +179,16 @@ describe('code-safety utilities', () => {
       it('should warn about constructor["property"] access', () => {
         const result = analyzeCodeSafety('obj.constructor["prototype"]');
         expect(result.safe).toBe(true);
-        expect(result.warnings).toContain('Constructor bracket access detected - potential prototype pollution');
+        expect(result.warnings).toContain(
+          'Constructor bracket access detected - potential prototype pollution'
+        );
       });
 
       it('should warn about constructor[variable] access', () => {
         const result = analyzeCodeSafety('x.constructor[key]');
-        expect(result.warnings).toContain('Constructor bracket access detected - potential prototype pollution');
+        expect(result.warnings).toContain(
+          'Constructor bracket access detected - potential prototype pollution'
+        );
       });
     });
 
@@ -190,7 +200,9 @@ describe('code-safety utilities', () => {
           }
         `;
         const result = analyzeCodeSafety(code);
-        expect(result.warnings).toContain('Potential infinite loop detected (while(true) without break)');
+        expect(result.warnings).toContain(
+          'Potential infinite loop detected (while(true) without break)'
+        );
       });
 
       it('should not warn about while(true) with break', () => {
@@ -201,7 +213,9 @@ describe('code-safety utilities', () => {
           }
         `;
         const result = analyzeCodeSafety(code);
-        expect(result.warnings).not.toContain('Potential infinite loop detected (while(true) without break)');
+        expect(result.warnings).not.toContain(
+          'Potential infinite loop detected (while(true) without break)'
+        );
       });
 
       it('should warn about for(;;) without break', () => {
@@ -211,7 +225,9 @@ describe('code-safety utilities', () => {
           }
         `;
         const result = analyzeCodeSafety(code);
-        expect(result.warnings).toContain('Potential infinite loop detected (for(;;) without break)');
+        expect(result.warnings).toContain(
+          'Potential infinite loop detected (for(;;) without break)'
+        );
       });
 
       it('should not warn about for(;;) with break', () => {
@@ -222,35 +238,45 @@ describe('code-safety utilities', () => {
           }
         `;
         const result = analyzeCodeSafety(code);
-        expect(result.warnings).not.toContain('Potential infinite loop detected (for(;;) without break)');
+        expect(result.warnings).not.toContain(
+          'Potential infinite loop detected (for(;;) without break)'
+        );
       });
 
       it('should not flag normal while loops', () => {
         const code = 'while (i < 10) { i++; }';
         const result = analyzeCodeSafety(code);
-        expect(result.warnings.filter(w => w.includes('infinite loop'))).toHaveLength(0);
+        expect(result.warnings.filter((w) => w.includes('infinite loop'))).toHaveLength(0);
       });
     });
 
     describe('large array allocation detection (warning)', () => {
       it('should warn about very large array allocations (6+ digits)', () => {
         const result = analyzeCodeSafety('const arr = new Array(1000000);');
-        expect(result.warnings).toContain('Large array allocation detected - may cause memory issues');
+        expect(result.warnings).toContain(
+          'Large array allocation detected - may cause memory issues'
+        );
       });
 
       it('should warn about 7 digit array allocations', () => {
         const result = analyzeCodeSafety('Array(10000000)');
-        expect(result.warnings).toContain('Large array allocation detected - may cause memory issues');
+        expect(result.warnings).toContain(
+          'Large array allocation detected - may cause memory issues'
+        );
       });
 
       it('should not warn about small array allocations', () => {
         const result = analyzeCodeSafety('const arr = new Array(100);');
-        expect(result.warnings).not.toContain('Large array allocation detected - may cause memory issues');
+        expect(result.warnings).not.toContain(
+          'Large array allocation detected - may cause memory issues'
+        );
       });
 
       it('should not warn about 5 digit array allocations', () => {
         const result = analyzeCodeSafety('new Array(99999)');
-        expect(result.warnings).not.toContain('Large array allocation detected - may cause memory issues');
+        expect(result.warnings).not.toContain(
+          'Large array allocation detected - may cause memory issues'
+        );
       });
     });
 

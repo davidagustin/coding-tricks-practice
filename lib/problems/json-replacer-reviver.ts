@@ -169,7 +169,8 @@ function parseWithTransform(jsonString, transformFn) {
     {
       input: [{ date: '2024-01-15T00:00:00.000Z' }],
       expectedOutput: '{"date":"2024-01-15T00:00:00.000Z"}',
-      description: 'stringifyWithDateHandling with string input (not Date object) - passes through unchanged. Note: Requires actual Date object at runtime to convert to marker format',
+      description:
+        'stringifyWithDateHandling with string input (not Date object) - passes through unchanged. Note: Requires actual Date object at runtime to convert to marker format',
     },
     {
       input: ['{"date":{"__type":"Date","value":"2024-01-15T00:00:00.000Z"}}'],
@@ -177,7 +178,10 @@ function parseWithTransform(jsonString, transformFn) {
       description: 'parseWithDateRevival converts marker back to Date object',
     },
     {
-      input: [{ user: 'john', password: 'secret123', email: 'john@example.com' }, ['password', 'secret', 'token']],
+      input: [
+        { user: 'john', password: 'secret123', email: 'john@example.com' },
+        ['password', 'secret', 'token'],
+      ],
       expectedOutput: '{"user":"john","email":"john@example.com"}',
       description: 'stringifyExcludingSensitive removes password field',
     },

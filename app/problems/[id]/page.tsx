@@ -5,8 +5,8 @@ import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import CodeEditor from '@/components/CodeEditor';
 import ProblemDescription from '@/components/ProblemDescription';
-import TestResults from '@/components/TestResults';
 import { useProgress } from '@/components/ProgressProvider';
+import TestResults from '@/components/TestResults';
 import { getProblemById, problems } from '@/lib/problems';
 import { runTests, type TestRunnerResult } from '@/lib/test-runner';
 
@@ -148,7 +148,11 @@ export default function ProblemPage() {
         {solved && (
           <div className="mb-4 inline-flex items-center gap-2 px-3 py-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full text-sm font-medium">
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clipRule="evenodd"
+              />
             </svg>
             Solved
           </div>

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import React, { type ReactNode } from 'react';
 import FilterSidebar from '../components/FilterSidebar';
-import { ProgressProvider, ProgressContext } from '../components/ProgressProvider';
+import { ProgressContext, ProgressProvider } from '../components/ProgressProvider';
 
 // ============================================================================
 // Mock Progress Provider for Stories
@@ -30,11 +30,7 @@ function MockProgressProvider({
     resetProgress: () => {},
   };
 
-  return (
-    <ProgressContext.Provider value={value}>
-      {children}
-    </ProgressContext.Provider>
-  );
+  return <ProgressContext.Provider value={value}>{children}</ProgressContext.Provider>;
 }
 
 // Helper to generate problem IDs for testing
@@ -174,7 +170,8 @@ export const Default: Story = {
     },
     docs: {
       description: {
-        story: 'The default state of FilterSidebar with no filters applied. All sections are expanded and showing the "All" option selected.',
+        story:
+          'The default state of FilterSidebar with no filters applied. All sections are expanded and showing the "All" option selected.',
       },
     },
   },
@@ -313,7 +310,8 @@ export const MultipleFiltersActive: Story = {
     },
     docs: {
       description: {
-        story: 'FilterSidebar with multiple filters active simultaneously. The "Clear all" button should be visible.',
+        story:
+          'FilterSidebar with multiple filters active simultaneously. The "Clear all" button should be visible.',
       },
     },
   },
@@ -328,7 +326,8 @@ export const AllSectionsCollapsed: Story = {
     },
     docs: {
       description: {
-        story: 'FilterSidebar with all accordion sections collapsed. Users need to click to expand each section.',
+        story:
+          'FilterSidebar with all accordion sections collapsed. Users need to click to expand each section.',
       },
     },
   },
@@ -338,7 +337,8 @@ export const AllSectionsCollapsed: Story = {
     return (
       <div>
         <p className="text-sm text-gray-500 mb-4 italic">
-          Note: Click on section headers to collapse/expand. Initial state shows all sections expanded.
+          Note: Click on section headers to collapse/expand. Initial state shows all sections
+          expanded.
         </p>
         <FilterSidebar {...args} />
       </div>
@@ -392,7 +392,8 @@ export const ProgressZeroPercent: Story = {
     },
     docs: {
       description: {
-        story: 'FilterSidebar showing 0% progress (no problems solved). The progress bar should be empty.',
+        story:
+          'FilterSidebar showing 0% progress (no problems solved). The progress bar should be empty.',
       },
     },
   },
@@ -420,7 +421,8 @@ export const ProgressFiftyPercent: Story = {
     },
     docs: {
       description: {
-        story: 'FilterSidebar showing approximately 50% progress (19/38 problems solved). The progress bar should be half filled.',
+        story:
+          'FilterSidebar showing approximately 50% progress (19/38 problems solved). The progress bar should be half filled.',
       },
     },
   },
@@ -446,7 +448,8 @@ export const ProgressHundredPercent: Story = {
     },
     docs: {
       description: {
-        story: 'FilterSidebar showing 100% progress (38/38 problems solved). The progress bar should be completely filled.',
+        story:
+          'FilterSidebar showing 100% progress (38/38 problems solved). The progress bar should be completely filled.',
       },
     },
   },
@@ -466,7 +469,8 @@ export const MobileViewport: Story = {
     },
     docs: {
       description: {
-        story: 'FilterSidebar as it appears on mobile devices. The sidebar takes full width on smaller screens.',
+        story:
+          'FilterSidebar as it appears on mobile devices. The sidebar takes full width on smaller screens.',
       },
     },
   },
@@ -535,7 +539,8 @@ export const WithFiltersDark: Story = {
     backgrounds: { default: 'dark' },
     docs: {
       description: {
-        story: 'FilterSidebar in dark mode with multiple filters active, showing the "Clear all" button.',
+        story:
+          'FilterSidebar in dark mode with multiple filters active, showing the "Clear all" button.',
       },
     },
   },
@@ -611,7 +616,8 @@ export const ProgressFiftyPercentDark: Story = {
     },
     docs: {
       description: {
-        story: 'FilterSidebar in dark mode showing approximately 50% progress (19/38 problems solved).',
+        story:
+          'FilterSidebar in dark mode showing approximately 50% progress (19/38 problems solved).',
       },
     },
   },
@@ -692,7 +698,8 @@ export const WithClearAllButton: Story = {
     },
     docs: {
       description: {
-        story: 'FilterSidebar showing the "Clear all" button when at least one filter is not set to "all".',
+        story:
+          'FilterSidebar showing the "Clear all" button when at least one filter is not set to "all".',
       },
     },
   },
@@ -837,7 +844,8 @@ export const ManyCategoriesDark: Story = {
     backgrounds: { default: 'dark' },
     docs: {
       description: {
-        story: 'FilterSidebar in dark mode with many categories, demonstrating the scrollable category list.',
+        story:
+          'FilterSidebar in dark mode with many categories, demonstrating the scrollable category list.',
       },
     },
   },
@@ -881,7 +889,8 @@ export const Playground: Story = {
     },
     docs: {
       description: {
-        story: 'An interactive playground to test different combinations of props. Use the controls panel to modify the component.',
+        story:
+          'An interactive playground to test different combinations of props. Use the controls panel to modify the component.',
       },
     },
   },

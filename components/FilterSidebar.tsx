@@ -40,16 +40,31 @@ export default function FilterSidebar({
   const { solvedCount, totalProblems } = useProgress();
 
   const toggleSection = (section: keyof typeof expandedSections) => {
-    setExpandedSections(prev => ({
+    setExpandedSections((prev) => ({
       ...prev,
       [section]: !prev[section],
     }));
   };
 
   const difficulties = [
-    { value: 'easy', label: 'Easy', count: problemCounts.easy, color: 'text-green-600 dark:text-green-400' },
-    { value: 'medium', label: 'Medium', count: problemCounts.medium, color: 'text-yellow-600 dark:text-yellow-400' },
-    { value: 'hard', label: 'Hard', count: problemCounts.hard, color: 'text-red-600 dark:text-red-400' },
+    {
+      value: 'easy',
+      label: 'Easy',
+      count: problemCounts.easy,
+      color: 'text-green-600 dark:text-green-400',
+    },
+    {
+      value: 'medium',
+      label: 'Medium',
+      count: problemCounts.medium,
+      color: 'text-yellow-600 dark:text-yellow-400',
+    },
+    {
+      value: 'hard',
+      label: 'Hard',
+      count: problemCounts.hard,
+      color: 'text-red-600 dark:text-red-400',
+    },
   ];
 
   const statuses = [
@@ -58,7 +73,8 @@ export default function FilterSidebar({
     { value: 'unsolved', label: 'Unsolved', icon: '○' },
   ];
 
-  const hasFilters = selectedDifficulty !== 'all' || selectedCategory !== 'all' || selectedStatus !== 'all';
+  const hasFilters =
+    selectedDifficulty !== 'all' || selectedCategory !== 'all' || selectedStatus !== 'all';
 
   return (
     <aside className="w-full lg:w-64 flex-shrink-0">
@@ -80,7 +96,9 @@ export default function FilterSidebar({
         <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-600 dark:text-gray-400">Your Progress</span>
-            <span className="font-medium text-gray-900 dark:text-gray-100">{solvedCount}/{totalProblems}</span>
+            <span className="font-medium text-gray-900 dark:text-gray-100">
+              {solvedCount}/{totalProblems}
+            </span>
           </div>
           <div className="mt-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
             <div
@@ -103,12 +121,17 @@ export default function FilterSidebar({
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </button>
           {expandedSections.status && (
             <div className="px-4 pb-3 space-y-1">
-              {statuses.map(status => (
+              {statuses.map((status) => (
                 <label
                   key={status.value}
                   className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700/50 cursor-pointer transition-colors"
@@ -141,14 +164,17 @@ export default function FilterSidebar({
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </button>
           {expandedSections.difficulty && (
             <div className="px-4 pb-3 space-y-1">
-              <label
-                className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700/50 cursor-pointer transition-colors"
-              >
+              <label className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700/50 cursor-pointer transition-colors">
                 <input
                   type="radio"
                   name="difficulty"
@@ -160,7 +186,7 @@ export default function FilterSidebar({
                 <span className="text-sm text-gray-700 dark:text-gray-300">All</span>
                 <span className="ml-auto text-xs text-gray-500">{problemCounts.total}</span>
               </label>
-              {difficulties.map(diff => (
+              {difficulties.map((diff) => (
                 <label
                   key={diff.value}
                   className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700/50 cursor-pointer transition-colors"
@@ -194,14 +220,17 @@ export default function FilterSidebar({
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </button>
           {expandedSections.category && (
             <div className="px-4 pb-3 max-h-64 overflow-y-auto space-y-1">
-              <label
-                className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700/50 cursor-pointer transition-colors"
-              >
+              <label className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700/50 cursor-pointer transition-colors">
                 <input
                   type="radio"
                   name="category"
@@ -212,7 +241,7 @@ export default function FilterSidebar({
                 />
                 <span className="text-sm text-gray-700 dark:text-gray-300">All Categories</span>
               </label>
-              {categories.map(category => (
+              {categories.map((category) => (
                 <label
                   key={category}
                   className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700/50 cursor-pointer transition-colors"
@@ -225,7 +254,9 @@ export default function FilterSidebar({
                     onChange={() => onCategoryChange(category)}
                     className="w-4 h-4 text-blue-600 border-gray-300 dark:border-gray-600 focus:ring-blue-500"
                   />
-                  <span className="text-sm text-gray-700 dark:text-gray-300 truncate">{category}</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300 truncate">
+                    {category}
+                  </span>
                 </label>
               ))}
             </div>

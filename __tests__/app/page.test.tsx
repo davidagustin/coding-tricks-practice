@@ -60,9 +60,7 @@ function renderWithProgress(
     ...progressValue,
   };
 
-  return render(
-    <ProgressContext.Provider value={defaultValue}>{ui}</ProgressContext.Provider>
-  );
+  return render(<ProgressContext.Provider value={defaultValue}>{ui}</ProgressContext.Provider>);
 }
 
 describe('Home Page', () => {
@@ -141,7 +139,9 @@ describe('Home Page', () => {
         solvedCount: 0,
       });
 
-      expect(screen.getByText(/Start solving problems to track your progress/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/Start solving problems to track your progress/i)
+      ).toBeInTheDocument();
     });
 
     it('should display percentage complete when there is progress', () => {
@@ -223,10 +223,7 @@ describe('Home Page', () => {
       renderWithProgress(<Home />);
 
       const jsBasicsLink = screen.getByRole('link', { name: /JavaScript Basics/i });
-      expect(jsBasicsLink).toHaveAttribute(
-        'href',
-        '/problems?category=JavaScript%20Basics'
-      );
+      expect(jsBasicsLink).toHaveAttribute('href', '/problems?category=JavaScript%20Basics');
 
       const asyncLink = screen.getByRole('link', { name: /Async Patterns/i });
       expect(asyncLink).toHaveAttribute('href', '/problems?category=Async%20Patterns');

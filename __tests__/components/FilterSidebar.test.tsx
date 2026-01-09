@@ -1,21 +1,23 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { ReactNode } from 'react';
 import FilterSidebar from '@/components/FilterSidebar';
 import { ProgressContext } from '@/components/ProgressProvider';
-import type { ReactNode } from 'react';
 
 // Mock ProgressContext values
-const createMockProgressContext = (overrides: Partial<{
-  solvedProblems: Set<string>;
-  solvedCount: number;
-  totalProblems: number;
-  streak: number;
-  markSolved: (problemId: string) => void;
-  markUnsolved: (problemId: string) => void;
-  isSolved: (problemId: string) => boolean;
-  lastSolvedDate: string | null;
-  resetProgress: () => void;
-}> = {}) => ({
+const createMockProgressContext = (
+  overrides: Partial<{
+    solvedProblems: Set<string>;
+    solvedCount: number;
+    totalProblems: number;
+    streak: number;
+    markSolved: (problemId: string) => void;
+    markUnsolved: (problemId: string) => void;
+    isSolved: (problemId: string) => boolean;
+    lastSolvedDate: string | null;
+    resetProgress: () => void;
+  }> = {}
+) => ({
   solvedProblems: new Set<string>(),
   solvedCount: 0,
   totalProblems: 10,
@@ -35,11 +37,7 @@ const renderWithProgress = (
 ) => {
   const mockContext = createMockProgressContext(progressOverrides);
   return {
-    ...render(
-      <ProgressContext.Provider value={mockContext}>
-        {ui}
-      </ProgressContext.Provider>
-    ),
+    ...render(<ProgressContext.Provider value={mockContext}>{ui}</ProgressContext.Provider>),
     mockContext,
   };
 };
@@ -63,7 +61,9 @@ const queryRadioByLabelText = (text: string): HTMLInputElement | null => {
 };
 
 // Default props factory
-const createDefaultProps = (overrides: Partial<React.ComponentProps<typeof FilterSidebar>> = {}) => ({
+const createDefaultProps = (
+  overrides: Partial<React.ComponentProps<typeof FilterSidebar>> = {}
+) => ({
   categories: ['Arrays', 'Strings', 'Objects', 'Functions'],
   selectedDifficulty: 'all',
   selectedCategory: 'all',
@@ -163,15 +163,15 @@ describe('FilterSidebar', () => {
       const onDifficultyChange = jest.fn();
       const props = createDefaultProps({
         onDifficultyChange,
-        selectedDifficulty: 'easy'
+        selectedDifficulty: 'easy',
       });
 
       renderWithProgress(<FilterSidebar {...props} />);
 
       // Find the All option in the Difficulty section - it's the first radio with name="difficulty"
-      const allRadios = screen.getAllByRole('radio').filter(
-        (radio) => (radio as HTMLInputElement).name === 'difficulty'
-      );
+      const allRadios = screen
+        .getAllByRole('radio')
+        .filter((radio) => (radio as HTMLInputElement).name === 'difficulty');
       await user.click(allRadios[0]); // First one is "All"
 
       expect(onDifficultyChange).toHaveBeenCalledWith('all');
@@ -205,7 +205,7 @@ describe('FilterSidebar', () => {
       const onCategoryChange = jest.fn();
       const props = createDefaultProps({
         onCategoryChange,
-        selectedCategory: 'Arrays'
+        selectedCategory: 'Arrays',
       });
 
       renderWithProgress(<FilterSidebar {...props} />);
@@ -255,15 +255,15 @@ describe('FilterSidebar', () => {
       const onStatusChange = jest.fn();
       const props = createDefaultProps({
         onStatusChange,
-        selectedStatus: 'solved'
+        selectedStatus: 'solved',
       });
 
       renderWithProgress(<FilterSidebar {...props} />);
 
       // Find the All option in the Status section - it's the first radio with name="status"
-      const allRadios = screen.getAllByRole('radio').filter(
-        (radio) => (radio as HTMLInputElement).name === 'status'
-      );
+      const allRadios = screen
+        .getAllByRole('radio')
+        .filter((radio) => (radio as HTMLInputElement).name === 'status');
       await user.click(allRadios[0]); // First one is "All"
 
       expect(onStatusChange).toHaveBeenCalledWith('all');
@@ -336,38 +336,38 @@ describe('FilterSidebar', () => {
 
   describe('Progress bar display', () => {
     it('should display progress text', () => {
-      renderWithProgress(
-        <FilterSidebar {...createDefaultProps()} />,
-        { solvedCount: 5, totalProblems: 10 }
-      );
+      renderWithProgress(<FilterSidebar {...createDefaultProps()} />, {
+        solvedCount: 5,
+        totalProblems: 10,
+      });
 
       expect(screen.getByText('Your Progress')).toBeInTheDocument();
       expect(screen.getByText('5/10')).toBeInTheDocument();
     });
 
     it('should display 0/0 when no problems', () => {
-      renderWithProgress(
-        <FilterSidebar {...createDefaultProps()} />,
-        { solvedCount: 0, totalProblems: 0 }
-      );
+      renderWithProgress(<FilterSidebar {...createDefaultProps()} />, {
+        solvedCount: 0,
+        totalProblems: 0,
+      });
 
       expect(screen.getByText('0/0')).toBeInTheDocument();
     });
 
     it('should display 100% progress when all solved', () => {
-      renderWithProgress(
-        <FilterSidebar {...createDefaultProps()} />,
-        { solvedCount: 10, totalProblems: 10 }
-      );
+      renderWithProgress(<FilterSidebar {...createDefaultProps()} />, {
+        solvedCount: 10,
+        totalProblems: 10,
+      });
 
       expect(screen.getByText('10/10')).toBeInTheDocument();
     });
 
     it('should render progress bar with correct width style', () => {
-      const { container } = renderWithProgress(
-        <FilterSidebar {...createDefaultProps()} />,
-        { solvedCount: 5, totalProblems: 10 }
-      );
+      const { container } = renderWithProgress(<FilterSidebar {...createDefaultProps()} />, {
+        solvedCount: 5,
+        totalProblems: 10,
+      });
 
       const progressBar = container.querySelector('.bg-green-500');
       expect(progressBar).toBeInTheDocument();
@@ -375,20 +375,20 @@ describe('FilterSidebar', () => {
     });
 
     it('should render 0% width when no problems solved', () => {
-      const { container } = renderWithProgress(
-        <FilterSidebar {...createDefaultProps()} />,
-        { solvedCount: 0, totalProblems: 10 }
-      );
+      const { container } = renderWithProgress(<FilterSidebar {...createDefaultProps()} />, {
+        solvedCount: 0,
+        totalProblems: 10,
+      });
 
       const progressBar = container.querySelector('.bg-green-500');
       expect(progressBar).toHaveStyle({ width: '0%' });
     });
 
     it('should render 100% width when all problems solved', () => {
-      const { container } = renderWithProgress(
-        <FilterSidebar {...createDefaultProps()} />,
-        { solvedCount: 20, totalProblems: 20 }
-      );
+      const { container } = renderWithProgress(<FilterSidebar {...createDefaultProps()} />, {
+        solvedCount: 20,
+        totalProblems: 20,
+      });
 
       const progressBar = container.querySelector('.bg-green-500');
       expect(progressBar).toHaveStyle({ width: '100%' });
@@ -586,19 +586,16 @@ describe('FilterSidebar', () => {
         problemCounts: { easy: 0, medium: 0, hard: 0, total: 0 },
       });
 
-      renderWithProgress(
-        <FilterSidebar {...props} />,
-        { solvedCount: 0, totalProblems: 0 }
-      );
+      renderWithProgress(<FilterSidebar {...props} />, { solvedCount: 0, totalProblems: 0 });
 
       expect(screen.getByText('0/0')).toBeInTheDocument();
     });
 
     it('should handle NaN progress calculation gracefully', () => {
-      const { container } = renderWithProgress(
-        <FilterSidebar {...createDefaultProps()} />,
-        { solvedCount: 0, totalProblems: 0 }
-      );
+      const { container } = renderWithProgress(<FilterSidebar {...createDefaultProps()} />, {
+        solvedCount: 0,
+        totalProblems: 0,
+      });
 
       // Progress bar should still render
       const progressBar = container.querySelector('.bg-green-500');
@@ -701,18 +698,18 @@ describe('FilterSidebar', () => {
     it('should group status filters with same name attribute', () => {
       renderWithProgress(<FilterSidebar {...createDefaultProps()} />);
 
-      const statusRadios = screen.getAllByRole('radio').filter(
-        (radio) => (radio as HTMLInputElement).name === 'status'
-      );
+      const statusRadios = screen
+        .getAllByRole('radio')
+        .filter((radio) => (radio as HTMLInputElement).name === 'status');
       expect(statusRadios.length).toBe(3); // All, Solved, Unsolved
     });
 
     it('should group difficulty filters with same name attribute', () => {
       renderWithProgress(<FilterSidebar {...createDefaultProps()} />);
 
-      const difficultyRadios = screen.getAllByRole('radio').filter(
-        (radio) => (radio as HTMLInputElement).name === 'difficulty'
-      );
+      const difficultyRadios = screen
+        .getAllByRole('radio')
+        .filter((radio) => (radio as HTMLInputElement).name === 'difficulty');
       expect(difficultyRadios.length).toBe(4); // All, Easy, Medium, Hard
     });
 
@@ -722,9 +719,9 @@ describe('FilterSidebar', () => {
       });
       renderWithProgress(<FilterSidebar {...props} />);
 
-      const categoryRadios = screen.getAllByRole('radio').filter(
-        (radio) => (radio as HTMLInputElement).name === 'category'
-      );
+      const categoryRadios = screen
+        .getAllByRole('radio')
+        .filter((radio) => (radio as HTMLInputElement).name === 'category');
       expect(categoryRadios.length).toBe(3); // All Categories + 2 categories
     });
 
@@ -824,19 +821,19 @@ describe('FilterSidebar', () => {
 
   describe('Integration with ProgressContext', () => {
     it('should display progress from context', () => {
-      renderWithProgress(
-        <FilterSidebar {...createDefaultProps()} />,
-        { solvedCount: 7, totalProblems: 15 }
-      );
+      renderWithProgress(<FilterSidebar {...createDefaultProps()} />, {
+        solvedCount: 7,
+        totalProblems: 15,
+      });
 
       expect(screen.getByText('7/15')).toBeInTheDocument();
     });
 
     it('should calculate progress percentage correctly', () => {
-      const { container } = renderWithProgress(
-        <FilterSidebar {...createDefaultProps()} />,
-        { solvedCount: 3, totalProblems: 12 }
-      );
+      const { container } = renderWithProgress(<FilterSidebar {...createDefaultProps()} />, {
+        solvedCount: 3,
+        totalProblems: 12,
+      });
 
       const progressBar = container.querySelector('.bg-green-500');
       expect(progressBar).toHaveStyle({ width: '25%' });

@@ -1,22 +1,72 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import React, { createContext, useContext, useMemo, type ReactNode } from 'react';
 import Link from 'next/link';
+import React, { createContext, type ReactNode, useContext, useMemo } from 'react';
 
 // ============================================================================
 // Mock Data
 // ============================================================================
 
 const mockProblems = [
-  { id: 'destructuring-patterns', title: 'Destructuring Patterns', difficulty: 'easy' as const, category: 'JavaScript Basics' },
-  { id: 'optional-chaining', title: 'Optional Chaining', difficulty: 'easy' as const, category: 'JavaScript Basics' },
-  { id: 'nullish-coalescing', title: 'Nullish Coalescing', difficulty: 'easy' as const, category: 'JavaScript Basics' },
-  { id: 'array-methods', title: 'Array Methods', difficulty: 'medium' as const, category: 'Array Methods' },
-  { id: 'reduce-patterns', title: 'Reduce Patterns', difficulty: 'medium' as const, category: 'Array Methods' },
-  { id: 'promise-chaining', title: 'Promise Chaining', difficulty: 'medium' as const, category: 'Async Programming' },
-  { id: 'async-await', title: 'Async/Await', difficulty: 'medium' as const, category: 'Async Programming' },
-  { id: 'generics-basic', title: 'Generics Basic', difficulty: 'hard' as const, category: 'TypeScript Advanced' },
-  { id: 'conditional-types', title: 'Conditional Types', difficulty: 'hard' as const, category: 'TypeScript Advanced' },
-  { id: 'template-literal-types', title: 'Template Literal Types', difficulty: 'hard' as const, category: 'TypeScript Advanced' },
+  {
+    id: 'destructuring-patterns',
+    title: 'Destructuring Patterns',
+    difficulty: 'easy' as const,
+    category: 'JavaScript Basics',
+  },
+  {
+    id: 'optional-chaining',
+    title: 'Optional Chaining',
+    difficulty: 'easy' as const,
+    category: 'JavaScript Basics',
+  },
+  {
+    id: 'nullish-coalescing',
+    title: 'Nullish Coalescing',
+    difficulty: 'easy' as const,
+    category: 'JavaScript Basics',
+  },
+  {
+    id: 'array-methods',
+    title: 'Array Methods',
+    difficulty: 'medium' as const,
+    category: 'Array Methods',
+  },
+  {
+    id: 'reduce-patterns',
+    title: 'Reduce Patterns',
+    difficulty: 'medium' as const,
+    category: 'Array Methods',
+  },
+  {
+    id: 'promise-chaining',
+    title: 'Promise Chaining',
+    difficulty: 'medium' as const,
+    category: 'Async Programming',
+  },
+  {
+    id: 'async-await',
+    title: 'Async/Await',
+    difficulty: 'medium' as const,
+    category: 'Async Programming',
+  },
+  {
+    id: 'generics-basic',
+    title: 'Generics Basic',
+    difficulty: 'hard' as const,
+    category: 'TypeScript Advanced',
+  },
+  {
+    id: 'conditional-types',
+    title: 'Conditional Types',
+    difficulty: 'hard' as const,
+    category: 'TypeScript Advanced',
+  },
+  {
+    id: 'template-literal-types',
+    title: 'Template Literal Types',
+    difficulty: 'hard' as const,
+    category: 'TypeScript Advanced',
+  },
 ];
 
 // ============================================================================
@@ -54,11 +104,7 @@ function MockProgressProvider({
     lastSolvedDate: solvedProblems.size > 0 ? new Date().toISOString() : null,
   };
 
-  return (
-    <MockProgressContext.Provider value={value}>
-      {children}
-    </MockProgressContext.Provider>
-  );
+  return <MockProgressContext.Provider value={value}>{children}</MockProgressContext.Provider>;
 }
 
 function useMockProgress() {
@@ -86,10 +132,7 @@ function MockHomePage() {
     []
   );
 
-  const categories = useMemo(
-    () => Array.from(new Set(mockProblems.map((p) => p.category))),
-    []
-  );
+  const categories = useMemo(() => Array.from(new Set(mockProblems.map((p) => p.category))), []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
@@ -305,7 +348,8 @@ const meta: Meta<typeof MockHomePage> = {
   },
   decorators: [
     (Story, context) => {
-      const solvedProblems = (context.args as { solvedProblems?: Set<string> })?.solvedProblems || new Set<string>();
+      const solvedProblems =
+        (context.args as { solvedProblems?: Set<string> })?.solvedProblems || new Set<string>();
       return (
         <MockProgressProvider solvedProblems={solvedProblems}>
           <Story />
@@ -352,7 +396,12 @@ export const ZeroSolved: Story = {
  */
 export const WithProgress: Story = {
   args: {
-    solvedProblems: new Set(['destructuring-patterns', 'optional-chaining', 'array-methods', 'promise-chaining']),
+    solvedProblems: new Set([
+      'destructuring-patterns',
+      'optional-chaining',
+      'array-methods',
+      'promise-chaining',
+    ]),
   },
   parameters: {
     docs: {
@@ -368,7 +417,7 @@ export const WithProgress: Story = {
  */
 export const AllSolved: Story = {
   args: {
-    solvedProblems: new Set(mockProblems.map(p => p.id)),
+    solvedProblems: new Set(mockProblems.map((p) => p.id)),
   },
   parameters: {
     docs: {
@@ -423,7 +472,8 @@ export const DarkTheme: Story = {
   },
   decorators: [
     (Story, context) => {
-      const solvedProblems = (context.args as { solvedProblems?: Set<string> })?.solvedProblems || new Set<string>();
+      const solvedProblems =
+        (context.args as { solvedProblems?: Set<string> })?.solvedProblems || new Set<string>();
       return (
         <div className="dark bg-gray-950 min-h-screen">
           <MockProgressProvider solvedProblems={solvedProblems}>

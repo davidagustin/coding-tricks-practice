@@ -16,17 +16,13 @@ function createMockTestResult(overrides: Partial<TestResult> = {}): TestResult {
 describe('TestResults', () => {
   describe('Loading State', () => {
     it('shows loading indicator when isRunning is true', () => {
-      render(
-        <TestResults results={[]} allPassed={false} isRunning={true} />
-      );
+      render(<TestResults results={[]} allPassed={false} isRunning={true} />);
 
       expect(screen.getByText('Running tests...')).toBeInTheDocument();
     });
 
     it('displays a spinner animation when running', () => {
-      const { container } = render(
-        <TestResults results={[]} allPassed={false} isRunning={true} />
-      );
+      const { container } = render(<TestResults results={[]} allPassed={false} isRunning={true} />);
 
       const spinner = container.querySelector('.animate-spin');
       expect(spinner).toBeInTheDocument();
@@ -34,9 +30,7 @@ describe('TestResults', () => {
 
     it('does not show test results while running', () => {
       const results = [createMockTestResult({ passed: true })];
-      render(
-        <TestResults results={results} allPassed={true} isRunning={true} />
-      );
+      render(<TestResults results={results} allPassed={true} isRunning={true} />);
 
       // Should show loading, not results
       expect(screen.getByText('Running tests...')).toBeInTheDocument();
@@ -61,12 +55,7 @@ describe('TestResults', () => {
 
     it('shows error in a red-styled container', () => {
       const { container } = render(
-        <TestResults
-          results={[]}
-          allPassed={false}
-          error="Some error"
-          isRunning={false}
-        />
+        <TestResults results={[]} allPassed={false} error="Some error" isRunning={false} />
       );
 
       const errorContainer = container.querySelector('.bg-red-50');
@@ -75,12 +64,7 @@ describe('TestResults', () => {
 
     it('displays error as preformatted text', () => {
       const { container } = render(
-        <TestResults
-          results={[]}
-          allPassed={false}
-          error="Error message"
-          isRunning={false}
-        />
+        <TestResults results={[]} allPassed={false} error="Error message" isRunning={false} />
       );
 
       const pre = container.querySelector('pre');
@@ -91,9 +75,7 @@ describe('TestResults', () => {
 
   describe('Empty Results State', () => {
     it('shows prompt to run tests when no results and no error', () => {
-      render(
-        <TestResults results={[]} allPassed={false} isRunning={false} />
-      );
+      render(<TestResults results={[]} allPassed={false} isRunning={false} />);
 
       expect(screen.getByText(/No test results yet/i)).toBeInTheDocument();
       expect(screen.getByText(/Click .* to execute your code/i)).toBeInTheDocument();
@@ -106,9 +88,7 @@ describe('TestResults', () => {
         createMockTestResult({ passed: true }),
         createMockTestResult({ passed: true }),
       ];
-      render(
-        <TestResults results={results} allPassed={true} isRunning={false} />
-      );
+      render(<TestResults results={results} allPassed={true} isRunning={false} />);
 
       expect(screen.getByText(/All tests passed!/i)).toBeInTheDocument();
     });
@@ -141,9 +121,7 @@ describe('TestResults', () => {
         createMockTestResult({ passed: true }),
         createMockTestResult({ passed: false }),
       ];
-      render(
-        <TestResults results={results} allPassed={false} isRunning={false} />
-      );
+      render(<TestResults results={results} allPassed={false} isRunning={false} />);
 
       expect(screen.getByText('Some tests failed')).toBeInTheDocument();
     });
@@ -176,9 +154,7 @@ describe('TestResults', () => {
         createMockTestResult({ passed: false }),
         createMockTestResult({ passed: true }),
       ];
-      render(
-        <TestResults results={results} allPassed={false} isRunning={false} />
-      );
+      render(<TestResults results={results} allPassed={false} isRunning={false} />);
 
       expect(screen.getByText(/Test Case 1/)).toBeInTheDocument();
       expect(screen.getByText(/Test Case 2/)).toBeInTheDocument();
@@ -192,9 +168,7 @@ describe('TestResults', () => {
           description: 'Should handle empty array',
         }),
       ];
-      render(
-        <TestResults results={results} allPassed={true} isRunning={false} />
-      );
+      render(<TestResults results={results} allPassed={true} isRunning={false} />);
 
       expect(screen.getByText(/Should handle empty array/)).toBeInTheDocument();
     });
@@ -206,9 +180,7 @@ describe('TestResults', () => {
           input: [1, 2, 3],
         }),
       ];
-      render(
-        <TestResults results={results} allPassed={true} isRunning={false} />
-      );
+      render(<TestResults results={results} allPassed={true} isRunning={false} />);
 
       expect(screen.getByText('Input:')).toBeInTheDocument();
       // JSON stringified
@@ -222,9 +194,7 @@ describe('TestResults', () => {
           expectedOutput: { result: 'success' },
         }),
       ];
-      render(
-        <TestResults results={results} allPassed={true} isRunning={false} />
-      );
+      render(<TestResults results={results} allPassed={true} isRunning={false} />);
 
       expect(screen.getByText('Expected:')).toBeInTheDocument();
       expect(screen.getByText(/"result": "success"/)).toBeInTheDocument();
@@ -237,9 +207,7 @@ describe('TestResults', () => {
           actualOutput: 42,
         }),
       ];
-      render(
-        <TestResults results={results} allPassed={true} isRunning={false} />
-      );
+      render(<TestResults results={results} allPassed={true} isRunning={false} />);
 
       expect(screen.getByText('Got:')).toBeInTheDocument();
       expect(screen.getByText('42')).toBeInTheDocument();
@@ -252,11 +220,11 @@ describe('TestResults', () => {
           error: 'TypeError: Cannot read property of undefined',
         }),
       ];
-      render(
-        <TestResults results={results} allPassed={false} isRunning={false} />
-      );
+      render(<TestResults results={results} allPassed={false} isRunning={false} />);
 
-      expect(screen.getByText(/Error: TypeError: Cannot read property of undefined/)).toBeInTheDocument();
+      expect(
+        screen.getByText(/Error: TypeError: Cannot read property of undefined/)
+      ).toBeInTheDocument();
     });
 
     it('does not show input/expected/actual when test has error', () => {
@@ -269,9 +237,7 @@ describe('TestResults', () => {
           actualOutput: undefined,
         }),
       ];
-      render(
-        <TestResults results={results} allPassed={false} isRunning={false} />
-      );
+      render(<TestResults results={results} allPassed={false} isRunning={false} />);
 
       // Error should be shown
       expect(screen.getByText(/Error: Some error/)).toBeInTheDocument();
@@ -323,9 +289,7 @@ describe('TestResults', () => {
           actualOutput: undefined,
         }),
       ];
-      render(
-        <TestResults results={results} allPassed={false} isRunning={false} />
-      );
+      render(<TestResults results={results} allPassed={false} isRunning={false} />);
 
       expect(screen.getByText('undefined')).toBeInTheDocument();
     });
@@ -337,9 +301,7 @@ describe('TestResults', () => {
           actualOutput: null,
         }),
       ];
-      render(
-        <TestResults results={results} allPassed={true} isRunning={false} />
-      );
+      render(<TestResults results={results} allPassed={true} isRunning={false} />);
 
       expect(screen.getByText('null')).toBeInTheDocument();
     });
@@ -353,9 +315,7 @@ describe('TestResults', () => {
           actualOutput: [1, 2, 3],
         }),
       ];
-      render(
-        <TestResults results={results} allPassed={true} isRunning={false} />
-      );
+      render(<TestResults results={results} allPassed={true} isRunning={false} />);
 
       // Should have properly formatted arrays
       const preElements = screen.getAllByText(/\[\s*1/);
@@ -369,9 +329,7 @@ describe('TestResults', () => {
           actualOutput: { a: 1, b: 2 },
         }),
       ];
-      render(
-        <TestResults results={results} allPassed={true} isRunning={false} />
-      );
+      render(<TestResults results={results} allPassed={true} isRunning={false} />);
 
       expect(screen.getByText(/"a": 1/)).toBeInTheDocument();
       expect(screen.getByText(/"b": 2/)).toBeInTheDocument();
@@ -384,9 +342,7 @@ describe('TestResults', () => {
           actualOutput: 'hello world',
         }),
       ];
-      render(
-        <TestResults results={results} allPassed={true} isRunning={false} />
-      );
+      render(<TestResults results={results} allPassed={true} isRunning={false} />);
 
       expect(screen.getByText(/"hello world"/)).toBeInTheDocument();
     });
@@ -398,9 +354,7 @@ describe('TestResults', () => {
           actualOutput: true,
         }),
       ];
-      render(
-        <TestResults results={results} allPassed={true} isRunning={false} />
-      );
+      render(<TestResults results={results} allPassed={true} isRunning={false} />);
 
       expect(screen.getByText('true')).toBeInTheDocument();
     });
@@ -416,9 +370,7 @@ describe('TestResults', () => {
           actualOutput: '',
         }),
       ];
-      render(
-        <TestResults results={results} allPassed={true} isRunning={false} />
-      );
+      render(<TestResults results={results} allPassed={true} isRunning={false} />);
 
       // Empty strings should be rendered as ""
       const emptyStrings = screen.getAllByText('""');
@@ -432,9 +384,7 @@ describe('TestResults', () => {
           actualOutput: 9999999999999999,
         }),
       ];
-      render(
-        <TestResults results={results} allPassed={true} isRunning={false} />
-      );
+      render(<TestResults results={results} allPassed={true} isRunning={false} />);
 
       // Large number should be displayed (may have precision issues)
       expect(screen.getByText(/\d{10,}/)).toBeInTheDocument();
@@ -447,9 +397,7 @@ describe('TestResults', () => {
           actualOutput: { nested: { array: [1, 2, { deep: true }] } },
         }),
       ];
-      render(
-        <TestResults results={results} allPassed={true} isRunning={false} />
-      );
+      render(<TestResults results={results} allPassed={true} isRunning={false} />);
 
       expect(screen.getByText(/"nested"/)).toBeInTheDocument();
       expect(screen.getByText(/"deep": true/)).toBeInTheDocument();
@@ -462,9 +410,7 @@ describe('TestResults', () => {
           description: `Test ${i + 1}`,
         })
       );
-      render(
-        <TestResults results={results} allPassed={false} isRunning={false} />
-      );
+      render(<TestResults results={results} allPassed={false} isRunning={false} />);
 
       expect(screen.getByText('Test Case 1')).toBeInTheDocument();
       expect(screen.getByText('Test Case 20')).toBeInTheDocument();

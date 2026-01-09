@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Home Page', () => {
   test.beforeEach(async ({ page }) => {
@@ -19,9 +19,7 @@ test.describe('Home Page', () => {
   });
 
   test('should display subtitle/description', async ({ page }) => {
-    const description = page.getByText(
-      /Master advanced JavaScript and TypeScript patterns/i
-    );
+    const description = page.getByText(/Master advanced JavaScript and TypeScript patterns/i);
     await expect(description).toBeVisible();
   });
 
@@ -59,9 +57,7 @@ test.describe('Home Page', () => {
     await expect(startButton).toHaveAttribute('href', '/problems');
   });
 
-  test('should navigate to problems page when clicking "Start Practicing"', async ({
-    page,
-  }) => {
+  test('should navigate to problems page when clicking "Start Practicing"', async ({ page }) => {
     const startButton = page.getByRole('link', { name: /Start Practicing/i });
     await startButton.click();
 
@@ -77,9 +73,7 @@ test.describe('Home Page', () => {
     await expect(topicsHeading).toBeVisible();
   });
 
-  test('should display category cards in Topics Covered section', async ({
-    page,
-  }) => {
+  test('should display category cards in Topics Covered section', async ({ page }) => {
     // There should be multiple category cards
     // Each category card contains the category name and problem count
     const categoryCards = page
@@ -124,8 +118,6 @@ test.describe('Home Page', () => {
     await expect(
       page.getByRole('heading', { name: /JavaScript & TypeScript Tricks/i })
     ).toBeVisible();
-    await expect(
-      page.getByRole('link', { name: /Start Practicing/i })
-    ).toBeVisible();
+    await expect(page.getByRole('link', { name: /Start Practicing/i })).toBeVisible();
   });
 });

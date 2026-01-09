@@ -90,7 +90,7 @@ export function hasBrowserAPIs(code: string): boolean {
  */
 export function sanitizeErrorMessage(message: string): string {
   // Remove absolute file paths
-  let sanitized = message.replace(/[A-Za-z]:[\\\/][^\s:]+/g, '[path]');
+  let sanitized = message.replace(/[A-Za-z]:[\\/][^\s:]+/g, '[path]');
   sanitized = sanitized.replace(/\/[^\s:]+\/[^\s:]+/g, '[path]');
 
   // Truncate very long error messages

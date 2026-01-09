@@ -26,11 +26,11 @@ export const problem: Problem = {
   category: 'Async/Promises',
   description: `<h2>In-Depth Explanation</h2>
 
-<p>\<code>Promise.race()\</code> is a powerful method that takes an array of promises and returns a new promise that settles (resolves or rejects) as soon as the first promise in the array settles. This behavior makes it perfect for implementing timeouts.</p>
+<p><code>Promise.race()</code> is a powerful method that takes an array of promises and returns a new promise that settles (resolves or rejects) as soon as the first promise in the array settles. This behavior makes it perfect for implementing timeouts.</p>
 
 <p>The timeout pattern works by racing your actual promise against a "timeout promise" that rejects after a specified duration. If your promise completes first, you get its result. If the timeout promise settles first, you get a timeout error. This ensures that operations don't hang indefinitely.</p>
 
-<p>The key insight is that \<code>Promise.race()\</code> doesn't wait for all promises - it returns immediately when any promise settles, making it ideal for timeout scenarios where you want to enforce a maximum wait time.</p>
+<p>The key insight is that <code>Promise.race()</code> doesn't wait for all promises - it returns immediately when any promise settles, making it ideal for timeout scenarios where you want to enforce a maximum wait time.</p>
 
 <h2>Importance</h2>
 

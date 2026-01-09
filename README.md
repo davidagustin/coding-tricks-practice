@@ -2,16 +2,77 @@
 
 A LeetCode-like application for practicing advanced JavaScript and TypeScript patterns and techniques. Master destructuring, optional chaining, template literal types, discriminated unions, and more through hands-on coding challenges.
 
-## Features
+## ✨ Features
 
-- 🎯 **56 Practice Problems** covering essential JS/TS patterns
+- 🎯 **56+ Practice Problems** covering essential JS/TS patterns
 - 💻 **Interactive Code Editor** with syntax highlighting (Monaco Editor)
 - ✅ **Automated Test Runner** to verify your solutions
 - 📚 **Enhanced Descriptions** with in-depth explanations, importance, and practical applications
 - 🎨 **Modern UI** with dark mode support and smooth animations
 - 🚀 **Next.js & Vercel Ready** for easy deployment
 
-## Topics Covered
+## 🚀 Getting Started
+
+### Installation
+
+```bash
+npm install
+```
+
+### Development
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
+
+### Testing
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
+
+# Test specific agent's problems (1-4)
+npm run test:agent 1
+
+# Test a specific problem
+npm run test:agent 1 reduce-grouping
+
+# Test all problems
+npm run test:agent all
+```
+
+## 📁 Project Structure
+
+```
+├── app/
+│   ├── page.tsx              # Home page
+│   ├── problems/
+│   │   ├── page.tsx          # Problems list
+│   │   └── [id]/
+│   │       └── page.tsx      # Individual problem page
+│   └── layout.tsx            # Root layout
+├── components/
+│   ├── CodeEditor.tsx        # Code editor component
+│   ├── TestResults.tsx       # Test results display
+│   ├── ProblemDescription.tsx # Problem description
+│   └── ErrorHandler.tsx      # Error handling component
+├── lib/
+│   ├── problems.ts           # Problem definitions (56 problems)
+│   └── test-runner.ts        # Test execution logic
+├── scripts/
+│   └── test-problems.ts      # Script to test problems by agent
+└── __tests__/                # Test files
+```
+
+## 🎯 Topics Covered
 
 ### JavaScript Basics
 - Destructuring with defaults, nullish coalescing, optional chaining
@@ -29,7 +90,7 @@ A LeetCode-like application for practicing advanced JavaScript and TypeScript pa
 
 ### Advanced JavaScript
 - Proxy API and traps
-- WeakMap & WeakSet (with enhanced explanations)
+- WeakMap & WeakSet
 - Symbol usage
 - Reflect API
 - Object.freeze & Object.seal
@@ -54,48 +115,12 @@ A LeetCode-like application for practicing advanced JavaScript and TypeScript pa
 - Template literal types
 
 ### Functional Programming
-- Currying (with enhanced explanations)
-- Memoization (with enhanced explanations)
-- Pipe & Compose (with enhanced explanations)
-- Debounce & Throttle (with enhanced explanations)
+- Currying
+- Memoization
+- Pipe & compose
+- Debounce & throttle
 
-## Getting Started
-
-First, install dependencies:
-
-```bash
-npm install
-```
-
-Then, run the development server:
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
-
-## Project Structure
-
-```
-├── app/
-│   ├── page.tsx              # Home page
-│   ├── problems/
-│   │   ├── page.tsx          # Problems list
-│   │   └── [id]/
-│   │       └── page.tsx      # Individual problem page
-│   └── layout.tsx            # Root layout
-├── components/
-│   ├── CodeEditor.tsx        # Code editor component
-│   ├── TestResults.tsx       # Test results display
-│   └── ProblemDescription.tsx # Problem description
-├── lib/
-│   ├── problems.ts           # Problem definitions
-│   └── test-runner.ts        # Test execution logic
-└── package.json
-```
-
-## How It Works
+## 📖 How It Works
 
 1. **Browse Problems**: Visit `/problems` to see all available challenges
 2. **Select a Problem**: Click on any problem to start practicing
@@ -103,23 +128,82 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 4. **Run Tests**: Click "Run Tests" to verify your solution
 5. **View Solution**: Click "Show Solution" to see the reference implementation
 
-## Problem Format
+## 🔧 Adding New Problems
 
 Problems are defined in `lib/problems.ts`. Each problem includes:
-- **Title, difficulty, and category**
-- **Enhanced Description** with:
-  - In-Depth Explanation of the concept
-  - Importance and why it matters
-  - Usefulness & Practical Applications
-- **Examples** with input/output and explanations
-- **Starter code template** to begin with
-- **Solution code** for reference
-- **Comprehensive test cases** to verify solutions
-- **Hints** to guide problem-solving
 
-Many problems now feature enhanced descriptions that provide deeper context about why these patterns matter and how they're used in real-world applications.
+```typescript
+{
+  id: 'unique-problem-id',
+  title: 'Problem Title',
+  difficulty: 'easy' | 'medium' | 'hard',
+  category: 'Category Name',
+  description: 'Problem description with markdown support',
+  examples: [
+    {
+      input: 'Code example',
+      output: 'Expected output',
+      explanation: 'Optional explanation'
+    }
+  ],
+  starterCode: 'Initial code template',
+  solution: 'Reference solution',
+  testCases: [
+    {
+      input: [...],
+      expectedOutput: {...},
+      description: 'Optional description'
+    }
+  ],
+  hints: ['Hint 1', 'Hint 2', ...]
+}
+```
 
-## Deployment
+## 👥 Agent Review System
+
+The 56 problems are split into 4 equal groups for parallel review:
+
+### Agent 1: Problems 1-14
+Array Methods & Promises Basics
+- `reduce-grouping`, `map-deduplication`, `object-entries`
+- `promise-race-timeout`, `promise-allsettled`, `find-vs-filter`
+- `array-chaining`, `reduce-right`, `some-every`, `array-from`
+- `partition-pattern`, `chunk-arrays`, `promise-all-vs-allsettled`, `async-generators`
+
+### Agent 2: Problems 15-28
+Promises Advanced & TypeScript Basics
+- `abort-controller`, `retry-pattern`, `promise-chaining`
+- `error-boundaries`, `promise-constructor`, `async-await-error`
+- `promise-race-first`, `promise-finally`
+- `basic-typescript-types`, `interfaces`, `type-aliases`
+- `generics-basic`, `union-intersection`, `optional-readonly`
+
+### Agent 3: Problems 29-42
+Advanced JavaScript Features
+- `type-guards`, `enums`, `proxy-api`, `weakmap-weakset`
+- `symbol-usage`, `reflect-api`, `object-freeze-seal`
+- `property-descriptors`, `computed-property-names`
+- `spread-operator-patterns`, `spread-operator-tricks`
+- `short-circuit-evaluation`, `tagged-template-literals`, `reduce-patterns`
+
+### Agent 4: Problems 43-56
+Functional Programming & Advanced TypeScript
+- `array-from-tricks`, `sort-comparators`, `string-padding`
+- `currying`, `memoization`, `pipe-compose`, `debounce-throttle`
+- `mapped-types`, `conditional-types`, `infer-keyword`
+- `branded-types`, `proxy-traps`, `generator-functions`, `weak-collections`
+
+### Review Checklist
+
+For each problem, agents should verify:
+
+- ✅ **Runtime Errors**: Code executes without errors
+- ✅ **Code Review**: Solution is correct and follows best practices
+- ✅ **Logic Verification**: Solution logic is sound
+- ✅ **Research**: Solution uses appropriate patterns
+- ✅ **Documentation**: All findings documented
+
+## 🚢 Deployment
 
 This project is ready to deploy on Vercel:
 
@@ -129,15 +213,22 @@ This project is ready to deploy on Vercel:
 
 The app is fully compatible with Vercel's serverless functions and edge runtime.
 
-## Technologies Used
+## 🛠️ Technologies Used
 
-- **Next.js 16** - React framework
+- **Next.js 16** - React framework with App Router
 - **TypeScript** - Type safety
 - **Tailwind CSS** - Styling
 - **React 19** - UI library
+- **Monaco Editor** - Code editor component
+- **Jest** - Testing framework
 
-## Learn More
+## 📚 Learn More
 
 - [Next.js Documentation](https://nextjs.org/docs)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 - [JavaScript MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+- [React Documentation](https://react.dev)
+
+## 📝 License
+
+This project is open source and available for learning purposes.

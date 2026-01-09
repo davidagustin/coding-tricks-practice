@@ -19,10 +19,7 @@ export function isObject(value: unknown): value is Record<string, unknown> {
 /**
  * Check if an object has a specific property
  */
-export function hasProperty<K extends string>(
-  obj: unknown,
-  key: K
-): obj is Record<K, unknown> {
+export function hasProperty<K extends string>(obj: unknown, key: K): obj is Record<K, unknown> {
   return isObject(obj) && key in obj;
 }
 
@@ -62,7 +59,7 @@ export function getErrorMessage(error: unknown): string {
 /**
  * Type guard for checking if a value is a function
  */
-export function isFunction(value: unknown): value is Function {
+export function isFunction(value: unknown): value is (...args: unknown[]) => unknown {
   return typeof value === 'function';
 }
 

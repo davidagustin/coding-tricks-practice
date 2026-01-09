@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Home Page UI - Comprehensive Tests', () => {
   test.beforeEach(async ({ page }) => {
@@ -73,7 +73,9 @@ test.describe('Home Page UI - Comprehensive Tests', () => {
 
     test('should display solved count and total count', async ({ page }) => {
       // Progress shows as "X/Y" format
-      const progressCard = page.locator('.bg-white.dark\\:bg-gray-800.rounded-lg.shadow-lg.p-6.mb-8');
+      const progressCard = page.locator(
+        '.bg-white.dark\\:bg-gray-800.rounded-lg.shadow-lg.p-6.mb-8'
+      );
       await expect(progressCard).toBeVisible();
 
       // Should contain a ratio like "0/123" or similar
@@ -85,7 +87,9 @@ test.describe('Home Page UI - Comprehensive Tests', () => {
 
     test('should display progress bar', async ({ page }) => {
       // The progress bar container
-      const progressBarContainer = page.locator('.w-full.bg-gray-200.dark\\:bg-gray-700.rounded-full.h-3');
+      const progressBarContainer = page.locator(
+        '.w-full.bg-gray-200.dark\\:bg-gray-700.rounded-full.h-3'
+      );
       await expect(progressBarContainer).toBeVisible();
 
       // The progress bar fill
@@ -120,7 +124,10 @@ test.describe('Home Page UI - Comprehensive Tests', () => {
     test('should update progress bar width based on solved count', async ({ page }) => {
       // Set solved problems
       await page.evaluate(() => {
-        localStorage.setItem('solvedProblems', JSON.stringify(['abort-controller', 'array-chaining']));
+        localStorage.setItem(
+          'solvedProblems',
+          JSON.stringify(['abort-controller', 'array-chaining'])
+        );
       });
       await page.reload();
 
@@ -214,9 +221,7 @@ test.describe('Home Page UI - Comprehensive Tests', () => {
     });
 
     test('should display multiple category cards', async ({ page }) => {
-      const categoryCards = page.locator(
-        'a[href^="/problems?category="]'
-      );
+      const categoryCards = page.locator('a[href^="/problems?category="]');
       const count = await categoryCards.count();
       expect(count).toBeGreaterThan(0);
     });
@@ -294,7 +299,9 @@ test.describe('Home Page UI - Comprehensive Tests', () => {
     });
 
     test('should display Features section in a card container', async ({ page }) => {
-      const featuresContainer = page.locator('.bg-white.dark\\:bg-gray-800.rounded-lg.shadow-lg.p-8');
+      const featuresContainer = page.locator(
+        '.bg-white.dark\\:bg-gray-800.rounded-lg.shadow-lg.p-8'
+      );
       await expect(featuresContainer).toBeVisible();
     });
 
@@ -333,7 +340,9 @@ test.describe('Home Page UI - Comprehensive Tests', () => {
 
     test('should display feature icons', async ({ page }) => {
       // Features section should have SVG icons
-      const featuresSection = page.locator('.bg-white.dark\\:bg-gray-800.rounded-lg.shadow-lg.p-8').last();
+      const featuresSection = page
+        .locator('.bg-white.dark\\:bg-gray-800.rounded-lg.shadow-lg.p-8')
+        .last();
       const icons = featuresSection.locator('svg');
       const iconCount = await icons.count();
       expect(iconCount).toBeGreaterThanOrEqual(4);
@@ -484,7 +493,9 @@ test.describe('Home Page UI - Comprehensive Tests', () => {
     });
 
     test('should display progress card with dark background', async ({ page }) => {
-      const progressCard = page.locator('.bg-white.dark\\:bg-gray-800.rounded-lg.shadow-lg.p-6.mb-8');
+      const progressCard = page.locator(
+        '.bg-white.dark\\:bg-gray-800.rounded-lg.shadow-lg.p-6.mb-8'
+      );
       await expect(progressCard).toBeVisible();
     });
 
@@ -617,7 +628,9 @@ test.describe('Home Page UI - Comprehensive Tests', () => {
         await expect(page).toHaveURL(href!);
 
         // Should load problems page with filter
-        await expect(page.getByRole('heading', { name: /JavaScript & TypeScript Tricks/i })).toBeVisible();
+        await expect(
+          page.getByRole('heading', { name: /JavaScript & TypeScript Tricks/i })
+        ).toBeVisible();
       }
     });
 
@@ -758,12 +771,17 @@ test.describe('Home Page UI - Comprehensive Tests', () => {
     test('should persist progress across page reloads', async ({ page }) => {
       // Set solved problems
       await page.evaluate(() => {
-        localStorage.setItem('solvedProblems', JSON.stringify(['abort-controller', 'array-chaining']));
+        localStorage.setItem(
+          'solvedProblems',
+          JSON.stringify(['abort-controller', 'array-chaining'])
+        );
       });
       await page.reload();
 
       // Progress should reflect solved problems
-      const progressCard = page.locator('.bg-white.dark\\:bg-gray-800.rounded-lg.shadow-lg.p-6.mb-8');
+      const progressCard = page.locator(
+        '.bg-white.dark\\:bg-gray-800.rounded-lg.shadow-lg.p-6.mb-8'
+      );
       const progressText = progressCard.locator('span').filter({
         hasText: /\d+\/\d+/,
       });

@@ -48,10 +48,15 @@ const easyProblem: Problem = {
       explanation: 'Because nums[0] + nums[1] == 9, we return [0, 1].',
     },
   ],
-  starterCode: 'function twoSum(nums: number[], target: number): number[] {\n  // Your code here\n}',
-  solution: 'function twoSum(nums: number[], target: number): number[] {\n  const map = new Map();\n  for (let i = 0; i < nums.length; i++) {\n    const complement = target - nums[i];\n    if (map.has(complement)) return [map.get(complement), i];\n    map.set(nums[i], i);\n  }\n  return [];\n}',
+  starterCode:
+    'function twoSum(nums: number[], target: number): number[] {\n  // Your code here\n}',
+  solution:
+    'function twoSum(nums: number[], target: number): number[] {\n  const map = new Map();\n  for (let i = 0; i < nums.length; i++) {\n    const complement = target - nums[i];\n    if (map.has(complement)) return [map.get(complement), i];\n    map.set(nums[i], i);\n  }\n  return [];\n}',
   testCases: [],
-  hints: ['Try using a hash map to store values you have seen.', 'For each number, check if target - number exists in the map.'],
+  hints: [
+    'Try using a hash map to store values you have seen.',
+    'For each number, check if target - number exists in the map.',
+  ],
 };
 
 const mediumProblem: Problem = {
@@ -76,7 +81,10 @@ const mediumProblem: Problem = {
   starterCode: 'function lengthOfLongestSubstring(s: string): number {\n  // Your code here\n}',
   solution: '...',
   testCases: [],
-  hints: ['Use the sliding window technique.', 'Keep track of characters in the current window using a Set.'],
+  hints: [
+    'Use the sliding window technique.',
+    'Keep track of characters in the current window using a Set.',
+  ],
 };
 
 const hardProblem: Problem = {
@@ -185,12 +193,15 @@ const longDescriptionProblem: Problem = {
 </ul>`,
   examples: [
     {
-      input: '["LRUCache", "put", "put", "get", "put", "get", "put", "get", "get", "get"]\n[[2], [1, 1], [2, 2], [1], [3, 3], [2], [4, 4], [1], [3], [4]]',
+      input:
+        '["LRUCache", "put", "put", "get", "put", "get", "put", "get", "get", "get"]\n[[2], [1, 1], [2, 2], [1], [3, 3], [2], [4, 4], [1], [3], [4]]',
       output: '[null, null, null, 1, null, -1, null, -1, 3, 4]',
-      explanation: 'LRUCache lRUCache = new LRUCache(2);\nlRUCache.put(1, 1); // cache is {1=1}\nlRUCache.put(2, 2); // cache is {1=1, 2=2}\nlRUCache.get(1);    // return 1\nlRUCache.put(3, 3); // LRU key was 2, evicts key 2, cache is {1=1, 3=3}\nlRUCache.get(2);    // returns -1 (not found)\nlRUCache.put(4, 4); // LRU key was 1, evicts key 1, cache is {4=4, 3=3}\nlRUCache.get(1);    // return -1 (not found)\nlRUCache.get(3);    // return 3\nlRUCache.get(4);    // return 4',
+      explanation:
+        'LRUCache lRUCache = new LRUCache(2);\nlRUCache.put(1, 1); // cache is {1=1}\nlRUCache.put(2, 2); // cache is {1=1, 2=2}\nlRUCache.get(1);    // return 1\nlRUCache.put(3, 3); // LRU key was 2, evicts key 2, cache is {1=1, 3=3}\nlRUCache.get(2);    // returns -1 (not found)\nlRUCache.put(4, 4); // LRU key was 1, evicts key 1, cache is {4=4, 3=3}\nlRUCache.get(1);    // return -1 (not found)\nlRUCache.get(3);    // return 3\nlRUCache.get(4);    // return 4',
     },
   ],
-  starterCode: 'class LRUCache {\n  constructor(capacity: number) {}\n  get(key: number): number {}\n  put(key: number, value: number): void {}\n}',
+  starterCode:
+    'class LRUCache {\n  constructor(capacity: number) {}\n  get(key: number): number {}\n  put(key: number, value: number): void {}\n}',
   solution: '...',
   testCases: [],
   hints: [
@@ -252,10 +263,15 @@ function debounce(func, wait) {
       explanation: 'Each call resets the timer. Only the last call executes.',
     },
   ],
-  starterCode: 'function debounce<T extends (...args: unknown[]) => unknown>(\n  func: T,\n  wait: number\n): (...args: Parameters<T>) => void {\n  // Your implementation\n}',
+  starterCode:
+    'function debounce<T extends (...args: unknown[]) => unknown>(\n  func: T,\n  wait: number\n): (...args: Parameters<T>) => void {\n  // Your implementation\n}',
   solution: '...',
   testCases: [],
-  hints: ['Use setTimeout and clearTimeout', 'Store the timeout ID in a closure', 'Use apply to preserve the context'],
+  hints: [
+    'Use setTimeout and clearTimeout',
+    'Store the timeout ID in a closure',
+    'Use apply to preserve the context',
+  ],
 };
 
 const multipleExamplesProblem: Problem = {
@@ -310,7 +326,8 @@ const hintsShownProblem: Problem = {
   title: 'Reverse Linked List',
   difficulty: 'easy',
   category: 'Linked Lists',
-  description: '<p>Given the <code>head</code> of a singly linked list, reverse the list, and return <em>the reversed list</em>.</p>',
+  description:
+    '<p>Given the <code>head</code> of a singly linked list, reverse the list, and return <em>the reversed list</em>.</p>',
   examples: [
     {
       input: 'head = [1,2,3,4,5]',
@@ -343,7 +360,8 @@ const noHintsProblem: Problem = {
       explanation: '342 + 465 = 807',
     },
   ],
-  starterCode: 'function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | null {}',
+  starterCode:
+    'function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | null {}',
   solution: '...',
   testCases: [],
   hints: [],
@@ -387,7 +405,10 @@ const fn = (x) =&gt; x * 2;</code></pre>
   starterCode: 'function handleSpecialChars(input: string): string {\n  // Your code here\n}',
   solution: '...',
   testCases: [],
-  hints: ['Consider using String.prototype.replace with regex.', 'Handle each character type separately.'],
+  hints: [
+    'Consider using String.prototype.replace with regex.',
+    'Handle each character type separately.',
+  ],
 };
 
 const formattedCodeBlocksProblem: Problem = {

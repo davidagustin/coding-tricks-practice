@@ -26,15 +26,15 @@ export const problem: Problem = {
   category: 'Array Methods',
   description: `<h2>In-Depth Explanation</h2>
 
-<p>\<code>some()\</code> and \<code>every()\</code> are boolean array methods that test whether elements in an array satisfy a condition. \<code>some()\</code> returns \<code>true\</code> if at least one element passes the test (short-circuits on first match), while \<code>every()\</code> returns \<code>true\</code> only if all elements pass the test (short-circuits on first failure).</p>
+<p><code>some()</code> and <code>every()</code> are boolean array methods that test whether elements in an array satisfy a condition. <code>some()</code> returns <code>true</code> if at least one element passes the test (short-circuits on first match), while <code>every()</code> returns <code>true</code> only if all elements pass the test (short-circuits on first failure).</p>
 
 <p>Both methods use short-circuit evaluation:</p>
 <ul>
-  <li>\<code>some()\</code>: Stops as soon as it finds a matching element (returns \<code>true\</code>)</li>
-  <li>\<code>every()\</code>: Stops as soon as it finds a non-matching element (returns \<code>false\</code>)</li>
+  <li><code>some()</code>: Stops as soon as it finds a matching element (returns <code>true</code>)</li>
+  <li><code>every()</code>: Stops as soon as it finds a non-matching element (returns <code>false</code>)</li>
 </ul>
 
-<p>This makes them more efficient than using \<code>filter().length > 0\</code> or \<code>filter().length === array.length\</code> because they don't need to process the entire array.</p>
+<p>This makes them more efficient than using <code>filter().length > 0</code> or <code>filter().length === array.length</code> because they don't need to process the entire array.</p>
 
 <h2>Importance</h2>
 
@@ -54,12 +54,12 @@ export const problem: Problem = {
 <p>These methods are used extensively in real applications:</p>
 
 <ul>
-  <li><strong>Form Validation</strong>: \<code>every()\</code> to check if all fields are valid, \<code>some()\</code> to check if any field has errors</li>
-  <li><strong>Permission Checks</strong>: \<code>some()\</code> to check if user has any required permission, \<code>every()\</code> to check if user has all permissions</li>
-  <li><strong>Data Quality</strong>: \<code>every()\</code> to validate all records, \<code>some()\</code> to check if any record needs attention</li>
-  <li><strong>Search/Filter</strong>: \<code>some()\</code> to check if any item matches search criteria</li>
-  <li><strong>Conditional Rendering</strong>: \<code>some()\</code> to show/hide UI elements based on data</li>
-  <li><strong>Game Logic</strong>: \<code>every()\</code> to check if all players are ready, \<code>some()\</code> to check if any player won</li>
+  <li><strong>Form Validation</strong>: <code>every()</code> to check if all fields are valid, <code>some()</code> to check if any field has errors</li>
+  <li><strong>Permission Checks</strong>: <code>some()</code> to check if user has any required permission, <code>every()</code> to check if user has all permissions</li>
+  <li><strong>Data Quality</strong>: <code>every()</code> to validate all records, <code>some()</code> to check if any record needs attention</li>
+  <li><strong>Search/Filter</strong>: <code>some()</code> to check if any item matches search criteria</li>
+  <li><strong>Conditional Rendering</strong>: <code>some()</code> to show/hide UI elements based on data</li>
+  <li><strong>Game Logic</strong>: <code>every()</code> to check if all players are ready, <code>some()</code> to check if any player won</li>
   <li><strong>API Validation</strong>: Validating request payloads before processing</li>
 </ul>
 

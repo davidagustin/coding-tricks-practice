@@ -1,7 +1,7 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import TestResults from '../components/TestResults';
+import React from 'react';
 import type { TestResult } from '@/lib/test-runner';
+import TestResults from '../components/TestResults';
 
 const meta: Meta<typeof TestResults> = {
   title: 'Components/TestResults',
@@ -175,7 +175,9 @@ export const AllTestsFailed: Story = {
 export const SingleTestPassed: Story = {
   name: '6. Single Test Passed',
   args: {
-    results: [createTestResult(true, 'hello', 'HELLO', 'HELLO', { description: 'converts to uppercase' })],
+    results: [
+      createTestResult(true, 'hello', 'HELLO', 'HELLO', { description: 'converts to uppercase' }),
+    ],
     allPassed: true,
     isRunning: false,
   },
@@ -195,7 +197,9 @@ export const SingleTestPassed: Story = {
 export const SingleTestFailed: Story = {
   name: '7. Single Test Failed',
   args: {
-    results: [createTestResult(false, 'hello', 'HELLO', 'hello', { description: 'converts to uppercase' })],
+    results: [
+      createTestResult(false, 'hello', 'HELLO', 'hello', { description: 'converts to uppercase' }),
+    ],
     allPassed: false,
     isRunning: false,
   },
@@ -356,7 +360,8 @@ export const LongInputOutput: Story = {
       createTestResult(
         true,
         [
-          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+          26, 27, 28, 29, 30,
         ],
         465,
         465,
@@ -369,7 +374,8 @@ export const LongInputOutput: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Tests with complex objects, long strings, and large arrays to verify proper formatting.',
+        story:
+          'Tests with complex objects, long strings, and large arrays to verify proper formatting.',
       },
     },
     chromatic: { disableSnapshot: false },
@@ -419,7 +425,9 @@ export const MobileViewport: Story = {
   args: {
     results: [
       createTestResult(true, [1, 2], 3, 3, { description: 'addition test' }),
-      createTestResult(false, 'hello world', 'HELLO WORLD', 'hello world', { description: 'uppercase conversion' }),
+      createTestResult(false, 'hello world', 'HELLO WORLD', 'hello world', {
+        description: 'uppercase conversion',
+      }),
       createTestResult(
         true,
         { name: 'test', value: 42 },
@@ -483,8 +491,12 @@ export const UndefinedAndNullValues: Story = {
   args: {
     results: [
       createTestResult(true, null, null, null, { description: 'handles null input' }),
-      createTestResult(true, undefined, undefined, undefined, { description: 'handles undefined input' }),
-      createTestResult(false, [null, undefined], null, undefined, { description: 'mixed null/undefined' }),
+      createTestResult(true, undefined, undefined, undefined, {
+        description: 'handles undefined input',
+      }),
+      createTestResult(false, [null, undefined], null, undefined, {
+        description: 'mixed null/undefined',
+      }),
     ],
     allPassed: false,
     isRunning: false,
@@ -504,8 +516,12 @@ export const BooleanResults: Story = {
   name: 'Boolean Results',
   args: {
     results: [
-      createTestResult(true, 5, true, true, { description: 'isPositive returns true for positive' }),
-      createTestResult(true, -3, false, false, { description: 'isPositive returns false for negative' }),
+      createTestResult(true, 5, true, true, {
+        description: 'isPositive returns true for positive',
+      }),
+      createTestResult(true, -3, false, false, {
+        description: 'isPositive returns false for negative',
+      }),
       createTestResult(false, 0, false, true, { description: 'isPositive edge case for zero' }),
     ],
     allPassed: false,
@@ -542,13 +558,9 @@ export const NestedArrays: Story = {
         ],
         { description: 'doubles nested array values' }
       ),
-      createTestResult(
-        false,
-        [[1], [2, 3], [4, 5, 6]],
-        [1, 5, 15],
-        [1, 5, 14],
-        { description: 'sums each subarray' }
-      ),
+      createTestResult(false, [[1], [2, 3], [4, 5, 6]], [1, 5, 15], [1, 5, 14], {
+        description: 'sums each subarray',
+      }),
     ],
     allPassed: false,
     isRunning: false,
@@ -613,7 +625,9 @@ export const DarkThemeAllStates: Story = {
   args: {
     results: [
       createTestResult(true, [1, 2], 3, 3, { description: 'passing test with simple values' }),
-      createTestResult(false, 'input', 'EXPECTED', 'actual', { description: 'failing test with strings' }),
+      createTestResult(false, 'input', 'EXPECTED', 'actual', {
+        description: 'failing test with strings',
+      }),
       createTestResult(false, { key: 'value' }, { result: true }, undefined, {
         error: 'TypeError: Cannot convert object to primitive value',
         description: 'error test with object',
@@ -661,7 +675,8 @@ export const MobileDarkTheme: Story = {
         story: 'Mobile viewport in dark theme.',
       },
     },
-    chromatic: { modes: {
+    chromatic: {
+      modes: {
         dark: { theme: 'dark' },
       },
     },
@@ -676,15 +691,27 @@ export const SpecialCharacters: Story = {
   name: 'Special Characters',
   args: {
     results: [
-      createTestResult(true, '<script>alert("xss")</script>', '&lt;script&gt;alert("xss")&lt;/script&gt;', '&lt;script&gt;alert("xss")&lt;/script&gt;', {
-        description: 'escapes HTML entities',
-      }),
+      createTestResult(
+        true,
+        '<script>alert("xss")</script>',
+        '&lt;script&gt;alert("xss")&lt;/script&gt;',
+        '&lt;script&gt;alert("xss")&lt;/script&gt;',
+        {
+          description: 'escapes HTML entities',
+        }
+      ),
       createTestResult(true, 'Hello\nWorld\tTab', 'Hello\\nWorld\\tTab', 'Hello\\nWorld\\tTab', {
         description: 'escapes control characters',
       }),
-      createTestResult(true, '{"key": "value"}', { key: 'value' }, { key: 'value' }, {
-        description: 'parses JSON string',
-      }),
+      createTestResult(
+        true,
+        '{"key": "value"}',
+        { key: 'value' },
+        { key: 'value' },
+        {
+          description: 'parses JSON string',
+        }
+      ),
     ],
     allPassed: true,
     isRunning: false,
@@ -910,7 +937,8 @@ export const ManyTestResults_Dark: Story = {
     backgrounds: { default: 'dark' },
     docs: {
       description: {
-        story: 'Large number of test results on dark background - verifies scroll behavior and contrast.',
+        story:
+          'Large number of test results on dark background - verifies scroll behavior and contrast.',
       },
     },
   },

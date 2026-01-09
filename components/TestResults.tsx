@@ -10,7 +10,12 @@ interface TestResultsProps {
   isRunning: boolean;
 }
 
-const TestResults = memo(function TestResults({ results, allPassed, error, isRunning }: TestResultsProps) {
+const TestResults = memo(function TestResults({
+  results,
+  allPassed,
+  error,
+  isRunning,
+}: TestResultsProps) {
   if (isRunning) {
     return (
       <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">

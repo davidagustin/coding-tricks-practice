@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Theme Toggle', () => {
   test.beforeEach(async ({ page }) => {
@@ -191,7 +191,7 @@ test.describe('Theme Toggle', () => {
     const theme = await page.evaluate(() => {
       return localStorage.getItem('theme');
     });
-    
+
     // Either dark class should be present, or theme should be set in localStorage
     expect(hasDarkClass || theme).toBeTruthy();
   });

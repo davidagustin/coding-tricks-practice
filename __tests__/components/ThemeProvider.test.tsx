@@ -1,6 +1,6 @@
-import { render, screen, act, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
+import { useEffect, useState } from 'react';
 import { ThemeProvider, useTheme } from '@/components/ThemeProvider';
-import { useState, useEffect } from 'react';
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -45,6 +45,7 @@ function TestComponent() {
   const [renderCount, setRenderCount] = useState(0);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     setRenderCount((prev) => prev + 1);
   }, [theme]);
 
@@ -86,7 +87,7 @@ describe('ThemeProvider', () => {
     it('should default to dark theme when no localStorage value exists', async () => {
       // Set dark class on documentElement to simulate inline script behavior
       document.documentElement.classList.add('dark');
-      
+
       render(
         <ThemeProvider>
           <TestComponent />
@@ -117,7 +118,7 @@ describe('ThemeProvider', () => {
       // Set dark class on documentElement to simulate inline script behavior
       // The inline script would set this based on system preference
       document.documentElement.classList.add('dark');
-      
+
       (window.matchMedia as jest.Mock).mockReturnValue({
         matches: true, // prefers dark
         media: '(prefers-color-scheme: dark)',

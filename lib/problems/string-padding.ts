@@ -26,17 +26,17 @@ export const problem: Problem = {
   category: 'String Methods',
   description: `<h2>In-Depth Explanation</h2>
 
-<p>\<code>padStart()\</code> and \<code>padEnd()\</code> add padding characters to strings to reach a specified length. \<code>padStart()\</code> adds padding at the beginning (left), \<code>padEnd()\</code> adds padding at the end (right).</p>
+<p><code>padStart()</code> and <code>padEnd()</code> add padding characters to strings to reach a specified length. <code>padStart()</code> adds padding at the beginning (left), <code>padEnd()</code> adds padding at the end (right).</p>
 
-<p>The syntax: \<code>str.padStart(targetLength, padString)\</code></p>
+<p>The syntax: <code>str.padStart(targetLength, padString)</code></p>
 <ul>
-  <li>\<code>targetLength\</code>: Desired length of the resulting string</li>
-  <li>\<code>padString\</code>: Character(s) to pad with (defaults to space)</li>
+  <li><code>targetLength</code>: Desired length of the resulting string</li>
+  <li><code>padString</code>: Character(s) to pad with (defaults to space)</li>
 </ul>
 
 <p>Common uses:</p>
 <ul>
-  <li><strong>Leading Zeros</strong>: Format numbers with leading zeros (\<code>'5'.padStart(2, '0')\</code> → \<code>'05'\</code>)</li>
+  <li><strong>Leading Zeros</strong>: Format numbers with leading zeros (<code>'5'.padStart(2, '0')</code> → <code>'05'</code>)</li>
   <li><strong>Alignment</strong>: Align text in tables or columns</li>
   <li><strong>Masking</strong>: Mask sensitive data (credit cards, SSNs)</li>
   <li><strong>Time Formatting</strong>: Format time as HH:MM:SS</li>

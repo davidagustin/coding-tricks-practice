@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useEffect, useState } from 'react';
 import { ThemeProvider, useTheme } from '@/components/ThemeProvider';
 import ThemeToggle from '@/components/ThemeToggle';
-import { useState, useEffect } from 'react';
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -48,6 +48,7 @@ function ThemeAwareComponent() {
 
   useEffect(() => {
     // Simulate theme-dependent styling
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     setBgColor(theme === 'dark' ? 'dark-bg' : 'light-bg');
   }, [theme]);
 
@@ -55,11 +56,7 @@ function ThemeAwareComponent() {
     <div data-testid="theme-aware" className={bgColor}>
       <p>Current theme: {theme}</p>
       <div
-        className={
-          theme === 'dark'
-            ? 'text-white bg-gray-900'
-            : 'text-gray-900 bg-white'
-        }
+        className={theme === 'dark' ? 'text-white bg-gray-900' : 'text-gray-900 bg-white'}
         data-testid="theme-content"
       >
         Theme-dependent content

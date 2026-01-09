@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useMemo, useCallback, memo } from 'react';
 import parse from 'html-react-parser';
 import DOMPurify from 'isomorphic-dompurify';
-import type { Problem } from '@/lib/problems';
+import { memo, useCallback, useMemo, useState } from 'react';
 import { DIFFICULTY_COLORS, DOMPURIFY_CONFIG } from '@/lib/constants';
+import type { Problem } from '@/lib/problems';
 
 interface ProblemDescriptionProps {
   problem: Problem;
@@ -62,11 +62,13 @@ const ProblemDescription = memo(function ProblemDescription({ problem }: Problem
           >
             {tab.label}
             {tab.count !== undefined && tab.count > 0 && (
-              <span className={`ml-1.5 px-1.5 py-0.5 text-xs rounded-full ${
-                activeTab === tab.id
-                  ? 'bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300'
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
-              }`}>
+              <span
+                className={`ml-1.5 px-1.5 py-0.5 text-xs rounded-full ${
+                  activeTab === tab.id
+                    ? 'bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300'
+                    : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                }`}
+              >
                 {tab.count}
               </span>
             )}
@@ -77,11 +79,7 @@ const ProblemDescription = memo(function ProblemDescription({ problem }: Problem
       {/* Tab Content */}
       <div className="flex-1 overflow-y-auto pt-4">
         {/* Description Tab */}
-        {activeTab === 'description' && (
-          <div className="prose">
-            {parsedDescription}
-          </div>
-        )}
+        {activeTab === 'description' && <div className="prose">{parsedDescription}</div>}
 
         {/* Examples Tab */}
         {activeTab === 'examples' && (

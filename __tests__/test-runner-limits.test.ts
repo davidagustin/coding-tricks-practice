@@ -1,5 +1,5 @@
-import { runTests } from '@/lib/test-runner';
 import { TEST_CONFIG } from '@/lib/constants';
+import { runTests } from '@/lib/test-runner';
 
 describe('Test Runner Limits', () => {
   describe('Timeout configuration', () => {

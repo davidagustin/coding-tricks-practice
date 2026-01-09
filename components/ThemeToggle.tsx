@@ -1,13 +1,14 @@
 'use client';
 
-import { useTheme } from './ThemeProvider';
 import { useEffect, useState } from 'react';
+import { useTheme } from './ThemeProvider';
 
 export default function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     setMounted(true);
   }, []);
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import { problems } from '@/lib/problems';
 
 interface ProgressContextType {
@@ -35,6 +35,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
 
   // Load progress from localStorage
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     setMounted(true);
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -48,7 +49,9 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
         if (data.lastSolvedDate) {
           const lastDate = new Date(data.lastSolvedDate);
           const today = new Date();
-          const diffDays = Math.floor((today.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+          const diffDays = Math.floor(
+            (today.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24)
+          );
           if (diffDays > 1) {
             setStreak(0);
           }
@@ -60,62 +63,74 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // Save progress to localStorage
-  const saveProgress = useCallback((solved: Set<string>, newStreak: number, lastDate: string | null) => {
-    try {
-      const data: StoredProgress = {
-        solvedProblems: Array.from(solved),
-        streak: newStreak,
-        lastSolvedDate: lastDate,
-      };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    } catch (e) {
-      console.error('Failed to save progress:', e);
-    }
-  }, []);
+  const saveProgress = useCallback(
+    (solved: Set<string>, newStreak: number, lastDate: string | null) => {
+      try {
+        const data: StoredProgress = {
+          solvedProblems: Array.from(solved),
+          streak: newStreak,
+          lastSolvedDate: lastDate,
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      } catch (e) {
+        console.error('Failed to save progress:', e);
+      }
+    },
+    []
+  );
 
-  const markSolved = useCallback((problemId: string) => {
-    setSolvedProblems((prev) => {
-      const newSet = new Set(prev);
-      if (!newSet.has(problemId)) {
-        newSet.add(problemId);
+  const markSolved = useCallback(
+    (problemId: string) => {
+      setSolvedProblems((prev) => {
+        const newSet = new Set(prev);
+        if (!newSet.has(problemId)) {
+          newSet.add(problemId);
 
-        // Update streak
-        const today = new Date().toISOString().split('T')[0];
-        let newStreak = streak;
+          // Update streak
+          const today = new Date().toISOString().split('T')[0];
+          let newStreak = streak;
 
-        if (lastSolvedDate !== today) {
-          const yesterday = new Date();
-          yesterday.setDate(yesterday.getDate() - 1);
-          const yesterdayStr = yesterday.toISOString().split('T')[0];
+          if (lastSolvedDate !== today) {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toISOString().split('T')[0];
 
-          if (lastSolvedDate === yesterdayStr || lastSolvedDate === null) {
-            newStreak = streak + 1;
-          } else {
-            newStreak = 1;
+            if (lastSolvedDate === yesterdayStr || lastSolvedDate === null) {
+              newStreak = streak + 1;
+            } else {
+              newStreak = 1;
+            }
+
+            setStreak(newStreak);
+            setLastSolvedDate(today);
           }
 
-          setStreak(newStreak);
-          setLastSolvedDate(today);
+          saveProgress(newSet, newStreak, today);
         }
+        return newSet;
+      });
+    },
+    [streak, lastSolvedDate, saveProgress]
+  );
 
-        saveProgress(newSet, newStreak, today);
-      }
-      return newSet;
-    });
-  }, [streak, lastSolvedDate, saveProgress]);
+  const markUnsolved = useCallback(
+    (problemId: string) => {
+      setSolvedProblems((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(problemId);
+        saveProgress(newSet, streak, lastSolvedDate);
+        return newSet;
+      });
+    },
+    [streak, lastSolvedDate, saveProgress]
+  );
 
-  const markUnsolved = useCallback((problemId: string) => {
-    setSolvedProblems((prev) => {
-      const newSet = new Set(prev);
-      newSet.delete(problemId);
-      saveProgress(newSet, streak, lastSolvedDate);
-      return newSet;
-    });
-  }, [streak, lastSolvedDate, saveProgress]);
-
-  const isSolved = useCallback((problemId: string) => {
-    return solvedProblems.has(problemId);
-  }, [solvedProblems]);
+  const isSolved = useCallback(
+    (problemId: string) => {
+      return solvedProblems.has(problemId);
+    },
+    [solvedProblems]
+  );
 
   const resetProgress = useCallback(() => {
     setSolvedProblems(new Set());

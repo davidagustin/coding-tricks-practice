@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Problem Detail Page', () => {
   // Use a known problem ID - we'll use the first problem available
@@ -75,9 +75,7 @@ test.describe('Problem Detail Page', () => {
     }
   });
 
-  test('should display Hints section as expandable details', async ({
-    page,
-  }) => {
+  test('should display Hints section as expandable details', async ({ page }) => {
     // Hints section is a <details> element
     const hintsDetails = page.locator('details').filter({
       hasText: /Hints/i,
@@ -167,9 +165,7 @@ test.describe('Problem Detail Page', () => {
     await solutionButton.click();
 
     // Button should now say "Hide Solution"
-    await expect(
-      page.getByRole('button', { name: /Hide Solution/i })
-    ).toBeVisible();
+    await expect(page.getByRole('button', { name: /Hide Solution/i })).toBeVisible();
 
     // Solution section should be visible
     const solutionHeading = page.getByRole('heading', { name: /Solution:/i });
@@ -179,9 +175,7 @@ test.describe('Problem Detail Page', () => {
     await page.getByRole('button', { name: /Hide Solution/i }).click();
 
     // Button should say "Show Solution" again
-    await expect(
-      page.getByRole('button', { name: /Show Solution/i })
-    ).toBeVisible();
+    await expect(page.getByRole('button', { name: /Show Solution/i })).toBeVisible();
   });
 
   test('should display Test Results section', async ({ page }) => {
@@ -294,9 +288,7 @@ test.describe('Problem Detail Page', () => {
     expect(resetContent!.length).toBeGreaterThan(0);
   });
 
-  test('should display navigation to previous/next problems', async ({
-    page,
-  }) => {
+  test('should display navigation to previous/next problems', async ({ page }) => {
     // Look for Previous/Next navigation links
     const prevLink = page.locator('a').filter({ hasText: /Previous/i });
     const nextLink = page.locator('a').filter({ hasText: /Next/i });
@@ -346,9 +338,7 @@ test.describe('Problem Detail Page', () => {
 });
 
 test.describe('Problem Detail Page - Code Execution', () => {
-  test('should run tests with correct solution and show success', async ({
-    page,
-  }) => {
+  test('should run tests with correct solution and show success', async ({ page }) => {
     // Go to a problem
     await page.goto('/problems/abort-controller');
 
@@ -363,9 +353,7 @@ test.describe('Problem Detail Page - Code Execution', () => {
     await showSolutionButton.click();
 
     // Wait for solution to display
-    await expect(
-      page.getByRole('heading', { name: /Solution:/i })
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Solution:/i })).toBeVisible();
 
     // Copy solution to editor (this is a simplified test - actual implementation
     // would need to get solution code and paste it into editor)
@@ -393,9 +381,7 @@ test.describe('Problem Detail Page - Code Execution', () => {
     const testResult = page.getByText(/Test Case|All tests|Some tests|Error/i).first();
 
     // Wait for any of these to appear
-    await expect(
-      runningIndicator.or(runningButton).or(testResult)
-    ).toBeVisible({ timeout: 10000 });
+    await expect(runningIndicator.or(runningButton).or(testResult)).toBeVisible({ timeout: 10000 });
   });
 });
 

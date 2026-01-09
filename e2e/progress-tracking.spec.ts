@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 
 /**
  * Helper to set up progress data in localStorage
@@ -145,7 +145,13 @@ test.describe('Progress Tracking - Navbar Solved Count', () => {
 
   test('should update solved count in navbar after setting progress', async ({ page }) => {
     // Set up with 5 solved problems
-    const solvedProblems = ['array-chaining', 'chunk-arrays', 'currying', 'debounce-throttle', 'enums'];
+    const solvedProblems = [
+      'array-chaining',
+      'chunk-arrays',
+      'currying',
+      'debounce-throttle',
+      'enums',
+    ];
     await setProgressData(page, solvedProblems, 5, getTodayDateString());
     await page.reload();
 
@@ -251,7 +257,9 @@ test.describe('Progress Tracking - Home Page Progress Bar', () => {
     await page.waitForLoadState('networkidle');
 
     // Check the progress display shows correct count
-    const progressDisplay = page.locator('.text-2xl.font-bold.text-green-600, .text-2xl.font-bold.text-green-400');
+    const progressDisplay = page.locator(
+      '.text-2xl.font-bold.text-green-600, .text-2xl.font-bold.text-green-400'
+    );
     await expect(progressDisplay.first()).toBeVisible();
 
     const text = await progressDisplay.first().textContent();
@@ -301,9 +309,11 @@ test.describe('Progress Tracking - Sidebar Progress Bar', () => {
     await page.waitForLoadState('networkidle');
 
     // Check sidebar shows correct count
-    const progressDisplay = page.locator('.font-medium.text-gray-900, .font-medium.text-gray-100').filter({
-      hasText: /4\/\d+/,
-    });
+    const progressDisplay = page
+      .locator('.font-medium.text-gray-900, .font-medium.text-gray-100')
+      .filter({
+        hasText: /4\/\d+/,
+      });
     await expect(progressDisplay.first()).toBeVisible();
   });
 });
@@ -337,7 +347,9 @@ test.describe('Progress Tracking - Problem Table Checkmarks', () => {
     await page.waitForLoadState('networkidle');
 
     // Look for empty circle indicators (unsolved)
-    const emptyCircles = page.locator('.rounded-full.border-2.border-gray-300, .rounded-full.border-2.border-gray-600');
+    const emptyCircles = page.locator(
+      '.rounded-full.border-2.border-gray-300, .rounded-full.border-2.border-gray-600'
+    );
     await expect(emptyCircles.first()).toBeVisible();
 
     // Should have more empty circles than solved
@@ -352,7 +364,9 @@ test.describe('Progress Tracking - Problem Detail Solved Badge', () => {
     await clearProgressData(page);
   });
 
-  test('should show "Solved" badge on problem detail page for solved problems', async ({ page }) => {
+  test('should show "Solved" badge on problem detail page for solved problems', async ({
+    page,
+  }) => {
     // Mark the problem as solved
     await setProgressData(page, ['array-chaining'], 1, getTodayDateString());
     await page.reload();
@@ -485,7 +499,9 @@ test.describe('Progress Tracking - Persistence Across Page Refresh', () => {
     await page.waitForLoadState('networkidle');
 
     // Verify progress is still displayed correctly
-    const progressDisplay = page.locator('.text-2xl.font-bold.text-green-600, .text-2xl.font-bold.text-green-400');
+    const progressDisplay = page.locator(
+      '.text-2xl.font-bold.text-green-600, .text-2xl.font-bold.text-green-400'
+    );
     await expect(progressDisplay.first()).toBeVisible();
 
     const text = await progressDisplay.first().textContent();
@@ -554,7 +570,9 @@ test.describe('Progress Tracking - Persistence Across Navigation', () => {
     expect(count).toBeGreaterThanOrEqual(2);
   });
 
-  test('should maintain progress when navigating from problems to problem detail', async ({ page }) => {
+  test('should maintain progress when navigating from problems to problem detail', async ({
+    page,
+  }) => {
     await page.goto('/problems');
 
     const solvedProblems = ['abort-controller'];
@@ -636,7 +654,9 @@ test.describe('Progress Tracking - Persistence Across Navigation', () => {
     await page.waitForLoadState('networkidle');
 
     // Verify home page progress
-    const progressDisplay = page.locator('.text-2xl.font-bold.text-green-600, .text-2xl.font-bold.text-green-400');
+    const progressDisplay = page.locator(
+      '.text-2xl.font-bold.text-green-600, .text-2xl.font-bold.text-green-400'
+    );
     const text = await progressDisplay.first().textContent();
     expect(text).toMatch(/^3\/\d+$/);
 
@@ -703,7 +723,9 @@ test.describe('Progress Tracking - Edge Cases', () => {
     await expect(heading).toBeVisible();
 
     // Progress should show 0
-    const progressDisplay = page.locator('.text-2xl.font-bold.text-green-600, .text-2xl.font-bold.text-green-400');
+    const progressDisplay = page.locator(
+      '.text-2xl.font-bold.text-green-600, .text-2xl.font-bold.text-green-400'
+    );
     const text = await progressDisplay.first().textContent();
     expect(text).toMatch(/^0\/\d+$/);
   });
@@ -767,9 +789,11 @@ test.describe('Progress Tracking - Edge Cases', () => {
 
     // Verify the count shows total/total
     await page.setViewportSize({ width: 1280, height: 720 });
-    const sidebarProgress = page.locator('.font-medium.text-gray-900, .font-medium.text-gray-100').filter({
-      hasText: new RegExp(`${totalProblems}/${totalProblems}`),
-    });
+    const sidebarProgress = page
+      .locator('.font-medium.text-gray-900, .font-medium.text-gray-100')
+      .filter({
+        hasText: new RegExp(`${totalProblems}/${totalProblems}`),
+      });
 
     // Check if count matches
     const progressData = await getProgressData(page);

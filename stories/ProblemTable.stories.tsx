@@ -27,9 +27,7 @@ const MockProgressProvider = ({
 
   // We need to mock the useProgress hook by wrapping the component
   return (
-    <MockProgressContext.Provider value={mockContextValue}>
-      {children}
-    </MockProgressContext.Provider>
+    <MockProgressContext.Provider value={mockContextValue}>{children}</MockProgressContext.Provider>
   );
 };
 
@@ -101,7 +99,8 @@ const ProblemTableWrapper = ({
           {problems.map((problem, index) => {
             const solved = solvedSet.has(problem.id);
             const hash = problem.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-            const base = problem.difficulty === 'easy' ? 65 : problem.difficulty === 'medium' ? 45 : 30;
+            const base =
+              problem.difficulty === 'easy' ? 65 : problem.difficulty === 'medium' ? 45 : 30;
             const variance = (hash % 20) - 10;
             const acceptanceRate = Math.max(20, Math.min(85, base + variance));
 
@@ -115,14 +114,24 @@ const ProblemTableWrapper = ({
               <tr
                 key={problem.id}
                 className={`group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${
-                  index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'
+                  index % 2 === 0
+                    ? 'bg-white dark:bg-gray-900'
+                    : 'bg-gray-50/50 dark:bg-gray-800/30'
                 }`}
               >
                 <td className="py-3 pl-4 pr-2">
                   {solved ? (
                     <div className="flex items-center justify-center">
-                      <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      <svg
+                        className="w-5 h-5 text-green-500"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                     </div>
                   ) : (
@@ -138,12 +147,16 @@ const ProblemTableWrapper = ({
                   >
                     {problem.title}
                   </a>
-                  <span className={`sm:hidden ml-2 text-xs font-medium ${difficultyColors[problem.difficulty]}`}>
+                  <span
+                    className={`sm:hidden ml-2 text-xs font-medium ${difficultyColors[problem.difficulty]}`}
+                  >
                     {problem.difficulty}
                   </span>
                 </td>
                 <td className="py-3 px-2 hidden sm:table-cell">
-                  <span className={`text-sm font-medium capitalize ${difficultyColors[problem.difficulty]}`}>
+                  <span
+                    className={`text-sm font-medium capitalize ${difficultyColors[problem.difficulty]}`}
+                  >
                     {problem.difficulty}
                   </span>
                 </td>
@@ -202,18 +215,26 @@ const createMockProblem = (
 });
 
 // Mock data sets
-const singleProblem: Problem[] = [
-  createMockProblem('two-sum', 'Two Sum', 'easy', 'Arrays'),
-];
+const singleProblem: Problem[] = [createMockProblem('two-sum', 'Two Sum', 'easy', 'Arrays')];
 
 const mixedProblems: Problem[] = [
   createMockProblem('two-sum', 'Two Sum', 'easy', 'Arrays'),
   createMockProblem('add-two-numbers', 'Add Two Numbers', 'medium', 'Linked Lists'),
-  createMockProblem('longest-substring', 'Longest Substring Without Repeating Characters', 'medium', 'Strings'),
+  createMockProblem(
+    'longest-substring',
+    'Longest Substring Without Repeating Characters',
+    'medium',
+    'Strings'
+  ),
   createMockProblem('median-sorted-arrays', 'Median of Two Sorted Arrays', 'hard', 'Arrays'),
   createMockProblem('reverse-integer', 'Reverse Integer', 'medium', 'Math'),
   createMockProblem('palindrome-number', 'Palindrome Number', 'easy', 'Math'),
-  createMockProblem('regular-expression', 'Regular Expression Matching', 'hard', 'Dynamic Programming'),
+  createMockProblem(
+    'regular-expression',
+    'Regular Expression Matching',
+    'hard',
+    'Dynamic Programming'
+  ),
   createMockProblem('container-water', 'Container With Most Water', 'medium', 'Two Pointers'),
 ];
 
@@ -228,16 +249,31 @@ const easyProblems: Problem[] = [
 
 const mediumProblems: Problem[] = [
   createMockProblem('add-two-numbers', 'Add Two Numbers', 'medium', 'Linked Lists'),
-  createMockProblem('longest-substring', 'Longest Substring Without Repeating Characters', 'medium', 'Strings'),
+  createMockProblem(
+    'longest-substring',
+    'Longest Substring Without Repeating Characters',
+    'medium',
+    'Strings'
+  ),
   createMockProblem('container-water', 'Container With Most Water', 'medium', 'Two Pointers'),
   createMockProblem('three-sum', '3Sum', 'medium', 'Arrays'),
-  createMockProblem('letter-combinations', 'Letter Combinations of a Phone Number', 'medium', 'Backtracking'),
+  createMockProblem(
+    'letter-combinations',
+    'Letter Combinations of a Phone Number',
+    'medium',
+    'Backtracking'
+  ),
   createMockProblem('generate-parentheses', 'Generate Parentheses', 'medium', 'Backtracking'),
 ];
 
 const hardProblems: Problem[] = [
   createMockProblem('median-sorted-arrays', 'Median of Two Sorted Arrays', 'hard', 'Arrays'),
-  createMockProblem('regular-expression', 'Regular Expression Matching', 'hard', 'Dynamic Programming'),
+  createMockProblem(
+    'regular-expression',
+    'Regular Expression Matching',
+    'hard',
+    'Dynamic Programming'
+  ),
   createMockProblem('merge-k-lists', 'Merge k Sorted Lists', 'hard', 'Linked Lists'),
   createMockProblem('first-missing-positive', 'First Missing Positive', 'hard', 'Arrays'),
   createMockProblem('trapping-rain-water', 'Trapping Rain Water', 'hard', 'Two Pointers'),
@@ -263,12 +299,7 @@ const longTitleProblems: Problem[] = [
     'hard',
     'Concurrency'
   ),
-  createMockProblem(
-    'short',
-    'Short',
-    'easy',
-    'Basic'
-  ),
+  createMockProblem('short', 'Short', 'easy', 'Basic'),
   createMockProblem(
     'very-long-title-4',
     'Building a Real-Time Collaborative Text Editor with Operational Transformation and Conflict Resolution',
@@ -769,7 +800,8 @@ export const MultipleProblems_Dark: Story = {
     backgrounds: { default: 'dark' },
     docs: {
       description: {
-        story: 'Dark theme variant showing multiple problems with mixed difficulties. Demonstrates dark table background, light text, and colored difficulty badges (green/yellow/red) visible on dark background.',
+        story:
+          'Dark theme variant showing multiple problems with mixed difficulties. Demonstrates dark table background, light text, and colored difficulty badges (green/yellow/red) visible on dark background.',
       },
     },
   },
@@ -796,7 +828,8 @@ export const AllSolved_Dark: Story = {
     backgrounds: { default: 'dark' },
     docs: {
       description: {
-        story: 'Dark theme variant showing all problems as solved with green checkmarks. Verifies checkmark visibility on dark background.',
+        story:
+          'Dark theme variant showing all problems as solved with green checkmarks. Verifies checkmark visibility on dark background.',
       },
     },
   },
@@ -823,7 +856,8 @@ export const MixedSolvedUnsolved_Dark: Story = {
     backgrounds: { default: 'dark' },
     docs: {
       description: {
-        story: 'Dark theme variant with mix of solved and unsolved problems. Shows green checkmarks for solved and gray circles for unsolved on dark background.',
+        story:
+          'Dark theme variant with mix of solved and unsolved problems. Shows green checkmarks for solved and gray circles for unsolved on dark background.',
       },
     },
   },
@@ -853,7 +887,8 @@ export const HoverStates_Dark: Story = {
     },
     docs: {
       description: {
-        story: 'Dark theme variant demonstrating hover state styling on table rows. Shows subtle background highlight on hover.',
+        story:
+          'Dark theme variant demonstrating hover state styling on table rows. Shows subtle background highlight on hover.',
       },
     },
   },
@@ -884,7 +919,8 @@ export const ManyProblems_Dark: Story = {
     },
     docs: {
       description: {
-        story: 'Dark theme variant with 25+ problems to test scrolling and performance. Verifies alternating row colors and consistent dark styling throughout long lists.',
+        story:
+          'Dark theme variant with 25+ problems to test scrolling and performance. Verifies alternating row colors and consistent dark styling throughout long lists.',
       },
     },
   },
@@ -918,7 +954,8 @@ export const AllDifficulties_Dark: Story = {
     backgrounds: { default: 'dark' },
     docs: {
       description: {
-        story: 'Dark theme variant showing all difficulty levels (easy/medium/hard) with their respective color badges. Verifies green, yellow, and red badges are visible on dark background.',
+        story:
+          'Dark theme variant showing all difficulty levels (easy/medium/hard) with their respective color badges. Verifies green, yellow, and red badges are visible on dark background.',
       },
     },
   },
@@ -1034,7 +1071,8 @@ export const ManyProblemsScrollContainer_Dark: Story = {
     backgrounds: { default: 'dark' },
     docs: {
       description: {
-        story: 'Dark theme variant with table inside a fixed-height container with vertical scrolling. Shows dark border and scroll behavior.',
+        story:
+          'Dark theme variant with table inside a fixed-height container with vertical scrolling. Shows dark border and scroll behavior.',
       },
     },
   },

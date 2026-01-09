@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Navigation', () => {
   test('should navigate from Home to Problems page', async ({ page }) => {
@@ -24,14 +24,10 @@ test.describe('Navigation', () => {
 
     // Should be on home page
     await expect(page).toHaveURL('/');
-    await expect(
-      page.getByRole('link', { name: /Start Practicing/i })
-    ).toBeVisible();
+    await expect(page.getByRole('link', { name: /Start Practicing/i })).toBeVisible();
   });
 
-  test('should navigate from Problems list to Problem detail', async ({
-    page,
-  }) => {
+  test('should navigate from Problems list to Problem detail', async ({ page }) => {
     await page.goto('/problems');
 
     // Click first problem
@@ -46,9 +42,7 @@ test.describe('Navigation', () => {
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   });
 
-  test('should navigate from Problem detail back to Problems list', async ({
-    page,
-  }) => {
+  test('should navigate from Problem detail back to Problems list', async ({ page }) => {
     await page.goto('/problems/abort-controller');
 
     // Click "Back to Problems" link
@@ -59,9 +53,7 @@ test.describe('Navigation', () => {
     await expect(page).toHaveURL('/problems');
   });
 
-  test('should navigate between problems using Previous/Next links', async ({
-    page,
-  }) => {
+  test('should navigate between problems using Previous/Next links', async ({ page }) => {
     // Start at a problem that has both previous and next
     await page.goto('/problems/array-chaining');
 
@@ -92,9 +84,7 @@ test.describe('Navigation', () => {
     }
   });
 
-  test('should preserve URL state when using browser back/forward', async ({
-    page,
-  }) => {
+  test('should preserve URL state when using browser back/forward', async ({ page }) => {
     // Navigate through app
     await page.goto('/');
     await page.getByRole('link', { name: /Start Practicing/i }).click();
@@ -134,17 +124,13 @@ test.describe('Navigation', () => {
     await expect(page).toHaveURL(currentUrl);
   });
 
-  test('should handle direct URL access to problem detail', async ({
-    page,
-  }) => {
+  test('should handle direct URL access to problem detail', async ({ page }) => {
     // Directly navigate to a problem
     await page.goto('/problems/abort-controller');
 
     // Should load correctly
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    await expect(
-      page.getByRole('link', { name: /Back to Problems/i })
-    ).toBeVisible();
+    await expect(page.getByRole('link', { name: /Back to Problems/i })).toBeVisible();
   });
 
   test('should handle 404 for non-existent problem', async ({ page }) => {
@@ -243,9 +229,7 @@ test.describe('Navigation', () => {
     await expect(page).toHaveURL('/problems');
   });
 
-  test('should maintain scroll position on back navigation', async ({
-    page,
-  }) => {
+  test('should maintain scroll position on back navigation', async ({ page }) => {
     await page.goto('/problems');
 
     // Scroll down

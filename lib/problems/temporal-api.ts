@@ -420,7 +420,10 @@ class Duration {
       description: 'PlainDate.subtract: Jan 15, 2024 - 1 month = Dec 15, 2023',
     },
     {
-      input: [{ year: 2024, month: 1, day: 1 }, { year: 2024, month: 12, day: 31 }],
+      input: [
+        { year: 2024, month: 1, day: 1 },
+        { year: 2024, month: 12, day: 31 },
+      ],
       expectedOutput: { years: 0, months: 11, days: 30 },
       description: 'PlainDate.until: Calculates difference between dates',
     },

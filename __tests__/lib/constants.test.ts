@@ -4,13 +4,13 @@
  */
 
 import {
-  DIFFICULTY_COLORS,
-  TYPESCRIPT_COMPILER_OPTIONS,
-  TYPESCRIPT_ERROR_CODES,
-  TEST_CONFIG,
   BROWSER_API_KEYWORDS,
   DANGEROUS_CODE_PATTERNS,
+  DIFFICULTY_COLORS,
   DOMPURIFY_CONFIG,
+  TEST_CONFIG,
+  TYPESCRIPT_COMPILER_OPTIONS,
+  TYPESCRIPT_ERROR_CODES,
 } from '../../lib/constants';
 
 describe('lib/constants', () => {
@@ -353,7 +353,9 @@ describe('lib/constants', () => {
 
       it('FUNCTION_CONSTRUCTOR pattern should match Function() calls', () => {
         expect(DANGEROUS_CODE_PATTERNS.FUNCTION_CONSTRUCTOR.test('Function("code")')).toBe(true);
-        expect(DANGEROUS_CODE_PATTERNS.FUNCTION_CONSTRUCTOR.test('new Function("code")')).toBe(true);
+        expect(DANGEROUS_CODE_PATTERNS.FUNCTION_CONSTRUCTOR.test('new Function("code")')).toBe(
+          true
+        );
       });
 
       it('INNER_HTML pattern should match innerHTML assignment', () => {
@@ -381,7 +383,9 @@ describe('lib/constants', () => {
       });
 
       it('CONSTRUCTOR_ACCESS pattern should match constructor bracket access', () => {
-        expect(DANGEROUS_CODE_PATTERNS.CONSTRUCTOR_ACCESS.test('obj.constructor["prototype"]')).toBe(true);
+        expect(
+          DANGEROUS_CODE_PATTERNS.CONSTRUCTOR_ACCESS.test('obj.constructor["prototype"]')
+        ).toBe(true);
         expect(DANGEROUS_CODE_PATTERNS.CONSTRUCTOR_ACCESS.test('x.constructor[key]')).toBe(true);
       });
     });

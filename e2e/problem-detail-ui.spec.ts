@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 /**
  * Comprehensive E2E tests for the Problem Detail Page UI
@@ -153,7 +153,10 @@ test.describe('Problem Detail Page - Examples Tab', () => {
 
     // Check if examples exist
     const exampleContent = page.locator('[class*="Example"], .bg-gray-50, .bg-gray-900\\/50');
-    const hasExamples = await exampleContent.first().isVisible().catch(() => false);
+    const hasExamples = await exampleContent
+      .first()
+      .isVisible()
+      .catch(() => false);
 
     if (hasExamples) {
       // Should have Input and Output labels
@@ -209,8 +212,13 @@ test.describe('Problem Detail Page - Hints Tab', () => {
     await page.waitForTimeout(300);
 
     // Check if hints exist or show no hints message
-    const hintItems = page.locator('li').filter({ has: page.locator('.text-blue-500, .text-blue-400') });
-    const hasHints = await hintItems.first().isVisible().catch(() => false);
+    const hintItems = page
+      .locator('li')
+      .filter({ has: page.locator('.text-blue-500, .text-blue-400') });
+    const hasHints = await hintItems
+      .first()
+      .isVisible()
+      .catch(() => false);
 
     if (hasHints) {
       await expect(hintItems.first()).toBeVisible();
@@ -227,7 +235,10 @@ test.describe('Problem Detail Page - Hints Tab', () => {
 
     // Look for hint items with lightbulb emoji
     const hintWithEmoji = page.locator('li').filter({ hasText: /💡/ });
-    const hasHintsWithEmoji = await hintWithEmoji.first().isVisible().catch(() => false);
+    const hasHintsWithEmoji = await hintWithEmoji
+      .first()
+      .isVisible()
+      .catch(() => false);
 
     // If hints exist, they should have the emoji
     if (hasHintsWithEmoji) {
@@ -315,13 +326,32 @@ test.describe('Problem Detail Page - Run Tests Button', () => {
     await page.waitForTimeout(5000);
 
     // Should show some kind of result
-    const hasPassedMessage = await page.getByText(/All tests passed/i).isVisible().catch(() => false);
-    const hasFailedMessage = await page.getByText(/Some tests failed/i).isVisible().catch(() => false);
-    const hasError = await page.locator('.bg-red-50, .bg-red-900\\/20').first().isVisible().catch(() => false);
-    const hasTestCase = await page.getByText(/Test Case \d+/i).first().isVisible().catch(() => false);
-    const noResultsGone = !(await page.getByText(/No test results yet/i).isVisible().catch(() => false));
+    const hasPassedMessage = await page
+      .getByText(/All tests passed/i)
+      .isVisible()
+      .catch(() => false);
+    const hasFailedMessage = await page
+      .getByText(/Some tests failed/i)
+      .isVisible()
+      .catch(() => false);
+    const hasError = await page
+      .locator('.bg-red-50, .bg-red-900\\/20')
+      .first()
+      .isVisible()
+      .catch(() => false);
+    const hasTestCase = await page
+      .getByText(/Test Case \d+/i)
+      .first()
+      .isVisible()
+      .catch(() => false);
+    const noResultsGone = !(await page
+      .getByText(/No test results yet/i)
+      .isVisible()
+      .catch(() => false));
 
-    expect(hasPassedMessage || hasFailedMessage || hasError || hasTestCase || noResultsGone).toBeTruthy();
+    expect(
+      hasPassedMessage || hasFailedMessage || hasError || hasTestCase || noResultsGone
+    ).toBeTruthy();
   });
 
   test('should show running state while tests execute', async ({ page }) => {
@@ -334,9 +364,9 @@ test.describe('Problem Detail Page - Run Tests Button', () => {
     const testResult = page.getByText(/Test Case|All tests|Some tests/i).first();
 
     // Should show either running state or results
-    await expect(
-      runningIndicator.or(runningSpinner).or(testResult)
-    ).toBeVisible({ timeout: 10000 });
+    await expect(runningIndicator.or(runningSpinner).or(testResult)).toBeVisible({
+      timeout: 10000,
+    });
   });
 
   test('should disable Run Tests button while tests are running', async ({ page }) => {
@@ -407,7 +437,11 @@ test.describe('Problem Detail Page - Test Results Display', () => {
 
     // Should have at least one test case result (or error)
     const hasTestCases = testCaseCount > 0;
-    const hasError = await page.locator('.bg-red-50, .bg-red-900\\/20').first().isVisible().catch(() => false);
+    const hasError = await page
+      .locator('.bg-red-50, .bg-red-900\\/20')
+      .first()
+      .isVisible()
+      .catch(() => false);
 
     expect(hasTestCases || hasError).toBeTruthy();
   });
@@ -423,12 +457,24 @@ test.describe('Problem Detail Page - Test Results Display', () => {
     const expectedLabel = page.getByText(/Expected:/i);
     const gotLabel = page.getByText(/Got:/i);
 
-    const hasInput = await inputLabel.first().isVisible().catch(() => false);
-    const hasExpected = await expectedLabel.first().isVisible().catch(() => false);
-    const hasGot = await gotLabel.first().isVisible().catch(() => false);
+    const hasInput = await inputLabel
+      .first()
+      .isVisible()
+      .catch(() => false);
+    const hasExpected = await expectedLabel
+      .first()
+      .isVisible()
+      .catch(() => false);
+    const hasGot = await gotLabel
+      .first()
+      .isVisible()
+      .catch(() => false);
 
     // If tests ran successfully (no global error), should show these labels
-    const hasError = await page.getByRole('heading', { name: /Error/i }).isVisible().catch(() => false);
+    const hasError = await page
+      .getByRole('heading', { name: /Error/i })
+      .isVisible()
+      .catch(() => false);
 
     if (!hasError) {
       // At least one of these should be visible if tests completed
@@ -618,7 +664,10 @@ test.describe('Problem Detail Page - Solved Badge', () => {
       await page.waitForTimeout(5000);
 
       // If all tests passed, check for solved badge
-      const allPassed = await page.getByText(/All tests passed/i).isVisible().catch(() => false);
+      const allPassed = await page
+        .getByText(/All tests passed/i)
+        .isVisible()
+        .catch(() => false);
 
       if (allPassed) {
         const solvedBadge = page.locator('div').filter({ hasText: /^Solved$/ });
@@ -633,7 +682,10 @@ test.describe('Problem Detail Page - Solved Badge', () => {
 
     // Before running any tests, solved badge should not be visible
     // Note: Badge may be visible if problem was previously solved (stored in localStorage)
-    const solvedBadge = page.locator('div').filter({ hasText: /^Solved$/ }).first();
+    const solvedBadge = page
+      .locator('div')
+      .filter({ hasText: /^Solved$/ })
+      .first();
 
     // The badge visibility depends on localStorage state
     // We just verify the test runs without error
@@ -733,7 +785,10 @@ test.describe('Problem Detail Page - Previous/Next Navigation', () => {
     await page.goto('/problems/abort-controller');
     await page.locator('.monaco-editor').first().waitFor({ timeout: 15000 });
 
-    const navCard = page.locator('a').filter({ hasText: /Next|Previous/i }).first();
+    const navCard = page
+      .locator('a')
+      .filter({ hasText: /Next|Previous/i })
+      .first();
     const isVisible = await navCard.isVisible().catch(() => false);
 
     if (isVisible) {
@@ -939,7 +994,11 @@ test.describe('Problem Detail Page - Error Handling', () => {
     await page.waitForTimeout(5000);
 
     // Should show some result (either pass, fail, or error)
-    const hasResult = await page.getByText(/All tests|Some tests|Error|Test Case/i).first().isVisible().catch(() => false);
+    const hasResult = await page
+      .getByText(/All tests|Some tests|Error|Test Case/i)
+      .first()
+      .isVisible()
+      .catch(() => false);
     expect(hasResult).toBeTruthy();
   });
 });

@@ -1,6 +1,6 @@
-import { render, screen, act, waitFor } from '@testing-library/react';
-import { ProgressProvider, ProgressContext, useProgress } from '@/components/ProgressProvider';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import { useContext } from 'react';
+import { ProgressContext, ProgressProvider, useProgress } from '@/components/ProgressProvider';
 
 // Mock the problems module
 jest.mock('@/lib/problems', () => ({
@@ -963,7 +963,9 @@ describe('ProgressProvider', () => {
 
       await waitFor(() => {
         expect(screen.getByTestId('is-solved-special')).toHaveTextContent('true');
-        expect(screen.getByTestId('solved-list')).toHaveTextContent('problem-with-special_chars.v2');
+        expect(screen.getByTestId('solved-list')).toHaveTextContent(
+          'problem-with-special_chars.v2'
+        );
       });
     });
 
@@ -1009,18 +1011,19 @@ describe('ProgressProvider', () => {
     });
 
     it('should provide all expected functions from the hook', async () => {
-      let hookResult: ReturnType<typeof useProgress> | null = null;
+      const hookResultRef = { current: null as ReturnType<typeof useProgress> | null };
 
       function HookInspectorComponent() {
-        hookResult = useProgress();
+        hookResultRef.current = useProgress();
 
         return (
           <div>
             <div data-testid="has-functions">
-              {typeof hookResult.markSolved === 'function' &&
-              typeof hookResult.markUnsolved === 'function' &&
-              typeof hookResult.isSolved === 'function' &&
-              typeof hookResult.resetProgress === 'function'
+              {hookResultRef.current &&
+              typeof hookResultRef.current.markSolved === 'function' &&
+              typeof hookResultRef.current.markUnsolved === 'function' &&
+              typeof hookResultRef.current.isSolved === 'function' &&
+              typeof hookResultRef.current.resetProgress === 'function'
                 ? 'true'
                 : 'false'}
             </div>
@@ -1039,11 +1042,11 @@ describe('ProgressProvider', () => {
       });
 
       // Verify all functions are present and are functions
-      expect(hookResult).not.toBeNull();
-      expect(typeof hookResult!.markSolved).toBe('function');
-      expect(typeof hookResult!.markUnsolved).toBe('function');
-      expect(typeof hookResult!.isSolved).toBe('function');
-      expect(typeof hookResult!.resetProgress).toBe('function');
+      expect(hookResultRef.current).not.toBeNull();
+      expect(typeof hookResultRef.current!.markSolved).toBe('function');
+      expect(typeof hookResultRef.current!.markUnsolved).toBe('function');
+      expect(typeof hookResultRef.current!.isSolved).toBe('function');
+      expect(typeof hookResultRef.current!.resetProgress).toBe('function');
     });
   });
 

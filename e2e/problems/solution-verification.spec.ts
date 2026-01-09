@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 import { problems } from '../../lib/problems';
 
 /**
@@ -40,7 +40,11 @@ async function verifySolutionPasses(page: Page, problemId: string, solution: str
   // This is the most reliable method
   await page.evaluate((solutionCode) => {
     // Access Monaco editor through the global monaco object
-    const monacoGlobal = (window as unknown as { monaco?: { editor?: { getModels: () => Array<{ setValue: (v: string) => void }> } } }).monaco;
+    const monacoGlobal = (
+      window as unknown as {
+        monaco?: { editor?: { getModels: () => Array<{ setValue: (v: string) => void }> } };
+      }
+    ).monaco;
     if (monacoGlobal?.editor) {
       const models = monacoGlobal.editor.getModels();
       if (models && models.length > 0) {
@@ -64,9 +68,11 @@ async function verifySolutionPasses(page: Page, problemId: string, solution: str
   // Use polling to check for result rather than fixed timeout
   await page.waitForFunction(
     () => {
-      const allPassed = document.querySelector('[data-testid="all-tests-passed"]') ||
+      const allPassed =
+        document.querySelector('[data-testid="all-tests-passed"]') ||
         document.body.innerText.includes('All tests passed');
-      const someFailed = document.body.innerText.includes('Some tests failed') ||
+      const someFailed =
+        document.body.innerText.includes('Some tests failed') ||
         document.body.innerText.includes('Test Case');
       const hasError = document.body.innerText.includes('Error');
       return allPassed || someFailed || hasError;
@@ -91,7 +97,7 @@ const allProblems = problems.map((p) => ({
 
 // Split problems into batches for parallel execution
 const BATCH_SIZE = 25;
-const batches: typeof allProblems[] = [];
+const batches: (typeof allProblems)[] = [];
 for (let i = 0; i < allProblems.length; i += BATCH_SIZE) {
   batches.push(allProblems.slice(i, i + BATCH_SIZE));
 }
@@ -106,7 +112,9 @@ batches.forEach((batch, batchIndex) => {
     test.setTimeout(90000); // 90 seconds per test
 
     for (const problem of batch) {
-      test(`[${problem.id}] "${problem.title}" solution should pass all tests`, async ({ page }) => {
+      test(`[${problem.id}] "${problem.title}" solution should pass all tests`, async ({
+        page,
+      }) => {
         await verifySolutionPasses(page, problem.id, problem.solution);
       });
     }

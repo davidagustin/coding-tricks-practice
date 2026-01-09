@@ -160,8 +160,30 @@ describe('deepEqual', () => {
     });
 
     it('should handle nested arrays', () => {
-      expect(deepEqual([[1, 2], [3, 4]], [[1, 2], [3, 4]])).toBe(true);
-      expect(deepEqual([[1, 2], [3, 4]], [[1, 2], [3, 5]])).toBe(false);
+      expect(
+        deepEqual(
+          [
+            [1, 2],
+            [3, 4],
+          ],
+          [
+            [1, 2],
+            [3, 4],
+          ]
+        )
+      ).toBe(true);
+      expect(
+        deepEqual(
+          [
+            [1, 2],
+            [3, 4],
+          ],
+          [
+            [1, 2],
+            [3, 5],
+          ]
+        )
+      ).toBe(false);
       expect(deepEqual([[[1]]], [[[1]]])).toBe(true);
       expect(deepEqual([[[1]]], [[[2]]])).toBe(false);
     });

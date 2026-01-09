@@ -3,15 +3,15 @@
  * Tests problem structure, validation, and solution correctness.
  */
 
+import ts from 'typescript';
 import {
-  Problem,
-  problems,
   getProblemById,
   getProblemsByCategory,
   getProblemsByDifficulty,
+  type Problem,
+  problems,
 } from '@/lib/problems';
 import { runTests } from '@/lib/test-runner';
-import ts from 'typescript';
 
 // Valid categories used in the app
 const VALID_CATEGORIES = [
@@ -294,7 +294,9 @@ describe('Comprehensive Problem Tests', () => {
         const hasValidHtml = hasValidHtmlStructure(problem.description);
 
         if (!hasValidHtml) {
-          console.error(`Problem "${problem.title}" (${problem.id}) has invalid HTML in description`);
+          console.error(
+            `Problem "${problem.title}" (${problem.id}) has invalid HTML in description`
+          );
         }
 
         expect(hasValidHtml).toBe(true);
@@ -552,44 +554,42 @@ describe('Comprehensive Problem Tests', () => {
       const shouldSkip =
         BROWSER_API_PROBLEMS.includes(problem.id) || EDUCATIONAL_PROBLEMS.includes(problem.id);
 
-      it(
-        `should pass all test cases for "${problem.title}" (${problem.id})${shouldSkip ? ' [EDUCATIONAL/BROWSER]' : ''}`,
-        async () => {
-          if (shouldSkip) {
-            // For educational/browser problems, we verify the code can be transpiled
-            // using the TypeScript syntax validator. We don't run the actual tests
-            // because they might use browser APIs or have special test structures.
-            const syntaxResult = validateTypeScriptSyntax(problem.solution);
-            expect(syntaxResult.valid).toBe(true);
-            return;
+      it(`should pass all test cases for "${problem.title}" (${problem.id})${shouldSkip ? ' [EDUCATIONAL/BROWSER]' : ''}`, async () => {
+        if (shouldSkip) {
+          // For educational/browser problems, we verify the code can be transpiled
+          // using the TypeScript syntax validator. We don't run the actual tests
+          // because they might use browser APIs or have special test structures.
+          const syntaxResult = validateTypeScriptSyntax(problem.solution);
+          expect(syntaxResult.valid).toBe(true);
+          return;
+        }
+
+        const result = await runTests(problem.solution, problem.testCases);
+
+        // Log detailed results if tests fail
+        if (!result.allPassed) {
+          console.error(`\nSolution failed for problem: ${problem.title}`);
+          console.error(`Problem ID: ${problem.id}`);
+          if (result.error) {
+            console.error(`Error: ${result.error}`);
           }
-
-          const result = await runTests(problem.solution, problem.testCases);
-
-          // Log detailed results if tests fail
-          if (!result.allPassed) {
-            console.error(`\nSolution failed for problem: ${problem.title}`);
-            console.error(`Problem ID: ${problem.id}`);
-            if (result.error) {
-              console.error(`Error: ${result.error}`);
-            }
-            result.results.forEach((testResult, index) => {
-              if (!testResult.passed) {
-                console.error(`\nTest Case ${index + 1} (${testResult.description || 'no description'}):`);
-                console.error(`  Input: ${JSON.stringify(testResult.input, null, 2)}`);
-                console.error(`  Expected: ${JSON.stringify(testResult.expectedOutput, null, 2)}`);
-                console.error(`  Actual: ${JSON.stringify(testResult.actualOutput, null, 2)}`);
-                if (testResult.error) {
-                  console.error(`  Error: ${testResult.error}`);
-                }
+          result.results.forEach((testResult, index) => {
+            if (!testResult.passed) {
+              console.error(
+                `\nTest Case ${index + 1} (${testResult.description || 'no description'}):`
+              );
+              console.error(`  Input: ${JSON.stringify(testResult.input, null, 2)}`);
+              console.error(`  Expected: ${JSON.stringify(testResult.expectedOutput, null, 2)}`);
+              console.error(`  Actual: ${JSON.stringify(testResult.actualOutput, null, 2)}`);
+              if (testResult.error) {
+                console.error(`  Error: ${testResult.error}`);
               }
-            });
-          }
+            }
+          });
+        }
 
-          expect(result.allPassed).toBe(true);
-        },
-        15000 // 15 second timeout
-      );
+        expect(result.allPassed).toBe(true);
+      }, 15000); // 15 second timeout
     });
   });
 });
@@ -809,9 +809,7 @@ describe('Content Quality Tests', () => {
         const lastHint = problem.hints[problem.hints.length - 1];
 
         if (lastHint.length < firstHint.length * 0.5) {
-          console.warn(
-            `Problem "${problem.title}" hints may not be progressively detailed`
-          );
+          console.warn(`Problem "${problem.title}" hints may not be progressively detailed`);
         }
       }
     });
@@ -839,9 +837,7 @@ describe('Content Quality Tests', () => {
           example.output.includes('false');
 
         if (!isCodeInput && !isCodeOutput) {
-          console.warn(
-            `Problem "${problem.title}" example may not be code-like`
-          );
+          console.warn(`Problem "${problem.title}" example may not be code-like`);
         }
       });
     });

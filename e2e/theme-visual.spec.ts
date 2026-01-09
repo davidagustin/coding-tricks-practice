@@ -1,4 +1,4 @@
-import { test, expect, type Page, type BrowserContext } from '@playwright/test';
+import { type BrowserContext, expect, type Page, test } from '@playwright/test';
 
 /**
  * Comprehensive Theme/Dark Mode E2E Tests
@@ -94,7 +94,7 @@ function isDarkColor(color: string): boolean {
     color.includes('lab(8') ||
     color.includes('lab(9') ||
     // More specific dark gray values
-    !color.includes('rgb(255') && !color.includes('lab(100')
+    (!color.includes('rgb(255') && !color.includes('lab(100'))
   );
 }
 
@@ -466,10 +466,7 @@ test.describe('6. All Pages Render Correctly in Light Mode', () => {
     // Check filter sidebar has light background
     const sidebar = page.locator('aside').first();
     if ((await sidebar.count()) > 0) {
-      const sidebarClasses = await sidebar
-        .locator('.bg-white')
-        .first()
-        .getAttribute('class');
+      const sidebarClasses = await sidebar.locator('.bg-white').first().getAttribute('class');
       expect(sidebarClasses).toContain('bg-white');
     }
 
@@ -1195,9 +1192,7 @@ test.describe('Theme Toggle Button Accessibility', () => {
 // ============================================================================
 
 test.describe('Theme Consistency Across Sessions', () => {
-  test('should remember theme after closing and reopening browser context', async ({
-    browser,
-  }) => {
+  test('should remember theme after closing and reopening browser context', async ({ browser }) => {
     // First session - set dark theme
     const context1 = await browser.newContext();
     const page1 = await context1.newPage();

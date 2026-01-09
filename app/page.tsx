@@ -1,9 +1,9 @@
 'use client';
 
-import { useMemo } from 'react';
 import Link from 'next/link';
-import { problems } from '@/lib/problems';
+import { useMemo } from 'react';
 import { useProgress } from '@/components/ProgressProvider';
+import { problems } from '@/lib/problems';
 
 export default function Home() {
   const { solvedCount } = useProgress();

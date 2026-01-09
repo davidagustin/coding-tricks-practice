@@ -8,8 +8,8 @@
  * - Real problem solutions validation
  */
 
-import { runTests, TestRunnerResult } from '@/lib/test-runner';
 import { getProblemById } from '@/lib/problems';
+import { runTests, type TestRunnerResult } from '@/lib/test-runner';
 
 // Helper to check if a result passed all tests
 const expectAllPassed = (result: TestRunnerResult) => {
@@ -529,7 +529,9 @@ describe('Test Runner Integration Tests', () => {
           }
         `;
 
-        const result = await runTests(code, [{ input: ['some error'], expectedOutput: 'some error' }]);
+        const result = await runTests(code, [
+          { input: ['some error'], expectedOutput: 'some error' },
+        ]);
 
         expectAllPassed(result);
       });
@@ -1520,11 +1522,7 @@ describe('Test Runner Integration Tests', () => {
         }
       `;
 
-      const result = await runTests(
-        code,
-        [{ input: [2, 3], expectedOutput: 6 }],
-        'multiply'
-      );
+      const result = await runTests(code, [{ input: [2, 3], expectedOutput: 6 }], 'multiply');
 
       expectAllPassed(result);
     });
@@ -1601,7 +1599,13 @@ describe('Test Runner Integration Tests', () => {
         `;
 
         const result = await runTests(code, [
-          { input: [[1, 2], [3, 4]], expectedOutput: [1, 2, 3, 4] },
+          {
+            input: [
+              [1, 2],
+              [3, 4],
+            ],
+            expectedOutput: [1, 2, 3, 4],
+          },
         ]);
 
         expectAllPassed(result);
@@ -1630,9 +1634,7 @@ describe('Test Runner Integration Tests', () => {
           }
         `;
 
-        const result = await runTests(code, [
-          { input: [1, 2, 3, 4, 5], expectedOutput: 15 },
-        ]);
+        const result = await runTests(code, [{ input: [1, 2, 3, 4, 5], expectedOutput: 15 }]);
 
         expectAllPassed(result);
       });

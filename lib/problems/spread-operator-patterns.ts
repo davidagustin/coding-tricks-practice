@@ -26,14 +26,14 @@ export const problem: Problem = {
   category: 'Object Methods',
   description: `<h2>In-Depth Explanation</h2>
 
-<p>The spread operator (\<code>...\</code>) is a powerful tool for working with objects and arrays. It "spreads" or expands an iterable into individual elements. For objects, it creates shallow copies and enables immutable updates.</p>
+<p>The spread operator (<code>...</code>) is a powerful tool for working with objects and arrays. It "spreads" or expands an iterable into individual elements. For objects, it creates shallow copies and enables immutable updates.</p>
 
 <p>Key patterns:</p>
 <ul>
-  <li><strong>Cloning</strong>: \<code>{ ...obj }\</code> creates a shallow copy</li>
-  <li><strong>Merging</strong>: \<code>{ ...obj1, ...obj2 }\</code> merges objects (later overrides earlier)</li>
-  <li><strong>Immutable Updates</strong>: \<code>{ ...obj, prop: newValue }\</code> updates without mutation</li>
-  <li><strong>Omitting Properties</strong>: \<code>const { key, ...rest } = obj\</code> removes properties</li>
+  <li><strong>Cloning</strong>: <code>{ ...obj }</code> creates a shallow copy</li>
+  <li><strong>Merging</strong>: <code>{ ...obj1, ...obj2 }</code> merges objects (later overrides earlier)</li>
+  <li><strong>Immutable Updates</strong>: <code>{ ...obj, prop: newValue }</code> updates without mutation</li>
+  <li><strong>Omitting Properties</strong>: <code>const { key, ...rest } = obj</code> removes properties</li>
   <li><strong>Nested Updates</strong>: Spread at each level for deep updates</li>
 </ul>
 
@@ -57,13 +57,13 @@ export const problem: Problem = {
 <p>Spread patterns are used everywhere:</p>
 
 <ul>
-  <li><strong>State Updates</strong>: React setState with spread: \<code>setState({ ...state, key: value })\</code></li>
+  <li><strong>State Updates</strong>: React setState with spread: <code>setState({ ...state, key: value })</code></li>
   <li><strong>Redux Reducers</strong>: Immutable state updates in Redux</li>
   <li><strong>Object Merging</strong>: Merging configuration objects</li>
-  <li><strong>Default Values</strong>: \<code>{ ...defaults, ...overrides }\</code></li>
+  <li><strong>Default Values</strong>: <code>{ ...defaults, ...overrides }</code></li>
   <li><strong>Array Operations</strong>: Cloning, concatenating arrays</li>
   <li><strong>Function Arguments</strong>: Spreading arrays as function arguments</li>
-  <li><strong>Props Spreading</strong>: React \<code><Component {...props} />\</code></li>
+  <li><strong>Props Spreading</strong>: React <code><Component {...props} /></code></li>
   <li><strong>API Requests</strong>: Merging request parameters</li>
 </ul>
 

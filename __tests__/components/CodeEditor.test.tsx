@@ -1,7 +1,7 @@
-import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import type React from 'react';
 import CodeEditor from '@/components/CodeEditor';
 import { ThemeContext } from '@/components/ThemeProvider';
-import React from 'react';
 
 // Mock types for Monaco Editor
 interface MockEditorProps {
@@ -187,12 +187,7 @@ function renderCodeEditor({
 
   return render(
     <ThemeContext.Provider value={themeContextValue}>
-      <CodeEditor
-        code={code}
-        onChange={onChange}
-        language={language}
-        readOnly={readOnly}
-      />
+      <CodeEditor code={code} onChange={onChange} language={language} readOnly={readOnly} />
     </ThemeContext.Provider>
   );
 }
@@ -579,7 +574,9 @@ const user: User = { name: 'John', age: 30 };`;
         mockOnMount?.(mockEditor, mockMonaco);
       });
 
-      expect(mockMonaco.languages.typescript.typescriptDefaults.setCompilerOptions).toHaveBeenCalled();
+      expect(
+        mockMonaco.languages.typescript.typescriptDefaults.setCompilerOptions
+      ).toHaveBeenCalled();
     });
 
     it('onMount sets JavaScript defaults', () => {
@@ -592,7 +589,9 @@ const user: User = { name: 'John', age: 30 };`;
         mockOnMount?.(mockEditor, mockMonaco);
       });
 
-      expect(mockMonaco.languages.typescript.javascriptDefaults.setCompilerOptions).toHaveBeenCalled();
+      expect(
+        mockMonaco.languages.typescript.javascriptDefaults.setCompilerOptions
+      ).toHaveBeenCalled();
     });
 
     it('onMount adds format document action', () => {
@@ -649,7 +648,8 @@ const user: User = { name: 'John', age: 30 };`;
         mockOnMount?.(mockEditor, mockMonaco);
       });
 
-      const compilerOptions = mockMonaco.languages.typescript.typescriptDefaults.setCompilerOptions.mock.calls[0][0];
+      const compilerOptions =
+        mockMonaco.languages.typescript.typescriptDefaults.setCompilerOptions.mock.calls[0][0];
       expect(compilerOptions.allowJs).toBe(false);
     });
 
@@ -663,7 +663,9 @@ const user: User = { name: 'John', age: 30 };`;
         mockOnMount?.(mockEditor, mockMonaco);
       });
 
-      expect(mockMonaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions).toHaveBeenCalled();
+      expect(
+        mockMonaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions
+      ).toHaveBeenCalled();
     });
 
     it('includes additional diagnostic codes to ignore for read-only mode', () => {
@@ -676,7 +678,8 @@ const user: User = { name: 'John', age: 30 };`;
         mockOnMount?.(mockEditor, mockMonaco);
       });
 
-      const diagnosticsOptions = mockMonaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions.mock.calls[0][0];
+      const diagnosticsOptions =
+        mockMonaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions.mock.calls[0][0];
       expect(diagnosticsOptions.diagnosticCodesToIgnore).toContain(2393); // Duplicate function implementation
     });
   });
@@ -684,7 +687,9 @@ const user: User = { name: 'John', age: 30 };`;
   describe('Code Update Behavior', () => {
     it('updates editor when code prop changes', async () => {
       const { rerender } = render(
-        <ThemeContext.Provider value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}>
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
           <CodeEditor code="initial code" onChange={jest.fn()} />
         </ThemeContext.Provider>
       );
@@ -693,7 +698,9 @@ const user: User = { name: 'John', age: 30 };`;
       expect(textarea).toHaveValue('initial code');
 
       rerender(
-        <ThemeContext.Provider value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}>
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
           <CodeEditor code="updated code" onChange={jest.fn()} />
         </ThemeContext.Provider>
       );
@@ -910,14 +917,18 @@ const user: User = { name: 'John', age: 30 };`;
   describe('Edge Cases', () => {
     it('handles rapid code prop changes', () => {
       const { rerender } = render(
-        <ThemeContext.Provider value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}>
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
           <CodeEditor code="code1" onChange={jest.fn()} />
         </ThemeContext.Provider>
       );
 
       for (let i = 2; i <= 10; i++) {
         rerender(
-          <ThemeContext.Provider value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}>
+          <ThemeContext.Provider
+            value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+          >
             <CodeEditor code={`code${i}`} onChange={jest.fn()} />
           </ThemeContext.Provider>
         );
@@ -1041,7 +1052,9 @@ const user: User = { name: 'John', age: 30 };`;
       const mockMonaco = createMockMonaco();
 
       const { rerender } = render(
-        <ThemeContext.Provider value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}>
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
           <CodeEditor code="code1" onChange={jest.fn()} />
         </ThemeContext.Provider>
       );
@@ -1054,7 +1067,9 @@ const user: User = { name: 'John', age: 30 };`;
 
       // Re-render with different code
       rerender(
-        <ThemeContext.Provider value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}>
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
           <CodeEditor code="code2" onChange={jest.fn()} />
         </ThemeContext.Provider>
       );
@@ -1075,7 +1090,8 @@ const user: User = { name: 'John', age: 30 };`;
         mockOnMount?.(mockEditor, mockMonaco);
       });
 
-      const compilerOptions = mockMonaco.languages.typescript.typescriptDefaults.setCompilerOptions.mock.calls[0][0];
+      const compilerOptions =
+        mockMonaco.languages.typescript.typescriptDefaults.setCompilerOptions.mock.calls[0][0];
       expect(compilerOptions.target).toBe(mockMonaco.languages.typescript.ScriptTarget.ES2020);
     });
 
@@ -1089,7 +1105,8 @@ const user: User = { name: 'John', age: 30 };`;
         mockOnMount?.(mockEditor, mockMonaco);
       });
 
-      const compilerOptions = mockMonaco.languages.typescript.typescriptDefaults.setCompilerOptions.mock.calls[0][0];
+      const compilerOptions =
+        mockMonaco.languages.typescript.typescriptDefaults.setCompilerOptions.mock.calls[0][0];
       expect(compilerOptions.esModuleInterop).toBe(true);
     });
 
@@ -1103,7 +1120,8 @@ const user: User = { name: 'John', age: 30 };`;
         mockOnMount?.(mockEditor, mockMonaco);
       });
 
-      const compilerOptions = mockMonaco.languages.typescript.typescriptDefaults.setCompilerOptions.mock.calls[0][0];
+      const compilerOptions =
+        mockMonaco.languages.typescript.typescriptDefaults.setCompilerOptions.mock.calls[0][0];
       expect(compilerOptions.jsx).toBe(mockMonaco.languages.typescript.JsxEmit.React);
     });
 
@@ -1117,7 +1135,8 @@ const user: User = { name: 'John', age: 30 };`;
         mockOnMount?.(mockEditor, mockMonaco);
       });
 
-      const compilerOptions = mockMonaco.languages.typescript.typescriptDefaults.setCompilerOptions.mock.calls[0][0];
+      const compilerOptions =
+        mockMonaco.languages.typescript.typescriptDefaults.setCompilerOptions.mock.calls[0][0];
       expect(compilerOptions.strict).toBe(false);
     });
 
@@ -1131,7 +1150,8 @@ const user: User = { name: 'John', age: 30 };`;
         mockOnMount?.(mockEditor, mockMonaco);
       });
 
-      const compilerOptions = mockMonaco.languages.typescript.typescriptDefaults.setCompilerOptions.mock.calls[0][0];
+      const compilerOptions =
+        mockMonaco.languages.typescript.typescriptDefaults.setCompilerOptions.mock.calls[0][0];
       expect(compilerOptions.skipLibCheck).toBe(true);
     });
   });
@@ -1147,7 +1167,8 @@ const user: User = { name: 'John', age: 30 };`;
         mockOnMount?.(mockEditor, mockMonaco);
       });
 
-      const diagnosticsOptions = mockMonaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions.mock.calls[0][0];
+      const diagnosticsOptions =
+        mockMonaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions.mock.calls[0][0];
       expect(diagnosticsOptions.noSemanticValidation).toBe(false);
     });
 
@@ -1161,7 +1182,8 @@ const user: User = { name: 'John', age: 30 };`;
         mockOnMount?.(mockEditor, mockMonaco);
       });
 
-      const diagnosticsOptions = mockMonaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions.mock.calls[0][0];
+      const diagnosticsOptions =
+        mockMonaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions.mock.calls[0][0];
       expect(diagnosticsOptions.noSyntaxValidation).toBe(false);
     });
 
@@ -1175,7 +1197,8 @@ const user: User = { name: 'John', age: 30 };`;
         mockOnMount?.(mockEditor, mockMonaco);
       });
 
-      const diagnosticsOptions = mockMonaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions.mock.calls[0][0];
+      const diagnosticsOptions =
+        mockMonaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions.mock.calls[0][0];
       expect(diagnosticsOptions.diagnosticCodesToIgnore).toContain(8006);
     });
 
@@ -1189,7 +1212,8 @@ const user: User = { name: 'John', age: 30 };`;
         mockOnMount?.(mockEditor, mockMonaco);
       });
 
-      const diagnosticsOptions = mockMonaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions.mock.calls[0][0];
+      const diagnosticsOptions =
+        mockMonaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions.mock.calls[0][0];
       expect(diagnosticsOptions.diagnosticCodesToIgnore).toContain(2451);
       expect(diagnosticsOptions.diagnosticCodesToIgnore).toContain(2300);
     });
@@ -1225,7 +1249,8 @@ const user: User = { name: 'John', age: 30 };`;
         mockOnMount?.(mockEditor, mockMonaco);
       });
 
-      const jsCompilerOptions = mockMonaco.languages.typescript.javascriptDefaults.setCompilerOptions.mock.calls[0][0];
+      const jsCompilerOptions =
+        mockMonaco.languages.typescript.javascriptDefaults.setCompilerOptions.mock.calls[0][0];
       expect(jsCompilerOptions.allowJs).toBe(true);
     });
 
@@ -1239,7 +1264,8 @@ const user: User = { name: 'John', age: 30 };`;
         mockOnMount?.(mockEditor, mockMonaco);
       });
 
-      const jsCompilerOptions = mockMonaco.languages.typescript.javascriptDefaults.setCompilerOptions.mock.calls[0][0];
+      const jsCompilerOptions =
+        mockMonaco.languages.typescript.javascriptDefaults.setCompilerOptions.mock.calls[0][0];
       expect(jsCompilerOptions.checkJs).toBe(false);
     });
   });
@@ -1252,7 +1278,9 @@ const user: User = { name: 'John', age: 30 };`;
 
     it('updates value prop when code changes', () => {
       const { rerender } = render(
-        <ThemeContext.Provider value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}>
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
           <CodeEditor code="initial" onChange={jest.fn()} />
         </ThemeContext.Provider>
       );
@@ -1260,7 +1288,9 @@ const user: User = { name: 'John', age: 30 };`;
       expect(capturedProps.value).toBe('initial');
 
       rerender(
-        <ThemeContext.Provider value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}>
+        <ThemeContext.Provider
+          value={{ theme: 'dark', toggleTheme: jest.fn(), setTheme: jest.fn() }}
+        >
           <CodeEditor code="updated" onChange={jest.fn()} />
         </ThemeContext.Provider>
       );

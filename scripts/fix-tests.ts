@@ -28,6 +28,7 @@ async function parseTestOutput(): Promise<FailingTest[]> {
 
   if (!fs.existsSync(testOutputPath)) {
     console.log('No test-output.txt found, running tests...');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { execSync } = require('child_process');
     try {
       execSync('npm test 2>&1 | tee test-output.txt', { stdio: 'pipe' });
@@ -67,7 +68,7 @@ async function parseTestOutput(): Promise<FailingTest[]> {
     const testName = match[1].trim();
     const error = match[2].trim();
 
-    const existing = failingTests.find(t => testName.includes(t.testName));
+    const existing = failingTests.find((t) => testName.includes(t.testName));
     if (existing) {
       existing.error = error;
     }
@@ -75,8 +76,8 @@ async function parseTestOutput(): Promise<FailingTest[]> {
 
   // Map to problem files if applicable
   for (const test of failingTests) {
-    const problemMatch = test.testName.match(/Problem:\s*([a-z-]+)/i) ||
-                         test.error.match(/problems\/([a-z-]+)\.ts/i);
+    const problemMatch =
+      test.testName.match(/Problem:\s*([a-z-]+)/i) || test.error.match(/problems\/([a-z-]+)\.ts/i);
     if (problemMatch) {
       test.problemFile = `lib/problems/${problemMatch[1]}.ts`;
     }
@@ -126,15 +127,18 @@ ${error}
 3. Make sure the solution properly implements what the starterCode asks for
 4. Ensure testCases have valid input/expectedOutput that match the solution
 
-Return ONLY the complete fixed TypeScript file content, nothing else. No markdown code blocks, no explanations - just the raw file content.`
-      }
-    ]
+Return ONLY the complete fixed TypeScript file content, nothing else. No markdown code blocks, no explanations - just the raw file content.`,
+      },
+    ],
   });
 
   const fixedContent = (response.content[0] as { type: string; text: string }).text.trim();
 
   // Basic validation - check it looks like valid TypeScript
-  if (!fixedContent.includes('export const problem') && !fixedContent.includes('export interface Problem')) {
+  if (
+    !fixedContent.includes('export const problem') &&
+    !fixedContent.includes('export interface Problem')
+  ) {
     console.log('Claude response does not look like valid problem file, skipping');
     return false;
   }
@@ -156,8 +160,8 @@ async function fixTestFile(testPath: string, failingTests: FailingTest[]): Promi
 
   const fileContent = fs.readFileSync(fullPath, 'utf-8');
   const errors = failingTests
-    .filter(t => t.testFile.includes(path.basename(testPath)))
-    .map(t => `Test: ${t.testName}\nError: ${t.error}`)
+    .filter((t) => t.testFile.includes(path.basename(testPath)))
+    .map((t) => `Test: ${t.testName}\nError: ${t.error}`)
     .join('\n\n');
 
   if (!errors) return false;
@@ -190,14 +194,18 @@ ${errors}
 2. Fix the test assertions or test logic
 3. Keep tests meaningful - don't just make them pass trivially
 
-Return ONLY the complete fixed TypeScript file content, nothing else. No markdown code blocks, no explanations.`
-      }
-    ]
+Return ONLY the complete fixed TypeScript file content, nothing else. No markdown code blocks, no explanations.`,
+      },
+    ],
   });
 
   const fixedContent = (response.content[0] as { type: string; text: string }).text.trim();
 
-  if (!fixedContent.includes('test(') && !fixedContent.includes('it(') && !fixedContent.includes('describe(')) {
+  if (
+    !fixedContent.includes('test(') &&
+    !fixedContent.includes('it(') &&
+    !fixedContent.includes('describe(')
+  ) {
     console.log('Claude response does not look like valid test file, skipping');
     return false;
   }
@@ -228,23 +236,19 @@ async function main() {
 
   // Group by problem file
   const problemFiles = new Set(
-    failingTests
-      .filter(t => t.problemFile)
-      .map(t => t.problemFile!)
+    failingTests.filter((t) => t.problemFile).map((t) => t.problemFile!)
   );
 
   // Group by test file
-  const testFiles = new Set(
-    failingTests.map(t => t.testFile)
-  );
+  const testFiles = new Set(failingTests.map((t) => t.testFile));
 
   let fixedCount = 0;
 
   // Fix problem files first
   for (const problemFile of problemFiles) {
     const relatedErrors = failingTests
-      .filter(t => t.problemFile === problemFile)
-      .map(t => t.error)
+      .filter((t) => t.problemFile === problemFile)
+      .map((t) => t.error)
       .join('\n\n');
 
     try {
@@ -257,8 +261,8 @@ async function main() {
 
   // Fix test files if problem files didn't resolve the issue
   for (const testFile of testFiles) {
-    const testsInFile = failingTests.filter(t => t.testFile === testFile);
-    const hasProblemFile = testsInFile.some(t => t.problemFile);
+    const testsInFile = failingTests.filter((t) => t.testFile === testFile);
+    const hasProblemFile = testsInFile.some((t) => t.problemFile);
 
     // Only fix test file if it's not related to a problem file
     if (!hasProblemFile) {

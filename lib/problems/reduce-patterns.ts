@@ -26,9 +26,9 @@ export const problem: Problem = {
   category: 'Array Methods',
   description: `<h2>In-Depth Explanation</h2>
 
-<p>\<code>reduce\</code> is the most powerful array method, capable of implementing any array transformation. Advanced patterns include:</p>
+<p><code>reduce</code> is the most powerful array method, capable of implementing any array transformation. Advanced patterns include:</p>
 
-<p><strong>Counting</strong>: Build objects that count occurrences - \<code>{ item: count }\</code> <strong>Grouping</strong>: Build objects that group items - \<code>{ key: [items] }\</code> <strong>Running Totals</strong>: Build arrays with cumulative values <strong>Flattening</strong>: Flatten nested arrays <strong>Transforming</strong>: Transform arrays into any data structure</p>
+<p><strong>Counting</strong>: Build objects that count occurrences - <code>{ item: count }</code> <strong>Grouping</strong>: Build objects that group items - <code>{ key: [items] }</code> <strong>Running Totals</strong>: Build arrays with cumulative values <strong>Flattening</strong>: Flatten nested arrays <strong>Transforming</strong>: Transform arrays into any data structure</p>
 
 <p>The key insight is that the accumulator can be any type - object, array, Map, Set, or even a primitive. This flexibility makes <code>reduce</code> capable of replacing combinations of <code>filter</code>, <code>map</code>, and other methods in a single pass.</p>
 

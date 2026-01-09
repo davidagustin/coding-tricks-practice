@@ -28,14 +28,14 @@ export const problem: Problem = {
 
 <p>Property descriptors control how properties behave in JavaScript. Each property has a descriptor with attributes:</p>
 <ul>
-  <li><strong>enumerable</strong>: Whether property appears in \<code>for...in\</code> loops and \<code>Object.keys()\</code></li>
+  <li><strong>enumerable</strong>: Whether property appears in <code>for...in</code> loops and <code>Object.keys()</code></li>
   <li><strong>writable</strong>: Whether property value can be changed</li>
   <li><strong>configurable</strong>: Whether property can be deleted or its descriptor modified</li>
   <li><strong>value</strong>: The property's value (for data properties)</li>
   <li><strong>get/set</strong>: Accessor functions (for accessor properties)</li>
 </ul>
 
-<p>\<code>Object.defineProperty()\</code> and \<code>Object.defineProperties()\</code> allow fine-grained control over property behavior. \<code>Object.getOwnPropertyDescriptor()\</code> retrieves a property's descriptor.</p>
+<p><code>Object.defineProperty()</code> and <code>Object.defineProperties()</code> allow fine-grained control over property behavior. <code>Object.getOwnPropertyDescriptor()</code> retrieves a property's descriptor.</p>
 
 <p>This enables:</p>
 <ul>
@@ -147,7 +147,10 @@ function copyDescriptors(source, target) {
   testCases: [
     {
       input: [{ a: 1, b: 2 }],
-      expectedOutput: { a: { value: 1, writable: true, enumerable: true, configurable: true }, b: { value: 2, writable: true, enumerable: true, configurable: true } },
+      expectedOutput: {
+        a: { value: 1, writable: true, enumerable: true, configurable: true },
+        b: { value: 2, writable: true, enumerable: true, configurable: true },
+      },
       description: 'getDescriptors returns all property descriptors for simple object',
     },
   ],

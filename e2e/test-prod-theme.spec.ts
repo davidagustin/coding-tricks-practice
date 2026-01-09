@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Production Theme Toggle Test', () => {
   test('Should default to dark mode for new users', async ({ page }) => {

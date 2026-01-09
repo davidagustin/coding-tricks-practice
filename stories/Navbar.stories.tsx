@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import React from 'react';
 import Navbar from '../components/Navbar';
 import { ProgressContext } from '../components/ProgressProvider';
 import { ThemeContext } from '../components/ThemeProvider';
-import React from 'react';
 
 // Mock context value interface
 interface MockProgressValue {
@@ -132,7 +132,10 @@ export const Default: Story = {
       }, []);
       return (
         <div className="bg-white min-h-screen">
-          <CombinedProviders progressValue={{ solvedCount: 0, totalProblems: 20, streak: 0 }} theme="light">
+          <CombinedProviders
+            progressValue={{ solvedCount: 0, totalProblems: 20, streak: 0 }}
+            theme="light"
+          >
             <Story />
           </CombinedProviders>
         </div>
@@ -163,7 +166,10 @@ export const DefaultDark: Story = {
       }, []);
       return (
         <div className="dark bg-gray-950 min-h-screen">
-          <CombinedProviders progressValue={{ solvedCount: 0, totalProblems: 20, streak: 0 }} theme="dark">
+          <CombinedProviders
+            progressValue={{ solvedCount: 0, totalProblems: 20, streak: 0 }}
+            theme="dark"
+          >
             <Story />
           </CombinedProviders>
         </div>
@@ -199,7 +205,13 @@ export const WithProgress: Story = {
               solvedCount: 5,
               totalProblems: 20,
               streak: 0,
-              solvedProblems: new Set(['problem-1', 'problem-2', 'problem-3', 'problem-4', 'problem-5']),
+              solvedProblems: new Set([
+                'problem-1',
+                'problem-2',
+                'problem-3',
+                'problem-4',
+                'problem-5',
+              ]),
             }}
             theme="light"
           >
@@ -238,7 +250,13 @@ export const WithProgressDark: Story = {
               solvedCount: 5,
               totalProblems: 20,
               streak: 0,
-              solvedProblems: new Set(['problem-1', 'problem-2', 'problem-3', 'problem-4', 'problem-5']),
+              solvedProblems: new Set([
+                'problem-1',
+                'problem-2',
+                'problem-3',
+                'problem-4',
+                'problem-5',
+              ]),
             }}
             theme="dark"
           >

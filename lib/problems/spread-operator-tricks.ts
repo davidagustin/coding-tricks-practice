@@ -26,21 +26,21 @@ export const problem: Problem = {
   category: 'JavaScript Basics',
   description: `<h2>In-Depth Explanation</h2>
 
-<p>The spread operator (\<code>...\</code>) is one of the most versatile features in modern JavaScript. It works with arrays, objects, strings, and any iterable, enabling concise and powerful operations.</p>
+<p>The spread operator (<code>...</code>) is one of the most versatile features in modern JavaScript. It works with arrays, objects, strings, and any iterable, enabling concise and powerful operations.</p>
 
 <p>For arrays:</p>
 <ul>
-  <li><strong>Copying</strong>: \<code>[...array]\</code> creates a new array</li>
-  <li><strong>Concatenating</strong>: \<code>[...arr1, ...arr2]\</code> combines arrays</li>
-  <li><strong>Adding Elements</strong>: \<code>[...arr, newItem]\</code> adds to end</li>
-  <li><strong>Function Arguments</strong>: \<code>func(...args)\</code> spreads as arguments</li>
+  <li><strong>Copying</strong>: <code>[...array]</code> creates a new array</li>
+  <li><strong>Concatenating</strong>: <code>[...arr1, ...arr2]</code> combines arrays</li>
+  <li><strong>Adding Elements</strong>: <code>[...arr, newItem]</code> adds to end</li>
+  <li><strong>Function Arguments</strong>: <code>func(...args)</code> spreads as arguments</li>
 </ul>
 
 <p>For objects:</p>
 <ul>
-  <li><strong>Copying</strong>: \<code>{ ...obj }\</code> creates shallow copy</li>
-  <li><strong>Merging</strong>: \<code>{ ...obj1, ...obj2 }\</code> merges objects</li>
-  <li><strong>Adding Properties</strong>: \<code>{ ...obj, newProp: value }\</code></li>
+  <li><strong>Copying</strong>: <code>{ ...obj }</code> creates shallow copy</li>
+  <li><strong>Merging</strong>: <code>{ ...obj1, ...obj2 }</code> merges objects</li>
+  <li><strong>Adding Properties</strong>: <code>{ ...obj, newProp: value }</code></li>
 </ul>
 
 <p>The spread operator is syntactic sugar that makes code more readable and functional.</p>

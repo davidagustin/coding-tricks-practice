@@ -10,6 +10,7 @@ function extractFunctionNames(code) {
   return names;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const problem = require('./lib/problems/test-driven-development.ts').problem;
 const code = problem.solution;
 const functionNames = extractFunctionNames(code);
@@ -75,7 +76,6 @@ try {
       console.log('  Error calling function:', e.message);
     }
   }
-
 } catch (e) {
   console.log('Error:', e.message);
 }

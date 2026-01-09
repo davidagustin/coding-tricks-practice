@@ -13,9 +13,7 @@ describe('TypeScript Transpilation', () => {
         }
       `;
 
-      const result = await runTests(code, [
-        { input: ['World'], expectedOutput: 'Hello, World' },
-      ]);
+      const result = await runTests(code, [{ input: ['World'], expectedOutput: 'Hello, World' }]);
 
       expect(result.error).toBeUndefined();
       expect(result.results[0].passed).toBe(true);
@@ -28,9 +26,7 @@ describe('TypeScript Transpilation', () => {
         }
       `;
 
-      const result = await runTests(code, [
-        { input: [42], expectedOutput: 42 },
-      ]);
+      const result = await runTests(code, [{ input: [42], expectedOutput: 42 }]);
 
       expect(result.error).toBeUndefined();
       expect(result.results[0].passed).toBe(true);
@@ -46,9 +42,7 @@ describe('TypeScript Transpilation', () => {
         }
       `;
 
-      const result = await runTests(code, [
-        { input: [], expectedOutput: 1 },
-      ]);
+      const result = await runTests(code, [{ input: [], expectedOutput: 1 }]);
 
       expect(result.error).toBeUndefined();
       expect(result.results[0].passed).toBe(true);
@@ -62,9 +56,7 @@ describe('TypeScript Transpilation', () => {
         }
       `;
 
-      const result = await runTests(code, [
-        { input: [], expectedOutput: 'ACTIVE' },
-      ]);
+      const result = await runTests(code, [{ input: [], expectedOutput: 'ACTIVE' }]);
 
       expect(result.error).toBeUndefined();
       expect(result.results[0].passed).toBe(true);
@@ -79,9 +71,7 @@ describe('TypeScript Transpilation', () => {
         function test(): number { return Valid.A; }
       `;
 
-      const result = await runTests(code, [
-        { input: [], expectedOutput: 0 },
-      ]);
+      const result = await runTests(code, [{ input: [], expectedOutput: 0 }]);
 
       // Valid enum code should transpile without errors
       expect(result.error).toBeUndefined();
@@ -92,9 +82,7 @@ describe('TypeScript Transpilation', () => {
     it('returns error for code with no functions', async () => {
       const code = `const x = 1 + 2 + 3 +`;
 
-      const result = await runTests(code, [
-        { input: [], expectedOutput: null },
-      ]);
+      const result = await runTests(code, [{ input: [], expectedOutput: null }]);
 
       expect(result.allPassed).toBe(false);
       expect(result.error).toBeDefined();
@@ -103,9 +91,7 @@ describe('TypeScript Transpilation', () => {
     it('returns compilation error for invalid TypeScript', async () => {
       const code = `function test(): { return 1; }`;
 
-      const result = await runTests(code, [
-        { input: [], expectedOutput: 1 },
-      ]);
+      const result = await runTests(code, [{ input: [], expectedOutput: 1 }]);
 
       expect(result.allPassed).toBe(false);
     });
@@ -119,9 +105,7 @@ describe('TypeScript Transpilation', () => {
         }
       `;
 
-      const result = await runTests(code, [
-        { input: [2, 3], expectedOutput: 5 },
-      ]);
+      const result = await runTests(code, [{ input: [2, 3], expectedOutput: 5 }]);
 
       expect(result.error).toBeUndefined();
       expect(result.results[0].passed).toBe(true);
@@ -135,9 +119,7 @@ describe('TypeScript Transpilation', () => {
         }
       `;
 
-      const result = await runTests(code, [
-        { input: [5], expectedOutput: 10 },
-      ]);
+      const result = await runTests(code, [{ input: [5], expectedOutput: 10 }]);
 
       expect(result.error).toBeUndefined();
       expect(result.results[0].passed).toBe(true);
@@ -169,9 +151,7 @@ describe('TypeScript Transpilation', () => {
         }
       `;
 
-      const result = await runTests(code, [
-        { input: [42], expectedOutput: '42' },
-      ]);
+      const result = await runTests(code, [{ input: [42], expectedOutput: '42' }]);
 
       expect(result.error).toBeUndefined();
       expect(result.results[0].passed).toBe(true);
@@ -184,9 +164,7 @@ describe('TypeScript Transpilation', () => {
         }
       `;
 
-      const result = await runTests(code, [
-        { input: [['a', 'b', 'c']], expectedOutput: 3 },
-      ]);
+      const result = await runTests(code, [{ input: [['a', 'b', 'c']], expectedOutput: 3 }]);
 
       expect(result.error).toBeUndefined();
       expect(result.results[0].passed).toBe(true);

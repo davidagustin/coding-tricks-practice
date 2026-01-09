@@ -795,7 +795,11 @@ describe('Different Code Patterns', () => {
           return dog.speak();
         }
       `;
-      const result = await runTests(code, [{ input: [], expectedOutput: 'Rex barks' }], 'testInheritance');
+      const result = await runTests(
+        code,
+        [{ input: [], expectedOutput: 'Rex barks' }],
+        'testInheritance'
+      );
       expect(result.allPassed).toBe(true);
     });
 
@@ -821,7 +825,11 @@ describe('Different Code Patterns', () => {
           return account.getBalance();
         }
       `;
-      const result = await runTests(code, [{ input: [], expectedOutput: 150 }], 'testPrivateFields');
+      const result = await runTests(
+        code,
+        [{ input: [], expectedOutput: 150 }],
+        'testPrivateFields'
+      );
       // Private fields may not be supported in all environments
       expect(result.results.length > 0 || result.error !== undefined).toBe(true);
     });
@@ -886,7 +894,11 @@ describe('Different Code Patterns', () => {
           return sayHello('World');
         }
       `;
-      const result = await runTests(code, [{ input: [], expectedOutput: 'Hello, World!' }], 'testPartial');
+      const result = await runTests(
+        code,
+        [{ input: [], expectedOutput: 'Hello, World!' }],
+        'testPartial'
+      );
       expect(result.allPassed).toBe(true);
     });
 
@@ -1789,7 +1801,21 @@ describe('Additional Edge Cases for Coverage', () => {
         }
       `;
       const result = await runTests(code, [
-        { input: [[[[1, 2], [3, 4]], [[5, 6], [7, 8]]]], expectedOutput: 8 },
+        {
+          input: [
+            [
+              [
+                [1, 2],
+                [3, 4],
+              ],
+              [
+                [5, 6],
+                [7, 8],
+              ],
+            ],
+          ],
+          expectedOutput: 8,
+        },
       ]);
       expect(result.allPassed).toBe(true);
     });
@@ -1874,7 +1900,11 @@ describe('Additional Edge Cases for Coverage', () => {
         }
       `;
       const result = await runTests(code, [
-        { input: ['{"a":1}'], expectedOutput: { a: 1 }, description: 'parsedata should parse JSON' },
+        {
+          input: ['{"a":1}'],
+          expectedOutput: { a: 1 },
+          description: 'parsedata should parse JSON',
+        },
       ]);
       expect(result.allPassed).toBe(true);
     });
@@ -1885,7 +1915,11 @@ describe('Additional Edge Cases for Coverage', () => {
         function second() { return 'second'; }
       `;
       const result = await runTests(code, [
-        { input: [], expectedOutput: 'first', description: 'This test is for the second function first' },
+        {
+          input: [],
+          expectedOutput: 'first',
+          description: 'This test is for the second function first',
+        },
       ]);
       // Should use 'first' as it appears in available functions and is first
       expect(result.allPassed).toBe(true);
@@ -2037,7 +2071,11 @@ describe('Additional Edge Cases for Coverage', () => {
           return tag\`Hello \${name}!\`;
         }
       `;
-      const result = await runTests(code, [{ input: [], expectedOutput: 'Hello world!' }], 'testTagged');
+      const result = await runTests(
+        code,
+        [{ input: [], expectedOutput: 'Hello world!' }],
+        'testTagged'
+      );
       expect(result.allPassed).toBe(true);
     });
 
@@ -2064,7 +2102,11 @@ describe('Additional Edge Cases for Coverage', () => {
           return [...iter];
         }
       `;
-      const result = await runTests(code, [{ input: [], expectedOutput: [1, 2, 3] }], 'testIterator');
+      const result = await runTests(
+        code,
+        [{ input: [], expectedOutput: [1, 2, 3] }],
+        'testIterator'
+      );
       expect(result.allPassed).toBe(true);
     });
 

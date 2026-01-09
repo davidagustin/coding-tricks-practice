@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import React, { createContext, useContext, useState, useMemo, type ReactNode } from 'react';
 import Link from 'next/link';
+import React, { createContext, type ReactNode, useContext, useMemo, useState } from 'react';
 
 // ============================================================================
 // Mock Data
@@ -14,18 +14,73 @@ interface MockProblem {
 }
 
 const mockProblems: MockProblem[] = [
-  { id: 'destructuring-patterns', title: 'Destructuring Patterns', difficulty: 'easy', category: 'JavaScript Basics' },
-  { id: 'optional-chaining', title: 'Optional Chaining', difficulty: 'easy', category: 'JavaScript Basics' },
-  { id: 'nullish-coalescing', title: 'Nullish Coalescing', difficulty: 'easy', category: 'JavaScript Basics' },
-  { id: 'rest-parameters', title: 'Rest Parameters', difficulty: 'easy', category: 'JavaScript Basics' },
+  {
+    id: 'destructuring-patterns',
+    title: 'Destructuring Patterns',
+    difficulty: 'easy',
+    category: 'JavaScript Basics',
+  },
+  {
+    id: 'optional-chaining',
+    title: 'Optional Chaining',
+    difficulty: 'easy',
+    category: 'JavaScript Basics',
+  },
+  {
+    id: 'nullish-coalescing',
+    title: 'Nullish Coalescing',
+    difficulty: 'easy',
+    category: 'JavaScript Basics',
+  },
+  {
+    id: 'rest-parameters',
+    title: 'Rest Parameters',
+    difficulty: 'easy',
+    category: 'JavaScript Basics',
+  },
   { id: 'array-methods', title: 'Array Methods', difficulty: 'medium', category: 'Array Methods' },
-  { id: 'reduce-patterns', title: 'Reduce Patterns', difficulty: 'medium', category: 'Array Methods' },
-  { id: 'array-flat-flatmap', title: 'Array Flat & FlatMap', difficulty: 'medium', category: 'Array Methods' },
-  { id: 'promise-chaining', title: 'Promise Chaining', difficulty: 'medium', category: 'Async Programming' },
-  { id: 'async-await-error', title: 'Async/Await Error Handling', difficulty: 'medium', category: 'Async Programming' },
-  { id: 'generics-basic', title: 'Generics Basic', difficulty: 'hard', category: 'TypeScript Advanced' },
-  { id: 'conditional-types', title: 'Conditional Types', difficulty: 'hard', category: 'TypeScript Advanced' },
-  { id: 'template-literal-types', title: 'Template Literal Types', difficulty: 'hard', category: 'TypeScript Advanced' },
+  {
+    id: 'reduce-patterns',
+    title: 'Reduce Patterns',
+    difficulty: 'medium',
+    category: 'Array Methods',
+  },
+  {
+    id: 'array-flat-flatmap',
+    title: 'Array Flat & FlatMap',
+    difficulty: 'medium',
+    category: 'Array Methods',
+  },
+  {
+    id: 'promise-chaining',
+    title: 'Promise Chaining',
+    difficulty: 'medium',
+    category: 'Async Programming',
+  },
+  {
+    id: 'async-await-error',
+    title: 'Async/Await Error Handling',
+    difficulty: 'medium',
+    category: 'Async Programming',
+  },
+  {
+    id: 'generics-basic',
+    title: 'Generics Basic',
+    difficulty: 'hard',
+    category: 'TypeScript Advanced',
+  },
+  {
+    id: 'conditional-types',
+    title: 'Conditional Types',
+    difficulty: 'hard',
+    category: 'TypeScript Advanced',
+  },
+  {
+    id: 'template-literal-types',
+    title: 'Template Literal Types',
+    difficulty: 'hard',
+    category: 'TypeScript Advanced',
+  },
 ];
 
 // ============================================================================
@@ -63,11 +118,7 @@ function MockProgressProvider({
     lastSolvedDate: solvedProblems.size > 0 ? new Date().toISOString() : null,
   };
 
-  return (
-    <MockProgressContext.Provider value={value}>
-      {children}
-    </MockProgressContext.Provider>
-  );
+  return <MockProgressContext.Provider value={value}>{children}</MockProgressContext.Provider>;
 }
 
 function useMockProgress() {
@@ -119,14 +170,24 @@ function MockProblemTable({ problems }: { problems: MockProblem[] }) {
               <tr
                 key={problem.id}
                 className={`group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${
-                  index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/30'
+                  index % 2 === 0
+                    ? 'bg-white dark:bg-gray-900'
+                    : 'bg-gray-50/50 dark:bg-gray-800/30'
                 }`}
               >
                 <td className="py-3 pl-4 pr-2">
                   {solved ? (
                     <div className="flex items-center justify-center">
-                      <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      <svg
+                        className="w-5 h-5 text-green-500"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                     </div>
                   ) : (
@@ -142,12 +203,16 @@ function MockProblemTable({ problems }: { problems: MockProblem[] }) {
                   >
                     {problem.title}
                   </Link>
-                  <span className={`sm:hidden ml-2 text-xs font-medium ${difficultyColors[problem.difficulty]}`}>
+                  <span
+                    className={`sm:hidden ml-2 text-xs font-medium ${difficultyColors[problem.difficulty]}`}
+                  >
                     {problem.difficulty}
                   </span>
                 </td>
                 <td className="py-3 px-2 hidden sm:table-cell">
-                  <span className={`text-sm font-medium capitalize ${difficultyColors[problem.difficulty]}`}>
+                  <span
+                    className={`text-sm font-medium capitalize ${difficultyColors[problem.difficulty]}`}
+                  >
                     {problem.difficulty}
                   </span>
                 </td>
@@ -211,16 +276,31 @@ function MockFilterSidebar({
   const { solvedCount, totalProblems } = useMockProgress();
 
   const toggleSection = (section: keyof typeof expandedSections) => {
-    setExpandedSections(prev => ({
+    setExpandedSections((prev) => ({
       ...prev,
       [section]: !prev[section],
     }));
   };
 
   const difficulties = [
-    { value: 'easy', label: 'Easy', count: problemCounts.easy, color: 'text-green-600 dark:text-green-400' },
-    { value: 'medium', label: 'Medium', count: problemCounts.medium, color: 'text-yellow-600 dark:text-yellow-400' },
-    { value: 'hard', label: 'Hard', count: problemCounts.hard, color: 'text-red-600 dark:text-red-400' },
+    {
+      value: 'easy',
+      label: 'Easy',
+      count: problemCounts.easy,
+      color: 'text-green-600 dark:text-green-400',
+    },
+    {
+      value: 'medium',
+      label: 'Medium',
+      count: problemCounts.medium,
+      color: 'text-yellow-600 dark:text-yellow-400',
+    },
+    {
+      value: 'hard',
+      label: 'Hard',
+      count: problemCounts.hard,
+      color: 'text-red-600 dark:text-red-400',
+    },
   ];
 
   const statuses = [
@@ -229,7 +309,8 @@ function MockFilterSidebar({
     { value: 'unsolved', label: 'Unsolved' },
   ];
 
-  const hasFilters = selectedDifficulty !== 'all' || selectedCategory !== 'all' || selectedStatus !== 'all';
+  const hasFilters =
+    selectedDifficulty !== 'all' || selectedCategory !== 'all' || selectedStatus !== 'all';
 
   return (
     <aside className="w-full lg:w-64 flex-shrink-0">
@@ -249,7 +330,9 @@ function MockFilterSidebar({
         <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-600 dark:text-gray-400">Your Progress</span>
-            <span className="font-medium text-gray-900 dark:text-gray-100">{solvedCount}/{totalProblems}</span>
+            <span className="font-medium text-gray-900 dark:text-gray-100">
+              {solvedCount}/{totalProblems}
+            </span>
           </div>
           <div className="mt-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
             <div
@@ -272,12 +355,17 @@ function MockFilterSidebar({
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </button>
           {expandedSections.status && (
             <div className="px-4 pb-3 space-y-1">
-              {statuses.map(status => (
+              {statuses.map((status) => (
                 <label
                   key={status.value}
                   className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700/50 cursor-pointer transition-colors"
@@ -310,7 +398,12 @@ function MockFilterSidebar({
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </button>
           {expandedSections.difficulty && (
@@ -327,7 +420,7 @@ function MockFilterSidebar({
                 <span className="text-sm text-gray-700 dark:text-gray-300">All</span>
                 <span className="ml-auto text-xs text-gray-500">{problemCounts.total}</span>
               </label>
-              {difficulties.map(diff => (
+              {difficulties.map((diff) => (
                 <label
                   key={diff.value}
                   className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700/50 cursor-pointer transition-colors"
@@ -361,7 +454,12 @@ function MockFilterSidebar({
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </button>
           {expandedSections.category && (
@@ -377,7 +475,7 @@ function MockFilterSidebar({
                 />
                 <span className="text-sm text-gray-700 dark:text-gray-300">All Categories</span>
               </label>
-              {categories.map(category => (
+              {categories.map((category) => (
                 <label
                   key={category}
                   className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700/50 cursor-pointer transition-colors"
@@ -390,7 +488,9 @@ function MockFilterSidebar({
                     onChange={() => onCategoryChange(category)}
                     className="w-4 h-4 text-blue-600 border-gray-300 dark:border-gray-600 focus:ring-blue-500"
                   />
-                  <span className="text-sm text-gray-700 dark:text-gray-300 truncate">{category}</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300 truncate">
+                    {category}
+                  </span>
                 </label>
               ))}
             </div>
@@ -531,9 +631,7 @@ function MockProblemsListPage({
             )}
           </div>
 
-          <select
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
-          >
+          <select className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer">
             <option value="default">Sort: Default</option>
             <option value="difficulty">Sort: Difficulty</option>
             <option value="acceptance">Sort: Acceptance</option>
@@ -613,7 +711,9 @@ const meta: Meta<typeof MockProblemsListPage> = {
   },
   decorators: [
     (Story, context) => {
-      const solvedProblems = (context.args as { solvedProblems?: Set<string> })?.solvedProblems || new Set(['destructuring-patterns', 'optional-chaining']);
+      const solvedProblems =
+        (context.args as { solvedProblems?: Set<string> })?.solvedProblems ||
+        new Set(['destructuring-patterns', 'optional-chaining']);
       return (
         <MockProgressProvider solvedProblems={solvedProblems}>
           <Story />
@@ -737,7 +837,9 @@ export const DarkTheme: Story = {
   },
   decorators: [
     (Story, context) => {
-      const solvedProblems = (context.args as { solvedProblems?: Set<string> })?.solvedProblems || new Set(['destructuring-patterns', 'optional-chaining']);
+      const solvedProblems =
+        (context.args as { solvedProblems?: Set<string> })?.solvedProblems ||
+        new Set(['destructuring-patterns', 'optional-chaining']);
       return (
         <div className="dark bg-gray-950 min-h-screen">
           <MockProgressProvider solvedProblems={solvedProblems}>
@@ -775,7 +877,16 @@ export const ShowingSolvedOnly: Story = {
   decorators: [
     (Story) => {
       return (
-        <MockProgressProvider solvedProblems={new Set(['destructuring-patterns', 'optional-chaining', 'nullish-coalescing', 'array-methods'])}>
+        <MockProgressProvider
+          solvedProblems={
+            new Set([
+              'destructuring-patterns',
+              'optional-chaining',
+              'nullish-coalescing',
+              'array-methods',
+            ])
+          }
+        >
           <Story />
         </MockProgressProvider>
       );

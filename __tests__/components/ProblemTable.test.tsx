@@ -388,7 +388,9 @@ describe('ProblemTable', () => {
       const problems = [createMockProblem()];
       render(<ProblemTable problems={problems} />);
 
-      expect(screen.queryByText('No problems found matching your filters.')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText('No problems found matching your filters.')
+      ).not.toBeInTheDocument();
     });
 
     it('should have centered text style for empty state', () => {
@@ -595,9 +597,9 @@ describe('ProblemTable', () => {
       render(<ProblemTable problems={problems} />);
 
       // There should be a span with sm:hidden class showing difficulty inline
-      const mobileDifficulty = screen.getAllByText('medium').find((el) =>
-        el.classList.contains('sm:hidden')
-      );
+      const mobileDifficulty = screen
+        .getAllByText('medium')
+        .find((el) => el.classList.contains('sm:hidden'));
       expect(mobileDifficulty).toBeInTheDocument();
     });
 
@@ -617,10 +619,7 @@ describe('ProblemTable', () => {
 
   describe('Table body styling', () => {
     it('should have divide styling on tbody', () => {
-      const problems = [
-        createMockProblem({ id: 'p1' }),
-        createMockProblem({ id: 'p2' }),
-      ];
+      const problems = [createMockProblem({ id: 'p1' }), createMockProblem({ id: 'p2' })];
       const { container } = render(<ProblemTable problems={problems} />);
 
       const tbody = container.querySelector('tbody');

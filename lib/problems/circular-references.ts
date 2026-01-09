@@ -245,7 +245,8 @@ function getCircularPath(obj) {
     {
       input: [{ name: 'test', hasSelf: true }],
       expectedOutput: false,
-      description: 'hasCircularReference returns false for object with boolean property (not a real circular reference)',
+      description:
+        'hasCircularReference returns false for object with boolean property (not a real circular reference)',
     },
     {
       input: [{ a: 1, b: { c: 2, d: { e: 3 } } }],
@@ -260,7 +261,8 @@ function getCircularPath(obj) {
     {
       input: [{ name: 'circular', value: 42 }, '[Circular]'],
       expectedOutput: '{"name":"circular","value":42}',
-      description: 'safeStringify returns normal JSON for non-circular object (circular refs require runtime creation)',
+      description:
+        'safeStringify returns normal JSON for non-circular object (circular refs require runtime creation)',
     },
     {
       input: [{ a: 1, b: 2 }, '[Circular]'],
@@ -280,7 +282,8 @@ function getCircularPath(obj) {
     {
       input: [{ outer: { inner: { deepRef: null } } }],
       expectedOutput: null,
-      description: 'getCircularPath returns null for object with null property (not a circular reference)',
+      description:
+        'getCircularPath returns null for object with null property (not a circular reference)',
     },
     {
       input: [{ simple: 'object', no: 'circular' }],

@@ -26,14 +26,14 @@ export const problem: Problem = {
   category: 'Async/Promises',
   description: `<h2>In-Depth Explanation</h2>
 
-<p>The \<code>Promise\</code> constructor allows you to create promises from scratch, wrapping callback-based APIs or creating custom async operations. The constructor takes a function (executor) with two parameters: \<code>resolve\</code> and \<code>reject\</code>.</p>
+<p>The <code>Promise</code> constructor allows you to create promises from scratch, wrapping callback-based APIs or creating custom async operations. The constructor takes a function (executor) with two parameters: <code>resolve</code> and <code>reject</code>.</p>
 
 <p>The pattern is:</p>
 <ol>
   <li>Create a new Promise with an executor function</li>
   <li>Perform the async operation inside the executor</li>
-  <li>Call \<code>resolve(value)\</code> on success</li>
-  <li>Call \<code>reject(error)\</code> on failure</li>
+  <li>Call <code>resolve(value)</code> on success</li>
+  <li>Call <code>reject(error)</code> on failure</li>
 </ol>
 
 <p>This is essential for "promisifying" callback-based APIs (like setTimeout, event listeners, file operations) and creating custom async operations that don't fit standard patterns.</p>

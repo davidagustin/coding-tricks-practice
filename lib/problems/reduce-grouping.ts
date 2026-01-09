@@ -26,13 +26,13 @@ export const problem: Problem = {
   category: 'Array Methods',
   description: `<h2>In-Depth Explanation</h2>
 
-<p>The \<code>reduce\</code> method is one of the most powerful array methods in JavaScript. When used for grouping, it transforms an array into an object or Map where keys represent categories and values are arrays of items belonging to that category. The accumulator pattern in \<code>reduce\</code> allows you to build up a data structure incrementally as you iterate through the array.</p>
+<p>The <code>reduce</code> method is one of the most powerful array methods in JavaScript. When used for grouping, it transforms an array into an object or Map where keys represent categories and values are arrays of items belonging to that category. The accumulator pattern in <code>reduce</code> allows you to build up a data structure incrementally as you iterate through the array.</p>
 
-<p>The key insight is that \<code>reduce\</code> takes an initial value (the accumulator) and a reducer function that combines each element with the accumulator. For grouping, you initialize with an empty object \<code>{}\</code> and for each element, you check if a group exists for that element's key. If not, create it; then add the element to that group.</p>
+<p>The key insight is that <code>reduce</code> takes an initial value (the accumulator) and a reducer function that combines each element with the accumulator. For grouping, you initialize with an empty object <code>{}</code> and for each element, you check if a group exists for that element's key. If not, create it; then add the element to that group.</p>
 
 <h2>Importance</h2>
 
-<p>Grouping data is a fundamental operation in data processing. Whether you're organizing user data, categorizing products, or analyzing datasets, grouping allows you to transform flat lists into structured, hierarchical data. The \<code>reduce\</code> approach is particularly valuable because:</p>
+<p>Grouping data is a fundamental operation in data processing. Whether you're organizing user data, categorizing products, or analyzing datasets, grouping allows you to transform flat lists into structured, hierarchical data. The <code>reduce</code> approach is particularly valuable because:</p>
 
 <ul>
   <li><strong>Single Pass</strong>: Groups data in a single iteration, making it O(n) time complexity</li>

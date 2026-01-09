@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Problem Table Component', () => {
   test.beforeEach(async ({ page }) => {
@@ -90,14 +90,20 @@ test.describe('Problem Table Component', () => {
 
     test('should show green color for easy difficulty', async ({ page }) => {
       // Filter to only show easy problems
-      const difficultySelect = page.locator('select').filter({ hasText: /Difficulty/i }).first();
+      const difficultySelect = page
+        .locator('select')
+        .filter({ hasText: /Difficulty/i })
+        .first();
       if (await difficultySelect.isVisible()) {
         await difficultySelect.selectOption('easy');
         await page.waitForTimeout(300);
       }
 
       // Check for green colored difficulty badge
-      const easyBadge = page.locator('table tbody td span').filter({ hasText: /^easy$/i }).first();
+      const easyBadge = page
+        .locator('table tbody td span')
+        .filter({ hasText: /^easy$/i })
+        .first();
 
       if (await easyBadge.isVisible()) {
         await expect(easyBadge).toHaveClass(/text-green/);
@@ -106,7 +112,10 @@ test.describe('Problem Table Component', () => {
 
     test('should show yellow/orange color for medium difficulty', async ({ page }) => {
       // Look for medium difficulty badge
-      const mediumBadge = page.locator('table tbody td span').filter({ hasText: /^medium$/i }).first();
+      const mediumBadge = page
+        .locator('table tbody td span')
+        .filter({ hasText: /^medium$/i })
+        .first();
 
       if (await mediumBadge.isVisible()) {
         await expect(mediumBadge).toHaveClass(/text-yellow/);
@@ -115,7 +124,10 @@ test.describe('Problem Table Component', () => {
 
     test('should show red color for hard difficulty', async ({ page }) => {
       // Look for hard difficulty badge
-      const hardBadge = page.locator('table tbody td span').filter({ hasText: /^hard$/i }).first();
+      const hardBadge = page
+        .locator('table tbody td span')
+        .filter({ hasText: /^hard$/i })
+        .first();
 
       if (await hardBadge.isVisible()) {
         await expect(hardBadge).toHaveClass(/text-red/);
@@ -142,12 +154,19 @@ test.describe('Problem Table Component', () => {
       expect(count).toBeGreaterThan(0);
     });
 
-    test('should show unsolved indicator (empty circle) for unsolved problems', async ({ page }) => {
+    test('should show unsolved indicator (empty circle) for unsolved problems', async ({
+      page,
+    }) => {
       // Look for the unsolved indicator (empty circle border)
-      const unsolvedIndicator = page.locator('table tbody tr td:first-child .rounded-full.border-2');
+      const unsolvedIndicator = page.locator(
+        'table tbody tr td:first-child .rounded-full.border-2'
+      );
 
       // At least some problems should be unsolved by default
-      const unsolvedVisible = await unsolvedIndicator.first().isVisible().catch(() => false);
+      const unsolvedVisible = await unsolvedIndicator
+        .first()
+        .isVisible()
+        .catch(() => false);
 
       if (unsolvedVisible) {
         await expect(unsolvedIndicator.first()).toBeVisible();
@@ -155,7 +174,9 @@ test.describe('Problem Table Component', () => {
       }
     });
 
-    test('should show solved checkmark (green circle with check) for solved problems', async ({ page }) => {
+    test('should show solved checkmark (green circle with check) for solved problems', async ({
+      page,
+    }) => {
       // Note: This test checks if the solved indicator structure exists in the DOM
       // Solved status depends on localStorage/progress context
       const solvedIndicator = page.locator('table tbody tr td:first-child svg.text-green-500');
@@ -397,7 +418,10 @@ test.describe('Problem Table Component', () => {
   test.describe('Table Data Integrity', () => {
     test('should display correct number of rows matching filtered results', async ({ page }) => {
       // Get the count from the page header
-      const countText = await page.locator('p').filter({ hasText: /of \d+ problems/ }).textContent();
+      const countText = await page
+        .locator('p')
+        .filter({ hasText: /of \d+ problems/ })
+        .textContent();
       const match = countText?.match(/(\d+) of (\d+)/);
 
       if (match) {

@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 type Theme = 'light' | 'dark';
 
@@ -39,6 +39,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     setMounted(true);
     // On mount, ensure DOM and state are in sync
     // The inline script should have already set the DOM class
@@ -46,10 +47,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       const storedTheme = localStorage.getItem('theme') as Theme | null;
       const domHasDark = document.documentElement.classList.contains('dark');
       const domTheme = domHasDark ? 'dark' : 'light';
-      
+
       // Use stored theme if available, otherwise use what's in the DOM
       const actualTheme = storedTheme || domTheme;
-      
+
       // Update state to match what's actually in the DOM/localStorage
       // This ensures consistency after the inline script runs
       setThemeState((currentTheme) => {
@@ -61,7 +62,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (typeof window === 'undefined' || !mounted) return;
-    
+
     const root = document.documentElement;
     if (theme === 'dark') {
       root.classList.add('dark');
@@ -85,11 +86,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     [theme, toggleTheme, setTheme]
   );
 
-  return (
-    <ThemeContext.Provider value={contextValue}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme() {

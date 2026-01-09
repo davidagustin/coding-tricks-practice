@@ -66,10 +66,7 @@ describe('ErrorHandler', () => {
     it('registers error listener on mount', () => {
       render(<ErrorHandler />);
 
-      expect(window.addEventListener).toHaveBeenCalledWith(
-        'error',
-        expect.any(Function)
-      );
+      expect(window.addEventListener).toHaveBeenCalledWith('error', expect.any(Function));
     });
 
     it('registers both listeners', () => {
@@ -97,10 +94,7 @@ describe('ErrorHandler', () => {
 
       unmount();
 
-      expect(window.removeEventListener).toHaveBeenCalledWith(
-        'error',
-        expect.any(Function)
-      );
+      expect(window.removeEventListener).toHaveBeenCalledWith('error', expect.any(Function));
     });
 
     it('removes the same listener functions that were added', () => {
@@ -123,7 +117,9 @@ describe('ErrorHandler', () => {
     it('logs unhandled promise rejections to console.error', () => {
       render(<ErrorHandler />);
 
-      const handler = addedListeners.get('unhandledrejection') as (evt: PromiseRejectionEvent) => void;
+      const handler = addedListeners.get('unhandledrejection') as (
+        evt: PromiseRejectionEvent
+      ) => void;
 
       // Create a mock PromiseRejectionEvent
       const mockEvent = {
@@ -133,16 +129,15 @@ describe('ErrorHandler', () => {
 
       handler(mockEvent);
 
-      expect(console.error).toHaveBeenCalledWith(
-        'Unhandled promise rejection:',
-        mockEvent.reason
-      );
+      expect(console.error).toHaveBeenCalledWith('Unhandled promise rejection:', mockEvent.reason);
     });
 
     it('prevents default browser handling of unhandled rejections', () => {
       render(<ErrorHandler />);
 
-      const handler = addedListeners.get('unhandledrejection') as (evt: PromiseRejectionEvent) => void;
+      const handler = addedListeners.get('unhandledrejection') as (
+        evt: PromiseRejectionEvent
+      ) => void;
 
       const mockEvent = {
         reason: 'Some error',
@@ -157,7 +152,9 @@ describe('ErrorHandler', () => {
     it('handles various rejection reasons', () => {
       render(<ErrorHandler />);
 
-      const handler = addedListeners.get('unhandledrejection') as (evt: PromiseRejectionEvent) => void;
+      const handler = addedListeners.get('unhandledrejection') as (
+        evt: PromiseRejectionEvent
+      ) => void;
 
       // Test with string reason
       const stringEvent = {
@@ -176,10 +173,10 @@ describe('ErrorHandler', () => {
         preventDefault: jest.fn(),
       } as unknown as PromiseRejectionEvent;
       handler(objectEvent);
-      expect(console.error).toHaveBeenCalledWith(
-        'Unhandled promise rejection:',
-        { code: 'ERR_001', message: 'Object error' }
-      );
+      expect(console.error).toHaveBeenCalledWith('Unhandled promise rejection:', {
+        code: 'ERR_001',
+        message: 'Object error',
+      });
 
       // Test with null reason
       const nullEvent = {
@@ -187,10 +184,7 @@ describe('ErrorHandler', () => {
         preventDefault: jest.fn(),
       } as unknown as PromiseRejectionEvent;
       handler(nullEvent);
-      expect(console.error).toHaveBeenCalledWith(
-        'Unhandled promise rejection:',
-        null
-      );
+      expect(console.error).toHaveBeenCalledWith('Unhandled promise rejection:', null);
     });
   });
 
@@ -207,10 +201,7 @@ describe('ErrorHandler', () => {
 
       handler(mockEvent);
 
-      expect(console.error).toHaveBeenCalledWith(
-        'Unhandled error:',
-        mockError
-      );
+      expect(console.error).toHaveBeenCalledWith('Unhandled error:', mockError);
     });
 
     it('handles errors with different error types', () => {
@@ -221,26 +212,17 @@ describe('ErrorHandler', () => {
       // Test with TypeError
       const typeError = new TypeError('Type error occurred');
       handler({ error: typeError } as ErrorEvent);
-      expect(console.error).toHaveBeenCalledWith(
-        'Unhandled error:',
-        typeError
-      );
+      expect(console.error).toHaveBeenCalledWith('Unhandled error:', typeError);
 
       // Test with ReferenceError
       const refError = new ReferenceError('Reference error occurred');
       handler({ error: refError } as ErrorEvent);
-      expect(console.error).toHaveBeenCalledWith(
-        'Unhandled error:',
-        refError
-      );
+      expect(console.error).toHaveBeenCalledWith('Unhandled error:', refError);
 
       // Test with SyntaxError
       const syntaxError = new SyntaxError('Syntax error occurred');
       handler({ error: syntaxError } as ErrorEvent);
-      expect(console.error).toHaveBeenCalledWith(
-        'Unhandled error:',
-        syntaxError
-      );
+      expect(console.error).toHaveBeenCalledWith('Unhandled error:', syntaxError);
     });
 
     it('handles null error in error event', () => {
@@ -254,10 +236,7 @@ describe('ErrorHandler', () => {
 
       handler(mockEvent);
 
-      expect(console.error).toHaveBeenCalledWith(
-        'Unhandled error:',
-        null
-      );
+      expect(console.error).toHaveBeenCalledWith('Unhandled error:', null);
     });
 
     it('handles undefined error in error event', () => {
@@ -271,10 +250,7 @@ describe('ErrorHandler', () => {
 
       handler(mockEvent);
 
-      expect(console.error).toHaveBeenCalledWith(
-        'Unhandled error:',
-        undefined
-      );
+      expect(console.error).toHaveBeenCalledWith('Unhandled error:', undefined);
     });
   });
 

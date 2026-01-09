@@ -299,7 +299,15 @@ function cloneExcluding(obj, keysToExclude) {
       description: 'cloneExcluding removes specified keys at all depths',
     },
     {
-      input: [{ users: [{ name: 'John', password: '123' }, { name: 'Jane', password: '456' }] }, ['password']],
+      input: [
+        {
+          users: [
+            { name: 'John', password: '123' },
+            { name: 'Jane', password: '456' },
+          ],
+        },
+        ['password'],
+      ],
       expectedOutput: { users: [{ name: 'John' }, { name: 'Jane' }] },
       description: 'cloneExcluding removes keys from objects inside arrays',
     },

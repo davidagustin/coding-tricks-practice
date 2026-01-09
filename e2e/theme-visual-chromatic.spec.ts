@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 /**
  * Chromatic-style visual regression tests for theme switching
@@ -20,7 +20,7 @@ test.describe('Theme Visual Regression Tests', () => {
     await page.evaluate(() => {
       localStorage.setItem('theme', 'light');
     });
-    
+
     // Reload to trigger inline script
     await page.reload({ waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(1000); // Wait for theme to apply
@@ -45,7 +45,7 @@ test.describe('Theme Visual Regression Tests', () => {
 
     // Check card backgrounds are white
     const card = page.locator('.bg-white').first();
-    if (await card.count() > 0) {
+    if ((await card.count()) > 0) {
       const cardBg = await card.evaluate((el) => {
         return window.getComputedStyle(el).backgroundColor;
       });
@@ -59,7 +59,7 @@ test.describe('Theme Visual Regression Tests', () => {
     await page.evaluate(() => {
       localStorage.setItem('theme', 'dark');
     });
-    
+
     // Reload to trigger inline script
     await page.reload({ waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(1500); // Wait for theme to apply and React to hydrate
@@ -84,7 +84,7 @@ test.describe('Theme Visual Regression Tests', () => {
 
     // Check card backgrounds are dark - verify the class is present
     const card = page.locator('.dark\\:bg-gray-800, .bg-white').first();
-    if (await card.count() > 0) {
+    if ((await card.count()) > 0) {
       const cardClasses = await card.getAttribute('class');
       // In dark mode, cards should have dark:bg-gray-800 class
       // Just verify the class exists - color format varies by browser
@@ -94,7 +94,7 @@ test.describe('Theme Visual Regression Tests', () => {
 
   test('Problems page - Light mode visual check', async ({ page }) => {
     await page.goto('/problems');
-    
+
     await page.evaluate(() => {
       localStorage.setItem('theme', 'light');
     });
@@ -115,7 +115,7 @@ test.describe('Theme Visual Regression Tests', () => {
 
   test('Problems page - Dark mode visual check', async ({ page }) => {
     await page.goto('/problems', { waitUntil: 'domcontentloaded' });
-    
+
     await page.evaluate(() => {
       localStorage.setItem('theme', 'dark');
     });
@@ -133,7 +133,8 @@ test.describe('Theme Visual Regression Tests', () => {
     });
     // Accept rgb, rgba, or lab format - verify it's dark (not white)
     // Some browsers return lab() format with different values, so we just verify it's not white
-    const isNotWhite = !bodyBg.includes('rgb(255') && !bodyBg.includes('rgba(255') && !bodyBg.includes('lab(100');
+    const isNotWhite =
+      !bodyBg.includes('rgb(255') && !bodyBg.includes('rgba(255') && !bodyBg.includes('lab(100');
     expect(isNotWhite).toBe(true);
   });
 
@@ -166,7 +167,7 @@ test.describe('Theme Visual Regression Tests', () => {
     const storedTheme = await page.evaluate(() => {
       return localStorage.getItem('theme');
     });
-    
+
     // If theme is dark, class should be present
     if (storedTheme === 'dark') {
       expect(hasDarkClass).toBe(true);
@@ -186,24 +187,24 @@ test.describe('Theme Visual Regression Tests', () => {
     });
     await page.reload({ waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(1000);
-    
+
     const hasDarkInLight = await page.evaluate(() => {
       return document.documentElement.classList.contains('dark');
     });
     expect(hasDarkInLight).toBe(false); // Should be false in light mode
-    
+
     // Dark mode
     await page.evaluate(() => {
       localStorage.setItem('theme', 'dark');
     });
     await page.reload({ waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(1000);
-    
+
     const hasDarkInDark = await page.evaluate(() => {
       return document.documentElement.classList.contains('dark');
     });
     expect(hasDarkInDark).toBe(true); // Should be true in dark mode
-    
+
     // Verify body background changed
     const bodyBg = await page.evaluate(() => {
       return window.getComputedStyle(document.body).backgroundColor;

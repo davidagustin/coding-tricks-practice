@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 
 /**
  * Comprehensive E2E tests for theme toggle functionality
@@ -94,8 +94,8 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
       await setTheme(page, 'light');
 
       // Get initial background
-      const initialBg = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const initialBg = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
 
       // Click theme toggle
@@ -103,8 +103,8 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
 
       // Verify dark mode and background changed
       expect(await isDarkMode(page)).toBe(true);
-      const newBg = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const newBg = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
       expect(newBg).not.toBe(initialBg);
     });
@@ -125,8 +125,8 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
       await clickThemeToggle(page);
 
       // The page background should change
-      const pageBg = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const pageBg = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
 
       // In dark mode, background should be dark
@@ -138,8 +138,8 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
       await setTheme(page, 'light');
 
       // Get initial background
-      const initialBg = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const initialBg = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
 
       // Click theme toggle
@@ -147,8 +147,8 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
 
       // Verify dark mode and background changed
       expect(await isDarkMode(page)).toBe(true);
-      const newBg = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const newBg = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
       expect(newBg).not.toBe(initialBg);
     });
@@ -158,8 +158,8 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
       await setTheme(page, 'light');
 
       // Get initial page background
-      const initialPageBg = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const initialPageBg = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
 
       // Click theme toggle
@@ -167,8 +167,8 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
 
       // Verify dark mode and page background changed
       expect(await isDarkMode(page)).toBe(true);
-      const newPageBg = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const newPageBg = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
       expect(newPageBg).not.toBe(initialPageBg);
     });
@@ -180,8 +180,8 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
       await setTheme(page, 'light');
 
       // Get initial body background
-      const initialBodyBg = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const initialBodyBg = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
 
       // Click theme toggle
@@ -191,8 +191,8 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
       expect(await isDarkMode(page)).toBe(true);
 
       // Verify background changed
-      const newBodyBg = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const newBodyBg = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
       expect(newBodyBg).not.toBe(initialBodyBg);
     });
@@ -229,17 +229,13 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
       const easyBadge = page.locator('.bg-green-100, .text-green-600, .text-green-400').first();
 
       if (await easyBadge.isVisible()) {
-        const initialColor = await easyBadge.evaluate(
-          (el) => window.getComputedStyle(el).color
-        );
+        const initialColor = await easyBadge.evaluate((el) => window.getComputedStyle(el).color);
 
         // Click theme toggle
         await clickThemeToggle(page);
 
         // Verify color changed (green shades differ between light and dark)
-        const newColor = await easyBadge.evaluate(
-          (el) => window.getComputedStyle(el).color
-        );
+        const newColor = await easyBadge.evaluate((el) => window.getComputedStyle(el).color);
 
         // Colors should have changed
         expect(await isDarkMode(page)).toBe(true);
@@ -251,8 +247,8 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
       await setTheme(page, 'light');
 
       // Get initial background
-      const initialBg = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const initialBg = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
 
       // Click theme toggle
@@ -260,8 +256,8 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
 
       // Verify dark mode and background changed
       expect(await isDarkMode(page)).toBe(true);
-      const newBg = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const newBg = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
       expect(newBg).not.toBe(initialBg);
     });
@@ -281,12 +277,14 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
       }
     });
 
-    test('should toggle theme and verify problem description panel color changes', async ({ page }) => {
+    test('should toggle theme and verify problem description panel color changes', async ({
+      page,
+    }) => {
       await setTheme(page, 'light');
 
       // Get initial body background
-      const initialBg = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const initialBg = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
 
       // Click theme toggle
@@ -294,8 +292,8 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
 
       // Verify dark mode and background changed
       expect(await isDarkMode(page)).toBe(true);
-      const newBg = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const newBg = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
       expect(newBg).not.toBe(initialBg);
     });
@@ -304,7 +302,9 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
       await setTheme(page, 'light');
 
       // Find code editor (Monaco editor)
-      const codeEditor = page.locator('.monaco-editor, [data-testid="code-editor"], .overflow-hidden').first();
+      const codeEditor = page
+        .locator('.monaco-editor, [data-testid="code-editor"], .overflow-hidden')
+        .first();
 
       if (await codeEditor.isVisible()) {
         // Click theme toggle
@@ -322,16 +322,16 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
       const testSection = page.locator('[class*="test"], [class*="result"]').first();
 
       // Get page background before toggle
-      const initialBg = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const initialBg = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
 
       // Click theme toggle
       await clickThemeToggle(page);
 
       // Verify background changed
-      const newBg = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const newBg = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
       expect(newBg).not.toBe(initialBg);
     });
@@ -373,7 +373,9 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
       expect(await isDarkMode(page)).toBe(true);
     });
 
-    test('should persist dark theme when navigating from problems to problem detail', async ({ page }) => {
+    test('should persist dark theme when navigating from problems to problem detail', async ({
+      page,
+    }) => {
       await page.goto('/problems');
       await setTheme(page, 'light');
 
@@ -443,8 +445,8 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
       expect(await isDarkMode(page)).toBe(false);
 
       // Verify light mode elements
-      const homeBodyBgLight = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const homeBodyBgLight = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
 
       // Toggle to dark mode on home page
@@ -452,8 +454,8 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
       expect(await isDarkMode(page)).toBe(true);
 
       // Verify dark mode changes
-      const homeBodyBgDark = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const homeBodyBgDark = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
       expect(homeBodyBgDark).not.toBe(homeBodyBgLight);
 
@@ -467,16 +469,16 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
       // Verify dark mode persisted
       expect(await isDarkMode(page)).toBe(true);
 
-      const problemsBodyBgDark = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const problemsBodyBgDark = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
 
       // Toggle to light mode on problems page
       await clickThemeToggle(page);
       expect(await isDarkMode(page)).toBe(false);
 
-      const problemsBodyBgLight = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const problemsBodyBgLight = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
       expect(problemsBodyBgLight).not.toBe(problemsBodyBgDark);
 
@@ -492,16 +494,16 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
         // Verify light mode persisted
         expect(await isDarkMode(page)).toBe(false);
 
-        const detailBodyBgLight = await page.evaluate(() =>
-          window.getComputedStyle(document.body).backgroundColor
+        const detailBodyBgLight = await page.evaluate(
+          () => window.getComputedStyle(document.body).backgroundColor
         );
 
         // Toggle to dark mode
         await clickThemeToggle(page);
         expect(await isDarkMode(page)).toBe(true);
 
-        const detailBodyBgDark = await page.evaluate(() =>
-          window.getComputedStyle(document.body).backgroundColor
+        const detailBodyBgDark = await page.evaluate(
+          () => window.getComputedStyle(document.body).backgroundColor
         );
         expect(detailBodyBgDark).not.toBe(detailBodyBgLight);
 
@@ -521,13 +523,15 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
       await page.screenshot({ path: 'test-results/home-light-mode-final.png', fullPage: true });
     });
 
-    test('should verify specific component colors change on toggle - detailed check', async ({ page }) => {
+    test('should verify specific component colors change on toggle - detailed check', async ({
+      page,
+    }) => {
       await page.goto('/');
       await setTheme(page, 'light');
 
       // Store light mode background
-      const lightModeBg = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const lightModeBg = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
 
       // Toggle to dark mode
@@ -535,8 +539,8 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
       expect(await isDarkMode(page)).toBe(true);
 
       // Store dark mode background
-      const darkModeBg = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const darkModeBg = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
 
       // Verify background changed
@@ -547,8 +551,8 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
       expect(await isDarkMode(page)).toBe(false);
 
       // Verify background returned to original
-      const returnedBg = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const returnedBg = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
 
       expect(returnedBg).toBe(lightModeBg);
@@ -562,8 +566,8 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
       await setTheme(page, 'light');
 
       // Get initial background
-      const initialBg = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const initialBg = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
 
       // Toggle theme
@@ -571,8 +575,8 @@ test.describe('Theme Toggle - Comprehensive App-Wide Tests', () => {
       expect(await isDarkMode(page)).toBe(true);
 
       // Verify background changed
-      const newBg = await page.evaluate(() =>
-        window.getComputedStyle(document.body).backgroundColor
+      const newBg = await page.evaluate(
+        () => window.getComputedStyle(document.body).backgroundColor
       );
       expect(newBg).not.toBe(initialBg);
     });

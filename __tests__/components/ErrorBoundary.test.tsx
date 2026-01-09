@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
 // Component that throws an error on render
@@ -21,7 +21,11 @@ function ConditionalThrowingComponent({
 }
 
 // Component that throws different error types
-function TypedErrorComponent({ errorType }: { errorType: 'Error' | 'TypeError' | 'RangeError' | 'ReferenceError' | 'SyntaxError' }) {
+function TypedErrorComponent({
+  errorType,
+}: {
+  errorType: 'Error' | 'TypeError' | 'RangeError' | 'ReferenceError' | 'SyntaxError';
+}) {
   switch (errorType) {
     case 'TypeError':
       throw new TypeError('Type error occurred');
@@ -293,7 +297,7 @@ describe('ErrorBoundary', () => {
       // In jsdom, we can't easily mock window.location.href assignment,
       // but we can verify the button exists and is interactive
       expect(goHomeButton).toHaveAttribute('class');
-      expect(goHomeButton.onclick).toBeDefined;
+      expect(goHomeButton.onclick).toBeDefined();
     });
 
     it('should have Go to Home button with onclick attribute', () => {

@@ -1,9 +1,9 @@
-import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { ReactNode } from 'react';
 import Navbar from '@/components/Navbar';
 import { ProgressContext } from '@/components/ProgressProvider';
 import { ThemeContext } from '@/components/ThemeProvider';
-import type { ReactNode } from 'react';
 
 // Mock the problems module (needed by ProgressProvider)
 jest.mock('@/lib/problems', () => ({
@@ -32,10 +32,23 @@ let linkCounter = 0;
 
 // Mock next/link
 jest.mock('next/link', () => {
-  return function MockLink({ children, href, className }: { children: ReactNode; href: string; className?: string }) {
+  return function MockLink({
+    children,
+    href,
+    className,
+  }: {
+    children: ReactNode;
+    href: string;
+    className?: string;
+  }) {
     const instanceId = linkCounter++;
     return (
-      <a href={href} className={className} data-testid={`link-${href}-${instanceId}`} data-href={href}>
+      <a
+        href={href}
+        className={className}
+        data-testid={`link-${href}-${instanceId}`}
+        data-href={href}
+      >
         {children}
       </a>
     );
@@ -112,9 +125,7 @@ const renderWithProviders = (
 ) => {
   const Wrapper = ({ children }: { children: ReactNode }) => (
     <ThemeContext.Provider value={themeContextValue}>
-      <ProgressContext.Provider value={progressContextValue}>
-        {children}
-      </ProgressContext.Provider>
+      <ProgressContext.Provider value={progressContextValue}>{children}</ProgressContext.Provider>
     </ThemeContext.Provider>
   );
 
@@ -702,7 +713,11 @@ describe('Navbar', () => {
     });
 
     it('should hide progress stats on small screens', () => {
-      const progressContext = createMockProgressContext({ streak: 5, solvedCount: 3, totalProblems: 10 });
+      const progressContext = createMockProgressContext({
+        streak: 5,
+        solvedCount: 3,
+        totalProblems: 10,
+      });
       renderWithProviders(<Navbar />, { progressContextValue: progressContext });
 
       const streakContainer = screen.getByTitle('Current streak');
@@ -1146,13 +1161,7 @@ describe('Navbar', () => {
     it('should render logo with correct styling classes', () => {
       renderWithProviders(<Navbar />);
       const logoLink = getLogoLink();
-      expect(logoLink).toHaveClass(
-        'flex',
-        'items-center',
-        'gap-2',
-        'font-bold',
-        'text-lg'
-      );
+      expect(logoLink).toHaveClass('flex', 'items-center', 'gap-2', 'font-bold', 'text-lg');
     });
 
     it('should have hover color transition', () => {

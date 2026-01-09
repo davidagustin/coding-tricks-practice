@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import React, { createContext, useState, memo, type ReactNode } from 'react';
 import Link from 'next/link';
+import React, { createContext, memo, type ReactNode, useState } from 'react';
 
 // ============================================================================
 // Mock Data
@@ -233,11 +233,7 @@ function MockProgressProvider({
     lastSolvedDate: solvedProblems.size > 0 ? new Date().toISOString() : null,
   };
 
-  return (
-    <MockProgressContext.Provider value={value}>
-      {children}
-    </MockProgressContext.Provider>
-  );
+  return <MockProgressContext.Provider value={value}>{children}</MockProgressContext.Provider>;
 }
 
 // ============================================================================
@@ -261,11 +257,7 @@ function MockThemeProvider({ children, theme = 'light' }: { children: ReactNode;
     setTheme: () => {},
   };
 
-  return (
-    <MockThemeContext.Provider value={value}>
-      {children}
-    </MockThemeContext.Provider>
-  );
+  return <MockThemeContext.Provider value={value}>{children}</MockThemeContext.Provider>;
 }
 
 // ============================================================================
@@ -274,7 +266,11 @@ function MockThemeProvider({ children, theme = 'light' }: { children: ReactNode;
 
 type Tab = 'description' | 'examples' | 'hints';
 
-const MockProblemDescription = memo(function MockProblemDescription({ problem }: { problem: MockProblem }) {
+const MockProblemDescription = memo(function MockProblemDescription({
+  problem,
+}: {
+  problem: MockProblem;
+}) {
   const [activeTab, setActiveTab] = useState<Tab>('description');
 
   const tabs: { id: Tab; label: string; count?: number }[] = [
@@ -290,7 +286,9 @@ const MockProblemDescription = memo(function MockProblemDescription({ problem }:
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight leading-tight">
             {problem.title}
           </h1>
-          <span className={`px-2.5 py-1 rounded-md text-xs font-semibold uppercase tracking-wide ${DIFFICULTY_COLORS[problem.difficulty]}`}>
+          <span
+            className={`px-2.5 py-1 rounded-md text-xs font-semibold uppercase tracking-wide ${DIFFICULTY_COLORS[problem.difficulty]}`}
+          >
             {problem.difficulty}
           </span>
         </div>
@@ -310,11 +308,13 @@ const MockProblemDescription = memo(function MockProblemDescription({ problem }:
           >
             {tab.label}
             {tab.count !== undefined && tab.count > 0 && (
-              <span className={`ml-1.5 px-1.5 py-0.5 text-xs rounded-full ${
-                activeTab === tab.id
-                  ? 'bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300'
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
-              }`}>
+              <span
+                className={`ml-1.5 px-1.5 py-0.5 text-xs rounded-full ${
+                  activeTab === tab.id
+                    ? 'bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300'
+                    : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                }`}
+              >
                 {tab.count}
               </span>
             )}
@@ -324,7 +324,10 @@ const MockProblemDescription = memo(function MockProblemDescription({ problem }:
 
       <div className="flex-1 overflow-y-auto pt-4">
         {activeTab === 'description' && (
-          <div className="prose dark:prose-invert" dangerouslySetInnerHTML={{ __html: problem.description }} />
+          <div
+            className="prose dark:prose-invert"
+            dangerouslySetInnerHTML={{ __html: problem.description }}
+          />
         )}
 
         {activeTab === 'examples' && (
@@ -462,8 +465,18 @@ function MockTestResults({
         <div className="flex items-center gap-2">
           {allPassed ? (
             <>
-              <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="w-5 h-5 text-green-600 dark:text-green-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
               <span className="font-semibold text-green-800 dark:text-green-200">
                 All tests passed!
@@ -471,8 +484,18 @@ function MockTestResults({
             </>
           ) : (
             <>
-              <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-5 h-5 text-red-600 dark:text-red-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
               <span className="font-semibold text-red-800 dark:text-red-200">
                 Some tests failed
@@ -494,12 +517,32 @@ function MockTestResults({
           >
             <div className="flex items-start gap-2 mb-2">
               {result.passed ? (
-                <svg className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                <svg
+                  className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
               ) : (
-                <svg className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               )}
               <div className="flex-1">
@@ -577,7 +620,8 @@ function MockProblemDetailPage({
 
   const currentIndex = mockProblems.findIndex((p) => p.id === problemId);
   const prevProblem = currentIndex > 0 ? mockProblems[currentIndex - 1] : null;
-  const nextProblem = currentIndex < mockProblems.length - 1 ? mockProblems[currentIndex + 1] : null;
+  const nextProblem =
+    currentIndex < mockProblems.length - 1 ? mockProblems[currentIndex + 1] : null;
 
   const allPassed = testResults?.every((r) => r.passed) ?? false;
 
@@ -588,7 +632,11 @@ function MockProblemDetailPage({
         {isSolved && (
           <div className="mb-4 inline-flex items-center gap-2 px-3 py-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full text-sm font-medium">
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clipRule="evenodd"
+              />
             </svg>
             Solved
           </div>
@@ -826,7 +874,8 @@ export const SolvedProblem: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Problem detail page for a problem the user has already solved, showing the solved badge.',
+        story:
+          'Problem detail page for a problem the user has already solved, showing the solved badge.',
       },
     },
   },

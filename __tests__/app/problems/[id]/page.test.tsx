@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ProblemPage from '@/app/problems/[id]/page';
 import { ProgressContext } from '@/components/ProgressProvider';
@@ -199,7 +199,7 @@ jest.mock('@/lib/test-runner', () => ({
 }));
 
 // Track editor instances
-let editorInstanceCount = 0;
+const editorInstanceCount = 0;
 
 // Mock CodeEditor component
 jest.mock('@/components/CodeEditor', () => {
@@ -316,9 +316,7 @@ function renderWithProgress(
     ...progressValue,
   };
 
-  return render(
-    <ProgressContext.Provider value={defaultValue}>{ui}</ProgressContext.Provider>
-  );
+  return render(<ProgressContext.Provider value={defaultValue}>{ui}</ProgressContext.Provider>);
 }
 
 describe('Problem Detail Page', () => {

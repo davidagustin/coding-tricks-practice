@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 const problems = [
   'breadth-first-search',
@@ -26,7 +26,9 @@ for (const id of problems) {
       await expect(page.locator('h1')).toBeVisible();
       await page.waitForSelector('.monaco-editor', { timeout: 15000 });
       await page.click('button:has-text("Run Tests")');
-      await expect(page.locator('text=/Test Results|passed|failed|Error/i')).toBeVisible({ timeout: 15000 });
+      await expect(page.locator('text=/Test Results|passed|failed|Error/i')).toBeVisible({
+        timeout: 15000,
+      });
     });
   });
 }

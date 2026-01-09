@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 
 // Helper to get the filter sidebar element
 const getFilterSidebar = (page: Page) => page.locator('aside');
@@ -7,7 +7,9 @@ const getFilterSidebar = (page: Page) => page.locator('aside');
 const markProblemAsSolved = async (page: Page, problemId: string) => {
   await page.evaluate((id) => {
     const stored = localStorage.getItem('js-ts-tricks-progress');
-    const data = stored ? JSON.parse(stored) : { solvedProblems: [], streak: 0, lastSolvedDate: null };
+    const data = stored
+      ? JSON.parse(stored)
+      : { solvedProblems: [], streak: 0, lastSolvedDate: null };
     if (!data.solvedProblems.includes(id)) {
       data.solvedProblems.push(id);
     }
@@ -158,7 +160,10 @@ test.describe('FilterSidebar Component', () => {
 
     test('should filter to only Easy problems', async ({ page }) => {
       // Click Easy radio button
-      const easyLabel = page.locator('label').filter({ hasText: /^Easy$/ }).first();
+      const easyLabel = page
+        .locator('label')
+        .filter({ hasText: /^Easy$/ })
+        .first();
       await easyLabel.click();
       await page.waitForTimeout(300);
 
@@ -176,7 +181,10 @@ test.describe('FilterSidebar Component', () => {
 
     test('should filter to only Medium problems', async ({ page }) => {
       // Click Medium radio button
-      const mediumLabel = page.locator('label').filter({ hasText: /^Medium$/ }).first();
+      const mediumLabel = page
+        .locator('label')
+        .filter({ hasText: /^Medium$/ })
+        .first();
       await mediumLabel.click();
       await page.waitForTimeout(300);
 
@@ -194,7 +202,10 @@ test.describe('FilterSidebar Component', () => {
 
     test('should filter to only Hard problems', async ({ page }) => {
       // Click Hard radio button
-      const hardLabel = page.locator('label').filter({ hasText: /^Hard$/ }).first();
+      const hardLabel = page
+        .locator('label')
+        .filter({ hasText: /^Hard$/ })
+        .first();
       await hardLabel.click();
       await page.waitForTimeout(300);
 
@@ -212,7 +223,10 @@ test.describe('FilterSidebar Component', () => {
 
     test('should display correct counts for each difficulty level', async ({ page }) => {
       // Get the counts displayed in the difficulty section
-      const difficultySection = page.getByRole('button', { name: 'Difficulty' }).locator('..').locator('..');
+      const difficultySection = page
+        .getByRole('button', { name: 'Difficulty' })
+        .locator('..')
+        .locator('..');
 
       // All should show total count
       const allLabel = difficultySection.locator('label').filter({ hasText: 'All' });
@@ -290,7 +304,10 @@ test.describe('FilterSidebar Component', () => {
 
     test('should show "Clear all" button when difficulty filter is active', async ({ page }) => {
       // Select Easy difficulty
-      const easyLabel = page.locator('label').filter({ hasText: /^Easy$/ }).first();
+      const easyLabel = page
+        .locator('label')
+        .filter({ hasText: /^Easy$/ })
+        .first();
       await easyLabel.click();
       await page.waitForTimeout(100);
 
@@ -322,7 +339,10 @@ test.describe('FilterSidebar Component', () => {
 
     test('should reset all filters when "Clear all" is clicked', async ({ page }) => {
       // Apply multiple filters
-      const easyLabel = page.locator('label').filter({ hasText: /^Easy$/ }).first();
+      const easyLabel = page
+        .locator('label')
+        .filter({ hasText: /^Easy$/ })
+        .first();
       await easyLabel.click();
       await page.waitForTimeout(100);
 
@@ -433,7 +453,10 @@ test.describe('FilterSidebar Component', () => {
       const difficultyButton = page.getByRole('button', { name: 'Difficulty' });
 
       // Content should be visible initially
-      const easyLabel = page.locator('label').filter({ hasText: /^Easy$/ }).first();
+      const easyLabel = page
+        .locator('label')
+        .filter({ hasText: /^Easy$/ })
+        .first();
       await expect(easyLabel).toBeVisible();
 
       // Click to collapse
@@ -508,7 +531,10 @@ test.describe('FilterSidebar Component', () => {
       const totalCount = initialMatch ? parseInt(initialMatch[2]) : 0;
 
       // Apply Easy filter
-      const easyLabel = page.locator('label').filter({ hasText: /^Easy$/ }).first();
+      const easyLabel = page
+        .locator('label')
+        .filter({ hasText: /^Easy$/ })
+        .first();
       await easyLabel.click();
       await page.waitForTimeout(300);
 
@@ -532,7 +558,10 @@ test.describe('FilterSidebar Component', () => {
       const totalCount = initialMatch ? parseInt(initialMatch[2]) : 0;
 
       // Apply Easy filter
-      const easyLabel = page.locator('label').filter({ hasText: /^Easy$/ }).first();
+      const easyLabel = page
+        .locator('label')
+        .filter({ hasText: /^Easy$/ })
+        .first();
       await easyLabel.click();
       await page.waitForTimeout(300);
 
@@ -554,7 +583,9 @@ test.describe('FilterSidebar Component', () => {
       expect(afterBothCount).toBeLessThanOrEqual(afterDifficultyCount);
     });
 
-    test('should apply all three filters (status, difficulty, category) together', async ({ page }) => {
+    test('should apply all three filters (status, difficulty, category) together', async ({
+      page,
+    }) => {
       // Mark some problems as solved
       await clearProgress(page);
       await markProblemAsSolved(page, 'nullish-coalescing');
@@ -563,7 +594,10 @@ test.describe('FilterSidebar Component', () => {
       await page.waitForLoadState('networkidle');
 
       // Apply all filters
-      const easyLabel = page.locator('label').filter({ hasText: /^Easy$/ }).first();
+      const easyLabel = page
+        .locator('label')
+        .filter({ hasText: /^Easy$/ })
+        .first();
       await easyLabel.click();
       await page.waitForTimeout(200);
 
@@ -595,7 +629,7 @@ test.describe('FilterSidebar Component', () => {
 
       // Check if the category filter is applied (if Arrays category exists)
       const categoryRadio = page.locator('input[name="category"][value="Arrays"]');
-      const exists = await categoryRadio.count() > 0;
+      const exists = (await categoryRadio.count()) > 0;
 
       if (exists) {
         await expect(categoryRadio).toBeChecked();
@@ -609,7 +643,7 @@ test.describe('FilterSidebar Component', () => {
 
       // Check if the category filter is applied (if category exists)
       const categoryRadio = page.locator('input[name="category"][value="String Manipulation"]');
-      const exists = await categoryRadio.count() > 0;
+      const exists = (await categoryRadio.count()) > 0;
 
       if (exists) {
         await expect(categoryRadio).toBeChecked();
@@ -654,15 +688,24 @@ test.describe('FilterSidebar Component', () => {
   test.describe('Visual Styling', () => {
     test('should display difficulty colors correctly', async ({ page }) => {
       // Easy should have green color class
-      const easyText = page.locator('span').filter({ hasText: /^Easy$/ }).first();
+      const easyText = page
+        .locator('span')
+        .filter({ hasText: /^Easy$/ })
+        .first();
       await expect(easyText).toHaveClass(/text-green/);
 
       // Medium should have yellow color class
-      const mediumText = page.locator('span').filter({ hasText: /^Medium$/ }).first();
+      const mediumText = page
+        .locator('span')
+        .filter({ hasText: /^Medium$/ })
+        .first();
       await expect(mediumText).toHaveClass(/text-yellow/);
 
       // Hard should have red color class
-      const hardText = page.locator('span').filter({ hasText: /^Hard$/ }).first();
+      const hardText = page
+        .locator('span')
+        .filter({ hasText: /^Hard$/ })
+        .first();
       await expect(hardText).toHaveClass(/text-red/);
     });
 
@@ -686,7 +729,10 @@ test.describe('FilterSidebar Component', () => {
   test.describe('Filter Persistence', () => {
     test('should maintain filter state when navigating away and back', async ({ page }) => {
       // Apply a filter
-      const easyLabel = page.locator('label').filter({ hasText: /^Easy$/ }).first();
+      const easyLabel = page
+        .locator('label')
+        .filter({ hasText: /^Easy$/ })
+        .first();
       await easyLabel.click();
       await page.waitForTimeout(300);
 

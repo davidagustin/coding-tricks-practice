@@ -38,9 +38,14 @@ const preview: Preview = {
         document.documentElement.classList.toggle('dark', theme === 'dark');
       }, [theme]);
 
-      return React.createElement('div', {
-        className: theme === 'dark' ? 'dark bg-gray-950 min-h-screen p-4' : 'bg-gray-50 min-h-screen p-4',
-      }, React.createElement(Story));
+      return React.createElement(
+        'div',
+        {
+          className:
+            theme === 'dark' ? 'dark bg-gray-950 min-h-screen p-4' : 'bg-gray-50 min-h-screen p-4',
+        },
+        React.createElement(Story)
+      );
     },
   ],
 };

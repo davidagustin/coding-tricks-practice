@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Problems List Page', () => {
   test.beforeEach(async ({ page }) => {
@@ -23,9 +23,7 @@ test.describe('Problems List Page', () => {
     await expect(backLink).toHaveAttribute('href', '/');
   });
 
-  test('should navigate back to home when clicking "Back to Home"', async ({
-    page,
-  }) => {
+  test('should navigate back to home when clicking "Back to Home"', async ({ page }) => {
     const backLink = page.getByRole('link', { name: /Back to Home/i });
     await backLink.click();
     await expect(page).toHaveURL('/');
@@ -40,9 +38,7 @@ test.describe('Problems List Page', () => {
   });
 
   test('should display search input', async ({ page }) => {
-    const searchInput = page.getByPlaceholder(
-      /Search by title, description, or category/i
-    );
+    const searchInput = page.getByPlaceholder(/Search by title, description, or category/i);
     await expect(searchInput).toBeVisible();
   });
 
@@ -51,18 +47,10 @@ test.describe('Problems List Page', () => {
     await expect(difficultySelect).toBeVisible();
 
     // Verify options
-    await expect(difficultySelect.locator('option[value="all"]')).toHaveText(
-      'All Difficulties'
-    );
-    await expect(difficultySelect.locator('option[value="easy"]')).toHaveText(
-      'Easy'
-    );
-    await expect(difficultySelect.locator('option[value="medium"]')).toHaveText(
-      'Medium'
-    );
-    await expect(difficultySelect.locator('option[value="hard"]')).toHaveText(
-      'Hard'
-    );
+    await expect(difficultySelect.locator('option[value="all"]')).toHaveText('All Difficulties');
+    await expect(difficultySelect.locator('option[value="easy"]')).toHaveText('Easy');
+    await expect(difficultySelect.locator('option[value="medium"]')).toHaveText('Medium');
+    await expect(difficultySelect.locator('option[value="hard"]')).toHaveText('Hard');
   });
 
   test('should display category filter dropdown', async ({ page }) => {
@@ -70,9 +58,7 @@ test.describe('Problems List Page', () => {
     await expect(categorySelect).toBeVisible();
 
     // Should have "All Categories" option
-    await expect(categorySelect.locator('option[value="all"]')).toHaveText(
-      'All Categories'
-    );
+    await expect(categorySelect.locator('option[value="all"]')).toHaveText('All Categories');
   });
 
   test('should display sort by dropdown', async ({ page }) => {
@@ -80,18 +66,10 @@ test.describe('Problems List Page', () => {
     await expect(sortSelect).toBeVisible();
 
     // Verify sort options
-    await expect(sortSelect.locator('option[value="default"]')).toHaveText(
-      'Default Order'
-    );
-    await expect(sortSelect.locator('option[value="difficulty"]')).toHaveText(
-      'Difficulty'
-    );
-    await expect(sortSelect.locator('option[value="category"]')).toHaveText(
-      'Category'
-    );
-    await expect(sortSelect.locator('option[value="title"]')).toHaveText(
-      'Title (A-Z)'
-    );
+    await expect(sortSelect.locator('option[value="default"]')).toHaveText('Default Order');
+    await expect(sortSelect.locator('option[value="difficulty"]')).toHaveText('Difficulty');
+    await expect(sortSelect.locator('option[value="category"]')).toHaveText('Category');
+    await expect(sortSelect.locator('option[value="title"]')).toHaveText('Title (A-Z)');
   });
 
   test('should display problem cards', async ({ page }) => {
@@ -114,9 +92,7 @@ test.describe('Problems List Page', () => {
   });
 
   test('should filter problems by search query', async ({ page }) => {
-    const searchInput = page.getByPlaceholder(
-      /Search by title, description, or category/i
-    );
+    const searchInput = page.getByPlaceholder(/Search by title, description, or category/i);
 
     // Search for "array"
     await searchInput.fill('array');
@@ -136,12 +112,8 @@ test.describe('Problems List Page', () => {
     }
   });
 
-  test('should show "Showing X of Y problems" when filters are active', async ({
-    page,
-  }) => {
-    const searchInput = page.getByPlaceholder(
-      /Search by title, description, or category/i
-    );
+  test('should show "Showing X of Y problems" when filters are active', async ({ page }) => {
+    const searchInput = page.getByPlaceholder(/Search by title, description, or category/i);
 
     // Apply a search filter
     await searchInput.fill('array');
@@ -152,12 +124,8 @@ test.describe('Problems List Page', () => {
     await expect(filterInfo).toBeVisible();
   });
 
-  test('should show "Clear all filters" when filters are active', async ({
-    page,
-  }) => {
-    const searchInput = page.getByPlaceholder(
-      /Search by title, description, or category/i
-    );
+  test('should show "Clear all filters" when filters are active', async ({ page }) => {
+    const searchInput = page.getByPlaceholder(/Search by title, description, or category/i);
 
     // Apply a search filter
     await searchInput.fill('test');
@@ -168,12 +136,8 @@ test.describe('Problems List Page', () => {
     await expect(clearButton).toBeVisible();
   });
 
-  test('should clear filters when clicking "Clear all filters"', async ({
-    page,
-  }) => {
-    const searchInput = page.getByPlaceholder(
-      /Search by title, description, or category/i
-    );
+  test('should clear filters when clicking "Clear all filters"', async ({ page }) => {
+    const searchInput = page.getByPlaceholder(/Search by title, description, or category/i);
 
     // Apply a search filter
     await searchInput.fill('array');
@@ -250,9 +214,7 @@ test.describe('Problems List Page', () => {
     await expect(firstBadge).toBeVisible();
   });
 
-  test('should navigate to problem detail when clicking a problem', async ({
-    page,
-  }) => {
+  test('should navigate to problem detail when clicking a problem', async ({ page }) => {
     // Click the first problem
     const problemLinks = page.locator('a[href^="/problems/"]');
     const firstProblem = problemLinks.first();
@@ -273,9 +235,7 @@ test.describe('Problems List Page', () => {
     await expect(categoryHeading).toBeVisible();
   });
 
-  test('should filter by category when clicking category card', async ({
-    page,
-  }) => {
+  test('should filter by category when clicking category card', async ({ page }) => {
     // Scroll to browse by category section
     const categoryHeading = page.getByRole('heading', {
       name: /Browse by Category/i,
@@ -296,21 +256,15 @@ test.describe('Problems List Page', () => {
     await expect(filterInfo).toBeVisible();
   });
 
-  test('should display "About This Practice Platform" section', async ({
-    page,
-  }) => {
+  test('should display "About This Practice Platform" section', async ({ page }) => {
     const aboutHeading = page.getByRole('heading', {
       name: /About This Practice Platform/i,
     });
     await expect(aboutHeading).toBeVisible();
   });
 
-  test('should show "No problems found" when search has no results', async ({
-    page,
-  }) => {
-    const searchInput = page.getByPlaceholder(
-      /Search by title, description, or category/i
-    );
+  test('should show "No problems found" when search has no results', async ({ page }) => {
+    const searchInput = page.getByPlaceholder(/Search by title, description, or category/i);
 
     // Search for something that won't exist
     await searchInput.fill('zzzznonexistentproblemxyzabc123');
@@ -322,9 +276,7 @@ test.describe('Problems List Page', () => {
   });
 
   test('should have clear search button in search input', async ({ page }) => {
-    const searchInput = page.getByPlaceholder(
-      /Search by title, description, or category/i
-    );
+    const searchInput = page.getByPlaceholder(/Search by title, description, or category/i);
 
     // Type something
     await searchInput.fill('test');
@@ -351,9 +303,7 @@ test.describe('Problems List Page', () => {
     ).toBeVisible();
 
     // Search should be visible
-    await expect(
-      page.getByPlaceholder(/Search by title, description, or category/i)
-    ).toBeVisible();
+    await expect(page.getByPlaceholder(/Search by title, description, or category/i)).toBeVisible();
 
     // Problems should still be listed
     const problemLinks = page.locator('a[href^="/problems/"]');

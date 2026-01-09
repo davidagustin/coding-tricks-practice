@@ -25,11 +25,7 @@ const meta: Meta<typeof CodeEditor> = {
           setCurrentTheme(theme);
         }, []);
 
-        return (
-          <ThemeProvider>
-            {children}
-          </ThemeProvider>
-        );
+        return <ThemeProvider>{children}</ThemeProvider>;
       };
 
       return (
@@ -82,17 +78,23 @@ type Story = StoryObj<typeof CodeEditor>;
  * Creates a dark mode decorator that applies dark theme to the document
  * and wraps the story in a dark background container.
  */
-const darkModeDecorator = (Story: React.ComponentType) => {
+const DarkModeDecorator = ({ children }: { children: React.ReactNode }) => {
   React.useEffect(() => {
     document.documentElement.classList.add('dark');
     return () => document.documentElement.classList.remove('dark');
   }, []);
+  return <>{children}</>;
+};
+
+const darkModeDecorator = (Story: React.ComponentType) => {
   return (
-    <div className="dark bg-gray-950 min-h-screen p-4">
-      <div style={{ height: '400px', width: '100%' }}>
-        <Story />
+    <DarkModeDecorator>
+      <div className="dark bg-gray-950 min-h-screen p-4">
+        <div style={{ height: '400px', width: '100%' }}>
+          <Story />
+        </div>
       </div>
-    </div>
+    </DarkModeDecorator>
   );
 };
 
@@ -264,7 +266,8 @@ const add = (a, b): number => {
     },
     docs: {
       description: {
-        story: 'Monaco Editor highlights syntax errors with red underlines and error markers in the gutter.',
+        story:
+          'Monaco Editor highlights syntax errors with red underlines and error markers in the gutter.',
       },
     },
   },
@@ -578,7 +581,8 @@ export const ReadOnlyMode_Dark: Story = {
     backgrounds: { default: 'dark' },
     docs: {
       description: {
-        story: 'Read-only solution display in dark mode. The editor cannot be modified by the user.',
+        story:
+          'Read-only solution display in dark mode. The editor cannot be modified by the user.',
       },
     },
   },
@@ -610,7 +614,8 @@ export const LongCodeWithScrolling_Dark: Story = {
     backgrounds: { default: 'dark' },
     docs: {
       description: {
-        story: 'Long code example with scrolling in dark mode. Tests scrollbar visibility and behavior in dark theme.',
+        story:
+          'Long code example with scrolling in dark mode. Tests scrollbar visibility and behavior in dark theme.',
       },
     },
   },
@@ -673,7 +678,8 @@ export const WithSyntaxErrors_Dark: Story = {
     backgrounds: { default: 'dark' },
     docs: {
       description: {
-        story: 'Syntax errors displayed in dark mode. Tests visibility of error highlighting and gutter markers.',
+        story:
+          'Syntax errors displayed in dark mode. Tests visibility of error highlighting and gutter markers.',
       },
     },
   },
@@ -1071,7 +1077,8 @@ console.log(temp.fahrenheit); // 212
   parameters: {
     docs: {
       description: {
-        story: 'Examples of TypeScript class patterns including inheritance, abstract classes, and static members.',
+        story:
+          'Examples of TypeScript class patterns including inheritance, abstract classes, and static members.',
       },
     },
   },
@@ -1203,7 +1210,8 @@ export const ClassExample_Dark: Story = {
     backgrounds: { default: 'dark' },
     docs: {
       description: {
-        story: 'TypeScript class patterns including inheritance and static members displayed in dark mode.',
+        story:
+          'TypeScript class patterns including inheritance and static members displayed in dark mode.',
       },
     },
   },
@@ -1251,7 +1259,8 @@ runVisualTest(config);
     },
     docs: {
       description: {
-        story: 'This story is specifically configured for Chromatic visual regression testing with multiple viewports and theme modes.',
+        story:
+          'This story is specifically configured for Chromatic visual regression testing with multiple viewports and theme modes.',
       },
     },
   },
