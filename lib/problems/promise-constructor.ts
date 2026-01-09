@@ -92,27 +92,34 @@ delay(1000).then(() => console.log('1 second passed'));
 
 const button = document.createElement('button');
 waitForEvent(button, 'click').then(() => console.log('Button clicked'));`,
-  solution: `function checkPromiseConstructor() {
-  var p = new Promise(function(resolve) { resolve(42); });
-  return p instanceof Promise;
-}
-
-function createResolvedPromise(value) {
+  solution: `function delay(ms) {
+  // Return a Promise that resolves after ms milliseconds
   return new Promise(function(resolve) {
-    resolve(value);
+    setTimeout(resolve, ms);
   });
 }
 
-function delay(ms) {
+function waitForEvent(element, eventName) {
+  // Return a Promise that resolves when event fires
+  // Use addEventListener, resolve on first event, then remove listener
   return new Promise(function(resolve) {
-    setTimeout(resolve, ms);
+    function handler(event) {
+      element.removeEventListener(eventName, handler);
+      resolve(event);
+    }
+    element.addEventListener(eventName, handler);
   });
 }`,
   testCases: [
     {
+      input: [100],
+      expectedOutput: undefined,
+      description: 'delay returns a Promise that resolves after the specified time',
+    },
+    {
       input: [],
-      expectedOutput: true,
-      description: 'checkPromiseConstructor returns true',
+      expectedOutput: undefined,
+      description: 'waitForEvent returns a Promise that resolves when the event fires',
     },
   ],
   hints: [
