@@ -12,11 +12,16 @@ export default function Navbar() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const settingsRef = useRef<HTMLDivElement>(null);
+  const confirmDialogRef = useRef<HTMLDivElement>(null);
 
   // Close settings menu when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (settingsRef.current && !settingsRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      const isInsideSettings = settingsRef.current?.contains(target);
+      const isInsideConfirmDialog = confirmDialogRef.current?.contains(target);
+
+      if (!isInsideSettings && !isInsideConfirmDialog) {
         setSettingsOpen(false);
         setShowResetConfirm(false);
       }
@@ -202,6 +207,7 @@ export default function Navbar() {
       {/* Reset Progress Confirmation Dialog */}
       {showResetConfirm && (
         <div
+          ref={confirmDialogRef}
           className="fixed inset-0 z-[100] flex items-center justify-center"
           role="dialog"
           aria-modal="true"
