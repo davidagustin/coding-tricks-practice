@@ -1,190 +1,135 @@
 <div align="center">
 
-# JavaScript & TypeScript Mastery Platform
+<!-- Hero Section -->
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=180&section=header&text=JS%20%2F%20TS%20Mastery&fontSize=42&fontColor=fff&animation=twinkling&fontAlignY=32&desc=Master%20JavaScript%20%26%20TypeScript%20Through%20Practice&descSize=18&descAlignY=52"/>
 
-### A comprehensive, production-grade learning platform for mastering modern JavaScript and TypeScript
+<br/>
 
-[![Next.js](https://img.shields.io/badge/Next.js-16.1-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
+<p>
+  <strong>A LeetCode-style coding platform with 155+ challenges across 19 categories</strong>
+</p>
 
-<br />
+<p>
+  <a href="#-quick-start">Quick Start</a> •
+  <a href="#-features">Features</a> •
+  <a href="#-problem-categories">Categories</a> •
+  <a href="#-tech-stack">Tech Stack</a> •
+  <a href="#-contributing">Contributing</a>
+</p>
 
-[Live Demo](#) · [Report Bug](https://github.com/davidagustin/coding-tricks-practice/issues) · [Request Feature](https://github.com/davidagustin/coding-tricks-practice/issues)
+<br/>
 
-<br />
+<!-- Badges -->
+<p>
+  <img src="https://img.shields.io/badge/Next.js-16.1-000000?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js"/>
+  <img src="https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React"/>
+  <img src="https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript"/>
+  <img src="https://img.shields.io/badge/Tailwind-4.0-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS"/>
+</p>
 
-<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png" alt="separator" width="100%">
+<br/>
+
+<!-- Stats Cards -->
+<table>
+<tr>
+<td align="center"><h3>155+</h3><sub>Problems</sub></td>
+<td align="center"><h3>19</h3><sub>Categories</sub></td>
+<td align="center"><h3>40+</h3><sub>Test Files</sub></td>
+<td align="center"><h3>140K+</h3><sub>Lines of Code</sub></td>
+</tr>
+</table>
 
 </div>
 
-<br />
+<br/>
 
-## Overview
+---
 
-A **LeetCode-style** interactive coding platform built from the ground up, featuring **155+ hands-on coding challenges** across **19 categories**. This full-stack application demonstrates expertise in modern web development, software architecture, and best practices.
+<br/>
 
-<br />
+## What is This?
 
-<div align="center">
+A **production-grade learning platform** for mastering JavaScript and TypeScript through hands-on coding challenges. Think LeetCode, but focused entirely on JS/TS fundamentals, patterns, and best practices.
 
-| Metric | Value |
-|--------|-------|
-| **Total Problems** | 155+ |
-| **Categories** | 19 |
-| **Test Files** | 40+ |
-| **Lines of Code** | 140,000+ |
-| **Components** | 11 |
+Built with the latest technologies and following modern development practices, this platform offers:
 
-</div>
+- **Real coding environment** powered by Monaco Editor (the engine behind VS Code)
+- **Instant feedback** with automated test runners and detailed error reporting
+- **Progress tracking** to monitor your learning journey
+- **Beautiful UI** with dark/light themes and responsive design
 
-<br />
+<br/>
 
-## Key Features
+---
+
+<br/>
+
+## Features
 
 <table>
 <tr>
-<td width="50%">
+<td width="50%" valign="top">
 
-### Interactive Code Editor
-- Monaco Editor (VS Code engine) integration
-- Syntax highlighting for JavaScript & TypeScript
+### Code Editor
+
+- Monaco Editor integration (VS Code engine)
+- Syntax highlighting for JS & TS
 - Real-time code validation
-- Auto-completion and IntelliSense
+- Auto-completion & IntelliSense
+- Multiple themes support
 
 </td>
-<td width="50%">
+<td width="50%" valign="top">
 
-### Automated Test Runner
-- Sandboxed code execution environment
-- Comprehensive test case validation
-- Detailed error reporting with stack traces
-- Performance timing for solutions
+### Test Runner
+
+- Sandboxed code execution
+- Comprehensive test validation
+- Detailed error reporting
+- Stack traces for debugging
+- Performance timing
 
 </td>
 </tr>
 <tr>
-<td width="50%">
+<td width="50%" valign="top">
 
-### Modern UI/UX
-- Responsive design for all devices
-- Dark/Light theme with system preference detection
-- Smooth animations and transitions
-- Accessibility-first approach (WCAG compliant)
+### Progress System
+
+- Persistent localStorage progress
+- Streak tracking
+- Filter by difficulty/category
+- Completion statistics
+- Real-time dashboard
 
 </td>
-<td width="50%">
+<td width="50%" valign="top">
 
-### Progress Tracking
-- Persistent progress with localStorage
-- Streak tracking system
-- Filter by difficulty, category, and completion status
-- Real-time statistics dashboard
+### Modern UI/UX
+
+- Responsive design
+- Dark/Light themes
+- System preference detection
+- Smooth animations
+- WCAG 2.1 AA accessible
 
 </td>
 </tr>
 </table>
 
-<br />
+<br/>
 
-## Tech Stack
+---
 
-<div align="center">
+<br/>
 
-### Frontend
-![Next.js](https://img.shields.io/badge/Next.js_16-000000?style=flat-square&logo=next.js&logoColor=white)
-![React](https://img.shields.io/badge/React_19-61DAFB?style=flat-square&logo=react&logoColor=black)
-![TypeScript](https://img.shields.io/badge/TypeScript_5.9-3178C6?style=flat-square&logo=typescript&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_4-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)
-
-### Editor & Testing
-![Monaco Editor](https://img.shields.io/badge/Monaco_Editor-007ACC?style=flat-square&logo=visual-studio-code&logoColor=white)
-![Jest](https://img.shields.io/badge/Jest-C21325?style=flat-square&logo=jest&logoColor=white)
-![Testing Library](https://img.shields.io/badge/Testing_Library-E33332?style=flat-square&logo=testing-library&logoColor=white)
-
-### Tooling
-![ESLint](https://img.shields.io/badge/ESLint-4B32C3?style=flat-square&logo=eslint&logoColor=white)
-![Biome](https://img.shields.io/badge/Biome-60A5FA?style=flat-square&logo=biome&logoColor=white)
-![Husky](https://img.shields.io/badge/Husky-000000?style=flat-square&logo=git&logoColor=white)
-
-</div>
-
-<br />
-
-## Architecture Highlights
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                         Next.js App Router                       │
-├─────────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐  │
-│  │   Pages     │  │  Components │  │    Context Providers    │  │
-│  │  ─────────  │  │  ─────────  │  │    ─────────────────    │  │
-│  │  • Home     │  │  • CodeEditor│  │  • ThemeProvider       │  │
-│  │  • Problems │  │  • TestResults│ │  • ProgressProvider    │  │
-│  │  • [id]     │  │  • Navbar    │  │                        │  │
-│  └─────────────┘  └─────────────┘  └─────────────────────────┘  │
-├─────────────────────────────────────────────────────────────────┤
-│  ┌─────────────────────────────────────────────────────────────┐│
-│  │                    Test Runner Engine                        ││
-│  │  • Sandboxed execution  • Security validation                ││
-│  │  • Deep equality checks • Timeout protection                 ││
-│  └─────────────────────────────────────────────────────────────┘│
-├─────────────────────────────────────────────────────────────────┤
-│  ┌─────────────────────────────────────────────────────────────┐│
-│  │               Problem Library (155+ Problems)                ││
-│  │  19 Categories • 3 Difficulty Levels • Test Cases            ││
-│  └─────────────────────────────────────────────────────────────┘│
-└─────────────────────────────────────────────────────────────────┘
-```
-
-<br />
-
-## Problem Categories
-
-<div align="center">
-
-| Category | Description |
-|----------|-------------|
-| **JavaScript Basics** | Fundamentals, operators, control flow |
-| **Array Methods** | map, filter, reduce, find, and more |
-| **Async/Promises** | Promises, async/await, error handling |
-| **TypeScript Basics** | Types, interfaces, generics |
-| **TypeScript Advanced** | Conditional types, mapped types, infer |
-| **Functional Programming** | Currying, composition, memoization |
-| **ES6+ Features** | Destructuring, spread, template literals |
-| **Design Patterns** | Factory, singleton, observer, decorator |
-| **Data Structures** | Sets, Maps, WeakMap, WeakSet |
-| **Algorithms** | Sorting, searching, recursion |
-| **DOM/Browser** | Events, storage, intersection observer |
-| **Performance** | Optimization, debounce, throttle |
-| **Testing Patterns** | Mocks, stubs, TDD practices |
-| **Error Handling** | Try/catch, custom errors, boundaries |
-| **Regular Expressions** | Patterns, lookahead, validation |
-| **String Methods** | Manipulation, formatting, parsing |
-| **Object Methods** | Keys, values, entries, freeze |
-| **Date & Time** | Formatting, timezones, calculations |
-| **Numbers & Math** | Precision, formatting, BigInt |
-
-</div>
-
-<br />
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+
-- npm or yarn
-
-### Installation
+## Quick Start
 
 ```bash
 # Clone the repository
 git clone https://github.com/davidagustin/coding-tricks-practice.git
 
-# Navigate to the project
+# Navigate to project
 cd coding-tricks-practice
 
 # Install dependencies
@@ -194,149 +139,251 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the application.
+Open **[http://localhost:3000](http://localhost:3000)** and start coding!
 
-<br />
+<br/>
 
-## Scripts
+<details>
+<summary><strong>All Available Scripts</strong></summary>
 
-```bash
-# Development
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Start production server
+<br/>
 
-# Testing
-npm test             # Run all tests
-npm run test:watch   # Run tests in watch mode
-npm run test:coverage # Run tests with coverage report
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run start` | Start production server |
+| `npm test` | Run all tests |
+| `npm run test:watch` | Run tests in watch mode |
+| `npm run test:coverage` | Generate coverage report |
+| `npm run lint` | Run ESLint |
+| `npm run format` | Format with Biome |
 
-# Code Quality
-npm run lint         # Run ESLint
-npm run format       # Format code with Biome
+</details>
+
+<br/>
+
+---
+
+<br/>
+
+## Problem Categories
+
+<div align="center">
+
+| | Category | Topics |
+|:---:|----------|--------|
+| 📘 | **JavaScript Basics** | Fundamentals, operators, control flow |
+| 📦 | **Array Methods** | map, filter, reduce, find, every, some |
+| ⏳ | **Async/Promises** | Promises, async/await, error handling |
+| 🔷 | **TypeScript Basics** | Types, interfaces, generics |
+| 🔶 | **TypeScript Advanced** | Conditional types, mapped types, infer |
+| 🧮 | **Functional Programming** | Currying, composition, memoization |
+| ✨ | **ES6+ Features** | Destructuring, spread, modules |
+| 🏗️ | **Design Patterns** | Factory, singleton, observer, decorator |
+| 🗃️ | **Data Structures** | Sets, Maps, WeakMap, WeakSet |
+| 🔍 | **Algorithms** | Sorting, searching, recursion |
+| 🌐 | **DOM/Browser** | Events, storage, observers |
+| ⚡ | **Performance** | Optimization, debounce, throttle |
+| 🧪 | **Testing Patterns** | Mocks, stubs, TDD practices |
+| 🚨 | **Error Handling** | Try/catch, custom errors |
+| 🔤 | **Regular Expressions** | Patterns, lookahead, validation |
+| 📝 | **String Methods** | Manipulation, formatting, parsing |
+| 🔑 | **Object Methods** | Keys, values, entries, freeze |
+| 📅 | **Date & Time** | Formatting, timezones, calculations |
+| 🔢 | **Numbers & Math** | Precision, formatting, BigInt |
+
+</div>
+
+<br/>
+
+---
+
+<br/>
+
+## Tech Stack
+
+<div align="center">
+
+### Core Framework
+<p>
+<img src="https://skillicons.dev/icons?i=nextjs,react,typescript,tailwind" />
+</p>
+
+### Development Tools
+<p>
+<img src="https://skillicons.dev/icons?i=vscode,jest,git,vercel" />
+</p>
+
+</div>
+
+<br/>
+
+<details>
+<summary><strong>Full Technology Breakdown</strong></summary>
+
+<br/>
+
+**Frontend**
+- Next.js 16 (App Router)
+- React 19
+- TypeScript 5.9
+- Tailwind CSS 4.0
+
+**Editor**
+- Monaco Editor
+- Custom syntax highlighting
+- IntelliSense integration
+
+**Testing**
+- Jest
+- React Testing Library
+- 40+ test suites
+
+**Quality**
+- ESLint
+- Biome
+- Husky pre-commit hooks
+
+**Deployment**
+- Vercel optimized
+- Edge-ready
+- Global CDN
+
+</details>
+
+<br/>
+
+---
+
+<br/>
+
+## Architecture
+
 ```
-
-<br />
-
-## Project Structure
-
-```
+coding-tricks-practice/
 ├── app/                          # Next.js App Router
-│   ├── page.tsx                  # Home page with statistics
-│   ├── layout.tsx                # Root layout with providers
-│   ├── error.tsx                 # Global error boundary
-│   ├── loading.tsx               # Loading skeleton
-│   ├── not-found.tsx             # 404 page
-│   └── problems/
-│       ├── page.tsx              # Problems list with filtering
-│       ├── error.tsx             # Problems error boundary
-│       └── [id]/
-│           ├── page.tsx          # Problem detail page
-│           ├── error.tsx         # Problem error boundary
-│           └── not-found.tsx     # Problem not found page
+│   ├── page.tsx                  # Home with stats
+│   ├── layout.tsx                # Root layout
+│   ├── problems/
+│   │   ├── page.tsx              # Problems list
+│   │   └── [id]/page.tsx         # Problem detail
 │
-├── components/                   # React components
-│   ├── CodeEditor.tsx            # Monaco Editor wrapper
-│   ├── TestResults.tsx           # Test results display
-│   ├── ProblemDescription.tsx    # Problem info with tabs
-│   ├── ProblemTable.tsx          # Problems list table
-│   ├── FilterSidebar.tsx         # Filter controls
-│   ├── Navbar.tsx                # Navigation with settings
-│   ├── ThemeToggle.tsx           # Dark/light mode toggle
-│   ├── ThemeProvider.tsx         # Theme context provider
-│   ├── ProgressProvider.tsx      # Progress tracking context
-│   └── ErrorBoundary.tsx         # Error boundary component
+├── components/                   # React Components
+│   ├── CodeEditor.tsx            # Monaco wrapper
+│   ├── TestResults.tsx           # Test display
+│   ├── ProblemTable.tsx          # Problems list
+│   ├── FilterSidebar.tsx         # Filters
+│   ├── Navbar.tsx                # Navigation
+│   └── ThemeToggle.tsx           # Theme switcher
 │
-├── lib/                          # Core libraries
-│   ├── problems/                 # 155+ problem definitions
-│   │   ├── index.ts              # Problem exports
-│   │   └── [problem-name].ts     # Individual problems
-│   ├── problems.ts               # Problem utilities
-│   ├── test-runner.ts            # Sandboxed test execution
+├── lib/                          # Core Logic
+│   ├── problems/                 # 155+ problems
+│   ├── test-runner.ts            # Sandboxed execution
 │   └── constants.ts              # App constants
 │
-├── __tests__/                    # Test suites (40+ files)
-│   ├── app/                      # Page tests
-│   ├── components/               # Component tests
-│   └── lib/                      # Library tests
-│
-└── stories/                      # Storybook stories
+└── __tests__/                    # Test Suites
+    ├── app/                      # Page tests
+    ├── components/               # Component tests
+    └── lib/                      # Library tests
 ```
 
-<br />
+<br/>
 
-## Security Features
+---
 
-- **Sandboxed Code Execution**: User code runs in an isolated environment
-- **Input Sanitization**: All inputs validated and sanitized with DOMPurify
-- **Function Name Validation**: Prevents code injection attacks
-- **Timeout Protection**: Prevents infinite loops and resource exhaustion
-- **XSS Prevention**: Content Security Policy compliant
+<br/>
 
-<br />
+## Security & Performance
 
-## Performance Optimizations
+<table>
+<tr>
+<td width="50%" valign="top">
 
-- **React.memo** for expensive component renders
-- **useCallback/useMemo** for stable references
-- **Code splitting** with Next.js dynamic imports
-- **Optimized re-renders** with proper key management
-- **Efficient filtering** with single-pass algorithms
-- **Lazy loading** for Monaco Editor
+### Security
 
-<br />
+- Sandboxed code execution
+- Input sanitization (DOMPurify)
+- Function name validation
+- Timeout protection
+- XSS prevention (CSP compliant)
 
-## Accessibility
+</td>
+<td width="50%" valign="top">
 
-- **WCAG 2.1 AA** compliant
-- Keyboard navigation support
-- Screen reader announcements with `aria-live`
-- Proper focus management
-- Color contrast ratios maintained
-- Semantic HTML structure
+### Performance
 
-<br />
+- React.memo optimization
+- useCallback/useMemo hooks
+- Dynamic code splitting
+- Lazy-loaded Monaco Editor
+- Efficient filtering algorithms
+
+</td>
+</tr>
+</table>
+
+<br/>
+
+---
+
+<br/>
 
 ## Deployment
 
-### Vercel (Recommended)
+<div align="center">
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/davidagustin/coding-tricks-practice)
 
-The application is optimized for Vercel's edge network with:
-- Automatic HTTPS
-- Global CDN distribution
-- Zero-config deployment
-- Preview deployments for PRs
+</div>
 
-<br />
+Optimized for Vercel with automatic HTTPS, global CDN, and zero-config deployment.
+
+<br/>
+
+---
+
+<br/>
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Here's how you can help:
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. **Fork** the repository
+2. **Create** your feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
 
-<br />
+<br/>
+
+---
+
+<br/>
 
 ## License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is open source under the [MIT License](LICENSE).
 
-<br />
+<br/>
 
 ---
 
 <div align="center">
 
-**Built with passion for learning and teaching JavaScript & TypeScript**
+<br/>
 
-<br />
+**Built for developers who want to master JavaScript & TypeScript**
 
-[![GitHub stars](https://img.shields.io/github/stars/davidagustin/coding-tricks-practice?style=social)](https://github.com/davidagustin/coding-tricks-practice)
+<br/>
+
+<a href="https://github.com/davidagustin/coding-tricks-practice">
+  <img src="https://img.shields.io/github/stars/davidagustin/coding-tricks-practice?style=for-the-badge&logo=github&color=yellow" alt="GitHub Stars"/>
+</a>
+
+<br/>
+<br/>
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=100&section=footer"/>
 
 </div>
